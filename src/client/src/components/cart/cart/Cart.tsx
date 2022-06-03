@@ -7,7 +7,7 @@ import CartItem from "../cartItem/CartItem";
 import ExtraList from "../../extraList/ExtraList";
 import {AiOutlineDelete} from 'react-icons/ai'
 import {useToast} from "../hooks/useToast";
-import {DatabaseCartProduct} from "../../../../../common/types";
+import {DatabaseCartProduct} from "../../../common/types";
 
 
 const Cart = React.memo(() => {

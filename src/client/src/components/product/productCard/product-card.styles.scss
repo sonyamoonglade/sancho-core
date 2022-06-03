@@ -14,19 +14,26 @@
 
 .price{
   font-size: $font-lg;
-  padding-top: 0.3rem;
   font-weight: 600;
+  padding-top: 0.2rem;
+  @media (min-width: 768px) {
+    padding-top: 0;
+  }
+
 }
 
 .translate{
+  font-family: "Geometria",sans-serif;
   color: $gray_promo;
   font-size: $font-md;
   font-weight: 400;
 }
 
 .name{
-  font-weight: 600;
   font-size: $font-lg;
+  font-family: "Geometria Bold", sans-serif;
+  letter-spacing: .5px;
+
 }
 
 .title{
@@ -39,7 +46,10 @@
     color: $black-50;
   }
   @media (min-width: 768px) {
+    align-items: center;
     margin-bottom: 0.3rem;
+    padding-left: 0;
+    padding-right: 0;
   }
 }
 
@@ -109,7 +119,7 @@
   padding-bottom: .2rem;
 
   @media (min-width: 768px) {
-    width: 43vw;
+    width: 44vw;
   }
 
 }
