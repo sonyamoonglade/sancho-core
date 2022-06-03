@@ -5,6 +5,7 @@ import {AppResponsiveState} from "../../types/types";
 import {TiArrowBack} from "react-icons/ti";
 import FormInput from "../formInput/FormInput";
 import {useFormValidations} from "../../hooks/useFormValidations";
+import MasterLoginButton from "./loginButton/MasterLoginButton";
 
 
 const MasterLogin = () => {
@@ -25,12 +26,15 @@ const MasterLogin = () => {
 
     const [masterFormState, setMasterFormState] = useState({
         login:{
-            value: ""
+            value: "",
+            isValid: false
         },
         password: {
-            value: ""
+            value: "",
+            isValid: true
         }
     })
+
 
     const {minLengthValidation} = useFormValidations()
     return (
@@ -47,6 +51,10 @@ const MasterLogin = () => {
             }
 
             <div className="master_form">
+                {
+                    appResponsiveState === AppResponsiveState.computer ?
+                        <p className='login_title'>Вход в систему</p> : null
+                }
                 <FormInput
                     name={'login'}
                     type={'text'}
@@ -57,8 +65,21 @@ const MasterLogin = () => {
                     minLength={15}
                     fieldValidationFn={minLengthValidation}
                 />
-            </div>
+                <FormInput
+                    name={'password'}
+                    type={'password'}
+                    placeholder={"Пароль"}
+                    v={masterFormState.password.value}
+                    setV={setMasterFormState}
+                    onBlurValue={""}
+                    minLength={15}
+                    fieldValidationFn={minLengthValidation}
+                />
 
+
+
+            <MasterLoginButton />
+            </div>
         </div>
     );
 };
