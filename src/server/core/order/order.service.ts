@@ -18,12 +18,11 @@ import {ProductRepository} from "../product/product.repository";
 import {AppRoles, DatabaseCartProduct, OrderStatus, ResponseUserOrder} from "../../../common/types";
 import {USER_CANCEL_EXPLANATION} from "../../types/contants";
 import {CookieService} from "../../shared/cookie/cookie.service";
+import {DELIVERY_PUNISHMENT_THRESHOLD, DELIVERY_PUNISHMENT_VALUE} from "../../../common/constants";
 
 @Injectable()
 export class OrderService {
 
-  private readonly DELIVERY_THRESHOLD = 350
-  private readonly PUNISHMENT_VALUE = 100
 
   constructor(private validationService:ValidationService,
               private orderRepository:OrderRepository,
@@ -358,8 +357,8 @@ export class OrderService {
   }
 
   applyDeliveryPunishment(p: number){
-    if(p <= this.DELIVERY_THRESHOLD){
-      return p + this.PUNISHMENT_VALUE
+    if(p <= DELIVERY_PUNISHMENT_THRESHOLD){
+      return p + DELIVERY_PUNISHMENT_VALUE
     }
 
     return p

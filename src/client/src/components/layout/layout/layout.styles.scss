@@ -16,6 +16,10 @@ body{
   margin: 0;
   padding: 0;
 }
+
+body::-webkit-scrollbar{
+  display: none;
+}
 p{
   margin: 0;
 }
@@ -58,7 +62,7 @@ button{
 }
 
 .menu_close_icon{
-  transform: translateX(-3px);
+  //transform: translateX(-3px);
 }
 
 .modal{

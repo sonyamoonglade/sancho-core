@@ -19,10 +19,12 @@ const Check:FC<checkProps> = ({cart}) => {
         setCheckProducts(cart.getCart())
     },[totalCartPrice])
 
+
+
     return (
         <div className='check_container'>
             <div className="check_content">
-                <CheckList products={checkProducts} />
+                <CheckList products={checkProducts} totalCartPrice={totalCartPrice} />
             </div>
             <div className="check_other">
                 <div className='overall_check_price'>

@@ -1,6 +1,6 @@
 import React, {FC} from 'react';
 import './nutrient-list.styles.scss'
-import {nutrients} from "../../common/types";
+import {nutrients} from "../../../common/types";
 
 interface nutrientListProps {
     children?: any

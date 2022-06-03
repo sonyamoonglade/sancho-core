@@ -30,14 +30,14 @@ const PromotionList:FC<promotionListProps> = ({promotions}) => {
 
     return (
 
-            <ul className='promotion_list'>
+            <div className='promotion_list'>
                 {promotions.map((p) => {
                     const isTouched = touchedPromotions.get(p.id)
                     return (
                         <PromotionCard promotion={p} key={p.id} touchFn={touch} isTouched={isTouched}/>
                     )
                 })}
-            </ul>
+            </div>
 
     );
 };

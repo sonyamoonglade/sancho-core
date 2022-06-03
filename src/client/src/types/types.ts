@@ -60,3 +60,15 @@ export const DATE_FORMAT_TEMPLATE = "DD MMM HH:mm"
 export enum EventTypes {
     ORDER_CANCELLED = "order_cancelled"
 }
+
+
+export enum ScreenBreakpoints {
+    large = 1440,
+    medium = 1024,
+    small = 768,
+}
+
+export enum AppResponsiveState {
+    mobile,
+    tabletOrComputer
+}

@@ -6,8 +6,8 @@ import {useCart} from "../../../hooks/useCart";
 import CartItem from "../cartItem/CartItem";
 import ExtraList from "../../extraList/ExtraList";
 import {AiOutlineDelete} from 'react-icons/ai'
-import {DatabaseCartProduct} from "../../../common/types";
 import {useToast} from "../hooks/useToast";
+import {DatabaseCartProduct} from "../../../../../common/types";
 
 
 const Cart = React.memo(() => {
@@ -75,7 +75,7 @@ const Cart = React.memo(() => {
             <div className="cart_extra">
                 <div className="cart_extra_header">
                     <div ref={toastRef} className={isActive ? "toast --toast-active" : "toast"}>
-                        <p ref={toastMsgRef} className='toast_message'>Нажмите на товар 2 раза, чтобы удалить его из корзины</p>
+                        <p ref={toastMsgRef} className='toast_message'>Нажмите на товар 1 раз, чтобы удалить его из корзины</p>
                     </div>
                     <p className="extra_title">Добавить к заказу</p>
                 </div>
@@ -86,4 +86,4 @@ const Cart = React.memo(() => {
     );
 
 })
-export default Cart;
+export default React.memo(Cart);

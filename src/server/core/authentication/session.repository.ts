@@ -5,6 +5,7 @@ import {filter, QueryBuilder} from "../query_builder/QueryBuilder";
 import {pg_conn} from "../database/provider-name";
 import {PoolClient} from "pg";
 import {query_builder} from "../query_builder/provider-name";
+import {RepositoryException} from "../exceptions/repository.exceptions";
 
 
 @Injectable()
@@ -44,9 +45,14 @@ export class SessionRepository implements Repository<Session> {
   }
 
   async get(expression: filter<Session>): Promise<Session[]> {
-    const selectSql = this.qb.ofTable(sessions).select<Session>(expression)
-    const {rows} = await this.db.query(selectSql)
-    return rows
+    try {
+      const selectSql = this.qb.ofTable(sessions).select<Session>(expression)
+      const {rows} = await this.db.query(selectSql)
+      return rows
+    }catch (e: any) {
+      throw new RepositoryException("Session repository", e.message)
+    }
+
   }
 
 }

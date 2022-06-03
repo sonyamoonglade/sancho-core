@@ -1,14 +1,13 @@
 {
-  "name": "aalex_products",
+  "name": "zharpizza",
   "version": "0.0.1",
   "description": "",
-  "author": "",
+  "author": "aalexandrovich",
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "build-common": "tsc ",
     "prebuild": "rimraf dist",
-    "build": "rm tsconfig.*.tsbuildinfo && nest build",
+    "build": " cp -R ./src/common/* ./src/client/src/common && rm tsconfig.*.tsbuildinfo && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "npm run migrate up && node dist/server/main.js",
     "start:dev": "npm run build && nest start --watch",

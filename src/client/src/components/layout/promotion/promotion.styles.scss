@@ -1,16 +1,22 @@
 @import "src/./variables.scss";
 
 
+
+
+
 .promotion_title_primary{
-  width: calc(100% - 10%);
   transition: all 0.5s ease;
   padding: 1rem;
   position: absolute;
+  overflow: hidden;
   p{
-
     color: $gray-promo;
     font-weight: 500;
     font-size: $font-lg;
+    white-space: normal;
+    //max-width: 350px;
+
+
   }
 }
 
@@ -25,6 +31,7 @@
   letter-spacing: .7px;
   font-weight: 400 !important;
   margin-top: .7rem;
+  white-space: normal;
 }
 
 .promotion_description_touched{
@@ -45,7 +52,8 @@
   overflow-x: auto;
   overflow-y: hidden;
   height: 30vh;
-  top: 55px;
+  top: 75px;
+  white-space: nowrap;
   padding-left: 1rem;
   padding-right: 1rem;
   @media (min-height: 670px) {
@@ -64,16 +72,39 @@
 }
 
 .promotion_card{
-  box-sizing: border-box;
-  width: 100%;
-  flex-shrink: 0;
+  //max-width: 350px;
+
+  min-width: 345px;
   height: 100%;
   background-color: $yellow;
   cursor: pointer;
   margin-right: 2rem;
+  position: relative;
+  flex: 0 0 auto;
   transition: opacity .4s ease;
   &:last-of-type{
     margin-right: 0;
   }
+  @media (min-width: 1024px) {
+    min-width: 30.2vw;
+  }
+  @media (min-width: 1100px) {
+    min-width: 30.4vw;
+  }
+  @media (min-width: 1226px) {
+    min-width: 30.8vw;
+  }
+  @media (min-width: 1400px) {
+    min-width: 31.1vw;
+  }
+  @media (min-width: 1600px) {
+    min-width: 31.3vw;
+  }
+  @media (min-width: 1800px) {
+    min-width: 31.6vw;
+  }
+}
+.promotion_card:nth-of-type(3){
+  margin-right: 1rem;
 }
 

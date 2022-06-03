@@ -8,11 +8,19 @@ import {SessionRepository} from "../authentication/session.repository";
 import {SessionService} from "../authentication/session.service";
 import {ValidationModule} from "../validation/validation.module";
 import {RegisterSpamGuard} from "../authentication/register-spam.guard";
+import {OrderService} from "../order/order.service";
+import {OrderRepository} from "../order/order.repository";
+import {ProductRepository} from "../product/product.repository";
+import {CookieService} from "../../shared/cookie/cookie.service";
 
 
 @Module({
 
-  providers: [UserService, UserRepository,SessionService,SessionRepository,RegisterSpamGuard],
+  providers: [
+    UserService, UserRepository,SessionService,
+    SessionRepository,RegisterSpamGuard, OrderService,
+    OrderRepository,ProductRepository,CookieService
+  ],
   controllers: [UserController],
   imports:[DbModule, QueryBuilderModule,ValidationModule],
   exports:[UserService]

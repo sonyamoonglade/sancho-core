@@ -6,12 +6,13 @@ import '../layout/layout.styles.scss'
 import './header.styles.scss'
 import {useAppDispatch, useAppSelector, windowSelector, windowSlice} from "../../../redux";
 import Navigation from "../navigation/mobile/Navigation";
-import OpenCloseButton from "../openCloseButton/OpenCloseButton";
 import Cart from "../../cart/cart/Cart";
 import Order from "../../order/userOrder/Order";
 import Loading from "../../loading/Loading";
 import {Promotion} from "../../../common/types";
 import OrderHistory from "../../orderHistory/OrderHistory";
+import {RiCloseCircleLine} from "react-icons/ri";
+import {CgMenuRound} from "react-icons/cg";
 
 
 const mockPromotions:Promotion[] = [
@@ -20,8 +21,15 @@ const mockPromotions:Promotion[] = [
         title:'Скидка 10% на доставку с понедельника по четверг',
         touched_text:'На все заказы, оформленные с понедельника по четверг с 11:00 до 16:00.',
         touched_title: 'Скидка 10% на доставку',
-    },{
+    },
+    {
         id:2,
+        title:'Акция!  2 пиццы по цене 3!',
+        touched_text:'Акция действует с 25 мая по 31 июля. Успей получить халяву!',
+        touched_title: 'Две по цене трех',
+    },
+    {
+        id:3,
         title:'Акция!  2 пиццы по цене 3!',
         touched_text:'Акция действует с 25 мая по 31 июля. Успей получить халяву!',
         touched_title: 'Две по цене трех',
@@ -62,7 +70,10 @@ const Header:FC = () => {
         <header>
             <div className='header_top'>
                 <p onClick={nullifyScroll}><strong>Жар-Пицца</strong></p>
-                <OpenCloseButton modalState={navigation} toggleModalFn={toggleMenu} />
+                {navigation ?
+                    <RiCloseCircleLine onClick={toggleMenu} size={30} className='menu_close_icon' /> :
+                    <CgMenuRound onClick={toggleMenu} size={30} />
+                }
             </div>
             <PromotionList promotions={mockPromotions} />
 

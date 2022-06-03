@@ -1,7 +1,9 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
+import {AppResponsiveState} from "../../types/types";
 
 
 interface WindowState {
+    appResponsiveState: AppResponsiveState
     navigation: boolean
     cart: boolean
     userOrder: boolean
@@ -17,6 +19,7 @@ interface WindowState {
 }
 
 const initialState:WindowState = {
+    appResponsiveState: null,
     navigation: false,
     cart: false,
     userOrder: false,
@@ -36,6 +39,10 @@ export const windowSlice = createSlice({
     initialState,
     name:'window',
     reducers:{
+
+        setResponsiveState: (s,a:PayloadAction<AppResponsiveState>) => {
+          s.appResponsiveState = a.payload
+        },
 
         toggleNavigation:(s) => {
             s.navigation = !s.navigation

@@ -57,9 +57,7 @@ const SubmitOrderButton:FC<submitOrderButtonProps> = ({isActive,handler}) => {
 
 
     function turnLoader(){
-
         dispatch(windowActions.toggleLoading(true))
-
     }
 
     return (

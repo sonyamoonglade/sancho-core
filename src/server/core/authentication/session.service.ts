@@ -76,7 +76,10 @@ export class SessionService {
     }
 
   }
-
+  async getUserIdBySID(SID: string) :Promise<number | undefined>{
+    const session:Session = (await this.sessionRepository.get({where:{session_id:SID}}))[0]
+    return session.user_id
+  }
 
 }
 

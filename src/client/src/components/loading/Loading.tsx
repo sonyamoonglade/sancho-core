@@ -1,27 +1,38 @@
-import React, {FC, useEffect} from 'react';
+import React, {FC, useEffect, useMemo} from 'react';
 import {useAppDispatch, useAppSelector, windowActions, windowSelector} from "../../redux";
 import './loading.styles.scss'
 import {SpinnerCircular} from 'spinners-react'
 import {FaCheckCircle} from 'react-icons/fa'
 import {AiFillCloseCircle} from 'react-icons/ai'
 import {useDotsAnimation} from "./hooks/useDotsAnimation";
+import {useLoadingAndError} from "./hooks/useLoadingAndError";
 
 interface loadingProps {
    duration: number
 }
 
-enum loadingSteps {
+export enum LoadingSteps {
     "starting" = "Отправляем заказ в пиццерию",
     "middle" = "Создаем заказ",
     "finish" = "Подготавливаем печи",
     "afterFinish" = "Готово!"
 }
 
+export interface Loading {
+    loading: boolean
+    duration: number
+    stopDotsAnimation: Function
+    dots: string
+    stopDots: boolean
+    loadingStep: LoadingSteps
+    stepsAnimation: Function
+    dotsAnimation: Function
+}
+
 const Loading:FC<loadingProps> = ({duration}) => {
 
     const {loading, error,errorMessage} = useAppSelector(windowSelector)
     const dispatch = useAppDispatch()
-    console.log(errorMessage)
     const {
         stepsAnimation,
         dotsAnimation,
@@ -29,8 +40,18 @@ const Loading:FC<loadingProps> = ({duration}) => {
         setDefaults,
         loadingStep,
         dots,
-        stopDots
+        stopDots,
+
     } = useDotsAnimation()
+
+
+
+    function finishLoadingAndCloseAllModals(){
+        dispatch(windowActions.toggleLoading(false))
+        dispatch(windowActions.closeAll())
+        dispatch(windowActions.loadingSuccess())
+    }
+
 
     useEffect(() => {
         if(loading){
@@ -38,7 +59,7 @@ const Loading:FC<loadingProps> = ({duration}) => {
             const stepsAnimationInterval = setInterval(() => {
                 stepsAnimation()
             },timePerStep)
-            if(loadingStep === loadingSteps.finish){
+            if(loadingStep === LoadingSteps.finish){
                 setTimeout(() => {
                     clearInterval(stepsAnimationInterval)
                     stopDotsAnimation()
@@ -62,14 +83,7 @@ const Loading:FC<loadingProps> = ({duration}) => {
         }
 
     },[loading,dots,stopDots])
-    useEffect(() => {
-        if(loading){
-            setDefaults()
-            return () => {
-                setTimeout(setDefaults,1000)
-            }
-        }
-    },[loading])
+
     useEffect(() => {
         if(error) {
             const t = stopByError()
@@ -78,13 +92,8 @@ const Loading:FC<loadingProps> = ({duration}) => {
 
     },[error])
 
-    function finishLoadingAndCloseAllModals(){
-        dispatch(windowActions.toggleLoading(false))
-        dispatch(windowActions.closeAll())
-        dispatch(windowActions.loadingSuccess())
-    }
-    function stopByError(){
 
+    function stopByError(){
         stopDotsAnimation()
         setDefaults()
         dispatch(windowActions.toggleLoading(false))
@@ -98,7 +107,7 @@ const Loading:FC<loadingProps> = ({duration}) => {
     return (
         <div className={(loading && !error) ? 'modal loading modal--visible' : 'modal loading'}>
             <div className="loading_content">
-                {loadingStep !== loadingSteps.afterFinish && loading ?
+                {loadingStep !== LoadingSteps.afterFinish && loading ?
                     <SpinnerCircular size={150} secondaryColor={"#ffc535"} color={"#3cb46e"} enabled={loading}/> :
                     <FaCheckCircle color={"#3cb46e"} size={60}/>
                 }

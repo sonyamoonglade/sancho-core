@@ -1,4 +1,5 @@
 version: "3"
+# when building client envfile should be both to react and backend
 
 services:
   frontend:

@@ -1,27 +1,19 @@
 import {useState} from "react";
+import {LoadingSteps} from "../Loading";
 
-interface loadingProps {
-    duration: number
-}
 
-enum loadingSteps {
-    "starting" = "Отправляем заказ в пиццерию",
-    "middle" = "Создаем заказ",
-    "finish" = "Подготавливаем печи",
-    "afterFinish" = "Готово!"
-}
 export function useDotsAnimation (){
     const [dots,setDots] = useState(".")
     const [stopDots, setStopDots] = useState(false)
-    const [loadingStep, setLoadingStep] = useState<loadingSteps>(loadingSteps.starting)
+    const [loadingStep, setLoadingStep] = useState<LoadingSteps>(LoadingSteps.starting)
 
 
     function stepsAnimation(){
-        if(loadingStep === loadingSteps.starting){
-            setLoadingStep(loadingSteps.middle)
+        if(loadingStep === LoadingSteps.starting){
+            setLoadingStep(LoadingSteps.middle)
         }
-        else if(loadingStep === loadingSteps.middle){
-            setLoadingStep(loadingSteps.finish)
+        else if(loadingStep === LoadingSteps.middle){
+            setLoadingStep(LoadingSteps.finish)
         }
     }
 
@@ -37,14 +29,14 @@ export function useDotsAnimation (){
     }
 
     function stopDotsAnimation(){
-        setLoadingStep(loadingSteps.afterFinish)
+        setLoadingStep(LoadingSteps.afterFinish)
         setDots("")
         setStopDots(true)
     }
 
     function setDefaults(){
         setDots(".")
-        setLoadingStep(loadingSteps.starting)
+        setLoadingStep(LoadingSteps.starting)
         setStopDots(false)
     }
 

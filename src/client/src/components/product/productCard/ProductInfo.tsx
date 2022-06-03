@@ -1,9 +1,9 @@
 import React, {FC} from 'react';
 import {AiOutlinePlus} from "react-icons/ai";
-import NutrientList from "../../nutrient/NutrientList";
 import {productSlice, useAppDispatch} from "../../../redux";
 import {baseUrl} from "../productPresentation/ProductPresentation";
 import {Product} from "../../../common/types";
+import NutrientList from "../nutrient/NutrientList";
 
 interface productInfoProps {
     product: Product
@@ -13,9 +13,9 @@ const productActions = productSlice.actions
 const ProductInfo:FC<productInfoProps> = ({product}) => {
 
     const {
-        name,translate,
-        price,category,description,
-        currency,features} = product
+        category,
+        description,
+        features} = product
 
     const dispatch = useAppDispatch()
 

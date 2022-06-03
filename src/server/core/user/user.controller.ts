@@ -6,6 +6,7 @@ import {Request, Response} from "express";
 import {CreateMasterUserDto} from "./dto/create-master-user.dto";
 import {CONTROLLER_PATH_PREFIX} from "../types/constants";
 import {RegisterSpamGuard} from "../authentication/register-spam.guard";
+import {PreventAuthedGuard} from "./guard/prevent-authed.guard";
 
 @Controller(`${CONTROLLER_PATH_PREFIX}/users`)
 export class UserController {
@@ -24,8 +25,7 @@ export class UserController {
   authMe(@Res() res:Response,@Req() req:extendedRequest) {
     return this.userService.authMe(req,res)
   }
-
-  //todo:implement user with session cant login more than 1/5min
+  @UseGuards(PreventAuthedGuard)
   @Post('/login')
   login(@Res() res:Response, @Req() req:extendedRequest, @Body() body:{phone_number:string}){
     return this.userService.login(req,res,body)

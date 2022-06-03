@@ -8,7 +8,7 @@ tsconfig.build.tsbuildinfo
 ## build
 /dist
 /src/client/build
-
+.env.dev
 */.idea
 /.idea
 

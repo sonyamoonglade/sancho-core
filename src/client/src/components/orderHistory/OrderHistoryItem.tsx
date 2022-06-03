@@ -1,13 +1,11 @@
-import React, {FC, LegacyRef, useEffect, useRef, useState} from 'react';
+import React, {FC, useEffect} from 'react';
 import {ResponseUserOrder} from "../../common/types";
 import {currency} from "../../common/constants";
 import {BiShoppingBag} from "react-icons/bi";
 import {useCorrectOrderData} from "./hooks/useCorrectOrderData";
 import {CgCloseO} from 'react-icons/cg'
 import {useCancelOrder} from "../../hooks/useCancelOrder";
-import EventEmitter from "events";
-import {EventTypes} from "../../types/types";
-import {orderSelector, useAppSelector} from "../../redux";
+import {getOrderHistory, orderSelector, useAppSelector} from "../../redux";
 
 interface orderHistoryItemProps {
     order: ResponseUserOrder
@@ -17,8 +15,6 @@ interface orderHistoryItemProps {
 const OrderHistoryItem:FC<orderHistoryItemProps> = ({order,isFirstOrder}) => {
 
     const {orderHistory} = useAppSelector(orderSelector)
-    console.log("render")
-
     const {
         cid,
         cstatus,

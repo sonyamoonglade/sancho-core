@@ -7,7 +7,8 @@ import {
     orderActions,
     productActions,
     useAppDispatch,
-    useAppSelector, userSelector,
+    useAppSelector,
+    userSelector,
     windowActions,
     windowSelector
 } from "../../../redux";
@@ -21,7 +22,6 @@ import {useCreateOrder} from "../../../hooks/useCreateOrder";
 import {useAuthentication} from "../../../hooks/useAuthentication";
 import {useUserOrderForm} from "../hooks/useUserOrderForm";
 import {DeliveryDetails} from "../../../common/types";
-import {AxiosError} from "axios";
 
 export interface FormValuesInterface {
     is_delivered: boolean
@@ -37,9 +37,8 @@ const Order = () => {
     const {createUserOrder} = useCreateOrder(client)
     const {login} = useAuthentication(client)
     const {userOrder} = useAppSelector(windowSelector)
-    const {isAuthenticated,phoneNumber} = useAppSelector(userSelector)
+    const {isAuthenticated,phoneNumber:userPhoneNumber} = useAppSelector(userSelector)
     const dispatch = useAppDispatch()
-    console.log(phoneNumber)
     const {
         formValues,
         isSubmitButtonActive,
@@ -61,19 +60,30 @@ const Order = () => {
         dispatch(windowActions.closeAll())
     }
 
-
-
+    console.log(userPhoneNumber)
     async function handleOrderCreation(){
 
         const formValues = getFormValues()
         const usrCart = cart.getCart()
-        const {phone_number} = formValues
+        const {phone_number:formPhoneNumber} = formValues
+
         try {
             if(!isAuthenticated){
-                await login(phone_number)
+                await login(formPhoneNumber)
+            }else if(formPhoneNumber !== userPhoneNumber) {
+                await login(formPhoneNumber)
             }
-        }catch (e) {
-            return dispatch(windowActions.startErrorScreenAndShowMessage("Ошибка авторизации"))
+
+        }catch (e: any) {
+            const message = e?.response?.data?.message
+            setFormValues((p) => {
+                const s = {...p}
+                s.phone_number.value = ""
+                s.phone_number.isValid = false
+                return s
+            })
+            dispatch(windowActions.toggleLoading(false));
+            return dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."))
         }
 
         try {
