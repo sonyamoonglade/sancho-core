@@ -1,0 +1,34 @@
+@import "src/./variables.scss";
+
+
+.d_cart_link{
+  margin-right: 2rem;
+  background-color: $black;
+  width: 230px;
+  border-radius: 25px;
+  height: 100%;
+  display: flex;
+  color: white;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  align-items: center;
+  border: 0;
+  justify-content: space-between;
+  transition: all 0.2s ease-in;
+  p{
+    font-family: "Geometria Bold",sans-serif;
+    font-size: $font-regular;
+  }
+}
+
+.d_cart_link:hover{
+    color: $santa-grey;
+}
+
+
+.d_cart_link_icon{
+  transform: translateY(-1px);
+}
+.pass{
+  transform: translateY(-1px);
+}

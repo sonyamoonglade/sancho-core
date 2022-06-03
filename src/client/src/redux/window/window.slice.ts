@@ -3,6 +3,7 @@ import {AppResponsiveState} from "../../types/types";
 
 
 interface WindowState {
+    masterLogin: boolean
     appResponsiveState: AppResponsiveState
     navigation: boolean
     cart: boolean
@@ -19,6 +20,7 @@ interface WindowState {
 }
 
 const initialState:WindowState = {
+    masterLogin: false,
     appResponsiveState: null,
     navigation: false,
     cart: false,
@@ -96,7 +98,12 @@ export const windowSlice = createSlice({
         },
         stopOrdersNotification: (s) => {
             s.navigationNotification.orders = false
+        },
+
+        toggleMasterLogin: (s) =>{
+            s.masterLogin = !s.masterLogin
         }
+
 
 
 

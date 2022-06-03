@@ -69,6 +69,6 @@ export enum ScreenBreakpoints {
 }
 
 export enum AppResponsiveState {
-    mobile,
-    tabletOrComputer
+    mobileOrTablet,
+    computer
 }

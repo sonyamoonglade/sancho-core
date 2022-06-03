@@ -33,10 +33,10 @@ function App() {
 
   const isNotMobileOrTablet = useMediaQuery({minWidth: 1440})
   if(isNotMobileOrTablet){
-    dispatch(windowActions.setResponsiveState(AppResponsiveState.tabletOrComputer))
+    dispatch(windowActions.setResponsiveState(AppResponsiveState.computer))
   }
   else {
-    dispatch(windowActions.setResponsiveState(AppResponsiveState.mobile))
+    dispatch(windowActions.setResponsiveState(AppResponsiveState.mobileOrTablet))
   }
 
 
@@ -53,8 +53,8 @@ function App() {
         productList.length !== 0 &&
         <Catalog productList={productList} />
       }
-      {cart && <OrderLink />}
-      {!isCartEmpty && <CartLink />}
+      {!isNotMobileOrTablet ? (cart && <OrderLink /> ): null}
+      {!isNotMobileOrTablet ? (!isCartEmpty && <CartLink />) : null}
       <AppForm />
       <ProductPresentation />
 

@@ -53,6 +53,9 @@
   overflow-y: hidden;
   height: 30vh;
   top: 75px;
+  @media (min-width: 1440px) {
+    top: 95px;
+  }
   white-space: nowrap;
   padding-left: 1rem;
   padding-right: 1rem;

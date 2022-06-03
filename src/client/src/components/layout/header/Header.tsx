@@ -1,11 +1,11 @@
-import React, {FC} from 'react';
+    import React, {FC} from 'react';
 
 import PromotionList from "../promotion/PromotionList";
 import '../layout/layout.styles.scss'
 
 import './header.styles.scss'
 import {useAppDispatch, useAppSelector, windowSelector, windowSlice} from "../../../redux";
-import Navigation from "../navigation/mobile/Navigation";
+import MobileNavigation from "../navigation/mobile/MobileNavigation";
 import Cart from "../../cart/cart/Cart";
 import Order from "../../order/userOrder/Order";
 import Loading from "../../loading/Loading";
@@ -13,6 +13,10 @@ import {Promotion} from "../../../common/types";
 import OrderHistory from "../../orderHistory/OrderHistory";
 import {RiCloseCircleLine} from "react-icons/ri";
 import {CgMenuRound} from "react-icons/cg";
+    import {AppResponsiveState} from "../../../types/types";
+    import OtherNavigation from "../navigation/other/OtherNavigation";
+    import DesktopHeaderRight from "../desktopHeader/DesktopHeaderRight";
+    import MasterLogin from "../../masterLogin/MasterLogin";
 
 
 const mockPromotions:Promotion[] = [
@@ -57,7 +61,7 @@ const Header:FC = () => {
 
     }
 
-    const {navigation} = useAppSelector(windowSelector)
+    const {navigation,appResponsiveState} = useAppSelector(windowSelector)
     const dispatch = useAppDispatch()
 
     function toggleMenu(){
@@ -65,14 +69,23 @@ const Header:FC = () => {
     }
 
 
-
+    console.log(appResponsiveState === AppResponsiveState.mobileOrTablet)
     return (
         <header>
             <div className='header_top'>
-                <p onClick={nullifyScroll}><strong>Жар-Пицца</strong></p>
-                {navigation ?
-                    <RiCloseCircleLine onClick={toggleMenu} size={30} className='menu_close_icon' /> :
-                    <CgMenuRound onClick={toggleMenu} size={30} />
+                <p className='app_title' onClick={nullifyScroll}>Жар-Пицца</p>
+
+                {appResponsiveState === AppResponsiveState.mobileOrTablet ?
+                    navigation ?
+                        <RiCloseCircleLine onClick={toggleMenu} size={30} className='menu_close_icon' /> :
+                        <CgMenuRound onClick={toggleMenu} size={30} /> : null
+                }
+                {
+                    appResponsiveState === AppResponsiveState.computer &&
+                       <>
+                           <OtherNavigation />
+                           <DesktopHeaderRight />
+                       </>
                 }
             </div>
             <PromotionList promotions={mockPromotions} />
@@ -80,8 +93,12 @@ const Header:FC = () => {
             <Order  />
             <Cart />
             <OrderHistory />
+            <MasterLogin />
             <Loading duration={4000} />
-            <Navigation />
+
+            {
+                appResponsiveState === AppResponsiveState.mobileOrTablet && <MobileNavigation />
+            }
 
 
         </header>

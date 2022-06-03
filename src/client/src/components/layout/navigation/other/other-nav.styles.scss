@@ -1,0 +1,25 @@
+
+@import "src/./variables.scss";
+
+.desktop_nav{
+  display: flex;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.d_nav_item{
+  margin-right: 4rem;
+  font-family: "Geometria", sans-serif;
+  font-size: $font-mder;
+  cursor: pointer;
+  transition: all .2s ease-in-out;
+  padding: 0.2rem;
+}
+.d_nav_item:hover{
+  transform: translateY(-1px);
+}
+
+.d_nav_item:last-of-type{
+  margin-right: 0;
+}

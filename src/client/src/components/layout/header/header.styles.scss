@@ -4,20 +4,25 @@
 
 header {
   margin-bottom: 2rem;
-  height: 40vh;
+  height: 30vh;
   display: block;
 
-  @media (min-height: 670px) {
-    height: 35vh;
-  }
-  @media (min-height: 730px) {
-    height: 32vh;
-  }
-  @media(min-height: 850px) {
-    height: 28vh;
-  }
-}
 
+}
+.app_title{
+
+  font-family: "Geometria Bold", sans-serif;
+
+  height: 30px;
+  font-size: $font-mder;
+  cursor: pointer;
+
+  @media (min-width: 1440px) {
+    font-size: $font-lg;
+  }
+
+
+}
 .header_top{
   position: fixed;
   padding: 1rem;
@@ -30,12 +35,10 @@ header {
   width: 100%;
   border: 1px solid #bcb8b2;
 
-  p{
-    height: 30px;
-    font-size: $font-mder;
-    display: flex;
-    align-items: center;
+  @media (min-width: 1440px) {
+    height: 80px;
   }
+
 
 }
 

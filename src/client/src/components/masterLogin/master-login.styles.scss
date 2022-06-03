@@ -1,0 +1,38 @@
+@import "src/./variables.scss";
+
+
+.master_login.modal{
+  width: 50%;
+  border: 1px solid $gray-promo;
+  top: 80px;
+  background-color: white;
+  z-index: 1200;
+  @media (max-width: 1399px) {
+    top: 0 !important;
+  }
+}
+
+.master_login_header{
+  z-index: 600;
+  position: fixed;
+  width: 100vw;
+  background-color: white;
+  display: flex;
+  height: 60px;
+  border-bottom: 1px solid $santa-grey;
+  align-items: center;
+}
+
+.center_part{
+  p{
+    font-size: $font-lg;
+    font-family: "Geometria Bold", serif;
+    font-weight: 500;
+    margin-right: 5%;
+  }
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}

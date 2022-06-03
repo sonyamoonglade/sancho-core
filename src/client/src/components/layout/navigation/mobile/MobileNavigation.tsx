@@ -16,7 +16,7 @@ import '../../layout/layout.styles.scss'
 import {OrderStatus} from "../../../../common/types";
 
 
-const Navigation = () => {
+const MobileNavigation = () => {
 
     const {navigation, navigationNotification} = useAppSelector(windowSelector)
     const {isCartEmpty} = useAppSelector(productSelector)
@@ -35,7 +35,9 @@ const Navigation = () => {
     return (
         <div className={navigation ? "modal modal--visible" : "modal"}>
             <ul className='nav_list'>
-                <li className='nav_item'>
+                <li className='nav_item' onClick={() => {
+                    dispatch(windowActions.toggleMasterLogin())
+                }}>
                     <p>Войти</p>
                     <FaRegUserCircle />
                 </li>
@@ -67,4 +69,4 @@ const Navigation = () => {
     );
 };
 
-export default Navigation;
+export default MobileNavigation;

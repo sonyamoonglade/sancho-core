@@ -102,13 +102,13 @@ const FormInput:FC<formInputProps> = (props) => {
                     onChange={(e) => {
                         const inputValue = e.target.value
                         if(Regexp && inputValue.match(Regexp)) return
-
+                        let validationResult = false
+                        if(fieldValidationFn !== undefined){
+                            validationResult = fieldValidationFn(inputValue, minLength)
+                            setIsValid(validationResult)
+                        }
                         setV((state: any) =>{
-                            let validationResult = false
-                            if(fieldValidationFn !== undefined){
-                                validationResult = fieldValidationFn(inputValue, minLength)
-                                setIsValid(validationResult)
-                            }
+
 
                             const obj = {
                                 value: e.target.value,

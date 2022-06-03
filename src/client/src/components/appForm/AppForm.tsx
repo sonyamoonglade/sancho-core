@@ -1,20 +1,27 @@
 import React from 'react';
-import {productSelector, productSlice, useAppDispatch, useAppSelector} from "../../redux";
+import {
+    productActions,
+    productSelector,
+    useAppDispatch,
+    useAppSelector,
+    windowActions,
+    windowSelector
+} from "../../redux";
 
 
-const productActions = productSlice.actions
 
 const AppForm = () => {
 
     const dispatch = useAppDispatch()
     const {isPresentingNow} = useAppSelector(productSelector)
-
+    const {masterLogin} = useAppSelector(windowSelector)
     function stopPresentation(){
         dispatch(productActions.stopPresentation())
+        dispatch(windowActions.toggleMasterLogin())
     }
 
     return (
-        <div onClick={() => stopPresentation()} className={isPresentingNow ? 'app_form visible' : "app_form"}>
+        <div onClick={() => stopPresentation()} className={(isPresentingNow || masterLogin)  ? 'app_form visible' : "app_form"}>
             <span></span>
         </div>
     );
