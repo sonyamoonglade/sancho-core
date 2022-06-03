@@ -1,0 +1,46 @@
+@import "src/./variables.scss";
+
+
+.order_link{
+  position: fixed;
+  bottom: 20px;
+  background-color: black;
+  //padding: 1rem;
+  height: 55px;
+  border: 0;
+  width: calc(100% - 32px);
+  margin-right: 16px;
+  margin-left: 16px;
+  z-index: 141;
+  color: white;
+  transition: all 0.1s ease-in-out
+}
+
+.order_link:active{
+  transform:scale(.98);
+
+  .order_icon{
+    color: $green !important;
+  }
+
+}
+
+.order_title{
+  font-family: "Geometria Bold";
+  font-size: $font-lg;
+}
+
+.order_icon{
+  position: absolute;
+  transition: color .1s ease-in-out;
+  top: 13px;
+  left: 20px;
+}
+
+.total_cart_price.link{
+  font-size: $font-mder;
+  position: absolute;
+  right: 16px;
+  width: auto !important;
+  top: 17px;
+}

@@ -1,0 +1,16 @@
+
+## node modules
+/node_modules
+/src/client/node_modules
+
+./tsconfig.build.tsbuildinfo
+tsconfig.build.tsbuildinfo
+## build
+/dist
+/src/client/build
+
+*/.idea
+/.idea
+
+/src/client/.env
+.env

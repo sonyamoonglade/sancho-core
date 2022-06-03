@@ -1,0 +1,135 @@
+@import "src/./variables.scss";
+
+.order_h.modal{
+  top: 0 !important;
+  z-index: 250 !important;
+  overflow-y: auto;
+}
+
+.order_h_header{
+  z-index: 600;
+  position: fixed;
+  width: 100%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  justify-content: space-between;
+  border-bottom: 1px solid $santa-grey;
+
+
+  p{
+    font-size: $font-lg;
+    font-family: "Geometria Bold", serif;
+    font-weight: 500;
+    margin-right: 29%;
+
+  }
+}
+
+.order_h_item{
+  position: relative;
+  background-color: $black-18;
+  padding: .7rem;
+  padding-top: 0.4rem;
+  border-radius: 7px;
+  z-index: 500;
+  height: 70px;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1rem;
+  justify-content: space-between;;
+  transform: translateY(0);
+}
+
+.order_h_list{
+  list-style: none;
+  top: 60px;
+  position: relative;
+  padding: 0 1rem 0 1rem;
+  margin-top: 1rem
+}
+
+.top{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.top_left{
+  display: flex;
+
+}
+.bottom{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  span{
+    position: relative;
+    height: 25px;
+  }
+}
+.bottom_left{
+  display: flex;
+}
+.creation_pre{
+  margin-right: 0.2rem;
+  font-family: "Geometria",sans-serif;
+  font-size: $font-md;
+}
+
+.id {
+  font-size: $font-md;
+  margin-right: 0.2rem;
+  font-family: "Geometria", sans-serif !important;
+}
+
+
+
+.total_order_price{
+  font-family: "Geometria Bold",sans-serif;
+
+}
+.creation_date{
+  font-family: "Geometria",sans-serif;
+  font-size: $font-md;
+}
+.cart_button{
+  font-family: "Geometria",sans-serif;
+  font-size: $font-md;
+}
+.order_status{
+  font-size: $font-md;
+  font-family: "Geometria", sans-serif !important;
+}
+.green_dot{
+  position: absolute;
+  top: 0px;
+  right: 1px;
+  background-color: $green;
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+
+.delete_layer{
+  display: flex;
+  position: absolute;
+  top: 0;
+  width: calc(100% - 2rem);
+  height: 70px;
+  border-radius: 7px;
+  z-index: 400;
+  background-color: $red;
+
+  span{
+    display: flex;
+    align-items: center;
+    width: 100%;
+    transition: all .7s ease-in-out;
+  }
+}
+.delete_icon{
+  transform: translateY(-3px);
+  margin-left: 30%;
+  transition: all 0.2s ease-in;
+}

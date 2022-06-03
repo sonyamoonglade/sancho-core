@@ -1,0 +1,45 @@
+@import "src/./variables.scss";
+
+
+.cart_link{
+  position: fixed;
+  bottom: 20px;
+  z-index: 99;
+  height: 55px;
+  border: 0;
+  background-color: $black;
+  color: white;
+  width: calc(100% - 32px);
+  margin-right: 16px;
+  margin-left: 16px;
+  //padding: 1rem;
+  transition: all 0.1s ease-in-out
+}
+
+.cart_link:active{
+  transform: scale(.98);
+}
+
+.cart_link_icon{
+  position: absolute;
+  left: 20px;
+  top: 13px
+}
+
+.cart_price.link{
+  position: absolute;
+  right: 16px;
+  top: 19px;
+
+  font-size: $font-mder;
+  font-weight: 500;
+}
+
+.cart_link_title{
+  font-size: $font-lg;
+  font-family: "Geometria Bold", serif;
+
+  letter-spacing: .9px;
+
+}
+

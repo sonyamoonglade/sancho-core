@@ -1,0 +1,101 @@
+@import "src/./variables.scss";
+
+.cart.modal{
+  top: 0 !important;
+  z-index: 140 !important;
+  overflow-y: auto;
+}
+
+.cart_header{
+  z-index: 600;
+  position: fixed;
+  width: 100%;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  height: 60px;
+  justify-content: space-between;
+  border-bottom: 1px solid $santa-grey;
+
+
+  p{
+    font-size: $font-lg;
+    font-family: "Geometria Bold", serif;
+    font-weight: 500;
+
+  }
+}
+
+.cart_back_icon{
+  margin-left: 16px;
+}
+.cart_info_icon{
+  margin-right: 16px;
+}
+
+
+.cart_list{
+  top: 60px;
+  position: relative;
+  padding: 0;
+  margin: 0;
+}
+
+
+
+
+.extra_title{
+  font-family: "Geometria Bold", serif;
+  font-size: $font-lg;
+  font-weight: 500;
+  padding: 1rem;
+  padding-top: 0;
+}
+
+.cart_extra{
+  position: relative;
+  margin-top: calc(60px + 10px);
+  padding-bottom: 5rem;
+}
+
+.cart_info_container{
+  position: relative;
+}
+.red_dot{
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  background-color: $red;
+  border-radius: 50%;
+  top: 0px;
+  right: 16px + 2px;
+}
+
+.toast{
+  position: absolute;
+  width: calc(100vw - 2rem);
+  overflow: hidden;
+  opacity: 0;
+  background-color: cornflowerblue;
+  transition: all .5s ease-in-out;
+  z-index: 500;
+  padding: 0.2rem 1rem 0.2rem 0.5rem;
+  margin-left: 1rem;
+  border-radius: 7px;
+  transform: translateY(calc((-5px) + 50%));
+  height: 2.6rem;
+
+}
+
+.toast_message{
+  font-size: $font-md;
+  font-family: "Geometria Medium",sans-serif;
+  color: white;
+}
+
+.--toast-active{
+
+  opacity: 1;
+  transform: translateY(-5px);
+}
+

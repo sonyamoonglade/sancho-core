@@ -1,0 +1,29 @@
+version: "3"
+
+services:
+  frontend:
+    image: client:latest
+    build: ./src/client
+    ports:
+      - "3000:3000"
+    stdin_open: true
+    volumes:
+      - ./src/client/src/:/usr/app/src/
+#      - /usr/app/node_modules
+    networks:
+      - zharpizza-net
+
+
+  backend:
+    image: server:latest
+    build: .
+    ports:
+      - "5000:5000"
+    networks:
+      - zharpizza-net
+    env_file:
+      - ./.env.dev
+
+networks:
+  zharpizza-net:
+    driver: bridge

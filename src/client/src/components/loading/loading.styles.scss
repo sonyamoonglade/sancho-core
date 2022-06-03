@@ -1,0 +1,30 @@
+@import "src/./variables.scss";
+
+
+.modal.loading{
+  z-index: 1000;
+  top: 0;
+
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.loading_content{
+  width: 80%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  p{
+    font-family: "Geometria Bold",sans-serif;
+    font-size: $font-mder;
+    margin-top: 1rem;
+  }
+}
+
+.error_message{
+  font-size: $font-regular !important;
+}

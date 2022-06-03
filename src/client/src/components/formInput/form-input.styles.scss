@@ -1,0 +1,58 @@
+@import "src/./variables.scss";
+
+
+
+.form_input{
+  border: 0;
+  outline: none;
+  width: 100%;
+  background-color: transparent;
+  font-family: 'Geometria',sans-serif;
+  font-size: $font-md;
+  @media (min-height: 810px) {
+    font-size: $font-regular;
+
+  }
+}
+.form_input::placeholder{
+  font-size: $font-md;
+  @media (min-height: 810px) {
+    font-size: $font-regular;
+
+  }
+}
+
+.form_input_label{
+  margin-right: 0.1rem;
+  font-size: $font-md;
+  color: $santa-grey;
+  font-family: "Geometria",sans-serif;
+  @media (min-height: 810px) {
+    font-size: $font-regular;
+  }
+}
+
+
+.form_input_container{
+  height: 35px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid $black-18;
+  transition: border-color 0.5s ease-in-out ;
+
+  input::placeholder{
+    color: $santa-grey !important;
+  }
+}
+
+
+.form_input_container.--disabled{
+  border-color: $black-18 !important;
+}
+
+
+
+.--valid{
+  border-color: $green-second !important;
+}

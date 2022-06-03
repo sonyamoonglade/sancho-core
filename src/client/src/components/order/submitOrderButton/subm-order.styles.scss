@@ -1,0 +1,30 @@
+
+@import "src/./variables.scss";
+
+
+.submit_order_button{
+
+  background-color: $yellow;
+  bottom: 20px;
+  border: 0;
+  position: fixed;
+  left: 0;
+  margin-left: 16px;
+  height: 55px;
+  padding: 1rem;
+  width: calc(100% - 32px);
+  transition: all 0.15s ease;
+  p{
+    font-family: "Geometria Bold", serif;
+    font-size: $font-mder;
+  }
+
+}
+
+.submit_order_button.--active{
+  background-color: $green;
+}
+
+.submit_order_button:active{
+  transform: scale(.97);
+}

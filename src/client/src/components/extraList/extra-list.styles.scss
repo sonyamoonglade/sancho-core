@@ -1,0 +1,61 @@
+
+@import "src/./variables.scss";
+
+.cart_extra_list{
+  white-space: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0 1rem;
+  padding-bottom: 2rem;
+  -ms-overflow-style: none;
+
+}
+
+.cart_extra_list::-webkit-scrollbar{
+  display: none;
+}
+
+.extra_item{
+  white-space: nowrap;
+  display: inline-block;
+  padding: 1.5rem 0.7rem 0.5rem 0.7rem;
+  background-color: $light-grey;
+  border-radius: 15px;
+  margin-right: .8rem;
+  transition: all 0.2s ease-in-out;
+}
+
+.extra_item:hover{
+  transform: scale(1.02);
+}
+
+.item_image{
+  aspect-ratio: 5 / 3.5;
+  height: 100px;
+  border-radius: 15px;
+  margin-bottom: 7px;
+}
+
+.item_bottom{
+  margin-top: 1.2rem;
+  float: bottom;
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.3rem;
+  justify-content: space-between;
+}
+
+.item_other{
+  color: $black-50;
+  font-weight: 300;
+}
+
+.item_price{
+  font-family: "Geometria Light";
+  font-size: $font-regular;
+}
+
+.item_name{
+  font-family: "Geometria";
+  font-style: normal;
+}

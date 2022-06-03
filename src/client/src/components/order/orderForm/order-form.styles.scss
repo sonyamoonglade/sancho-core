@@ -1,0 +1,72 @@
+
+@import "src/./variables.scss";
+
+
+.order_form{
+  padding: .8rem 1.5rem 1.5rem;
+}
+
+.delivery_input{
+  margin-bottom: 1.5rem;
+  @media (min-height: 700px) {
+    font-size: $font-mder;
+  }
+}
+
+.is_delivered_checkbox{
+  justify-content: space-between;
+  display: flex;
+  margin-bottom: 1rem;
+
+  p{
+    font-family: "Geometria Bold", sans-serif !important;
+  }
+
+  p.--disabled{
+    opacity: 0.8 !important;
+  }
+
+}
+
+
+.contacts_title{
+  i{
+    font-family: "Geometria",sans-serif;
+    @media (min-height: 700px) {
+      font-size: $font-md;
+    }
+  }
+  margin-bottom: 0.2rem;
+}
+
+.contacts_phone_title{
+  margin-bottom: 0.1rem;
+  font-family: "Geometria Bold", serif !important;
+  @media (min-height: 700px) {
+    font-size: $font-mder;
+  }
+
+}
+
+
+
+
+.delivery_details_container{
+  display: flex;
+  margin-top: .5rem;
+  justify-content: space-between;
+  align-items: center;
+  overflow-x: hidden;
+}
+
+.entrance_number_input{
+  width: 28% !important;
+
+}
+.flat_call_input{
+  width: 18% !important;
+}
+
+.floor_input{
+  width: 19% !important;
+}

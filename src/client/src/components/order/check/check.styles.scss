@@ -1,0 +1,115 @@
+@import "src/./variables.scss";
+
+
+.check{
+  position: relative;
+  width: 80vw;
+  height: 30vh;
+  max-height: 30vh;
+}
+
+.check_title{
+  text-align: left;
+  margin-left: 1.5rem;
+  font-family: "Geometria Bold";
+  font-size: $font-lg;
+  margin-bottom: 0.5rem;
+  height: 30px;
+}
+
+.check_container{
+  position: relative;
+  width: 80vw;
+}
+
+
+.check_content{
+  width: 100%;
+  margin-top: 1rem;
+  position: absolute;
+  overflow-x: hidden;
+  overflow-y: auto;
+  z-index: 180;
+  min-height: calc(30vh - 20% - 2.5rem);
+  max-height: calc((30vh - 20%) - 2.5rem);
+  padding-left: 1rem;
+  padding-right: .7rem;
+  border-bottom: 1px solid $black-18;
+  ul{
+    padding: 0;
+    margin: 0;
+  }
+}
+
+.check_content::-webkit-scrollbar{
+  display: none;
+}
+
+.check_other{
+  width: 100%;
+  padding-left: 1rem;
+  padding-right: 0.7rem;
+  position: absolute;
+  z-index: 300;
+  bottom: calc(100% - (30vh - 20% + .5rem));
+  p{
+    font-size: 17px !important;
+    font-family: "Geometria Medium",'sans-serif' !important;
+  }
+}
+
+.overall_check_price{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+//todo: margins and right-lefts with vw and vh to apply adaptivity
+.check_item{
+  list-style: none;
+  margin-bottom: 9px;
+  justify-content: space-between;
+  align-items: center;
+  display: flex;
+
+}
+.check_item_title{
+
+  font-family: "Geometria",sans-serif;
+  font-size: 13px;
+  @media (min-width: 370px) {
+    font-size: 14px;
+  }
+  @media (min-width: 390px) {
+    font-size: 15px;
+  }
+  @media (min-width: 405px) {
+    font-size: 15px;
+  }
+  @media (min-width: 450px) {
+    font-size: 17px;
+  }
+
+}
+
+
+
+.check_item_summary{
+  width: 50%;
+  font-size: 13px;
+  text-align: right;
+  font-family: "Geometria",sans-serif;
+  @media (min-width: 370px) {
+    font-size: 13px;
+  }
+  @media (min-width: 390px) {
+    width: 45%;
+    font-size: 14px;
+  }
+  @media (min-width: 405px) {
+    font-size: 15px;
+  }
+  @media (min-width: 450px) {
+    font-size: 17px;
+  }
+}

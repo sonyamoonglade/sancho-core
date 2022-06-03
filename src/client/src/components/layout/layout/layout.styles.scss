@@ -1,0 +1,124 @@
+@import "src/./variables.scss";
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+.layout{
+  background-color: #fff;
+  height: 100%;
+  display: block;
+  font-family: 'Roboto', 'sans-serif';
+}
+
+html{
+  margin: 0;
+  padding: 0;
+}
+body{
+  margin: 0;
+  padding: 0;
+}
+p{
+  margin: 0;
+}
+
+*{
+  box-sizing: border-box;
+  font-family: 'Roboto', 'sans-serif';
+}
+
+.app_form{
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  z-index: 120;
+  top: 100%;
+  left: 0;
+  opacity: 0;
+  background-color: rgba(0,0,0,.5);
+  transition: opacity .4s ease;
+}
+.app_form.visible{
+  top: 0;
+  opacity: 1;
+}
+
+button{
+  padding: 0;
+}
+
+
+.hidden{
+  opacity: 0;
+  height: 0;
+  overflow: hidden;
+}
+
+
+.modal--visible {
+  right: 0 !important
+}
+
+.menu_close_icon{
+  transform: translateX(-3px);
+}
+
+.modal{
+  height: 100%;
+  width: 100%;
+  z-index: 100;
+  top: 5vh;
+  transition: all .4s ease;
+  position: fixed;
+  background-color: white;
+  right: -100%;
+  overflow: hidden;
+}
+.--disabled{
+  pointer-events: none;
+  color: $santa-grey;
+  opacity: 0.7;
+}
+
+@font-face {
+  font-family: "Geometria";
+  src: url("https://storage.yandexcloud.net/zharpizza-bucket/static/fonts/Geometria.ttf");
+}
+
+@font-face {
+  font-family: "Geometria Bold";
+  src: url("https://storage.yandexcloud.net/zharpizza-bucket/static/fonts/Geometria-Bold.ttf");
+}
+
+@font-face {
+  font-family: "Geometria Medium";
+  src: url("https://storage.yandexcloud.net/zharpizza-bucket/static/fonts/Geometria-Medium.ttf");
+}
+@font-face {
+  font-family: "Geometria Light";
+  src: url("https://storage.yandexcloud.net/zharpizza-bucket/static/fonts/Geometria-Light.ttf");
+}
+
+
+.--yellow{
+  background-color: $yellow-lighter !important
+}
+.--green{
+  background-color: $green-lighter !important
+}
+.--red{
+  background-color: $red !important
+}
+
+.--blue{
+  background-color: $blue !important
+}
+
+.Toastify{
+  position: absolute;
+  bottom: 10vh;
+  z-index: 1000;
+}
+
+.Toastify__toast-icon{
+  width: 20px;
+  height: 20px;
+}

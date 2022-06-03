@@ -1,0 +1,124 @@
+
+@import "src/./variables.scss";
+
+.product_presentation{
+  position: fixed;
+  padding: 1.5rem 1rem 5vh;
+  height: 85vh;
+  bottom: -5%;
+  background-color: white;
+  z-index: 900;
+  width: 100%;
+  transition: all 0.5s ease-in-out;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.product_presentation.hidden{
+  height: 0;
+  overflow: hidden;
+  opacity: 0;
+}
+
+.miscellaneous{
+  width: 100%;
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  .description {
+    color: $black-50;
+
+    @media (min-height: 650px) {
+      font-size: $font-md;
+    }
+    @media (min-height: 800px) {
+      font-size: $font-regular;
+    }
+  }
+}
+
+.name.presentation{
+  font-size: $font-lg;
+}
+
+
+.title.presentation{
+  display: flex;
+  align-items: center;
+  margin-bottom: .5rem;
+  width: 100%;
+  padding-right: .8rem;
+}
+
+
+.add_to_cart_btn{
+  border:0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  background-color: $green-second;
+  border-radius: 2px;
+  color: white;
+  padding-left: 1rem;
+  padding-right: 1rem;
+  font-size: $font-regular;
+  font-weight: 500;
+  margin-bottom: 1rem;
+
+  @media (min-height: 650px) {
+    height: 2.5rem;
+  }
+  @media (min-height: 720px) {
+    height: 3rem;
+  }
+}
+
+.image.presentation{
+  width: 90vw !important;
+}
+
+
+.total_cart_price{
+  width: 60px;
+  font-weight: 500;
+
+  text-align: right;
+  @media (min-height: 650px) {
+    font-size: $font-md;
+  }
+
+  @media (min-height: 750px) {
+    font-size: $font-regular;
+    width: 65px;
+  }
+}
+
+.add_to_cart_icon{
+  transform: translateY(-2px);
+}
+
+.cart_icon_container{
+  display: flex;
+  position: relative;
+  transform: translateY(2px);
+  justify-content: start;
+  width: 40px;
+
+}
+
+.notification_dot{
+  width: 7px;
+  right: 30%;
+  top: -6%;
+  height: 7px;
+  background-color: $red;
+  border-radius: 50%;
+  position: absolute;
+}
+
+
