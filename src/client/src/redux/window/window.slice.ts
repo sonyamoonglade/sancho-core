@@ -100,8 +100,13 @@ export const windowSlice = createSlice({
             s.navigationNotification.orders = false
         },
 
-        toggleMasterLogin: (s) =>{
+        toggleMasterLogin: (s,a:PayloadAction<boolean>) =>{
             s.masterLogin = !s.masterLogin
+        },
+
+        turnOffAllDesktop: (s) => {
+            s.masterLogin = false
+
         }
 
 

@@ -29,21 +29,25 @@ function App() {
   const {client} = useAxios()
   const dispatch = useAppDispatch()
   const {productList,isCartEmpty} = useAppSelector(productSelector)
-  const {cart} = useAppSelector(windowSelector)
+  const {cart,appResponsiveState} = useAppSelector(windowSelector)
 
   const isNotMobileOrTablet = useMediaQuery({minWidth: 1440})
-  if(isNotMobileOrTablet){
-    dispatch(windowActions.setResponsiveState(AppResponsiveState.computer))
-  }
-  else {
-    dispatch(windowActions.setResponsiveState(AppResponsiveState.mobileOrTablet))
-  }
+
+  useEffect(() => {
+
+      if(isNotMobileOrTablet && appResponsiveState !== AppResponsiveState.computer){
+        dispatch(windowActions.setResponsiveState(AppResponsiveState.computer))
+      }
+      else if(appResponsiveState !== AppResponsiveState.mobileOrTablet) {
+        dispatch(windowActions.setResponsiveState(AppResponsiveState.mobileOrTablet))
+      }
+
+  },[isNotMobileOrTablet])
 
 
   useEffect(() => {
     dispatch(authMe(client))
     dispatch(getCatalogProducts(client))
-
   },[])
 
   return (

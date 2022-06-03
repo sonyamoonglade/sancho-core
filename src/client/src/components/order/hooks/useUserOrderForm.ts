@@ -1,10 +1,9 @@
 import {useMemo, useState} from "react";
-import {FormValuesInterface} from "../userOrder/Order";
-import {UserOrderFormFields} from "../../../types/types";
+import {FormValuesInterface, UserOrderFormState} from "../userOrder/Order";
 import {DeliveryDetails} from "../../../common/types";
 
 export function useUserOrderForm (){
-    const formDefaults = {
+    const formDefaults:UserOrderFormState = {
         address: {
             value:"",
             isValid: false
@@ -31,7 +30,7 @@ export function useUserOrderForm (){
         }
     }
 
-    const [formValues, setFormValues] = useState<UserOrderFormFields>(formDefaults)
+    const [formValues, setFormValues] = useState<UserOrderFormState>(formDefaults)
 
 
     function setFormDefaults(){

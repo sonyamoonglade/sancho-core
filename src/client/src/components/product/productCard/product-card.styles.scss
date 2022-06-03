@@ -6,6 +6,10 @@
   padding-left: 1rem;
 
 
+  @media (min-width: 768px) {
+    padding-left: 0;
+  }
+
 }
 
 .price{
@@ -21,8 +25,6 @@
 }
 
 .name{
-
-
   font-weight: 600;
   font-size: $font-lg;
 }
@@ -36,6 +38,9 @@
   small{
     color: $black-50;
   }
+  @media (min-width: 768px) {
+    margin-bottom: 0.3rem;
+  }
 }
 
 
@@ -45,6 +50,12 @@
   display: flex;
   overflow-y: hidden;
   overflow-x: auto;
+  //width: 50vw;
+
+  @media (min-width: 768px) {
+    flex-direction: column;
+    overflow: hidden;
+  }
 
 }
 
@@ -59,34 +70,48 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
+  @media (min-width: 768px) {
+    width: 100%;
+    padding-bottom: 0;
+    padding: 0;
+  }
 }
 
 .description{
-  line-height: 1.2rem;
+  line-height: 1.1rem;
 
-  margin-bottom: 1rem;
   color: $black-50;
-
+  font-family: "Geometria", sans-serif;
   @media (max-height: 650px) {
     font-size: $font-smer !important;
+  }
+  @media (min-width: 768px) {
+    margin-bottom: 0rem;
   }
 
 }
 .image{
   width: 85vw;
   border-radius: 40px;
-  aspect-ratio: 5 / 3.5;
+  aspect-ratio: 95/73;
   position: relative;
+
+  @media (min-width: 768px) {
+    width: 100%
+  }
+
 }
 
 .preview{
   width: 93vw;
-  //flex-shrink: 0;
   position:relative;
   padding-top: .2rem;
   padding-bottom: .2rem;
-  //padding-left: 1rem;
-  //padding-right: 1rem;
+
+  @media (min-width: 768px) {
+    width: 43vw;
+  }
+
 }
 
 .start-presentation_btn{

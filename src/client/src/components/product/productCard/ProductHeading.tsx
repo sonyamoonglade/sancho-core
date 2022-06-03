@@ -1,25 +1,35 @@
 import React, {FC} from 'react';
 import {currency} from "../../../common/constants";
+import {useMediaQuery} from "react-responsive";
 
 
 interface productHeadingInterface {
     price: number
     translate: string
     name: string
+    isTranslateShown: boolean
 }
 
 
-const ProductHeading:FC<productHeadingInterface> = ({price,translate, name}) => {
+const ProductHeading:FC<productHeadingInterface> = ({price,translate, name,isTranslateShown}) => {
+
+
     return (
         <div className="title">
             <span>
                 <p className="name">
                     {name}
-                    <small> /</small>
+                    {
+                        isTranslateShown &&
+                        <small> /</small>
+                    }
                 </p>
-                <p className="translate">
-                    {translate}
-                </p>
+                {
+                    isTranslateShown &&
+                    <p className="translate">
+                        {translate}
+                    </p>
+                }
             </span>
             <p className="price">{price} {currency}</p>
         </div>

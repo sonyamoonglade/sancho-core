@@ -1,32 +1,5 @@
 import {DatabaseCartProduct} from "../common/types";
 
-export interface UserOrderFormFields {
-
-    phone_number: {
-        value: string
-        isValid: boolean
-    }
-    is_delivered: {
-        value: boolean
-    }
-    address?: {
-        value: string
-        isValid: boolean
-    }
-    entrance_number?: {
-        value: string
-        isValid: boolean
-    }
-    floor?: {
-        value: string
-        isValid: boolean
-    }
-    flat_call?: {
-        value: string
-        isValid: boolean
-    }
-
-}
 export enum CategoryColor {
     'Напитки' = '#6fbecf',
     'Пицца'  = '#eb5757',
@@ -71,4 +44,9 @@ export enum ScreenBreakpoints {
 export enum AppResponsiveState {
     mobileOrTablet,
     computer
+}
+
+export interface FormField {
+    isValid: boolean
+    value: string
 }

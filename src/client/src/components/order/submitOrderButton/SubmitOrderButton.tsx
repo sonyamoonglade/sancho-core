@@ -57,6 +57,7 @@ const SubmitOrderButton:FC<submitOrderButtonProps> = ({isActive,handler}) => {
 
 
     function turnLoader(){
+        console.log('im here')
         dispatch(windowActions.toggleLoading(true))
     }
 
@@ -69,8 +70,8 @@ const SubmitOrderButton:FC<submitOrderButtonProps> = ({isActive,handler}) => {
                 if(!isActive) {
                     return
                 }
-                handler()
                 turnLoader()
+                handler()
             }}
         >
             <p ref={bounceAnimationRef}>Оформить заказ!</p>

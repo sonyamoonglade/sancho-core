@@ -4,6 +4,13 @@
 .catalog{
   position: relative;
   z-index: 5;
-  padding: 0;
-  padding-bottom: 2rem;
+  padding: 0 0 2rem;
+
+  @media (min-width: 768px) {
+    width: min-content;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-column-gap: 2rem;
+    margin: 0 auto;
+  }
 }

@@ -50,6 +50,7 @@ const Loading:FC<loadingProps> = ({duration}) => {
         dispatch(windowActions.toggleLoading(false))
         dispatch(windowActions.closeAll())
         dispatch(windowActions.loadingSuccess())
+        setDefaults()
     }
 
 
@@ -96,7 +97,6 @@ const Loading:FC<loadingProps> = ({duration}) => {
     function stopByError(){
         stopDotsAnimation()
         setDefaults()
-        dispatch(windowActions.toggleLoading(false))
         const t = setTimeout(() => {
             dispatch(windowActions.stopErrorScreen())
         },5000)

@@ -1,11 +1,18 @@
 import React, {useEffect, useState} from 'react';
 import './master-login.styles.scss'
 import {useAppDispatch, useAppSelector, windowActions, windowSelector} from "../../redux";
-import {AppResponsiveState} from "../../types/types";
+import {AppResponsiveState, FormField} from "../../types/types";
 import {TiArrowBack} from "react-icons/ti";
 import FormInput from "../formInput/FormInput";
 import {useFormValidations} from "../../hooks/useFormValidations";
 import MasterLoginButton from "./loginButton/MasterLoginButton";
+import MasterForm from "./form/MasterForm";
+
+export interface MasterFormState{
+    login: FormField
+    password: FormField
+}
+
 
 
 const MasterLogin = () => {
@@ -24,7 +31,7 @@ const MasterLogin = () => {
         else document.body.style.overflow = 'visible'
     },[masterLogin])
 
-    const [masterFormState, setMasterFormState] = useState({
+    const [masterFormState, setMasterFormState] = useState<MasterFormState>({
         login:{
             value: "",
             isValid: false
@@ -36,7 +43,6 @@ const MasterLogin = () => {
     })
 
 
-    const {minLengthValidation} = useFormValidations()
     return (
         <div className={masterLogin ? 'master_login modal modal--visible': "master_login modal"}>
             {
@@ -49,37 +55,7 @@ const MasterLogin = () => {
                     </div> :
                     null
             }
-
-            <div className="master_form">
-                {
-                    appResponsiveState === AppResponsiveState.computer ?
-                        <p className='login_title'>Вход в систему</p> : null
-                }
-                <FormInput
-                    name={'login'}
-                    type={'text'}
-                    placeholder={"Логин"}
-                    v={masterFormState.login.value}
-                    setV={setMasterFormState}
-                    onBlurValue={""}
-                    minLength={15}
-                    fieldValidationFn={minLengthValidation}
-                />
-                <FormInput
-                    name={'password'}
-                    type={'password'}
-                    placeholder={"Пароль"}
-                    v={masterFormState.password.value}
-                    setV={setMasterFormState}
-                    onBlurValue={""}
-                    minLength={15}
-                    fieldValidationFn={minLengthValidation}
-                />
-
-
-
-            <MasterLoginButton />
-            </div>
+        <MasterForm masterFormState={masterFormState} appResponsiveState={appResponsiveState} setMasterFormState={setMasterFormState} />
         </div>
     );
 };

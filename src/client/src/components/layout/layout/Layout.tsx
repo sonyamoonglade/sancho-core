@@ -15,9 +15,9 @@ const Layout:FC<layoutProps> = ({children}) => {
     return (
         <div className='layout'>
             <Header />
-            <main>
-                {children}
-            </main>
+
+            {children}
+
 
         </div>
     );

@@ -1,8 +1,14 @@
-import React from 'react';
+import React, {useRef} from 'react';
 
 const MasterLoginButton = () => {
+
+
+    function handleLogin(){
+
+    }
+
     return (
-        <button className='master_login_button'>
+        <button onClick={handleLogin} className='master_login_button'>
             <p>Войти</p>
         </button>
     );

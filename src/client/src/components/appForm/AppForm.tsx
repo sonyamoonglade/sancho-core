@@ -17,7 +17,9 @@ const AppForm = () => {
     const {masterLogin} = useAppSelector(windowSelector)
     function stopPresentation(){
         dispatch(productActions.stopPresentation())
-        dispatch(windowActions.toggleMasterLogin())
+        if(masterLogin){
+            dispatch(windowActions.toggleMasterLogin())
+        }
     }
 
     return (

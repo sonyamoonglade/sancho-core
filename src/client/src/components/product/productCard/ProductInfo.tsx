@@ -7,10 +7,11 @@ import NutrientList from "../nutrient/NutrientList";
 
 interface productInfoProps {
     product: Product
+    children?: any
 }
 const productActions = productSlice.actions
 
-const ProductInfo:FC<productInfoProps> = ({product}) => {
+const ProductInfo:FC<productInfoProps> = ({product,children}) => {
 
     const {
         category,
@@ -32,6 +33,7 @@ const ProductInfo:FC<productInfoProps> = ({product}) => {
                     <AiOutlinePlus className='add_btn_plus_icon' size={25} />
                 </button>
             </div>
+            {children && children}
             <div className="text_info">
                 <p className="description">
                     {description}
@@ -48,8 +50,6 @@ const ProductInfo:FC<productInfoProps> = ({product}) => {
                     <p style={{marginBottom:"0"}} className='description'>Объем: {features.volume}мл</p>
                 }
             </div>
-
-
         </div>
     );
 };

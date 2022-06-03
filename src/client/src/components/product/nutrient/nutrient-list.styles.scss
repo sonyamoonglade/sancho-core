@@ -14,9 +14,32 @@
     @media (min-height: 800px) {
       font-size: $font-regular;
     }
+    @media (min-width: 768px) {
+      font-size: $font-md;
+    }
   }
 
 }
+
+
+.nutrients_list.row{
+  display: flex;
+  p{
+    font-family: "Geometria", sans-serif !important;
+  }
+  margin-top: 1rem;
+}
+
+.nutrient.row{
+  margin-right: 0.5rem;
+  font-size: $font-smer;
+
+}
+.nutrient.row:last-of-type{
+  margin-right: 0;
+
+}
+
 .nutrients_list.presentation{
   color: $black-50;
   font-size: $font-md;
@@ -24,11 +47,19 @@
 
 .nutrient{
   margin-bottom: 0.125rem;
+  p{
+    font-family: "Geometria", sans-serif;
+
+  }
 }
 .energy_value{
   margin-top: 0.5rem;
+  p{
+    font-family: "Geometria", sans-serif;
+  }
 }
 .energy_value:before{
+  font-family: "Geometria", sans-serif;
   content: 'Энергетическая ценность:';
   margin-bottom: 0.1rem;
 }

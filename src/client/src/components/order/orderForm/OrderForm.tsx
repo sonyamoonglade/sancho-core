@@ -3,11 +3,11 @@ import FormInput from "../../formInput/FormInput";
 import {useFormValidations} from "../../../hooks/useFormValidations";
 
 import './order-form.styles.scss'
-import {UserOrderFormFields} from "../../../types/types";
+import {UserOrderFormState} from "../userOrder/Order";
 
 
 interface orderFormProps {
-    formValues: UserOrderFormFields
+    formValues: UserOrderFormState
     setFormValues: Function
 }
 const OrderForm:FC<orderFormProps> = ({formValues,setFormValues}) => {
@@ -24,7 +24,7 @@ const OrderForm:FC<orderFormProps> = ({formValues,setFormValues}) => {
                     <input
                         checked={formValues.is_delivered.value}
                         name={"is_delivered"} onChange={() => {
-                        setFormValues((state:UserOrderFormFields) => {
+                        setFormValues((state:UserOrderFormState) => {
                             const obj = state.is_delivered
                             obj.value = !obj.value
                             return {...state,is_delivered:obj}

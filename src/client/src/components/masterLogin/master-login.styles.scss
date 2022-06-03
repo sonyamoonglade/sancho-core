@@ -10,7 +10,7 @@
   z-index: 1200;
 
 
-  @media (max-width: 1399px) {
+  @media (max-width: 1440px) {
     top: 0 !important;
     width: 100%;
   }
@@ -68,12 +68,20 @@
   background-color: $green;
   border: 0;
   border-radius: 25px;
+  transition: all 0.1s ease-in-out;
+
   p{
     font-family: "Geometria Medium",sans-serif;
     font-size: $font-mder;
     color: white;
   }
 }
+
+.master_login_button:active{
+  transform: scale(.98);
+
+}
+
 .login_title{
   font-family: "Geometria",sans-serif;
   font-size: $font-mder;

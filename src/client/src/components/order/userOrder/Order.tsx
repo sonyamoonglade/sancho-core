@@ -22,6 +22,10 @@ import {useCreateOrder} from "../../../hooks/useCreateOrder";
 import {useAuthentication} from "../../../hooks/useAuthentication";
 import {useUserOrderForm} from "../hooks/useUserOrderForm";
 import {DeliveryDetails} from "../../../common/types";
+import {FormField} from "../../../types/types";
+import {doc} from "prettier";
+
+
 
 export interface FormValuesInterface {
     is_delivered: boolean
@@ -29,6 +33,18 @@ export interface FormValuesInterface {
     delivery_details?: DeliveryDetails
 }
 
+export interface UserOrderFormState {
+
+    phone_number:FormField
+    is_delivered:{
+        value: boolean,
+        isValid: boolean
+    }
+    entrance_number?:FormField
+    floor?:FormField
+    flat_call?:FormField
+    address: FormField
+}
 
 
 const Order = () => {
@@ -50,6 +66,12 @@ const Order = () => {
     useEffect(() => {
        if(userOrder){
            document.querySelector('.phone_number_input').classList.remove('--valid')
+
+           document.body.style.overflow = 'hidden'
+
+       }
+       else {
+           document.body.style.overflow = 'visible'
        }
     },[userOrder])
 
@@ -76,7 +98,7 @@ const Order = () => {
 
         }catch (e: any) {
             const message = e?.response?.data?.message
-            setFormValues((p) => {
+            setFormValues((p:UserOrderFormState) => {
                 const s = {...p}
                 s.phone_number.value = ""
                 s.phone_number.isValid = false
@@ -91,9 +113,7 @@ const Order = () => {
             cart.clearCart()
             setFormDefaults()
             dispatch(productActions.setCartEmpty(true))
-            dispatch(orderActions.addOne(order))
-
-            setFormValues((p) => {
+            setFormValues((p:UserOrderFormState) => {
                 const s = {...p}
                 s.phone_number.value = ""
                 s.phone_number.isValid = false
@@ -103,7 +123,7 @@ const Order = () => {
         }catch (e: any) {
             const message = e?.response?.data?.message
             dispatch(windowActions.toggleLoading(false));
-            setFormValues((p) => {
+            setFormValues((p:UserOrderFormState) => {
                 const s = {...p}
                 s.phone_number.value = ""
                 s.phone_number.isValid = false
