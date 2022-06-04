@@ -119,7 +119,9 @@ button{
 .--blue{
   background-color: $blue !important
 }
-
+.--grey{
+  background-color: $light-grey !important;
+}
 .Toastify{
   position: absolute;
   bottom: 10vh;

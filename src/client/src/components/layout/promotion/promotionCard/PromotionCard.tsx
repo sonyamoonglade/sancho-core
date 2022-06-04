@@ -10,7 +10,7 @@ interface promotionCardProps {
 
 const PromotionCard:FC<promotionCardProps> = ({promotion, touchFn, isTouched}) => {
     return (
-        <div className='promotion_card' onClick={() => touchFn(promotion.id)} >
+        <div className={promotion.id === 2 ? "promotion_card --grey" : "promotion_card"}  onClick={() => touchFn(promotion.id)} >
 
             <div className={isTouched ? 'promotion_title_primary closed': 'promotion_title_primary'}>
                 <p>{promotion.title}</p>

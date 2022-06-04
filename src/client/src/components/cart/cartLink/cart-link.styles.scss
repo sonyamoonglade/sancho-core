@@ -13,12 +13,18 @@
   width: calc(100% - 32px);
   margin-right: 16px;
   margin-left: 16px;
-  //padding: 1rem;
+
   transition: all 0.1s ease-in-out;
   @media (min-width: 768px) {
     margin-left: 0;
     margin-right: 0;
     left: calc((100vw - 500px) / 2);
+  }
+  @media (min-width: 500px) {
+    margin-right: 0;
+    margin-left: 0;
+    left: calc((100vw - 500px) / 2);
+
   }
 }
 

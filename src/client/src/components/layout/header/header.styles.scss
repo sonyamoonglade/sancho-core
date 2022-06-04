@@ -14,7 +14,7 @@ header {
   vertical-align: center;
   font-size: $font-mder;
   cursor: pointer;
-
+  transform: translateY(2px);
   @media (min-width: 1440px) {
     font-size: $font-lg;
   }
