@@ -6,22 +6,22 @@ import {QueryBuilderModule} from "../query_builder/qb.module";
 import {UserService} from "../user/user.service";
 import {ValidationService} from "../validation/validation.service";
 import {OrderRepository} from "./order.repository";
-import {SessionService} from "../authentication/session.service";
-import {UserRepository} from "../user/user.repository";
-import {SessionRepository} from "../authentication/session.repository";
-import {JsonService} from "../database/json.service";
 import {ProductRepository} from "../product/product.repository";
 import {OrderAntiSpamMiddleware} from "./middleware/order.anti-spam.middleware";
 import {CookieService} from "../../shared/cookie/cookie.service";
+import {ValidationModule} from "../validation/validation.module";
+import {UserModule} from "../user/user.module";
+import {SessionModule} from "../authentication/session.module";
 
 @Module({
   providers: [
-    OrderService, UserService, ValidationService,
-    OrderRepository, SessionService, UserRepository,
-    SessionRepository,JsonService,OrderAntiSpamMiddleware,
+    OrderService, OrderRepository, OrderAntiSpamMiddleware,
     ProductRepository, CookieService
   ],
   controllers: [OrderController],
-  imports:[DbModule,QueryBuilderModule],
+  imports:[
+    DbModule,QueryBuilderModule,ValidationModule,
+    UserModule,SessionModule
+  ],
 })
 export class OrderModule {}

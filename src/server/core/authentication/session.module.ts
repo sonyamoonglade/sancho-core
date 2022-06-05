@@ -5,7 +5,7 @@ import {QueryBuilderModule} from "../query_builder/qb.module";
 import {DbModule} from "../database/db.module";
 import {SessionRepository} from "./session.repository";
 import {UserService} from "../user/user.service";
-import {RegisterSpamGuard} from "./register-spam.guard";
+import {RegisterSpamGuard} from "./guard/register-spam.guard";
 
 
 Module({
@@ -15,4 +15,4 @@ Module({
 
 })
 
-export class AuthenticationModule {}
+export class SessionModule {}

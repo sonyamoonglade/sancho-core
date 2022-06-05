@@ -1,6 +1,6 @@
 import {Module} from "@nestjs/common";
 import {Pool} from "pg";
-import {pg_conn} from "./provider-name";
+import {pg_conn} from "./db_provider-name";
 import {JsonService} from "./json.service"
 
 require('dotenv').config()

@@ -1,5 +1,5 @@
 import {Injectable, Req, Res} from "@nestjs/common";
-import {RegisterUserDto} from "./dto/user-details.dto";
+import {RegisterUserDto} from "./dto/register-user.dto";
 import {UserRepository} from "./user.repository";
 import {UnexpectedServerError} from "../exceptions/unexpected-errors.exceptions";
 import {SessionService} from "../authentication/session.service";

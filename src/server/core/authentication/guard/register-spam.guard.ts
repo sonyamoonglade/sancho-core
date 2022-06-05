@@ -1,6 +1,6 @@
 import {CanActivate, ExecutionContext, Injectable} from "@nestjs/common";
 import {Request} from "express";
-import {CookieNames} from "../../types/types";
+import {CookieNames} from "../../../types/types";
 
 
 @Injectable()

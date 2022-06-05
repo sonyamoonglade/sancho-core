@@ -1,15 +1,32 @@
 import {Product} from "../../entities/Product";
-import {Features} from "../../../../common/types";
+import {Categories, Features} from "../../../../common/types";
+import {isDefined, IsDefined, IsInstance, IsNumber, IsString} from "class-validator";
 
 
 export class CreateProductDto implements Partial<Product> {
 
+
+  @IsDefined()
+  @IsString()
   name: string
-  category: string
+
+  @IsDefined()
+  @IsString()
+  category: Categories
+
+  @IsDefined()
+  @IsNumber()
   price: number
+
+  @IsDefined()
+  @IsString()
   translate: string
+
+  @IsDefined()
   features: Features
-  description?: string
+
+  @IsDefined()
+  description: string
 
 
 }

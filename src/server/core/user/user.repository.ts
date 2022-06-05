@@ -1,4 +1,4 @@
-import {pg_conn} from "../database/provider-name";
+import {pg_conn} from "../database/db_provider-name";
 import {PoolClient} from "pg";
 import {Inject} from "@nestjs/common";
 import {filter, QueryBuilder} from "../query_builder/QueryBuilder";

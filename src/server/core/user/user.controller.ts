@@ -1,13 +1,13 @@
 import {Body, Controller, Get, Post, Put, Query, Req, Res, UseGuards} from "@nestjs/common";
 import {extendedRequest, getUserParamsInterface} from "../types/types";
-import {RegisterUserDto,} from "./dto/user-details.dto";
+import {RegisterUserDto,} from "./dto/register-user.dto";
 import {UserService} from "./user.service";
 import {Request, Response} from "express";
 import {CreateMasterUserDto} from "./dto/create-master-user.dto";
 import {CONTROLLER_PATH_PREFIX} from "../types/constants";
-import {RegisterSpamGuard} from "../authentication/register-spam.guard";
 import {PreventAuthedGuard} from "./guard/prevent-authed.guard";
 import {LoginMasterUserDto} from "./dto/login-master-user.dto";
+import {RegisterSpamGuard} from "../authentication/guard/register-spam.guard";
 
 @Controller(`${CONTROLLER_PATH_PREFIX}/users`)
 export class UserController {
@@ -32,8 +32,8 @@ export class UserController {
   authMe(@Res() res:Response,@Req() req:extendedRequest) {
     return this.userService.authMe(req,res)
   }
-  @UseGuards(PreventAuthedGuard)
   @Post("/login")
+  @UseGuards(PreventAuthedGuard)
   login(@Res() res:Response, @Req() req:extendedRequest, @Body() b:{phone_number:string}){
     return this.userService.login(req,res,b)
   }

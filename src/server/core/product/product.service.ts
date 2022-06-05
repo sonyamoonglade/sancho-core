@@ -5,7 +5,6 @@ import {CreateProductDto} from "./dto/create-product.dto";
 import {Product} from "../entities/Product";
 import {UnexpectedServerError} from "../exceptions/unexpected-errors.exceptions";
 import {ProductAlreadyExistsException, ProductDoesNotExistException} from "../exceptions/product.exceptions";
-import {FileService} from "../file/file.service";
 import {FileTypes} from "../types/types";
 import {ValidationService} from "../validation/validation.service";
 import {ValidationErrorException} from "../exceptions/validation.exceptions";
@@ -14,7 +13,6 @@ import {ValidationErrorException} from "../exceptions/validation.exceptions";
 export class ProductService {
 
   constructor(private productRepository:ProductRepository,
-              private fileService:FileService,
               private validationService:ValidationService
               ) {
   }
@@ -54,11 +52,8 @@ export class ProductService {
   }
 
   async changeProductImage(res: Response, newFile: any, product_id: number){
-    if(!await this.doesProductEvenExists(product_id)) throw new ProductDoesNotExistException(product_id)
 
-    const fileName = this.fileService.changeFileById(product_id,newFile,FileTypes.IMAGE)
 
-    return res.status(200).send({fileName})
 
   }
 

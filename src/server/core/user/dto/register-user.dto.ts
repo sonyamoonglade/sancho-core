@@ -1,9 +1,13 @@
 import {DeliveryDetails} from "../../../../common/types";
+import {IsDefined, IsString} from "class-validator";
 
 export class RegisterUserDto {
 
-  deliveryAddress?: DeliveryDetails
-  phone_number: string
 
+  deliveryAddress?: DeliveryDetails
+
+  @IsDefined()
+  @IsString()
+  phone_number: string
 
 }
