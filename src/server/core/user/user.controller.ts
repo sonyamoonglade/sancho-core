@@ -7,6 +7,7 @@ import {CreateMasterUserDto} from "./dto/create-master-user.dto";
 import {CONTROLLER_PATH_PREFIX} from "../types/constants";
 import {RegisterSpamGuard} from "../authentication/register-spam.guard";
 import {PreventAuthedGuard} from "./guard/prevent-authed.guard";
+import {LoginMasterUserDto} from "./dto/login-master-user.dto";
 
 @Controller(`${CONTROLLER_PATH_PREFIX}/users`)
 export class UserController {
@@ -15,32 +16,38 @@ export class UserController {
   }
 
 
-  @Post('/registerUser')
+  @Post("/registerUser")
   @UseGuards(RegisterSpamGuard)
-  registerUser(@Res() res:Response, @Body() registerUserDto:RegisterUserDto){
-    return this.userService.createUser(res,registerUserDto)
+  registerUser(@Res() res:Response, @Body() b:RegisterUserDto){
+    return this.userService.createUser(res,b)
   }
 
-  @Get('/auth/me')
+  @Post("/loginMaster")
+  @UseGuards(RegisterSpamGuard)
+  loginMaster(@Res() res:Response, @Body() b: LoginMasterUserDto){
+    return this.userService.loginMaster(res,b)
+  }
+
+  @Get("/auth/me")
   authMe(@Res() res:Response,@Req() req:extendedRequest) {
     return this.userService.authMe(req,res)
   }
   @UseGuards(PreventAuthedGuard)
-  @Post('/login')
-  login(@Res() res:Response, @Req() req:extendedRequest, @Body() body:{phone_number:string}){
-    return this.userService.login(req,res,body)
+  @Post("/login")
+  login(@Res() res:Response, @Req() req:extendedRequest, @Body() b:{phone_number:string}){
+    return this.userService.login(req,res,b)
   }
   // TODO: APPLY GUARD AND METHOD TO BECOME MASTER / CHECK IF SESSION BELONGS TO MASTER USER
-  @Post('/registerMasterUser')
-  registerMasterUser(@Res() res:Response, @Req() req:Request, @Body() createMasterUserDto:CreateMasterUserDto){
-    return this.userService.createMasterUser(req,res,createMasterUserDto)
+  @Post("/registerMasterUser")
+  registerMasterUser(@Res() res:Response, @Req() req:Request, @Body() b:CreateMasterUserDto){
+    return this.userService.createMasterUser(req,res,b)
   }
 
-  @Get('/getUser:phone_number')
+  @Get("/getUser:phone_number")
   getUser(@Query() params:getUserParamsInterface,@Res() res: Response, @Req() req: Request){
   }
 
-  @Put('/updateUser:phone_number')
+  @Put("/updateUser:phone_number")
   updateUser(@Query() params: getUserParamsInterface,@Res() res: Response, @Req() req: Request){
 
   }

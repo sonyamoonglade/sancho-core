@@ -5,6 +5,7 @@ import {filter, QueryBuilder} from "../query_builder/QueryBuilder";
 import {Repository} from "../../shared/abstract/repository";
 import {User, users} from "../entities/User";
 import {query_builder} from "../query_builder/provider-name";
+import {RepositoryException} from "../exceptions/repository.exceptions";
 
 
 export class UserRepository implements Repository<User>{
@@ -45,9 +46,14 @@ export class UserRepository implements Repository<User>{
   }
 
   async get(expression: filter<User>): Promise<Partial<User>[]> {
-    const selectSql = this.qb.ofTable(users).select<User>(expression)
-    const {rows} = await this.db.query(selectSql)
-    return rows
+    try {
+      const selectSql = this.qb.ofTable(users).select<User>(expression)
+      const {rows} = await this.db.query(selectSql)
+      return rows
+    }catch (e) {
+      throw new RepositoryException("user",e.message)
+    }
+
   }
 
   customQuery(query: string): Promise<User[] | User | undefined> {

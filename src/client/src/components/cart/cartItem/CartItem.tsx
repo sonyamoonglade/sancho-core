@@ -17,7 +17,7 @@ const CartItem:FC<cartItemProps> = ({product, isActive}) => {
     const cart = useCart()
     const dispatch = useAppDispatch()
     const productImage = useMemo(() => {
-        return `${baseUrl}/${product.id}.jpg`
+        return `${baseUrl}/${product.id}.png    `
     },[product])
 
     function reduceProductQuantity(){

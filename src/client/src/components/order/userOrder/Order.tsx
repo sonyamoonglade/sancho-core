@@ -82,7 +82,6 @@ const Order = () => {
         dispatch(windowActions.closeAll())
     }
 
-    console.log(userPhoneNumber)
     async function handleOrderCreation(){
 
         const formValues = getFormValues()

@@ -12,13 +12,15 @@ import * as bcrypt from 'bcrypt'
 import {extendedRequest} from "../types/types";
 import {ValidationErrorException} from "../exceptions/validation.exceptions";
 import {
-    InvalidRoleException,
-    PasswordIsTooShortException,
-    PhoneIsAlreadyTakenException,
-    UserDoesNotExistException
+  InvalidPasswordException,
+  InvalidRoleException,
+  PasswordIsTooShortException,
+  PhoneIsAlreadyTakenException,
+  UserDoesNotExistException
 } from "../exceptions/user.exceptions";
 import {APP_ROLES} from "../../types/types";
 import {AppRoles} from "../../../common/types";
+import {LoginMasterUserDto} from "./dto/login-master-user.dto";
 
 
 @Injectable()
@@ -30,6 +32,24 @@ export class UserService {
 
 
 
+
+  async loginMaster(res: Response, b: LoginMasterUserDto){
+    const {login, password} = b
+
+    const u = (await this.userRepository.get({where:{login}}))[0]
+    if(!u){
+      throw new UserDoesNotExistException(null,login)
+    }
+    const userPassword = u.password
+
+    const compResult = await bcrypt.compare(password, userPassword)
+    if(!compResult) { throw new InvalidPasswordException() }
+
+    const SID = await this.sessionService.getSIDByUserId(u.id)
+    this.sessionService.attachCookieToResponse(res,SID)
+
+    return res.status(200).end()
+  }
 
   async login(req:extendedRequest,res:Response,body:{phone_number:string}){
 
@@ -110,14 +130,22 @@ export class UserService {
         ...createMasterUserDto,
         password: hashedPass
       }
-      const savedUser = await this.userRepository.save(user)
+      let savedUser;
+      try {
+        savedUser = await this.userRepository.save(user)
+      }catch (e) {
+        return res.status(400).send({
+          statusCode: 400,
+          message:"Не уникальный логин!",
+        })
+      }
 
       const MASTER_SID = await this.sessionService.createSession(savedUser.id)
       this.sessionService.attachCookieToResponse(res,MASTER_SID)
-
       return res.status(200).end()
 
     }catch (e) {
+      console.log(e)
       throw new UnexpectedServerError()
     }
 

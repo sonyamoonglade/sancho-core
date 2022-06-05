@@ -24,7 +24,7 @@ export function usePresentation (isPresentingNow: boolean, presentedProduct:Prod
         return 0
     },[isPresentingNow])
     const productImage = useMemo(() => {
-        if(presentedProduct) return `${baseUrl}/${presentedProduct.id}.jpg`
+        if(presentedProduct) return `${baseUrl}/${presentedProduct.id}.png`
         return ""
     },[presentedProduct])
     const isEmptyCart = useMemo(() => {
@@ -49,13 +49,13 @@ export function usePresentation (isPresentingNow: boolean, presentedProduct:Prod
 
 
     function splitLongName(){
-        const {name} = presentedProduct
-        const len = name.split(' ').length
+        const {translate} = presentedProduct
+        const len = translate.split(' ').length
         if(len === 1) {
             setIsLongName(false)
             return
         }
-        const secondWord = name.split(' ').pop()
+        const secondWord = translate.split(' ').pop()
         setIsLongName(true)
         setLongName(secondWord)
     }

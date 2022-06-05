@@ -15,13 +15,7 @@ const Catalog:FC<catalogProps> = ({productList}) => {
     return (
         <div className='catalog'>
             {productList.map((p) => (
-
-               <>
-                   <ProductCard product={p} key={p.id} />
-                   <ProductCard product={p} key={p.id} />
-                   <ProductCard product={p} key={p.id} />
-               </>
-
+                <ProductCard product={p} key={p.id}/>
             ))}
         </div>
     );

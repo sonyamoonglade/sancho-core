@@ -117,17 +117,19 @@
   position:relative;
   padding-top: .2rem;
   padding-bottom: .2rem;
-  max-width: 300px;
 
   @media (min-width: 768px) {
     width: 44vw;
+    margin-bottom: 0.5rem;
   }
   @media (min-width: 1024px) {
     width: 30vw;
+    max-width: calc(((100vw - 2rem) / 3) - 4rem);
 
   }
   @media (min-width: 1440px) {
-    max-width: 25vw;
+    width: calc(((100vw - 4rem) / 3) - 4rem);;
+    max-width: 450px;
   }
 
 }

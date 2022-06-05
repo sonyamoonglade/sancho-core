@@ -2,8 +2,8 @@ import {HttpException, HttpStatus} from "@nestjs/common";
 
 export class UserDoesNotExistException extends HttpException{
 
-  constructor(id: number) {
-    super(`user with id ${id} does not exist`,HttpStatus.BAD_REQUEST);
+  constructor(id: number, login?: string) {
+    super(login !== undefined ? `пользователь с логином ${login} не существует.` : `пользователь с айди ${id} не существует.`,HttpStatus.BAD_REQUEST);
   }
 }
 

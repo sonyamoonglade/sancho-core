@@ -188,7 +188,7 @@ export class OrderService {
           cancelled_at: new Date(Date.now()),
           cancelled_by: user_id
         }
-        await this.orderRepository.update(cancelOrderDto.order_id,updated)
+        await this.orderRepository.update(o.id,updated)
         this.cookieService.setCanCancelCookie(res,5)
         return res.status(200).end()
       }catch (e) {

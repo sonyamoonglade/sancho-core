@@ -36,7 +36,7 @@ export class OrderRepository implements Repository<Order>{
 
   async update(id: number, updated: Partial<Order | undefined>): Promise<void> {
     try{
-      const [updateSql,values] = this.qb.ofTable(orders).update<Order>({where:{id:id},set:updated})
+      const [updateSql,values] = this.qb.ofTable(orders).update<Order>({where:{id},set:updated})
       await this.db.query(updateSql,values)
       return
     }catch(e){

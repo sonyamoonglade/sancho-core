@@ -12,7 +12,8 @@ exports.up = pgm => {
       type: 'int',
       references: '"users"',
       notNull: true,
-      onDelete: 'Cascade'
+      onDelete: 'Cascade',
+      unique: true
     }
   })
   pgm.createIndex('sessions','user_id')

@@ -16,7 +16,7 @@ interface extraItemProps {
 const ExtraItem:FC<extraItemProps> = ({product,updateCart}) => {
 
     const imageUrl = useMemo(() => {
-        return `${baseUrl}/${product.id}.jpg`
+        return `${baseUrl}/${product.id}.png`
     },[product])
 
     const cart = useCart()

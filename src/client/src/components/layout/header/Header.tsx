@@ -69,7 +69,6 @@ const Header:FC = () => {
     }
 
 
-    console.log(appResponsiveState === AppResponsiveState.mobileOrTablet)
     return (
         <header>
             <div className='header_top'>
