@@ -1,10 +1,10 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect, useMemo, useState} from 'react';
 import {baseUrl} from "../../product/productPresentation/ProductPresentation";
 import {productSelector, useAppSelector} from "../../../redux";
 import CheckList from "./checkList/CheckList";
 import {CartInterface} from "../../../types/types";
 import {DatabaseCartProduct} from "../../../common/types";
-import {currency} from "../../../common/constants";
+import {currency, DELIVERY_PUNISHMENT_THRESHOLD, DELIVERY_PUNISHMENT_VALUE} from "../../../common/constants";
 
 interface checkProps{
     cart: CartInterface
@@ -20,6 +20,9 @@ const Check:FC<checkProps> = ({cart}) => {
     },[totalCartPrice])
 
 
+    const price = useMemo(() => {
+       return cart.calculateCartTotalPrice()
+    },[totalCartPrice])
 
     return (
         <div className='check_container'>
@@ -29,7 +32,7 @@ const Check:FC<checkProps> = ({cart}) => {
             <div className="check_other">
                 <div className='overall_check_price'>
                     <p>СУММА ЗАКАЗА</p>
-                    <p>{cart.calculateCartTotalPrice()}.00 {currency}</p>
+                    <p>{price <= DELIVERY_PUNISHMENT_THRESHOLD ? price + DELIVERY_PUNISHMENT_VALUE : price}.00 {currency}</p>
                 </div>
             </div>
             <img className="check" src={`${baseUrl}/check_icon.png`} alt="" />

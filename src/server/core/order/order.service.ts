@@ -41,9 +41,8 @@ export class OrderService {
       // calculate total_cart_price and include delivery punish if price tl
 
       let total_cart_price = await this.calculateTotalCartPrice(createUserOrderDto.cart)
-
-
       total_cart_price = this.applyDeliveryPunishment(total_cart_price)
+
       const userOrder:Order = {
         total_cart_price,
         ...createUserOrderDto,
