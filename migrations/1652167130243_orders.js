@@ -14,10 +14,6 @@ exports.up = pgm => {
       onDelete:'Cascade',
       notNull: true
     },
-    phone_number:{
-      type:'varchar(255)',
-      notNull: true
-    },
     cart:{
       type:'varchar[]',
       notNull: true

@@ -12,6 +12,7 @@ import {CookieService} from "../../shared/cookie/cookie.service";
 import {ValidationModule} from "../validation/validation.module";
 import {UserModule} from "../user/user.module";
 import {SessionModule} from "../authentication/session.module";
+import {EventModule} from "../../shared/event/event.module";
 
 @Module({
   providers: [

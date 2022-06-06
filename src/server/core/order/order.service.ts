@@ -1,4 +1,4 @@
-import {Injectable} from "@nestjs/common";
+import {Inject, Injectable} from "@nestjs/common";
 import {CreateMasterOrderDto, CreateUserOrderDto} from "./dto/create-order.dto";
 import {ValidationService} from "../validation/validation.service";
 import {UserService} from "../user/user.service";
@@ -9,26 +9,36 @@ import {Order, orders} from "../entities/Order";
 import {UnexpectedServerError} from "../exceptions/unexpected-errors.exceptions";
 import {JsonService} from "../database/json.service";
 import {User, users} from "../entities/User";
-import {ValidationErrorException} from "../exceptions/validation.exceptions";
 import {VerifyOrderDto} from "./dto/verify-order.dto";
 import {CancelOrderDto} from "./dto/cancel-order.dto";
 import {CancelExplanationHasNotBeenProvided, OrderCannotBeVerified} from "../exceptions/order.exceptions";
 import {Product, products} from "../entities/Product";
 import {ProductRepository} from "../product/product.repository";
-import {AppRoles, DatabaseCartProduct, OrderStatus, ResponseUserOrder} from "../../../common/types";
+import {
+  AppRoles,
+  DatabaseCartProduct,
+  ResponseUserOrder,
+  WaitingQueueOrder
+} from "../../../common/types";
 import {CookieService} from "../../shared/cookie/cookie.service";
 import {DELIVERY_PUNISHMENT_THRESHOLD, DELIVERY_PUNISHMENT_VALUE} from "../../../common/constants";
+import {OrderQueue, OrderStatus, VerifiedQueueOrder} from "../../../client/src/common/types";
+import {emitter} from "../../shared/event/event.provider-name";
+import EventEmitter from "events";
+import {Events} from "../../shared/event/events";
+import {BehaviorSubject} from "rxjs";
 
 @Injectable()
 export class OrderService {
 
+  q:BehaviorSubject<Order> = new BehaviorSubject<Order>(null)
 
   constructor(private validationService:ValidationService,
               private orderRepository:OrderRepository,
               private userService:UserService,
               private jsonService:JsonService,
               private productRepository:ProductRepository,
-              private cookieService: CookieService
+              private cookieService: CookieService,
               ) {
   }
 
@@ -48,8 +58,8 @@ export class OrderService {
         status:OrderStatus.waiting_for_verification,
         created_at: new Date(Date.now())
       }
-
       const createdOrder = await this.orderRepository.save(userOrder)
+
       const responseOrder:ResponseUserOrder = {
         id: createdOrder.id,
         cart: userOrder.cart,
@@ -59,6 +69,7 @@ export class OrderService {
         delivery_details: userOrder.delivery_details ? userOrder.delivery_details : null,
         total_cart_price
       }
+      this.q.next(createdOrder)
       return res.status(201).send({order:responseOrder})
     }catch (e) {
       throw new UnexpectedServerError()
@@ -117,8 +128,9 @@ export class OrderService {
     try {
       const {phone_number} = verifyOrderDto
       const hw = await this.hasWaitingOrder(null,phone_number)
+
       const {id: orderId, has} = hw
-      if(has){
+      if(!has){
         throw new Error(`verification ${phone_number}`)
       }
 
@@ -347,18 +359,61 @@ export class OrderService {
   }
 
   public async orderQueue(res:Response){
+    console.log("call func")
+    const sql = `
+      select o.id,o.cart,o.total_cart_price,o.status,o.is_delivered,o.delivery_details,o.created_at,
+      o.verified_fullname,u.phone_number from ${orders} o join ${users} u on o.user_id= 
+      u.id where o.status = '${OrderStatus.waiting_for_verification}' or o.status = '${OrderStatus.verified}'
+    `
+    const result:VerifiedQueueOrder[] = await this.orderRepository.customQuery(sql)
 
-    const sql = "select * from orders where status=$1 or status=$2"
-    const values = [OrderStatus.waiting_for_verification, OrderStatus.verified]
-
-    const orders = await this.orderRepository.customQuery(sql,values)
-
-    const queue = {
-      waiting: orders.filter(o => o.status === OrderStatus.waiting_for_verification),
-      verified: orders.filter(o => o.status === OrderStatus.verified)
-    }
+    const queue = this.mapOrdersToQueueTypes(result)
 
     return res.status(200).send({queue}).end()
+  }
+
+  public eventOrderQueue(res:Response){
+    let t = setTimeout(() => {
+      if(res.finished){
+        return clearTimeout(t)
+      }
+      console.log("res end")
+      return res.end()
+    },5000)
+
+    this.q.subscribe((v) => {
+      if(v !== null){
+        clearTimeout(t)
+        console.log("im here")
+        this.orderQueue(res)
+      }
+    })
+  }
+
+  mapOrdersToQueueTypes(orders:VerifiedQueueOrder[]):OrderQueue{
+    //map waitings
+    const w = orders
+        .filter(o => o.status === OrderStatus.waiting_for_verification)
+        .map(o => {
+          const f:WaitingQueueOrder = {
+            cart:o.cart,
+            created_at:o.created_at,
+            total_cart_price: o.total_cart_price,
+            status: o.status,
+            is_delivered: o.is_delivered,
+            delivery_details: o.delivery_details,
+            id: o.id,
+            phone_number: o.phone_number,
+          }
+          return f
+        })
+    // map verified
+    const v = orders
+        .filter(o => o.status === OrderStatus.verified)
+    return {
+      waiting: w,
+      verified: v
+    }
   }
 
   applyDeliveryPunishment(p: number){

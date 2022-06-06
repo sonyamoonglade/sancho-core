@@ -8,9 +8,10 @@ export function useCreateOrder (client: AxiosInstance){
 
 
     const createUserOrder = useCallback(async function (formValues: FormValuesInterface, cart: DatabaseCartProduct[]){
-
+        const {is_delivered,delivery_details} = formValues
         let body = {
-            ...formValues,
+            is_delivered,
+            delivery_details: (delivery_details !== undefined) ? delivery_details : null,
             cart
         }
 

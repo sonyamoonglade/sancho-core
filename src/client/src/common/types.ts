@@ -73,14 +73,23 @@ export type ResponseUserOrder = {
   total_cart_price: number
 }
 
-export type ResponseWorkerOrder = {
-
+export interface VerifiedQueueOrder extends ResponseUserOrder{
+  phone_number: string
+  verified_fullname: string
+}
+export interface WaitingQueueOrder extends ResponseUserOrder {
+  phone_number: string
 }
 
 
+export type OrderQueue = {
+
+  waiting: WaitingQueueOrder[]
+  verified: VerifiedQueueOrder[]
+
+}
 
 export enum Categories {
-  PIZZA = "пицца",
-  DRINKS = "напитки",
+  PIZZA = "Пицца",
+  DRINKS = "Напитки",
 }
-

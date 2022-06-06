@@ -108,7 +108,7 @@ const Order = () => {
         }
 
         try {
-            const {order} = await createUserOrder(formValues, usrCart)
+            await createUserOrder(formValues, usrCart)
             cart.clearCart()
             setFormDefaults()
             dispatch(productActions.setCartEmpty(true))

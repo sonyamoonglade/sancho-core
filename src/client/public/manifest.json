@@ -1,9 +1,9 @@
 {
-  "short_name": "2Pizza",
-  "name": "Pizza 2Pizza",
+  "short_name": "ZharPizza",
+  "name": "ZharPizza",
   "icons": [
     {
-      "src": "favicon.ico",
+      "src": "pizza64nice.png",
       "sizes": "64x64 32x32 24x24 16x16",
       "type": "image/x-icon"
     }

@@ -7,6 +7,8 @@ export class CreateUserOrderDto implements Partial<Order>{
   @IsDefined()
   cart: DatabaseCartProduct[];
 
+
+
   @IsDefined()
   @IsBoolean()
   is_delivered: boolean;

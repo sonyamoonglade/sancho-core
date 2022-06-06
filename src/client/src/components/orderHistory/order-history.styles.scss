@@ -75,12 +75,18 @@
   margin-right: 0.2rem;
   font-family: "Geometria",sans-serif;
   font-size: $font-md;
+  @media (min-width: 1440px) {
+    font-size: $font-regular;
+  }
 }
 
 .id {
   font-size: $font-md;
   margin-right: 0.2rem;
   font-family: "Geometria", sans-serif !important;
+  @media (min-width: 1440px) {
+    font-size: $font-regular;
+  }
 }
 
 
@@ -88,18 +94,31 @@
 .total_order_price{
   font-family: "Geometria Bold",sans-serif;
 
+  @media (min-width: 1440px) {
+    font-size: $font-regular;
+  }
+
 }
 .creation_date{
   font-family: "Geometria",sans-serif;
+  @media (min-width: 1440px) {
+    font-size: $font-regular;
+  }
   font-size: $font-md;
 }
 .cart_button{
   font-family: "Geometria",sans-serif;
+  @media (min-width: 1440px) {
+    font-size: $font-regular;
+  }
   font-size: $font-md;
 }
 .order_status{
   font-size: $font-md;
   font-family: "Geometria", sans-serif !important;
+  @media (min-width: 1440px) {
+    font-size: $font-regular;
+  }
 }
 .green_dot{
   position: absolute;
@@ -132,4 +151,12 @@
   transform: translateY(-3px);
   margin-left: 30%;
   transition: all 0.2s ease-in;
+}
+
+.phone_number{
+  font-size: $font-md;
+  font-family: "Geometria", sans-serif !important;
+  @media (min-width: 1440px) {
+    font-size: $font-regular;
+  }
 }

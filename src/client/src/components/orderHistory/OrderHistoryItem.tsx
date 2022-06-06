@@ -5,14 +5,17 @@ import {BiShoppingBag} from "react-icons/bi";
 import {useCorrectOrderData} from "./hooks/useCorrectOrderData";
 import {CgCloseO} from 'react-icons/cg'
 import {useCancelOrder} from "../../hooks/useCancelOrder";
-import {getOrderHistory, orderSelector, useAppSelector} from "../../redux";
+import {orderSelector, useAppSelector} from "../../redux";
+
+
 
 interface orderHistoryItemProps {
     order: ResponseUserOrder
     isFirstOrder: boolean
+    extraData?: any
 }
 
-const OrderHistoryItem:FC<orderHistoryItemProps> = ({order,isFirstOrder}) => {
+const OrderHistoryItem:FC<orderHistoryItemProps> = ({order,isFirstOrder,extraData}) => {
 
     const {orderHistory} = useAppSelector(orderSelector)
     const {
@@ -49,8 +52,29 @@ const OrderHistoryItem:FC<orderHistoryItemProps> = ({order,isFirstOrder}) => {
             >
                 <div className="top">
                     <div className='top_left'>
-                        <p className="id"><strong style={{fontFamily:"Geometria"}}>#</strong>{cid} <strong>|</strong></p>
+                        <strong style={{fontFamily:"Geometria"}}>
+                            #
+                        </strong>
+                        <p className="id">{cid}</p>
+                        <p>|&nbsp;</p>
                         <p className="order_status">{cstatus}</p>
+                        {
+                            extraData?.phoneNumber !== undefined &&
+                            <>
+                                <p>&nbsp;|&nbsp;</p>
+                                <p className="phone_number">
+                                    {extraData.phoneNumber}
+                                </p>
+                            </>
+                        }
+                        {extraData?.verifiedFullname !== undefined &&
+                           <>
+                               <p>&nbsp;|&nbsp;</p>
+                               <p className="order_status">
+                                   {extraData.verifiedFullname}
+                               </p>
+                           </>
+                        }
                     </div>
 
 
@@ -61,16 +85,16 @@ const OrderHistoryItem:FC<orderHistoryItemProps> = ({order,isFirstOrder}) => {
                         <p className='creation_pre'>Оформлен:</p>
                         <p className='creation_date'>
                             {cdate}
-                            <strong> |</strong>
+                            &nbsp;|
                             <strong style={{fontFamily:"Geometria"}}>
                                 {order.is_delivered ? " Доставка" : " Самовывоз"}
                             </strong>
                         </p>
                     </div>
                     <span>
-                    <div className='green_dot'>&nbsp;</div>
-                    <BiShoppingBag className='cart_button' size={25} />
-                </span>
+                        <div className='green_dot'>&nbsp;</div>
+                        <BiShoppingBag className='cart_button' size={25} />
+                    </span>
 
 
                 </div>

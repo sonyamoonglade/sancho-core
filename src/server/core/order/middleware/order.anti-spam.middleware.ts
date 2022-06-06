@@ -18,9 +18,9 @@ export class OrderAntiSpamMiddleware implements NestMiddleware {
     dayjs.extend(relativeTime)
   }
   async use(req: any, res: any, next: (error?: any) => void) {
-    // createMasterOrder dto (master | worker creates an order)
     const {user_id} = req
     const role = await this.userService.getUserRole(user_id)
+    // createMasterOrder dto (master | worker creates an order)
     if(role !== AppRoles.user){
       // get the last verfified order and check if verif date is 5min away from current!
       const lw = await this.orderService.getLastVerifiedOrder(user_id)
@@ -29,7 +29,7 @@ export class OrderAntiSpamMiddleware implements NestMiddleware {
       const {afterRate, minutesLeft, now} = this.handleVerifiedOrderTimeOperations(lw)
       if(afterRate > now) throw new OrderCreationLimitExceeded(minutesLeft)
 
-      return next()
+      return next();
     }
     // user creates an order
     // get the last non-approved order and wait until last order is either cancelled or verified
