@@ -59,7 +59,7 @@ export class OrderController {
   @Get("/queue")
   @Role([AppRoles.worker])
   orderQueue(@Res() res: Response){
-    return this.orderService.orderQueue()
+    return this.orderService.orderQueue(res)
   }
 
 

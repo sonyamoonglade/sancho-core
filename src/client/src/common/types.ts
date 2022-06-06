@@ -73,6 +73,8 @@ export type ResponseUserOrder = {
   total_cart_price: number
 }
 
+export type ResponseWorkerOrder
+
 export enum Categories {
   PIZZA = "пицца",
   DRINKS = "напитки",

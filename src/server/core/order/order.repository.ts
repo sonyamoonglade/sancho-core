@@ -59,9 +59,9 @@ export class OrderRepository implements Repository<Order>{
     return rows
   }
 
-  async customQuery(query: string): Promise<Order[]> {
+  async customQuery(query: string,values?: any[]): Promise<Order[]> {
     try {
-      const {rows} = await this.db.query(query)
+      const {rows} = await this.db.query(query,values)
       return rows as Order[]
     }catch (e) {
       throw new RepositoryException('order repository', e.message)

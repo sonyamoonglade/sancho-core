@@ -8,7 +8,6 @@ const WorkerNavigation = () => {
             </li>
             <li className="d_nav_item">
                 Подтвердить заказ
-
             </li>
             <li className="d_nav_item">
                 Отменить заказ

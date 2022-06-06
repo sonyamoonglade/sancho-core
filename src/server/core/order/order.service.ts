@@ -32,7 +32,7 @@ export class OrderService {
               ) {
   }
 
-  async createUserOrder(createUserOrderDto:CreateUserOrderDto, res:Response,req: extendedRequest){
+  public async createUserOrder(createUserOrderDto:CreateUserOrderDto, res:Response,req: extendedRequest){
 
     const {user_id} = req
 
@@ -68,7 +68,7 @@ export class OrderService {
     }
   }
 
-  async createMasterOrder(res:Response, createMasterOrderDto:CreateMasterOrderDto){
+  public async createMasterOrder(res:Response, createMasterOrderDto:CreateMasterOrderDto){
 
     const validationResult = this.validationService.validateObjectFromSqlInjection(createMasterOrderDto)
     && this.validationService.validatePhoneNumber(createMasterOrderDto.phone_number)
@@ -120,7 +120,7 @@ export class OrderService {
     }
   }
 
-  async verifyOrder(res:Response, verifyOrderDto:VerifyOrderDto){
+  public async verifyOrder(res:Response, verifyOrderDto:VerifyOrderDto){
     try {
       const {phone_number} = verifyOrderDto
       const lastOrder:Order = await this.lastWaitingOrder(null,phone_number)
@@ -166,7 +166,7 @@ export class OrderService {
 
   }
 
-  async cancelOrder(res:Response,req:extendedRequest, cancelOrderDto:CancelOrderDto){
+  public async cancelOrder(res:Response,req:extendedRequest, cancelOrderDto:CancelOrderDto){
 
     const {user_id} = req
     const role = await this.userService.getUserRole(user_id)
@@ -221,9 +221,7 @@ export class OrderService {
     }
   }
 
-
-
-  async userOrderHistory(res:Response,req:extendedRequest,to: number){
+  public async userOrderHistory(res:Response,req:extendedRequest,to: number){
 
     const {user_id} = req
 
@@ -281,7 +279,7 @@ export class OrderService {
 
   }
 
-  async lastVerifiedOrder(phone_number:string):Promise<Order | undefined>{
+  public async lastVerifiedOrder(phone_number:string):Promise<Order | undefined>{
 
     const listOfOrder = await this.orderRepository.get({where:{
       phone_number,status:OrderStatus.verified
@@ -295,7 +293,7 @@ export class OrderService {
 
   }
 
-  async lastWaitingOrder(user_id: number, phone_number?:string):Promise<Order | undefined>{
+  public async lastWaitingOrder(user_id: number, phone_number?:string):Promise<Order | undefined>{
 
     if(!phone_number) {
       const listOfOrder = await this.orderRepository.get({ where: {
@@ -310,7 +308,7 @@ export class OrderService {
 
   }
 
-  async calculateTotalCartPrice(cart:DatabaseCartProduct[]):Promise<number>{
+  public async calculateTotalCartPrice(cart:DatabaseCartProduct[]):Promise<number>{
     // select from products where id = 1 or id = 2 or id = 5
     const product_ids = []
 
@@ -353,8 +351,19 @@ export class OrderService {
 
   }
 
-  orderQueue(){
-    return
+  public async orderQueue(res:Response){
+
+    const sql = "select * from orders where status=$1 or status=$2"
+    const values = [OrderStatus.waiting_for_verification, OrderStatus.verified]
+
+    const orders = await this.orderRepository.customQuery(sql,values)
+
+    const queue = {
+      waiting: orders.filter(o => o.status === OrderStatus.waiting_for_verification),
+      verified: orders.filter(o => o.status === OrderStatus.verified)
+    }
+
+    return res.status(200).send({queue}).end()
   }
 
   applyDeliveryPunishment(p: number){
