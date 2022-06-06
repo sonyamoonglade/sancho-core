@@ -3,7 +3,7 @@ import {useAxios} from "../../../hooks/useAxios";
 
 interface ResponseOrderQueueInterface {
     queue: {
-        verified: Order
+
     }
 }
 
@@ -16,7 +16,7 @@ const OrderQueue = () => {
     },[])
 
     async function fetchOrderQueue(){
-        const {data} = await client.get<>("/order/queue")
+        const {data} = await client.get("/order/queue")
 
     }
 
