@@ -19,8 +19,8 @@ export class PreventAuthedGuard implements CanActivate {
         if(SID === undefined) { return true }
 
         const userId = await this.sessionService.getUserIdBySID(SID)
-        const wo = await this.orderService.lastWaitingOrder(userId, null)
-        if(!wo) { return true }
+        const {has} = await this.orderService.hasWaitingOrder(userId, null)
+        if(!has) { return true }
 
         throw new LastOrderIsNotYetVerified()
 

@@ -26,6 +26,7 @@ export class CreateMasterOrderDto implements Partial<Order>{
   @IsDefined()
   @IsBoolean()
   is_delivered: boolean
+
   delivery_details?: DeliveryDetails
 
   @IsDefined()

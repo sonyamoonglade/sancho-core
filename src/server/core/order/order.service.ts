@@ -8,7 +8,7 @@ import {extendedRequest} from "../types/types";
 import {Order, orders} from "../entities/Order";
 import {UnexpectedServerError} from "../exceptions/unexpected-errors.exceptions";
 import {JsonService} from "../database/json.service";
-import {User} from "../entities/User";
+import {User, users} from "../entities/User";
 import {ValidationErrorException} from "../exceptions/validation.exceptions";
 import {VerifyOrderDto} from "./dto/verify-order.dto";
 import {CancelOrderDto} from "./dto/cancel-order.dto";
@@ -37,8 +37,6 @@ export class OrderService {
     const {user_id} = req
 
     try {
-      const userPhoneNumber = await this.userService.getUserPhone(user_id)
-      // calculate total_cart_price and include delivery punish if price tl
 
       let total_cart_price = await this.calculateTotalCartPrice(createUserOrderDto.cart)
       total_cart_price = this.applyDeliveryPunishment(total_cart_price)
@@ -47,7 +45,6 @@ export class OrderService {
         total_cart_price,
         ...createUserOrderDto,
         user_id,
-        phone_number:userPhoneNumber,
         status:OrderStatus.waiting_for_verification,
         created_at: new Date(Date.now())
       }
@@ -70,13 +67,10 @@ export class OrderService {
 
   public async createMasterOrder(res:Response, createMasterOrderDto:CreateMasterOrderDto){
 
-    const validationResult = this.validationService.validateObjectFromSqlInjection(createMasterOrderDto)
-    && this.validationService.validatePhoneNumber(createMasterOrderDto.phone_number)
-    if(!validationResult) throw new ValidationErrorException()
-
     try {
 
       let user_id = await this.userService.getUserId(createMasterOrderDto.phone_number)
+
       if(!user_id){
         const registeredUser:User = await this.userService
           .createUser(
@@ -104,7 +98,6 @@ export class OrderService {
 
       const responseOrder:Partial<Order> = {
         cart: masterOrder.cart,
-        phone_number:masterOrder.phone_number,
         verified_fullname: masterOrder.verified_fullname,
         created_at: masterOrder.created_at,
         status: masterOrder.status,
@@ -123,37 +116,27 @@ export class OrderService {
   public async verifyOrder(res:Response, verifyOrderDto:VerifyOrderDto){
     try {
       const {phone_number} = verifyOrderDto
-      const lastOrder:Order = await this.lastWaitingOrder(null,phone_number)
-      //todo CHANGE USER_PHONE TO PHONE NUMBER
-
-      if(lastOrder.status !== OrderStatus.waiting_for_verification){
-        throw new Error(`verification ${lastOrder.phone_number}`)
+      const hw = await this.hasWaitingOrder(null,phone_number)
+      const {id: orderId, has} = hw
+      if(has){
+        throw new Error(`verification ${phone_number}`)
       }
-      let cart;
-      if(verifyOrderDto.cart){
-        cart = verifyOrderDto.cart
-        console.log(cart)
-      }else {
-        cart = lastOrder.cart.map(item => JSON.parse(item as unknown as string))
-      }
-
-      let recalculatedTotalCartPrice = await this.calculateTotalCartPrice(cart)
-      recalculatedTotalCartPrice = this.applyDeliveryPunishment(recalculatedTotalCartPrice)
-
 
       const updated:Partial<Order> = {
         verified_fullname:verifyOrderDto.verified_fullname,
         delivery_details:verifyOrderDto?.delivery_details || null,
-        is_delivered: verifyOrderDto?.is_delivered || lastOrder.is_delivered,
         status:OrderStatus.verified,
         verified_at: new Date(Date.now()),
-        cart: verifyOrderDto?.cart || lastOrder.cart,
-        total_cart_price: recalculatedTotalCartPrice
+      }
+      if(verifyOrderDto.is_delivered !== undefined){
+        updated.is_delivered = verifyOrderDto.is_delivered
+      }
+      else if(verifyOrderDto.cart !== undefined){
+        updated.cart = verifyOrderDto.cart
+        this.jsonService.stringifyNestedObjects(updated)
       }
 
-      this.jsonService.stringifyNestedObjects(updated)
-
-      await this.orderRepository.update(lastOrder.id,updated)
+      await this.orderRepository.update(orderId,updated)
 
       return res.status(200).send({status:OrderStatus.verified})
     }catch (e) {
@@ -279,32 +262,44 @@ export class OrderService {
 
   }
 
-  public async lastVerifiedOrder(phone_number:string):Promise<Order | undefined>{
-
-    const listOfOrder = await this.orderRepository.get({where:{
-      phone_number,status:OrderStatus.verified
-    }})
-    // ({where: { and:{user_phone,mama}, or:{status:[v1,v2] } } }) ->
-    // select .. from .. where user_phone = 12321 and mama =v1 and (status = v1 or status = v2)
-    //select from orders where user_phone = +2131923891 and status
-    // order -> ascending
-    return listOfOrder.pop()
-
-
+  public async getLastVerifiedOrder(user_id:number):Promise<Order | undefined>{
+    const ord = (await this.orderRepository.get({where:{user_id}}))[0]
+    return ord
   }
 
-  public async lastWaitingOrder(user_id: number, phone_number?:string):Promise<Order | undefined>{
+  public async hasWaitingOrder(user_id: number, phone_number?:string):Promise<{id: number | null, has: boolean}>{
 
     if(!phone_number) {
-      const listOfOrder = await this.orderRepository.get({ where: {
-        user_id, status:OrderStatus.waiting_for_verification }
-      });
-      return listOfOrder.pop()
+      const ord = (await this.orderRepository.get({ where: {
+        user_id, status:OrderStatus.waiting_for_verification },returning:["id"]}
+      ))[0]
+      if(ord === undefined){
+        return {
+          id: null,
+          has: false
+        }
+      }
+      return {
+        id: ord.id,
+        has: true
+      }
     }
-    const listOfOrder = await this.orderRepository.get({ where: {
-        phone_number, status:OrderStatus.waiting_for_verification }
-    });
-    return listOfOrder.pop()
+
+    const sql = `
+        select o.id from ${orders} o join ${users} u on o.user_id=u.id
+        where u.phone_number='${phone_number}' and o.status = '${OrderStatus.waiting_for_verification}'
+      `
+    const ord = (await this.orderRepository.customQuery(sql))[0]
+    if(ord === undefined){
+      return {
+        id: null,
+        has: false
+      }
+    }
+    return {
+      id: ord.id,
+      has: true
+    }
 
   }
 

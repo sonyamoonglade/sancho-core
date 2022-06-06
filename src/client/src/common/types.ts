@@ -74,7 +74,7 @@ export type ResponseUserOrder = {
 }
 
 export type ResponseWorkerOrder = {
-  
+
 }
 
 

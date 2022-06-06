@@ -3,7 +3,6 @@ import {DatabaseCartProduct, DeliveryDetails, OrderStatus} from "../../../common
 export type Order = {
   id?: number
   user_id: number
-  phone_number: string
   cart: DatabaseCartProduct[]
   total_cart_price: number
   status: OrderStatus
