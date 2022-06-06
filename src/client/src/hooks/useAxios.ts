@@ -22,7 +22,7 @@ export function useAxios (){
         if(process.env.NODE_ENV === 'development'){
             // console.log(error)
         }
-        return Promise.resolve(error)
+        return Promise.reject(error)
 
     }
     function responseSuccessHandler(s: any){

@@ -354,6 +354,10 @@ export class OrderService {
 
   }
 
+  orderQueue(){
+    return
+  }
+
   applyDeliveryPunishment(p: number){
     if(p <= DELIVERY_PUNISHMENT_THRESHOLD){
       return p + DELIVERY_PUNISHMENT_VALUE

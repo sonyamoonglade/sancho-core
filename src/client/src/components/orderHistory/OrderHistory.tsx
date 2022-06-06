@@ -34,6 +34,7 @@ const OrderHistory = () => {
     },[orderHistoryModal, isAuthenticated])
     useEffect(() => {
         if(!isAuthenticated){ return }
+        console.log('here')
         if(orderHistoryModal){
             try {
                 dispatch(getOrderHistory(client, 10))

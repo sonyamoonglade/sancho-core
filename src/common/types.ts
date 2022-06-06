@@ -74,7 +74,7 @@ export type ResponseUserOrder = {
 }
 
 export enum Categories {
-  PIZZA = "пицца",
-  DRINKS = "напитки",
+  PIZZA = "Пицца",
+  DRINKS = "Напитки",
 }
 

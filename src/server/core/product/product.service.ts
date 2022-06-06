@@ -9,7 +9,6 @@ import {
   ProductAlreadyExistsException,
   ProductDoesNotExistException
 } from "../exceptions/product.exceptions";
-import {FileTypes} from "../types/types";
 import {ValidationService} from "../validation/validation.service";
 import {ValidationErrorException} from "../exceptions/validation.exceptions";
 import {Categories} from "../../../common/types";
@@ -89,7 +88,8 @@ export class ProductService {
     try {
       let products: Product[] = await this.productRepository.get({where:{has_image: true}})
       products = products.map(product => this.parseJSONProductFeatures(product))
-      return res.status(200).send(products)
+      const sorted = this.sortByCategory(products)
+      return res.status(200).send(sorted)
     }catch (e) {
       throw new UnexpectedServerError()
     }
@@ -135,6 +135,12 @@ export class ProductService {
 
   parseJSONProductFeatures(product: Product):Product{
     return {...product,features:JSON.parse(product.features as string)}
+  }
+
+  sortByCategory(unsorted: Product[]): Product[]{
+    const pizza = unsorted.filter(p => p.category === Categories.PIZZA)
+    const drinks = unsorted.filter(p => p.category === Categories.DRINKS)
+    return [...pizza,...drinks]
   }
 
 }

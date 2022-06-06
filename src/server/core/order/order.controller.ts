@@ -20,6 +20,8 @@ export class OrderController {
   }
 
 
+
+
   @Post('/createUserOrder')
   @Role([AppRoles.user])
   createUserOrder(@Body() dto:CreateUserOrderDto,
@@ -54,7 +56,11 @@ export class OrderController {
     return this.orderService.userOrderHistory(res,req,to)
   }
 
-
+  @Get("/queue")
+  @Role([AppRoles.worker])
+  orderQueue(@Res() res: Response){
+    return this.orderService.orderQueue()
+  }
 
 
 }
