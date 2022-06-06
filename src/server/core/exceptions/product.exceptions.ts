@@ -11,3 +11,9 @@ export class ProductDoesNotExistException extends HttpException{
     super(`Продукт с айди ${id} не существует!`,HttpStatus.BAD_REQUEST);
   }
 }
+
+export class InvalidCategoryException extends HttpException{
+  constructor(category: string) {
+    super(`Категория- ${category} не существует.`, HttpStatus.BAD_REQUEST);
+  }
+}

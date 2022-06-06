@@ -12,6 +12,8 @@ export class AuthorizationGuard implements CanActivate {
   async canActivate(context: ExecutionContext):  Promise<boolean> {
 
       const req:extendedRequest = context.switchToHttp().getRequest()
+      if(req.url.endsWith("/catalogProducts")) { return true }
+
       const {user_id} = req
       try {
         const userRole = (await this.userService.getUserRole(user_id))

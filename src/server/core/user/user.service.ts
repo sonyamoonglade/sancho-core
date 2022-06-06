@@ -78,8 +78,12 @@ export class UserService {
 
   async authMe(@Req() req: extendedRequest, @Res() res:Response) {
     const {user_id} = req
-    const phone_number = await this.getUserPhone(user_id)
-    return res.status(200).send({phone_number})
+    const users = await this.userRepository.get({where:{id:user_id},returning:["phone_number","role"]})
+    const u = users[0]
+    if(u.role === AppRoles.user){
+      return res.status(200).send({phone_number:u.phone_number})
+    }
+    return res.status(200).end()
   }
 
   async createUser(res:Response,registerUserDto:RegisterUserDto, quiet:boolean = false):Promise<User | Response>{

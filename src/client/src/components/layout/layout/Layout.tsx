@@ -2,6 +2,8 @@ import React, {FC} from 'react';
 
 import './layout.styles.scss'
 import Header from "../header/Header";
+import {useRoutes} from "../../../hooks/useRoutes";
+import {useAppSelector, userSelector} from "../../../redux";
 
 
 interface layoutProps  {
@@ -9,15 +11,18 @@ interface layoutProps  {
 }
 
 const Layout:FC<layoutProps> = ({children}) => {
+    const {isMasterAuthenticated} = useAppSelector(userSelector)
+    const routes = useRoutes(isMasterAuthenticated)
 
 
 
     return (
         <div className='layout'>
-            <Header />
+             <Header />
 
-            {children}
+            {isMasterAuthenticated ? null : children}
 
+            {routes}
 
         </div>
     );

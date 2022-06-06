@@ -60,13 +60,22 @@
 }
 
 .entrance_number_input{
-  width: 28% !important;
+  width: 29% !important;
+  @media (min-height: 810px) {
+    width: 31% !important;
+  }
 
 }
 .flat_call_input{
   width: 18% !important;
+  @media (min-height: 810px) {
+    width: 21% !important;
+  }
 }
 
 .floor_input{
   width: 19% !important;
+  @media (min-height: 810px) {
+    width: 21% !important;
+  }
 }

@@ -1,0 +1,15 @@
+@import "src/./variables.scss";
+
+
+
+.logout_text{
+  font-family: "Geometria", sans-serif;
+  font-size: $font-regular;
+  cursor: pointer;
+}
+
+.d_right_part.work{
+  width: 150px;
+  justify-content: flex-end;
+
+}

@@ -1,20 +1,20 @@
 import React from 'react';
-import './other-nav.styles.scss'
-const OtherNavigation = () => {
 
+const WorkerNavigation = () => {
     return (
         <ul className='desktop_nav'>
             <li className="d_nav_item">
-               Меню
+                Создать заказ
             </li>
             <li className="d_nav_item">
-                О нас
+                Подтвердить заказ
+
             </li>
             <li className="d_nav_item">
-                Больше информации
+                Отменить заказ
             </li>
         </ul>
     );
 };
 
-export default OtherNavigation;
+export default WorkerNavigation;

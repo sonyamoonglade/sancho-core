@@ -4,11 +4,13 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 interface UserState {
     isAuthenticated: boolean
     phoneNumber: string
+    isMasterAuthenticated: boolean
 }
 
 const initialState:UserState = {
     isAuthenticated: false,
-    phoneNumber: null
+    phoneNumber: null,
+    isMasterAuthenticated: false
 }
 
 
@@ -21,11 +23,15 @@ export const userSlice = createSlice({
             s.phoneNumber = a.payload
             s.isAuthenticated = true
         },
-
         logout:(s) => {
             s.isAuthenticated = false
         },
-
+        loginMaster:(s) => {
+            s.isMasterAuthenticated = true
+        },
+        logoutMaster:(s) => {
+            s.isMasterAuthenticated = false
+        }
 
 
     }

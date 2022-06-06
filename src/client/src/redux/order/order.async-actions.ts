@@ -2,6 +2,7 @@ import {AppDispatch} from "../store";
 import {AxiosInstance} from "axios";
 import {orderActions} from "./order.slice";
 import {ResponseUserOrder} from "../../common/types";
+import {USER_CANCEL_EXPLANATION} from "../../common/constants";
 
 type userOrderHistoryResponse = {
     hasMore: boolean
@@ -31,9 +32,12 @@ export const getOrderHistory = (client: AxiosInstance, to: number) => async (dis
 export const cancelOrder = (client:AxiosInstance, orderId: number) => async (dispatch: AppDispatch) => {
 
     try {
+        const cancel_explanation = USER_CANCEL_EXPLANATION
         const body = {
-            order_id: orderId
+            order_id: orderId,
+            cancel_explanation
         }
+
         await client.put("order/cancelOrder", body)
         dispatch(orderActions.cancelById(orderId))
     }catch (e: any) {

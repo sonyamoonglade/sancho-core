@@ -1,21 +1,43 @@
-import React, {FC} from 'react';
+import React, {FC, useMemo, useState} from 'react';
 import {AppResponsiveState} from "../../../types/types";
 import FormInput from "../../formInput/FormInput";
-import MasterLoginButton from "../loginButton/MasterLoginButton";
 import '../master-login.styles.scss'
-import {MasterFormState} from "../MasterLogin";
+import {MasterFormState, MasterFormValues} from "../MasterLogin";
 import {useFormValidations} from "../../../hooks/useFormValidations";
+import {useAxios} from "../../../hooks/useAxios";
+import {useAuthentication} from "../../../hooks/useAuthentication";
+import {useMasterLoginForm} from "../hooks/useMasterLoginForm";
+import {useNavigate} from "react-router-dom";
 
 interface masterFormProps{
-    masterFormState: MasterFormState
     appResponsiveState: AppResponsiveState
-    setMasterFormState: Function
 }
 
 
-const MasterForm:FC<masterFormProps> = ({masterFormState,appResponsiveState,setMasterFormState}) => {
+const MasterForm:FC<masterFormProps> = ({appResponsiveState}) => {
 
     const {minLengthValidation} = useFormValidations()
+
+    const {client} = useAxios()
+    const {loginMaster} = useAuthentication(client)
+    const router = useNavigate()
+
+    const {
+        masterFormState,
+        setMasterFormState,
+        getFormValues,
+        formValidity
+    } = useMasterLoginForm()
+
+    async function handleLogin(){
+        if(!formValidity) { return }
+        const formValues = getFormValues()
+        const res = await loginMaster(formValues)
+        if(res){
+            return router("/worker/queue",{replace: true})
+        }
+        return router("/", {replace: true})
+    }
 
     return (
 
@@ -44,7 +66,9 @@ const MasterForm:FC<masterFormProps> = ({masterFormState,appResponsiveState,setM
                 minLength={15}
                 fieldValidationFn={minLengthValidation}
             />
-            <MasterLoginButton />
+            <button onClick={handleLogin} className='master_login_button'>
+                <p>Войти</p>
+            </button>
         </div>
     );
 };

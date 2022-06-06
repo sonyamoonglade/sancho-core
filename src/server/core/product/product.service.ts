@@ -4,10 +4,15 @@ import {Response} from "express";
 import {CreateProductDto} from "./dto/create-product.dto";
 import {Product} from "../entities/Product";
 import {UnexpectedServerError} from "../exceptions/unexpected-errors.exceptions";
-import {ProductAlreadyExistsException, ProductDoesNotExistException} from "../exceptions/product.exceptions";
+import {
+  InvalidCategoryException,
+  ProductAlreadyExistsException,
+  ProductDoesNotExistException
+} from "../exceptions/product.exceptions";
 import {FileTypes} from "../types/types";
 import {ValidationService} from "../validation/validation.service";
 import {ValidationErrorException} from "../exceptions/validation.exceptions";
+import {Categories} from "../../../common/types";
 
 @Injectable()
 export class ProductService {
@@ -17,13 +22,24 @@ export class ProductService {
               ) {
   }
 
+  getCategories(): string[]{
+    const categories = []
+    for(const v of Object.values(Categories)){
+      categories.push(v)
+    }
+    return categories
+  }
+
   async createProduct(res:Response, createProductDto:CreateProductDto):Promise<Response>{
 
     const validationResult = this.validationService.validateObjectFromSqlInjection(createProductDto)
-    if(!validationResult) throw new ValidationErrorException()
+    if(!validationResult) { throw new ValidationErrorException() }
 
-    const {name} = createProductDto
-    if(await this.doesProductAlreadyExist(name)) throw new ProductAlreadyExistsException(name)
+    const {name,category} = createProductDto
+    if(await this.doesProductAlreadyExist(name)){ throw new ProductAlreadyExistsException(name) }
+
+    const cs = this.getCategories()
+    if(!cs.includes(category)){ throw new InvalidCategoryException(category) }
 
     try {
       const product:Product = {...createProductDto}
@@ -40,7 +56,7 @@ export class ProductService {
   }
 
   async attachImageToProduct(res:Response, product_id: number){
-    if(!await this.doesProductEvenExists(product_id)) throw new ProductDoesNotExistException(product_id)
+    if(!await this.doesProductEvenExists(product_id)) { throw new ProductDoesNotExistException(product_id) }
     const fileName = `${product_id}.jpg`
     try {
       await this.productRepository.update(product_id,{has_image: true})

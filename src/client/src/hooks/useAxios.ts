@@ -17,11 +17,12 @@ export function useAxios (){
         const statusCode = error.response.status
         if(statusCode === 401) {
             dispatch(userActions.logout())
+            dispatch(userActions.logoutMaster());
         } // unauthorized
         if(process.env.NODE_ENV === 'development'){
-            console.log(error)
+            // console.log(error)
         }
-        return Promise.reject(error)
+        return Promise.resolve(error)
 
     }
     function responseSuccessHandler(s: any){
@@ -30,7 +31,7 @@ export function useAxios (){
 
     const client = axios.create({
         baseURL:BACKEND_URL,
-        withCredentials: true
+        withCredentials: true,
     })
     client.interceptors.response.use(
        success => responseSuccessHandler(success),

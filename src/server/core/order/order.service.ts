@@ -16,7 +16,6 @@ import {CancelExplanationHasNotBeenProvided, OrderCannotBeVerified} from "../exc
 import {Product, products} from "../entities/Product";
 import {ProductRepository} from "../product/product.repository";
 import {AppRoles, DatabaseCartProduct, OrderStatus, ResponseUserOrder} from "../../../common/types";
-import {USER_CANCEL_EXPLANATION} from "../../types/contants";
 import {CookieService} from "../../shared/cookie/cookie.service";
 import {DELIVERY_PUNISHMENT_THRESHOLD, DELIVERY_PUNISHMENT_VALUE} from "../../../common/constants";
 
@@ -180,10 +179,9 @@ export class OrderService {
       if(o.status !== OrderStatus.waiting_for_verification){
         throw new UnexpectedServerError("Некоректный статус заказа")
       }
-      const explanationString = `${USER_CANCEL_EXPLANATION} ${user_id}`
       try {
         const updated:Partial<Order> = {
-          cancel_explanation: explanationString,
+          cancel_explanation: cancelOrderDto.cancel_explanation,
           status:OrderStatus.cancelled,
           cancelled_at: new Date(Date.now()),
           cancelled_by: user_id

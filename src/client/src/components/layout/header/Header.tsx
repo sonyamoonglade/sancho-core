@@ -4,7 +4,7 @@ import PromotionList from "../promotion/PromotionList";
 import '../layout/layout.styles.scss'
 
 import './header.styles.scss'
-import {useAppDispatch, useAppSelector, windowSelector, windowSlice} from "../../../redux";
+import {useAppDispatch, useAppSelector, userSelector, windowSelector, windowSlice} from "../../../redux";
 import MobileNavigation from "../navigation/mobile/MobileNavigation";
 import Cart from "../../cart/cart/Cart";
 import Order from "../../order/userOrder/Order";
@@ -17,6 +17,8 @@ import {CgMenuRound} from "react-icons/cg";
     import OtherNavigation from "../navigation/other/OtherNavigation";
     import DesktopHeaderRight from "../desktopHeader/DesktopHeaderRight";
     import MasterLogin from "../../masterLogin/MasterLogin";
+    import WorkerNavigation from "../../worker/navigation/WorkerNavigation";
+    import WorkerNavigationRight from "../../worker/navigation/WorkerNavigationRight";
 
 
 const mockPromotions:Promotion[] = [
@@ -62,6 +64,7 @@ const Header:FC = () => {
     }
 
     const {navigation,appResponsiveState} = useAppSelector(windowSelector)
+    const {isMasterAuthenticated} = useAppSelector(userSelector)
     const dispatch = useAppDispatch()
 
     function toggleMenu(){
@@ -70,7 +73,7 @@ const Header:FC = () => {
 
 
     return (
-        <header>
+        <header style={isMasterAuthenticated ? {height:80} : {height: 264}}>
             <div className='header_top'>
                 <p className='app_title' onClick={nullifyScroll}>Жар-Пицца</p>
 
@@ -79,24 +82,35 @@ const Header:FC = () => {
                         <RiCloseCircleLine onClick={toggleMenu} size={30} className='menu_close_icon' /> :
                         <CgMenuRound onClick={toggleMenu} size={30} /> : null
                 }
+
                 {
-                    appResponsiveState === AppResponsiveState.computer &&
-                       <>
+                    (appResponsiveState === AppResponsiveState.computer && !isMasterAuthenticated) ?
+                        <>
                            <OtherNavigation />
                            <DesktopHeaderRight />
-                       </>
+                        </> : (appResponsiveState === AppResponsiveState.computer && isMasterAuthenticated) ?
+                        <>
+                            <>
+                                <WorkerNavigation />
+                                <WorkerNavigationRight />
+                            </>
+                        </> : null
                 }
+
             </div>
-            <PromotionList promotions={mockPromotions} />
 
-            <Order  />
-            <Cart />
-            <OrderHistory />
-            <MasterLogin />
-            <Loading duration={4000} />
-
-            {
-                appResponsiveState === AppResponsiveState.mobileOrTablet && <MobileNavigation />
+            {isMasterAuthenticated ? null :
+                <>
+                    <PromotionList promotions={mockPromotions} />
+                    <Order  />
+                    <Cart />
+                    <OrderHistory />
+                    <MasterLogin />
+                    <Loading duration={4000} />
+                    {
+                        appResponsiveState === AppResponsiveState.mobileOrTablet && <MobileNavigation />
+                    }
+                </>
             }
 
 
