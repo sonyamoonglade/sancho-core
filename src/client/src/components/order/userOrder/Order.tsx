@@ -27,7 +27,7 @@ import {doc} from "prettier";
 
 
 
-export interface FormValuesInterface {
+export interface UserOrderFormValuesInterface {
     is_delivered: boolean
     phone_number: string
     delivery_details?: DeliveryDetails

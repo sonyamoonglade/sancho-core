@@ -1,5 +1,5 @@
 import {useMemo, useState} from "react";
-import {FormValuesInterface, UserOrderFormState} from "../userOrder/Order";
+import {UserOrderFormValuesInterface, UserOrderFormState} from "../userOrder/Order";
 import {DeliveryDetails} from "../../../common/types";
 
 export function useUserOrderForm (){
@@ -49,7 +49,7 @@ export function useUserOrderForm (){
 
     },[formValues])
 
-    function getFormValues():FormValuesInterface{
+    function getFormValues():UserOrderFormValuesInterface{
         const adjacencyValues = new Map()
         for(const [k,v] of Object.entries(formValues)){
             adjacencyValues.set(k,v.value)

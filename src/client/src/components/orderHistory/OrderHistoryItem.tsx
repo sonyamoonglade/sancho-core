@@ -63,7 +63,7 @@ const OrderHistoryItem:FC<orderHistoryItemProps> = ({order,isFirstOrder,extraDat
                             <>
                                 <p>&nbsp;|&nbsp;</p>
                                 <p className="phone_number">
-                                    {extraData.phoneNumber}
+                                    +{extraData.phoneNumber.substring(2,extraData.phoneNumber.length)}
                                 </p>
                             </>
                         }

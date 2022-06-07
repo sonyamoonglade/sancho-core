@@ -89,6 +89,7 @@ export type OrderQueue = {
 
 }
 
+
 export enum Categories {
   PIZZA = "Пицца",
   DRINKS = "Напитки",

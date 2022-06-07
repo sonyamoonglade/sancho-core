@@ -16,16 +16,12 @@ import {Product, products} from "../entities/Product";
 import {ProductRepository} from "../product/product.repository";
 import {
   AppRoles,
-  DatabaseCartProduct,
-  ResponseUserOrder,
+  DatabaseCartProduct, OrderQueue, OrderStatus,
+  ResponseUserOrder, VerifiedQueueOrder,
   WaitingQueueOrder
 } from "../../../common/types";
 import {CookieService} from "../../shared/cookie/cookie.service";
 import {DELIVERY_PUNISHMENT_THRESHOLD, DELIVERY_PUNISHMENT_VALUE} from "../../../common/constants";
-import {OrderQueue, OrderStatus, VerifiedQueueOrder} from "../../../client/src/common/types";
-import {emitter} from "../../shared/event/event.provider-name";
-import EventEmitter from "events";
-import {Events} from "../../shared/event/events";
 import {BehaviorSubject} from "rxjs";
 
 @Injectable()
@@ -59,7 +55,6 @@ export class OrderService {
         created_at: new Date(Date.now())
       }
       const createdOrder = await this.orderRepository.save(userOrder)
-
       const responseOrder:ResponseUserOrder = {
         id: createdOrder.id,
         cart: userOrder.cart,
@@ -359,7 +354,6 @@ export class OrderService {
   }
 
   public async orderQueue(res:Response){
-    console.log("call func")
     const sql = `
       select o.id,o.cart,o.total_cart_price,o.status,o.is_delivered,o.delivery_details,o.created_at,
       o.verified_fullname,u.phone_number from ${orders} o join ${users} u on o.user_id= 
@@ -377,14 +371,12 @@ export class OrderService {
       if(res.finished){
         return clearTimeout(t)
       }
-      console.log("res end")
       return res.end()
     },5000)
 
     this.q.subscribe((v) => {
       if(v !== null){
         clearTimeout(t)
-        console.log("im here")
         this.orderQueue(res)
       }
     })

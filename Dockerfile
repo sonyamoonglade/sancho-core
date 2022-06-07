@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . /usr/app
 
-RUN npm run build
+RUN npm run build:prod
 
 EXPOSE 5000
 

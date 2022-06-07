@@ -7,6 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "prebuild": "rimraf dist",
+    "build:prod": "rm tsconfig.*.tsbuildinfo && nest build",
     "build": " cp -R ./src/common/* ./src/client/src/common && rm tsconfig.*.tsbuildinfo && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "start": "npm run migrate up && node dist/server/main.js",

@@ -17,6 +17,9 @@ interface WindowState {
         cart: boolean
         orders: boolean
     }
+    worker: {
+        submitOrder: boolean
+    }
 }
 
 const initialState:WindowState = {
@@ -33,6 +36,9 @@ const initialState:WindowState = {
     navigationNotification: {
         cart: false,
         orders: false
+    },
+    worker:{
+        submitOrder: false
     }
 }
 
@@ -107,6 +113,14 @@ export const windowSlice = createSlice({
         turnOffAllDesktop: (s) => {
             s.masterLogin = false
 
+        },
+
+        toggleSubmitOrder: (s) => {
+            s.worker.submitOrder = !s.worker.submitOrder
+        },
+
+        toggleWorker: (s) => {
+            s.worker.submitOrder = false
         }
 
 

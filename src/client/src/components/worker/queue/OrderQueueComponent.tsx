@@ -3,6 +3,7 @@ import {useAxios} from "../../../hooks/useAxios";
 import {OrderQueue} from "../../../common/types";
 import OrderHistoryItem from "../../orderHistory/OrderHistoryItem";
 import "./order-queue.styles.scss"
+import {fetchOrderQueue, orderSelector, useAppDispatch, useAppSelector} from "../../../redux";
 interface ResponseOrderQueueInterface {
     queue: {
 
@@ -12,18 +13,18 @@ interface ResponseOrderQueueInterface {
 const OrderQueueComponent = () => {
 
     const {client} = useAxios()
-    const [queue,setQueue] = useState<OrderQueue>(null)
     const [isFetching, setIsFetching] = useState<boolean>(false)
+    const dispatch = useAppDispatch()
+    const {orderQueue: queue} = useAppSelector(orderSelector);
+
+
     useEffect(() => {
-        fetchOrderQueue()
+            dispatch(fetchOrderQueue(client,setIsFetching))
     },[])
 
-    async function fetchOrderQueue(){
-        setIsFetching(true)
-        const {data} = await client.get("/order/queue")
-        setQueue(data.queue)
-        setIsFetching(false)
-    }
+
+
+
 
 
     return (

@@ -13,12 +13,13 @@ import {Promotion} from "../../../common/types";
 import OrderHistory from "../../orderHistory/OrderHistory";
 import {RiCloseCircleLine} from "react-icons/ri";
 import {CgMenuRound} from "react-icons/cg";
-    import {AppResponsiveState} from "../../../types/types";
-    import OtherNavigation from "../navigation/other/OtherNavigation";
-    import DesktopHeaderRight from "../desktopHeader/DesktopHeaderRight";
-    import MasterLogin from "../../masterLogin/MasterLogin";
-    import WorkerNavigation from "../../worker/navigation/WorkerNavigation";
-    import WorkerNavigationRight from "../../worker/navigation/WorkerNavigationRight";
+import {AppResponsiveState} from "../../../types/types";
+import OtherNavigation from "../navigation/other/OtherNavigation";
+import DesktopHeaderRight from "../desktopHeader/DesktopHeaderRight";
+import MasterLogin from "../../masterLogin/MasterLogin";
+import WorkerNavigation from "../../worker/navigation/WorkerNavigation";
+import WorkerNavigationRight from "../../worker/navigation/WorkerNavigationRight";
+import SubmitOrderModal from "../../worker/submitOrder/SubmitOrderModal";
 
 
 const mockPromotions:Promotion[] = [
@@ -99,7 +100,11 @@ const Header:FC = () => {
 
             </div>
 
-            {isMasterAuthenticated ? null :
+            {isMasterAuthenticated ?
+                <>
+                </>
+
+                :
                 <>
                     <PromotionList promotions={mockPromotions} />
                     <Order  />

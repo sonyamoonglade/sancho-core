@@ -1,0 +1,49 @@
+@import "src/./variables.scss";
+
+
+.submit_title{
+  font-family: "Geometria Bold",sans-serif;
+  font-size: 1.3rem;
+  margin-bottom: 0.5rem;
+
+}
+
+
+.--disabled.w{
+  color: $gray-promo;
+}
+
+.delivery_input.w{
+  margin-top: 1rem;
+}
+
+.flat_call_input.w{
+  width: 21% !important;
+}
+
+.entrance_number_input.w{
+  width: 34% !important;
+}
+.floor_input.w{
+  width: 23% !important;
+}
+
+.verified_fullname_input.w{
+  margin-bottom: .5rem;
+}
+
+.is_delivered_checkbox.w{
+  margin-bottom: 0.2rem;
+}
+
+.modal_button{
+  width: 100%;
+  border-radius: 15px;
+  outline: 0;
+  border-color: transparent;
+  background-color: $green-second;
+  height: 35px;
+  color: white;
+  font-family: "Geometria",sans-serif;
+  font-size: $font-mder;
+}
