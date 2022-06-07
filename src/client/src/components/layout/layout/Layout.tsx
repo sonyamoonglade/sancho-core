@@ -25,8 +25,13 @@ const Layout:FC<layoutProps> = ({children}) => {
             {isMasterAuthenticated ? null : children}
 
             {routes}
-            <SubmitOrderModal />
-            <WorkerAppForm/>
+
+            {isMasterAuthenticated &&
+                <>
+                    <SubmitOrderModal />
+                    <WorkerAppForm/>
+                 </>
+            }
         </div>
     );
 };

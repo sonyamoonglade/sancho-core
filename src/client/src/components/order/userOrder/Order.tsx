@@ -147,7 +147,7 @@ const Order = () => {
                 <p className='check_title'>Чек</p>
 
                 <div className="form_top">
-                    <Check cart={cart} />
+                    <Check isDelivered={formValues.is_delivered.value} cart={cart} />
                 </div>
                 <OrderForm
                     formValues={formValues}

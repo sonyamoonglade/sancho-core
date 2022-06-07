@@ -89,7 +89,6 @@ export class ProductService {
       let products: Product[] = await this.productRepository.get({where:{has_image: true}})
       products = products.map(product => this.parseJSONProductFeatures(product))
       const sorted = this.sortByCategory(products)
-      console.log(sorted)
       return res.status(200).send(sorted)
     }catch (e) {
       throw new UnexpectedServerError()

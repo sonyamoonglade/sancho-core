@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {useAppDispatch, useAppSelector, windowSelector} from "../../../redux";
+import {fetchOrderQueue, useAppDispatch, useAppSelector, windowActions, windowSelector} from "../../../redux";
 import FormInput from "../../formInput/FormInput";
 import {useFormValidations} from "../../../hooks/useFormValidations";
 import "./submit-order.styles.scss"
@@ -52,7 +52,8 @@ const SubmitOrderModal = () => {
             const body = getFormValues()
             const response = await client.put("order/verifyOrder", body)
             if(response.status === 200){
-
+                dispatch(fetchOrderQueue(client, null))
+                dispatch(windowActions.toggleSubmitOrder())
             }
         }catch (e) {
             console.log(e)

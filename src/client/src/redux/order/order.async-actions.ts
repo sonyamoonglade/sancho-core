@@ -48,16 +48,21 @@ export const cancelOrder = (client:AxiosInstance, orderId: number) => async (dis
 
 }
 
-export const fetchOrderQueue = (client:AxiosInstance, setIsFetching: Function) => async (dispatch: AppDispatch) => {
+export const fetchOrderQueue = (client:AxiosInstance, setIsFetching?: Function) => async (dispatch: AppDispatch) => {
 
     try {
-        setIsFetching(true)
-        setIsFetching(true)
+       if(setIsFetching){
+           setIsFetching(true)
+       }
         const {data} = await client.get("/order/queue")
         dispatch(orderActions.setOrderQueue(data.queue))
-        setIsFetching(false)
+        if(setIsFetching){
+            setIsFetching(false)
+        }
     }catch (e) {
-        setIsFetching(false)
+        if(setIsFetching){
+            setIsFetching(false)
+        }
         console.log(e)
     }
 

@@ -4,16 +4,16 @@ import CheckItem from "./CheckItem";
 import '../check.styles.scss'
 import {DatabaseCartProduct} from "../../../../common/types";
 import DeliveryPunishmentItem from "../DeliveryPunishmentItem";
-import {productActions, useAppDispatch} from "../../../../redux";
 import {DELIVERY_PUNISHMENT_THRESHOLD} from "../../../../common/constants";
 
 interface checkListProps {
     products: DatabaseCartProduct[]
     totalCartPrice: number
+    isDelivered: boolean
 
 }
 
-const CheckList:FC<checkListProps> = ({products,totalCartPrice}) => {
+const CheckList:FC<checkListProps> = ({products,totalCartPrice,isDelivered}) => {
 
 
     const isPunished = useMemo(() => {
@@ -27,7 +27,7 @@ const CheckList:FC<checkListProps> = ({products,totalCartPrice}) => {
                 <CheckItem product={p} key={p.translate} />
             ))
             }
-            {isPunished && <DeliveryPunishmentItem />}
+            {(isPunished && isDelivered) && <DeliveryPunishmentItem />}
         </ul>
     );
 };
