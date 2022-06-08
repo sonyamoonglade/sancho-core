@@ -7,7 +7,6 @@ import {CreateMasterUserDto} from "./dto/create-master-user.dto";
 import {CONTROLLER_PATH_PREFIX} from "../types/constants";
 import {PreventAuthedGuard} from "./guard/prevent-authed.guard";
 import {LoginMasterUserDto} from "./dto/login-master-user.dto";
-import {RegisterSpamGuard} from "../authentication/guard/register-spam.guard";
 
 @Controller(`${CONTROLLER_PATH_PREFIX}/users`)
 export class UserController {
@@ -16,11 +15,7 @@ export class UserController {
   }
 
 
-  @Post("/registerUser")
-  @UseGuards(RegisterSpamGuard)
-  registerUser(@Res() res:Response, @Body() b:RegisterUserDto){
-    return this.userService.createUser(res,b)
-  }
+
 
   @Post("/loginMaster")
   // @UseGuards(RegisterSpamGuard)

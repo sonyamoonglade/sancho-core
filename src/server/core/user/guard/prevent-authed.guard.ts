@@ -14,7 +14,9 @@ export class PreventAuthedGuard implements CanActivate {
     }
 
     async canActivate(ctx: ExecutionContext): Promise<boolean> {
+
         const req:Request = ctx.switchToHttp().getRequest()
+
         const {SID} = req.cookies
         if(SID === undefined) { return true }
 

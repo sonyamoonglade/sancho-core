@@ -3,7 +3,7 @@ import {Repository} from "../../shared/abstract/repository";
 import {Session, sessions} from "../entities/Session";
 import {filter, QueryBuilder} from "../query_builder/QueryBuilder";
 import {pg_conn} from "../database/db_provider-name";
-import {PoolClient} from "pg";
+import {Pool, PoolClient} from "pg";
 import {query_builder} from "../query_builder/provider-name";
 import {RepositoryException} from "../exceptions/repository.exceptions";
 
@@ -13,7 +13,7 @@ import {RepositoryException} from "../exceptions/repository.exceptions";
 export class SessionRepository implements Repository<Session> {
 
 
-  constructor(@Inject(pg_conn) private db: PoolClient, @Inject(query_builder) private qb: QueryBuilder) {
+    constructor(@Inject(pg_conn) private db: Pool, @Inject(query_builder) private qb: QueryBuilder) {
   }
 
   async customQuery(query: string): Promise<Session[] | Session | undefined> {

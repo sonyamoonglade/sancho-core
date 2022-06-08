@@ -1,5 +1,5 @@
 import {pg_conn} from "../database/db_provider-name";
-import {PoolClient} from "pg";
+import {Pool, PoolClient} from "pg";
 import {Inject} from "@nestjs/common";
 import {filter, QueryBuilder} from "../query_builder/QueryBuilder";
 import {Repository} from "../../shared/abstract/repository";
@@ -10,7 +10,7 @@ import {RepositoryException} from "../exceptions/repository.exceptions";
 
 export class UserRepository implements Repository<User>{
 
-  constructor(@Inject(query_builder) private qb:QueryBuilder, @Inject(pg_conn) private db:PoolClient) {
+    constructor(@Inject(query_builder) private qb: QueryBuilder, @Inject(pg_conn) private db: Pool) {
   }
 
   async delete(id: number): Promise<void | undefined> {

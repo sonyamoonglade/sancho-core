@@ -64,7 +64,7 @@ export class OrderService {
         const stringDetails: string = JSON.stringify(userOrder.delivery_details)
         await this.userService.updateUsersRememberedDeliveryAddress(user_id,stringDetails)
       }
-      
+
       const responseOrder:ResponseUserOrder = {
         id: createdOrder.id,
         cart: userOrder.cart,
@@ -106,6 +106,11 @@ export class OrderService {
         status:OrderStatus.verified,
         created_at: new Date(Date.now()),
         verified_at: new Date(Date.now())
+      }
+
+      if(masterOrder.is_delivered === true){
+        const stringDetails: string = JSON.stringify(masterOrder.delivery_details)
+        await this.userService.updateUsersRememberedDeliveryAddress(user_id,stringDetails)
       }
 
       this.jsonService.stringifyNestedObjects(masterOrder)
