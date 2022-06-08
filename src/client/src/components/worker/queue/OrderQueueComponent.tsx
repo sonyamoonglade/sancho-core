@@ -1,22 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import {useAxios} from "../../../hooks/useAxios";
 import OrderHistoryItem from "../../orderHistory/OrderHistoryItem";
 import "./order-queue.styles.scss"
-import {OrderQueue} from "../../../common/types";
+import {orderActions, orderSelector, useAppDispatch, useAppSelector} from "../../../redux";
 
 
 
 const OrderQueueComponent = () => {
 
     const {client} = useAxios()
-    const [queue, setQueue] = useState<OrderQueue>(null)
-
-
+    const {orderQueue: queue} = useAppSelector(orderSelector)
+    const dispatch = useAppDispatch()
     useEffect(() => {
         getInitialQueue()
         const s = startEventSourcing()
 
-        return () => s.close()
+
     },[])
 
 
@@ -28,11 +27,13 @@ const OrderQueueComponent = () => {
             })
             s.onmessage = function (event){
                 const data = JSON.parse(event.data)
-                setQueue(data.queue)
+                dispatch(orderActions.setOrderQueue(data?.queue))
+            }
+            s.onerror = function (ev){
+                s.close()
             }
             return s
         }catch (e) {
-            alert(e)
             s?.close()
         }
     }
@@ -40,7 +41,7 @@ const OrderQueueComponent = () => {
     async function getInitialQueue(){
         try {
             const {data} = await client.get("/order/initialQueue")
-            setQueue(data?.queue)
+            dispatch(orderActions.setOrderQueue(data?.queue))
         }catch (e) {
             console.log(e)
             alert(e)

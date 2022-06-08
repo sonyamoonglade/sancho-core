@@ -50,7 +50,7 @@ const MasterForm:FC<masterFormProps> = ({appResponsiveState}) => {
                 name={'login'}
                 type={'text'}
                 placeholder={"Логин"}
-                v={masterFormState.login.value}
+                formValue={masterFormState.login}
                 setV={setMasterFormState}
                 onBlurValue={""}
                 minLength={15}
@@ -60,7 +60,8 @@ const MasterForm:FC<masterFormProps> = ({appResponsiveState}) => {
                 name={'password'}
                 type={'password'}
                 placeholder={"Пароль"}
-                v={masterFormState.password.value}
+                formValue={masterFormState.password}
+
                 setV={setMasterFormState}
                 onBlurValue={""}
                 minLength={15}

@@ -1,10 +1,12 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {OrderStatus, ResponseUserOrder} from "../../common/types";
+import {OrderQueue, OrderStatus, ResponseUserOrder} from "../../common/types";
+
 
 interface InitialOrderStateInterface {
     orderHistory: ResponseUserOrder[]
     hasMore: boolean
     isFetching: boolean
+    orderQueue: OrderQueue
 }
 
 
@@ -12,6 +14,7 @@ const initialState: InitialOrderStateInterface = {
     orderHistory: [],
     hasMore: true,
     isFetching: false,
+    orderQueue: null
 }
 
 
@@ -24,17 +27,14 @@ export const orderSlice = createSlice({
             const o = a.payload
             s.orderHistory = s.orderHistory.concat(o)
         },
-
         addManyAndSetHasMore: (s, a:PayloadAction<{orders: ResponseUserOrder[], hasMore: boolean}>) => {
             const {orders,hasMore} = a.payload
             s.orderHistory = orders
             s.hasMore = hasMore
         },
-
         setIsFetching: (s, a:PayloadAction<boolean>) => {
             s.isFetching = a.payload
         },
-
         cancelById: (s, a:PayloadAction<number>) => {
             const order_id = a.payload
 
@@ -48,8 +48,9 @@ export const orderSlice = createSlice({
             })
 
         },
-
-
+        setOrderQueue: (s, a:PayloadAction<OrderQueue>) => {
+            s.orderQueue = a.payload
+        }
 
     }
 })

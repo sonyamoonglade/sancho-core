@@ -1,0 +1,116 @@
+import {useMemo, useState} from "react";
+import {FormField} from "../../../../types/types";
+import {OrderQueue} from "../../../../common/types";
+
+interface WorkerSubmitOrderFormState {
+    verified_fullname_w:FormField
+    phone_number_w:FormField
+    address_w: FormField
+    entrance_number_w: FormField
+    flat_call_w: FormField
+    floor_w: FormField
+    is_delivered_w:{
+        value: boolean,
+        isValid: boolean
+    }
+}
+const formDefaults:WorkerSubmitOrderFormState = {
+    verified_fullname_w:{
+        value: "",
+        isValid: false
+    },
+    phone_number_w:{
+        value: "",
+        isValid: false
+    },
+    address_w: {
+        value:"",
+        isValid: false
+    },
+    entrance_number_w: {
+        value:"",
+        isValid: false
+    },
+    flat_call_w: {
+        value:"",
+        isValid: false
+    },
+    floor_w: {
+        value:"",
+        isValid: false
+    },
+    is_delivered_w: {
+        value: false,
+        isValid: true
+    },
+}
+
+export function useSubmitOrderForm (orderQueue: OrderQueue){
+    const [formValues,setFormValues] = useState<WorkerSubmitOrderFormState>(formDefaults)
+    function getFormValues(){
+        return {
+            phone_number:`+7${formValues.phone_number_w.value}`,
+            is_delivered: formValues.is_delivered_w.value,
+            verified_fullname: formValues.verified_fullname_w.value,
+            delivery_details: {
+                address: formValues.address_w.value,
+                flat_call: Number(formValues.flat_call_w.value),
+                entrance_number: Number(formValues.entrance_number_w.value),
+                floor: Number(formValues.floor_w.value)
+            }
+        }
+    }
+
+    function setFormDefaults(){
+        setFormValues(formDefaults)
+    }
+
+    function presetDeliveryDetails(){
+        if(orderQueue.verified.length === 0) { return }
+        const phoneNumber = formValues.phone_number_w.value
+        const order = orderQueue.waiting.find(o => o.phone_number === `+7${phoneNumber}`)
+        if(order?.is_delivered){
+            const {address, flat_call, entrance_number,floor} = order?.delivery_details
+
+            setFormValues((formState: WorkerSubmitOrderFormState) => {
+                return {...formState,
+                    address_w: {
+                        value: address,
+                        isValid: true
+                    },
+                    floor_w: {
+                        value: floor.toString(),
+                        isValid: true
+                    },
+                    entrance_number_w: {
+                        value: entrance_number.toString(),
+                        isValid: true
+                    },
+                    flat_call_w: {
+                        value: flat_call.toString(),
+                        isValid: true
+                    },
+                    is_delivered_w: {
+                        value: true,
+                        isValid: true
+                    }
+                }
+            })
+            return
+        }
+
+        return
+    }
+    const isSubmitButtonActive = useMemo(() => {
+        const values = Object.values(formValues)
+        const withAddressAndAllValid = values.every(v => v.isValid)
+        const withoutAddressAndRestValid = formValues.phone_number_w.isValid && !formValues.is_delivered_w.value && formValues.verified_fullname_w.isValid
+        const formValidity =  withAddressAndAllValid || withoutAddressAndRestValid
+
+        return formValidity
+
+    },[formValues])
+
+
+    return {getFormValues, setFormDefaults, presetDeliveryDetails,formValues,formDefaults,setFormValues,isSubmitButtonActive}
+}

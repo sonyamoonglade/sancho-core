@@ -2,12 +2,12 @@ import React, {FC, HTMLInputTypeAttribute, useEffect, useRef, useState} from 're
 
 import './form-input.styles.scss'
 import {useAppSelector, windowSelector} from "../../redux";
+import {FormField} from "../../types/types";
 
 interface formInputProps {
     name: string
     type: HTMLInputTypeAttribute
     placeholder: string
-    v: any
     setV: Function
     fieldValidationFn?: Function
     onBlurValue: string
@@ -15,12 +15,13 @@ interface formInputProps {
     extraClassName?: string
     Regexp?: RegExp
     minLength: number
+    isActiveForValidation?: boolean,
+    formValue: FormField
 }
 
 const FormInput:FC<formInputProps> = (props) => {
 
 
-    const [isValid, setIsValid] = useState<boolean>(false)
     const [inputTagClasses,setInputTagClasses] = useState<string[]>([])
     const {loadingSuccess,error} = useAppSelector(windowSelector)
     const inputRef = useRef<HTMLInputElement>(null)
@@ -31,19 +32,24 @@ const FormInput:FC<formInputProps> = (props) => {
         type,
         name,
         placeholder,
-        v,
+        formValue,
         setV,
         fieldValidationFn,
         onBlurValue,
         maxLength,
         extraClassName,
         Regexp,
-        minLength
+        minLength,
+        isActiveForValidation,
+
     } = props
+
+    const {value: v,isValid} = formValue
 
 
 
     useEffect(() => {
+
         if(!isValid){
            return setInputTagClasses((p) => ["--invalid"])
        }
@@ -52,18 +58,9 @@ const FormInput:FC<formInputProps> = (props) => {
            setInputTagClasses((p) => ["--valid"])
        }
 
-    },[isValid])
+    },[isValid,isActiveForValidation,isValid])
 
-    useEffect(() => {
-        if(loadingSuccess){
-            setIsValid(false)
-        }
-        if (error){
-            if(name === "phone_number"){
-                setIsValid(false)
-            }
-        }
-    },[loadingSuccess,error])
+
 
 
     return (
@@ -105,18 +102,15 @@ const FormInput:FC<formInputProps> = (props) => {
                         let validationResult = false
                         if(fieldValidationFn !== undefined){
                             validationResult = fieldValidationFn(inputValue, minLength)
-                            setIsValid(validationResult)
+                            setV((state: any) =>{
+                                const obj = {
+                                    value: e.target.value,
+                                    isValid: validationResult
+                                }
+                                return {...state, [e.target.name]: obj}
+                            })
                         }
-                        setV((state: any) =>{
 
-
-                            const obj = {
-                                value: e.target.value,
-                                isValid: validationResult
-                            }
-
-                            return {...state, [e.target.name]: obj}
-                        })
 
                     }}
                     className={`form_input`}

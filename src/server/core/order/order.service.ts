@@ -374,6 +374,8 @@ export class OrderService {
     })
 
     res.on("close", () => {
+      console.log("closing queue conn..")
+      this.events.removeAllListeners()
       res.end()
     })
 
@@ -415,7 +417,7 @@ export class OrderService {
             total_cart_price: o.total_cart_price,
             status: o.status,
             is_delivered: o.is_delivered,
-            delivery_details: o.delivery_details,
+            delivery_details: (o.is_delivered ? JSON.parse(o.delivery_details as unknown as string) : null),
             id: o.id,
             phone_number: o.phone_number,
           }
@@ -424,6 +426,13 @@ export class OrderService {
     // map verified
     const v = orders
         .filter(o => o.status === OrderStatus.verified)
+        .map(o => {
+          return {
+            ...o,
+            delivery_details: (o.is_delivered ? JSON.parse(o.delivery_details as unknown as string) : null)
+          }
+        })
+
     return {
       waiting: w,
       verified: v

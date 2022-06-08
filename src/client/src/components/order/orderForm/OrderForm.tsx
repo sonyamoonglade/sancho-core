@@ -36,7 +36,7 @@ const OrderForm:FC<orderFormProps> = ({formValues,setFormValues}) => {
                     name={"address"}
                     type={"text"}
                     placeholder={"Пушкинская 29а"}
-                    v={formValues["address"].value}
+                    formValue={formValues["address"]}
                     setV={setFormValues}
                     onBlurValue={"ул."}
                     minLength={5}
@@ -52,7 +52,7 @@ const OrderForm:FC<orderFormProps> = ({formValues,setFormValues}) => {
                         name={"entrance_number"}
                         type={"text"}
                         placeholder={"1"}
-                        v={formValues["entrance_number"].value}
+                        formValue={formValues["entrance_number"]}
                         setV={setFormValues}
                         onBlurValue={"подъезд"}
                         maxLength={2}
@@ -67,7 +67,7 @@ const OrderForm:FC<orderFormProps> = ({formValues,setFormValues}) => {
                         name={"flat_call"}
                         type={"text"}
                         placeholder={"5"}
-                        v={formValues["flat_call"].value}
+                        formValue={formValues["flat_call"]}
                         setV={setFormValues}
                         onBlurValue={"кв."}
                         maxLength={3}
@@ -82,7 +82,7 @@ const OrderForm:FC<orderFormProps> = ({formValues,setFormValues}) => {
                         name={"floor"}
                         type={"text"}
                         placeholder={"9"}
-                        v={formValues["floor"].value}
+                        formValue={formValues["floor"]}
                         setV={setFormValues}
                         onBlurValue={"этаж "}
                         maxLength={2}
@@ -104,12 +104,12 @@ const OrderForm:FC<orderFormProps> = ({formValues,setFormValues}) => {
                     name={'phone_number'}
                     type={'text'}
                     placeholder={'9524000770'}
-                    v={formValues["phone_number"].value}
+                    formValue={formValues["phone_number"]}
                     setV={setFormValues}
                     onBlurValue={'+7'}
                     maxLength={10}
                     fieldValidationFn={validatePhoneNumber}
-                    Regexp={new RegExp("[A-Za-z]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
+                    Regexp={new RegExp("!?[A-Za-z]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
                     extraClassName={"phone_number_input"}
                     minLength={10}
 
