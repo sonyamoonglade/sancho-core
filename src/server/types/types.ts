@@ -12,3 +12,6 @@ export enum CookieNames {
 for(const [_,role] of Object.entries(AppRoles)){
     APP_ROLES.push(role)
 }
+
+export const ORDER_HAS_CREATED = "order_has_created"
+export const ORDER_QUEUE_HAS_MODIFIED = "order_queue_has_modified"

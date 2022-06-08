@@ -29,13 +29,13 @@ export const getOrderHistory = (client: AxiosInstance, to: number) => async (dis
 
 }
 
-export const cancelOrder = (client:AxiosInstance, orderId: number) => async (dispatch: AppDispatch) => {
+export const cancelOrder = (client:AxiosInstance, orderId: number, phoneNumber: string) => async (dispatch: AppDispatch) => {
 
     try {
-        const cancel_explanation = USER_CANCEL_EXPLANATION
+        const uce = USER_CANCEL_EXPLANATION
         const body = {
             order_id: orderId,
-            cancel_explanation
+            cancel_explanation: `${uce} `
         }
 
         await client.put("order/cancelOrder", body)

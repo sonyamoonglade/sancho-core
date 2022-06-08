@@ -22,12 +22,13 @@ import {
 } from "../../../common/types";
 import {CookieService} from "../../shared/cookie/cookie.service";
 import {DELIVERY_PUNISHMENT_THRESHOLD, DELIVERY_PUNISHMENT_VALUE} from "../../../common/constants";
-import {BehaviorSubject} from "rxjs";
+import {EventEmitter} from "events";
+import {ORDER_HAS_CREATED, ORDER_QUEUE_HAS_MODIFIED} from "../../types/types";
 
 @Injectable()
 export class OrderService {
 
-  q:BehaviorSubject<Order> = new BehaviorSubject<Order>(null)
+  private events: EventEmitter
 
   constructor(private validationService:ValidationService,
               private orderRepository:OrderRepository,
@@ -36,6 +37,7 @@ export class OrderService {
               private productRepository:ProductRepository,
               private cookieService: CookieService,
               ) {
+    this.events = new EventEmitter()
   }
 
   public async createUserOrder(createUserOrderDto:CreateUserOrderDto, res:Response,req: extendedRequest){
@@ -64,7 +66,7 @@ export class OrderService {
         delivery_details: userOrder.delivery_details ? userOrder.delivery_details : null,
         total_cart_price
       }
-      this.q.next(createdOrder)
+      this.events.emit(ORDER_HAS_CREATED)
       return res.status(201).send({order:responseOrder})
     }catch (e) {
       throw new UnexpectedServerError()
@@ -111,7 +113,7 @@ export class OrderService {
         delivery_details: masterOrder.delivery_details ? masterOrder.delivery_details : null,
         total_cart_price
       }
-
+      this.events.emit(ORDER_HAS_CREATED)
       return res.status(201).send({order:responseOrder})
 
     }catch (e){
@@ -144,7 +146,7 @@ export class OrderService {
       }
 
       await this.orderRepository.update(orderId,updated)
-
+      this.events.emit(ORDER_QUEUE_HAS_MODIFIED)
       return res.status(200).send({status:OrderStatus.verified})
     }catch (e) {
       if(e.message.includes('verification')){
@@ -177,14 +179,11 @@ export class OrderService {
         }
         await this.orderRepository.update(o.id,updated)
         this.cookieService.setCanCancelCookie(res,5)
+        this.events.emit(ORDER_QUEUE_HAS_MODIFIED)
         return res.status(200).end()
       }catch (e) {
         throw new UnexpectedServerError("Ошибка отмены заказа")
       }
-
-
-
-
     }
     // worker cancels
     if(!cancelOrderDto.cancel_explanation) {
@@ -201,9 +200,8 @@ export class OrderService {
 
       await this.orderRepository.update(cancelOrderDto.order_id,updated)
       const cancelWorkerLogin:string = await this.userService.getMasterLogin(user_id)
-      return res
-        .status(200)
-        .send(
+      this.events.emit(ORDER_QUEUE_HAS_MODIFIED)
+      return res.status(200).send(
           {message:`Заказ ${cancelOrderDto.order_id} успешно отменен! Отменил - ${cancelWorkerLogin}`
         })
     }catch (e) {
@@ -353,34 +351,58 @@ export class OrderService {
 
   }
 
-  public async orderQueue(res:Response){
+  public async orderQueue(res: Response) {
+
+
+    res.writeHead(200, {
+      "Content-Type": "text/event-stream",
+      "Connection": "keep-alive",
+      "Cache-Control": "no-cache"
+    })
+
+
+    this.events.on(ORDER_HAS_CREATED, async () => {
+      const queue = await this.fetchOrderQueue()
+      const chunk = `data: ${JSON.stringify({queue})}\n\n`
+      return res.write(chunk)
+    })
+
+    this.events.on(ORDER_QUEUE_HAS_MODIFIED, async () => {
+      const queue = await this.fetchOrderQueue()
+      const chunk = `data: ${JSON.stringify({queue})}\n\n`
+      return res.write(chunk)
+    })
+
+    res.on("close", () => {
+      res.end()
+    })
+
+
+  }
+
+  private async fetchOrderQueue(): Promise<OrderQueue> {
     const sql = `
-      select o.id,o.cart,o.total_cart_price,o.status,o.is_delivered,o.delivery_details,o.created_at,
-      o.verified_fullname,u.phone_number from ${orders} o join ${users} u on o.user_id= 
-      u.id where o.status = '${OrderStatus.waiting_for_verification}' or o.status = '${OrderStatus.verified}'
-    `
-    const result:VerifiedQueueOrder[] = await this.orderRepository.customQuery(sql)
+        select o.id,o.cart,o.total_cart_price,o.status,o.is_delivered,o.delivery_details,o.created_at,
+        o.verified_fullname,u.phone_number from ${orders} o join ${users} u on o.user_id= 
+        u.id where o.status = '${OrderStatus.waiting_for_verification}' or o.status = '${OrderStatus.verified}'
+      `
+    const result: VerifiedQueueOrder[] = await this.orderRepository.customQuery(sql)
 
     const queue = this.mapOrdersToQueueTypes(result)
-
-    return res.status(200).send({queue}).end()
+    return queue
   }
 
-  public eventOrderQueue(res:Response){
-    let t = setTimeout(() => {
-      if(res.finished){
-        return clearTimeout(t)
-      }
-      return res.end()
-    },5000)
 
-    this.q.subscribe((v) => {
-      if(v !== null){
-        clearTimeout(t)
-        this.orderQueue(res)
-      }
-    })
+  public async initialQueue(res: Response){
+    try {
+      const queue = await this.fetchOrderQueue()
+
+      res.status(200).send({queue})
+    }catch (e) {
+      throw new UnexpectedServerError("queue err")
+    }
   }
+
 
   mapOrdersToQueueTypes(orders:VerifiedQueueOrder[]):OrderQueue{
     //map waitings

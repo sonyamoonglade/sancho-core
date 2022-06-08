@@ -61,6 +61,11 @@ export class OrderController {
   orderQueue(@Res() res: Response){
     return this.orderService.orderQueue(res)
   }
+  @Get("/initialQueue")
+  @Role([AppRoles.worker])
+  initialQueue(@Res() res:Response){
+    return this.orderService.initialQueue(res)
+  }
 
 
 }

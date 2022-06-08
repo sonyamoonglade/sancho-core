@@ -52,7 +52,6 @@ const SubmitOrderModal = () => {
             const body = getFormValues()
             const response = await client.put("order/verifyOrder", body)
             if(response.status === 200){
-                dispatch(fetchOrderQueue(client, null))
                 dispatch(windowActions.toggleSubmitOrder())
             }
         }catch (e) {

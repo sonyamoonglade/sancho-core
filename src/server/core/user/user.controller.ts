@@ -23,7 +23,7 @@ export class UserController {
   }
 
   @Post("/loginMaster")
-  @UseGuards(RegisterSpamGuard)
+  // @UseGuards(RegisterSpamGuard)
   loginMaster(@Res() res:Response, @Body() b: LoginMasterUserDto){
     return this.userService.loginMaster(res,b)
   }

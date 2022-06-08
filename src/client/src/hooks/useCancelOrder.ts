@@ -1,5 +1,5 @@
 import {useRef, useState} from "react";
-import {cancelOrder, useAppDispatch} from "../redux";
+import {cancelOrder, useAppDispatch, useAppSelector, userSelector} from "../redux";
 import {useAxios} from "./useAxios";
 import {OrderStatus, ResponseUserOrder} from "../common/types";
 
@@ -15,6 +15,7 @@ export function useCancelOrder (order:ResponseUserOrder){
     const animationRef = useRef<HTMLLIElement>(null)
     const cancelIconAnimationRef = useRef<HTMLSpanElement>(null)
     const dispatch = useAppDispatch()
+    const {phoneNumber} = useAppSelector(userSelector)
     const {client} = useAxios()
 
     let screenWidthX: number
@@ -72,7 +73,7 @@ export function useCancelOrder (order:ResponseUserOrder){
 
 
         if(isCanceling && order.status === OrderStatus.waiting_for_verification){
-            dispatch(cancelOrder(client,order.id))
+            dispatch(cancelOrder(client,order.id,phoneNumber))
         }
 
         if(animationRef.current !== null && cancelIconAnimationRef.current !== null){

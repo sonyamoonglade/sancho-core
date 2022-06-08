@@ -1,13 +1,10 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {OrderQueue, OrderStatus, ResponseUserOrder} from "../../common/types";
-import app from "../../App";
-
+import {OrderStatus, ResponseUserOrder} from "../../common/types";
 
 interface InitialOrderStateInterface {
     orderHistory: ResponseUserOrder[]
     hasMore: boolean
     isFetching: boolean
-    orderQueue: OrderQueue
 }
 
 
@@ -15,7 +12,6 @@ const initialState: InitialOrderStateInterface = {
     orderHistory: [],
     hasMore: true,
     isFetching: false,
-    orderQueue: null
 }
 
 
@@ -53,9 +49,7 @@ export const orderSlice = createSlice({
 
         },
 
-        setOrderQueue: (s, a:PayloadAction<OrderQueue>) => {
-            s.orderQueue = a.payload
-        }
+
 
     }
 })
