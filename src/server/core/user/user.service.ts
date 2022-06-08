@@ -19,7 +19,7 @@ import {
   UserDoesNotExistException
 } from "../exceptions/user.exceptions";
 import {APP_ROLES} from "../../types/types";
-import {AppRoles} from "../../../common/types";
+import {AppRoles, DeliveryDetails} from "../../../common/types";
 import {LoginMasterUserDto} from "./dto/login-master-user.dto";
 
 
@@ -27,11 +27,17 @@ import {LoginMasterUserDto} from "./dto/login-master-user.dto";
 export class UserService {
   constructor(private sessionService:SessionService,
               private userRepository:UserRepository,
-              private validationService: ValidationService) {
+              private validationService: ValidationService) {}
+
+
+
+
+  async updateUsersRememberedDeliveryAddress(userId: number, deliveryDetails: string): Promise<void>{
+    const updated:Partial<User> = {
+      remembered_delivery_address: deliveryDetails as unknown as DeliveryDetails
+    }
+    await this.userRepository.update(userId, updated)
   }
-
-
-
 
   async loginMaster(res: Response, b: LoginMasterUserDto){
     const {login, password} = b

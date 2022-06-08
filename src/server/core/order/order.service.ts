@@ -56,7 +56,15 @@ export class OrderService {
         status:OrderStatus.waiting_for_verification,
         created_at: new Date(Date.now())
       }
+
+
       const createdOrder = await this.orderRepository.save(userOrder)
+
+      if(userOrder.is_delivered === true){
+        const stringDetails: string = JSON.stringify(userOrder.delivery_details)
+        await this.userService.updateUsersRememberedDeliveryAddress(user_id,stringDetails)
+      }
+      
       const responseOrder:ResponseUserOrder = {
         id: createdOrder.id,
         cart: userOrder.cart,

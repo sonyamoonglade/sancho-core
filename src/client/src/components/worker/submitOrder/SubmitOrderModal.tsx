@@ -45,7 +45,6 @@ const SubmitOrderModal = () => {
 
     return (
         <div className={worker.submitOrder ? 'worker_modal --w-opened': 'worker_modal'}>
-
             <p className='submit_title'>Подтвердить заказ</p>
             <RiSettings4Line className='submit_settings' size={25} />
             <SubmitOrderForm
