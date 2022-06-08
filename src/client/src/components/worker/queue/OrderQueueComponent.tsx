@@ -2,13 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {useAxios} from "../../../hooks/useAxios";
 import OrderHistoryItem from "../../orderHistory/OrderHistoryItem";
 import "./order-queue.styles.scss"
-import {fetchOrderQueue, orderSelector, useAppDispatch, useAppSelector} from "../../../redux";
 import {OrderQueue} from "../../../common/types";
-interface ResponseOrderQueueInterface {
-    queue: {
-
-    }
-}
 
 
 

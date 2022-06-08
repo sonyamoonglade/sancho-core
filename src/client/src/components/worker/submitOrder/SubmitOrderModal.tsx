@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from 'react';
-import {fetchOrderQueue, useAppDispatch, useAppSelector, windowActions, windowSelector} from "../../../redux";
+import {useAppDispatch, useAppSelector, windowActions, windowSelector} from "../../../redux";
 import FormInput from "../../formInput/FormInput";
 import {useFormValidations} from "../../../hooks/useFormValidations";
 import "./submit-order.styles.scss"
 import "../../order/orderForm/order-form.styles.scss"
 import {RiSettings4Line} from "react-icons/ri";
-import {UserOrderFormState, UserOrderFormValuesInterface} from "../../order/userOrder/Order";
 import {useAxios} from "../../../hooks/useAxios";
 const SubmitOrderModal = () => {
 
