@@ -33,7 +33,7 @@ export type nutrients = {
 
 export type Product = {
   id: number
-  category: string
+  category: Categories
   features: Features
   name: string
   translate: string
@@ -50,7 +50,7 @@ export type LocalStorageCartProduct = {
 
 export type DatabaseCartProduct = {
   id: number
-  category: string
+  category: Categories
   quantity: number
   translate: string
   price: number

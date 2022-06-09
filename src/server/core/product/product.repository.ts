@@ -4,14 +4,14 @@ import {Product, products} from "../entities/Product";
 import {query_builder} from "../query_builder/provider-name";
 import {filter, QueryBuilder} from "../query_builder/QueryBuilder";
 import {pg_conn} from "../database/db_provider-name";
-import {PoolClient} from "pg";
+import {Pool, PoolClient} from "pg";
 
 
 @Injectable()
 export class ProductRepository implements Repository<Product>{
 
   constructor(@Inject(query_builder) private qb:QueryBuilder,
-              @Inject(pg_conn) private db:PoolClient) {
+              @Inject(pg_conn) private db:Pool) {
   }
 
   async delete(id: number): Promise<void | undefined> {
@@ -33,7 +33,7 @@ export class ProductRepository implements Repository<Product>{
 
   async update(id: number, updated: Partial<Product>): Promise<void> {
     const [updateSql,values] = this.qb.ofTable(products).update<Product>({where:{id},set:updated})
-    const {rows} = await this.db.query(updateSql,values)
+    await this.db.query(updateSql,values)
     return
   }
 
@@ -49,7 +49,7 @@ export class ProductRepository implements Repository<Product>{
     return rows as Product []
   }
 
-  async customQuery(query: string): Promise<any[]> {
+  async customQuery(query: string): Promise<Product[]> {
     const {rows} = await this.db.query(query)
     return rows as Product[]
   }

@@ -43,12 +43,10 @@ export class OrderService {
   public async createUserOrder(createUserOrderDto:CreateUserOrderDto, res:Response,req: extendedRequest){
 
     const {user_id} = req
-
     try {
 
       let total_cart_price = await this.calculateTotalCartPrice(createUserOrderDto.cart)
       total_cart_price = this.applyDeliveryPunishment(total_cart_price)
-
       const userOrder:Order = {
         total_cart_price,
         ...createUserOrderDto,
@@ -57,9 +55,7 @@ export class OrderService {
         created_at: new Date(Date.now())
       }
 
-
       const createdOrder = await this.orderRepository.save(userOrder)
-
       if(userOrder.is_delivered === true){
         const stringDetails: string = JSON.stringify(userOrder.delivery_details)
         await this.userService.updateUsersRememberedDeliveryAddress(user_id,stringDetails)
@@ -86,7 +82,6 @@ export class OrderService {
     try {
 
       let user_id = await this.userService.getUserId(createMasterOrderDto.phone_number)
-
       if(!user_id){
         const registeredUser:User = await this.userService
           .createUser(
@@ -96,6 +91,7 @@ export class OrderService {
 
         user_id = registeredUser.id
       }
+
       let total_cart_price = await this.calculateTotalCartPrice(createMasterOrderDto.cart)
       total_cart_price = this.applyDeliveryPunishment(total_cart_price)
 
@@ -280,13 +276,12 @@ export class OrderService {
 
   }
 
-  public async getLastVerifiedOrder(user_id:number):Promise<Order | undefined>{
+  public async getLastVerifiedOrder(user_id:number):Promise<Partial<Order>>{
     const ord = (await this.orderRepository.get({where:{user_id}}))[0]
     return ord
   }
 
   public async hasWaitingOrder(user_id: number, phone_number?:string):Promise<{id: number | null, has: boolean}>{
-
     if(!phone_number) {
       const ord = (await this.orderRepository.get({ where: {
         user_id, status:OrderStatus.waiting_for_verification },returning:["id"]}
@@ -322,7 +317,6 @@ export class OrderService {
   }
 
   public async calculateTotalCartPrice(cart:DatabaseCartProduct[]):Promise<number>{
-    // select from products where id = 1 or id = 2 or id = 5
     const product_ids = []
 
     for(const product of cart){
@@ -354,12 +348,11 @@ export class OrderService {
         a += c.price * product_quantity
         return a
       },0)
-
       return total_cart_price
 
     }catch (e) {
 
-      throw new UnexpectedServerError()
+      throw new e
     }
 
   }

@@ -60,10 +60,6 @@ export class UserService {
   async login(req:extendedRequest,res:Response,body:{phone_number:string}){
 
   const {phone_number} = body
-    const validationResult =
-      (this.validationService.validateObjectFromSqlInjection(body)
-      && this.validationService.validatePhoneNumber(phone_number))
-    if(!validationResult) throw new ValidationErrorException()
 
     const user:Partial<User> = (
       await this.userRepository.get(
@@ -94,9 +90,6 @@ export class UserService {
 
   async createUser(res:Response,registerUserDto:RegisterUserDto, quiet:boolean = false):Promise<User | Response>{
     const {phone_number} = registerUserDto
-    const validationResult = this.validationService.validatePhoneNumber(phone_number)
-      && this.validationService.validateObjectFromSqlInjection(registerUserDto)
-    if(!validationResult) throw new ValidationErrorException()
 
     try {
         const basicUser:User = {
@@ -109,8 +102,8 @@ export class UserService {
 
       if(quiet) return user
 
-        this.sessionService.attachCookieToResponse(res,SID)
-        return res.status(201).end()
+      this.sessionService.attachCookieToResponse(res,SID)
+      return res.status(201).end()
     }catch (e) {
       const msg:string = e.message
       if(msg.includes('duplicate')) throw new PhoneIsAlreadyTakenException(phone_number)
@@ -176,7 +169,6 @@ export class UserService {
   async getUserRole(user_id: number):Promise<string>{
 
     const user = (await this.userRepository.get({where:{id:user_id},returning:['role']}))[0]
-
     if(!user) throw new UserDoesNotExistException(user_id)
 
     return user.role

@@ -50,7 +50,7 @@ export type LocalStorageCartProduct = {
 
 export type DatabaseCartProduct = {
   id: number
-  category: string
+  category: Categories
   quantity: number
   translate: string
   price: number

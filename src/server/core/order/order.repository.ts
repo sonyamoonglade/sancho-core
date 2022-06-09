@@ -4,7 +4,7 @@ import {filter, QueryBuilder} from "../query_builder/QueryBuilder";
 import {Order, orders} from "../entities/Order";
 import {query_builder} from "../query_builder/provider-name";
 import {pg_conn} from "../database/db_provider-name";
-import {PoolClient} from "pg";
+import {Pool, PoolClient} from "pg";
 import {RepositoryException} from "../exceptions/repository.exceptions";
 
 
@@ -12,7 +12,7 @@ import {RepositoryException} from "../exceptions/repository.exceptions";
 
 export class OrderRepository implements Repository<Order>{
 
-  constructor(@Inject(query_builder) private qb:QueryBuilder, @Inject(pg_conn) private db:PoolClient) {
+  constructor(@Inject(query_builder) private qb:QueryBuilder, @Inject(pg_conn) private db:Pool) {
   }
 
   async delete(id: number): Promise<void | undefined> {
@@ -26,7 +26,7 @@ export class OrderRepository implements Repository<Order>{
     return rows[0] ? rows[0] as Order : undefined
   }
 
-  async save(dto: any): Promise<Order | undefined> {
+  async save(dto: any): Promise<Order> {
     const [insertSql,insertValues] = this.qb.ofTable(orders).insert<Order>(dto)
     const {rows}  = await this.db.query(insertSql,insertValues)
 
@@ -52,7 +52,7 @@ export class OrderRepository implements Repository<Order>{
     return rows
   }
 
-  async get(expression: filter<Order>): Promise<Order[]> {
+  async get(expression: filter<Order>): Promise<Partial<Order>[]> {
     const selectSql = this.qb.ofTable(orders).select<Order>(expression)
     const {rows} = await this.db.query(selectSql)
 

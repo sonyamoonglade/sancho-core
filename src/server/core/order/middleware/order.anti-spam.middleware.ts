@@ -19,6 +19,7 @@ export class OrderAntiSpamMiddleware implements NestMiddleware {
   }
   async use(req: any, res: any, next: (error?: any) => void) {
     const {user_id} = req
+
     const role = await this.userService.getUserRole(user_id)
     // createMasterOrder dto (master | worker creates an order)
     if(role !== AppRoles.user){
@@ -40,7 +41,7 @@ export class OrderAntiSpamMiddleware implements NestMiddleware {
   }
 
 
-  handleVerifiedOrderTimeOperations(order:Order){
+  handleVerifiedOrderTimeOperations(order:Partial<Order>){
     const creationTime = dayjs(order.created_at)
     const now = dayjs()
 

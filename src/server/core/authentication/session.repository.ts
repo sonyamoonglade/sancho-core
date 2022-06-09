@@ -27,8 +27,10 @@ export class SessionRepository implements Repository<Session> {
   }
 
   async getById(id: string): Promise<Session | undefined> {
+
     const selectSql =this.qb.ofTable(sessions).select<Session>({where:{session_id: id}})
     const {rows} = await this.db.query(selectSql)
+
     return rows[0] as unknown as Session
   }
 
@@ -45,6 +47,7 @@ export class SessionRepository implements Repository<Session> {
   }
 
   async get(expression: filter<Session>): Promise<Session[]> {
+
     try {
       const selectSql = this.qb.ofTable(sessions).select<Session>(expression)
       const {rows} = await this.db.query(selectSql)

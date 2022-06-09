@@ -12,8 +12,8 @@ export class PreventAuthedGuard implements CanActivate {
     constructor(private sessionService: SessionService,
                 private orderService: OrderService) {
     }
-
     async canActivate(ctx: ExecutionContext): Promise<boolean> {
+        // prevents users with sid to login with non-verified order
 
         const req:Request = ctx.switchToHttp().getRequest()
 

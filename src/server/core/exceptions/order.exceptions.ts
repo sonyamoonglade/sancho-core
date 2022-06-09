@@ -13,7 +13,7 @@ export class CancelExplanationHasNotBeenProvided extends HttpException{
 }
 export class LastOrderIsNotYetVerified extends HttpException {
   constructor(extraMsg?: string) {
-    super(`${extraMsg !== undefined ? extraMsg : ""}Ваш последний заказ еще не подтвежден. Дождитесь подтверждения или отмените заказ!`,HttpStatus.BAD_REQUEST);
+    super(`${extraMsg !== undefined ? extraMsg : ""}Ваш последний заказ еще не подтвежден. Дождитесь подтверждения или отмените заказ!`,HttpStatus.FORBIDDEN);
   }
 }
 
