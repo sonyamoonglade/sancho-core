@@ -192,11 +192,15 @@ describe('AppController (e2e)', () => {
 
         app = moduleFixture.createNestApplication();
         app.useGlobalPipes(new ValidationPipe())
-        sessionRepository = moduleFixture.get(SessionRepository)
+
         sessionService = moduleFixture.get(SessionService)
         orderService = moduleFixture.get(OrderService)
         userService = moduleFixture.get(UserService)
+
+        sessionRepository = moduleFixture.get(SessionRepository)
         userRepository = moduleFixture.get(UserRepository)
+        orderRepository = moduleFixture.get(OrderRepository)
+
         app.use(cookieParser())
 
         await app.init();
@@ -247,7 +251,8 @@ describe('AppController (e2e)', () => {
                 expect(userService.updateUsersRememberedDeliveryAddress).not.toHaveBeenCalled()
             })
     })
-    it("/createMasterOrder (POST)", () => {
+
+    it("/createMasterOrder (POST) user is already in system. Should not createUser. Expect 201", () => {
         const dto:CreateMasterOrderDto = {
             cart: mockCart,
             is_delivered: false,
@@ -259,6 +264,7 @@ describe('AppController (e2e)', () => {
         jest.spyOn(userRepository,"get")
         jest.spyOn(userService,"createUser")
         jest.spyOn(userService,"updateUsersRememberedDeliveryAddress")
+        jest.spyOn(orderRepository,"save")
 
         return request(app.getHttpServer())
             .post('/api/v1/order/createMasterOrder')
@@ -268,10 +274,12 @@ describe('AppController (e2e)', () => {
             .then(res => {
 
                 const {order} = res.body
-                expect(userRepository.get).toHaveBeenCalled()
                 expect(order.verified_fullname).toBe(dto.verified_fullname)
                 expect(order.cart).toHaveLength(dto.cart.length)
                 expect(order.status).toBe(OrderStatus.verified)
+
+                expect(orderRepository.save).toHaveBeenCalled()
+                expect(userRepository.get).toHaveBeenCalled()
                 expect(userService.createUser).not.toHaveBeenCalled()
                 expect(userService.updateUsersRememberedDeliveryAddress).not.toHaveBeenCalled()
             })

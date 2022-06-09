@@ -15,7 +15,6 @@ export class AuthorizationGuard implements CanActivate {
       if(req.url.endsWith("/catalogProducts")) { return true }
 
       const {user_id} = req
-      console.log(user_id)
       try {
         const userRole = (await this.userService.getUserRole(user_id))
         const handlerRoles:string[] = this.reflector.get(ROLES_META_KEY, context.getHandler())

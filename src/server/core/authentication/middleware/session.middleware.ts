@@ -21,7 +21,6 @@ export class SessionMiddleware implements NestMiddleware{
     try {
       if(SID == undefined) return res.status(401).end()
       const session:Session = await this.sessionRepository.getById(SID)
-      console.log(session,SID)
       if(session) {
         const { user_id } = session
         req.user_id = user_id
