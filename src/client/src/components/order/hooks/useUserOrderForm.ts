@@ -1,5 +1,5 @@
 import {useMemo, useState} from "react";
-import {UserOrderFormValuesInterface, UserOrderFormState} from "../userOrder/Order";
+import {UserOrderFormState, UserOrderFormValuesInterface} from "../userOrder/Order";
 import {DeliveryDetails} from "../../../common/types";
 
 export function useUserOrderForm (){

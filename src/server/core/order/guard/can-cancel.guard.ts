@@ -1,5 +1,4 @@
 import {CanActivate, ExecutionContext, Injectable} from "@nestjs/common";
-import {Request} from "express";
 import {extendedRequest} from "../../types/types";
 import {UserService} from "../../user/user.service";
 import {AppRoles} from "../../../../common/types";

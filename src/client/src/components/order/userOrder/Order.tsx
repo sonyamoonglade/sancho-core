@@ -4,7 +4,6 @@ import './order.styles.scss'
 import {TiArrowBack} from "react-icons/ti";
 import {GrFormClose} from 'react-icons/gr'
 import {
-    orderActions,
     productActions,
     useAppDispatch,
     useAppSelector,
@@ -23,8 +22,6 @@ import {useAuthentication} from "../../../hooks/useAuthentication";
 import {useUserOrderForm} from "../hooks/useUserOrderForm";
 import {DeliveryDetails} from "../../../common/types";
 import {FormField} from "../../../types/types";
-import {doc} from "prettier";
-
 
 
 export interface UserOrderFormValuesInterface {

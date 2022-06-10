@@ -5,9 +5,9 @@ import {CreateProductDto} from "./dto/create-product.dto";
 import {Product} from "../entities/Product";
 import {UnexpectedServerError} from "../exceptions/unexpected-errors.exceptions";
 import {
-  InvalidCategoryException,
-  ProductAlreadyExistsException,
-  ProductDoesNotExistException
+    InvalidCategoryException,
+    ProductAlreadyExistsException,
+    ProductDoesNotExistException
 } from "../exceptions/product.exceptions";
 import {ValidationService} from "../validation/validation.service";
 import {ValidationErrorException} from "../exceptions/validation.exceptions";

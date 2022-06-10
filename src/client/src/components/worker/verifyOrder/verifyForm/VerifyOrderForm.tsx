@@ -1,10 +1,8 @@
-import React, {FC, useEffect, useState} from 'react';
+import React, {FC, useEffect} from 'react';
 import FormInput from "../../../formInput/FormInput";
-import {useAppDispatch, useAppSelector, windowSelector} from "../../../../redux";
+import {useAppSelector, windowSelector} from "../../../../redux";
 import {FormField} from "../../../../types/types";
 import {useFormValidations} from "../../../../hooks/useFormValidations";
-import {OrderQueue} from "../../../../common/types";
-import {useVerifyOrderForm} from "../hooks/useVerifyOrderForm";
 
 
 interface WorkerSubmitOrderFormState {

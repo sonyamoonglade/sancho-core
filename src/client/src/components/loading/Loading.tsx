@@ -1,11 +1,10 @@
-import React, {FC, useEffect, useMemo} from 'react';
+import React, {FC, useEffect} from 'react';
 import {useAppDispatch, useAppSelector, windowActions, windowSelector} from "../../redux";
 import './loading.styles.scss'
 import {SpinnerCircular} from 'spinners-react'
 import {FaCheckCircle} from 'react-icons/fa'
 import {AiFillCloseCircle} from 'react-icons/ai'
 import {useDotsAnimation} from "./hooks/useDotsAnimation";
-import {useLoadingAndError} from "./hooks/useLoadingAndError";
 
 interface loadingProps {
    duration: number

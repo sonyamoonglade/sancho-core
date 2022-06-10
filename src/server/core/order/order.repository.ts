@@ -4,7 +4,7 @@ import {filter, QueryBuilder} from "../query_builder/QueryBuilder";
 import {Order, orders} from "../entities/Order";
 import {query_builder} from "../query_builder/provider-name";
 import {pg_conn} from "../database/db_provider-name";
-import {Pool, PoolClient} from "pg";
+import {Pool} from "pg";
 import {RepositoryException} from "../exceptions/repository.exceptions";
 
 

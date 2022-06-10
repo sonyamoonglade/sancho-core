@@ -6,6 +6,7 @@ import {UnexpectedServerError} from "../exceptions/unexpected-errors.exceptions"
 import {Response} from "express";
 import SimpleCrypto from "simple-crypto-js";
 import {CookieNames} from "../../types/types";
+
 require('dotenv').config()
 
 const scrypto = require("simple-crypto-js").default

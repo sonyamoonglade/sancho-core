@@ -2,6 +2,7 @@ import React from 'react';
 import {FaUserCircle} from "react-icons/fa";
 import './worker-nav.styles.scss'
 import {useAppDispatch, userActions} from "../../../redux";
+
 const WorkerNavigationRight = () => {
 
     const dispatch = useAppDispatch()

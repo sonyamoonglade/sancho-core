@@ -1,6 +1,5 @@
 import {Body, Controller, Get, Post, Put, Query, Req, Res, UseGuards} from "@nestjs/common";
 import {extendedRequest, getUserParamsInterface} from "../types/types";
-import {RegisterUserDto,} from "./dto/register-user.dto";
 import {UserService} from "./user.service";
 import {Request, Response} from "express";
 import {CreateMasterUserDto} from "./dto/create-master-user.dto";

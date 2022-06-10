@@ -1,6 +1,6 @@
 import {Product} from "../../entities/Product";
 import {Categories, Features} from "../../../../common/types";
-import {isDefined, IsDefined, IsInstance, IsNumber, IsString} from "class-validator";
+import {IsDefined, IsNumber, IsString} from "class-validator";
 
 
 export class CreateProductDto implements Partial<Product> {

@@ -1,8 +1,4 @@
-import {useEffect} from "react";
-import {Loading, LoadingSteps} from "../Loading";
-import {useAppDispatch, windowActions} from "../../../redux";
-
-
+import {Loading} from "../Loading";
 
 
 export function useLoadingAndError({loading,duration,stopDotsAnimation,dots,stopDots,loadingStep,stepsAnimation,dotsAnimation}: Loading ){

@@ -3,20 +3,20 @@ import {MasterFormState, MasterFormValues} from "../MasterLogin";
 
 export function useMasterLoginForm(){
 
-    const [masterFormState, setMasterFormState] = useState<MasterFormState>({
+    const [formValues, setFormValues] = useState<MasterFormState>({
         login:{
             value: "",
             isValid: false
         },
         password: {
             value: "",
-            isValid: true
+            isValid: false
         }
     })
     function getFormValues():MasterFormValues {
         return {
-            login: masterFormState.login.value,
-            password: masterFormState.password.value
+            login: formValues.login.value,
+            password: formValues.password.value
         }
     }
     const defaultValues:MasterFormState = {
@@ -30,14 +30,14 @@ export function useMasterLoginForm(){
         }
     }
     function setDefaultValues(){
-        setMasterFormState(defaultValues)
+        setFormValues(defaultValues)
     }
 
     const formValidity = useMemo(() => {
         return checkIsAllValid()
-    },[masterFormState])
+    },[formValues])
     function checkIsAllValid(){
-        for(const v of Object.values(masterFormState)){
+        for(const v of Object.values(formValues)){
             if(v.isValid !== true){
                 return false
             }
@@ -46,5 +46,5 @@ export function useMasterLoginForm(){
     }
 
 
-    return {getFormValues, formValidity, setMasterFormState, masterFormState}
+    return {getFormValues, formValidity, formValues, setFormValues}
 }

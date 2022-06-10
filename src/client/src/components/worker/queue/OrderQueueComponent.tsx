@@ -5,7 +5,6 @@ import "./order-queue.styles.scss"
 import {orderActions, orderSelector, useAppDispatch, useAppSelector} from "../../../redux";
 
 
-
 const OrderQueueComponent = () => {
 
     const {client} = useAxios()

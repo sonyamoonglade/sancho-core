@@ -1,4 +1,4 @@
-    import React, {FC} from 'react';
+import React, {FC} from 'react';
 
 import PromotionList from "../promotion/PromotionList";
 import '../layout/layout.styles.scss'

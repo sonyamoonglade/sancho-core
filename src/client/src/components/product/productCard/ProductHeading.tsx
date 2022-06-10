@@ -1,6 +1,5 @@
 import React, {FC} from 'react';
 import {currency} from "../../../common/constants";
-import {useMediaQuery} from "react-responsive";
 
 
 interface productHeadingInterface {

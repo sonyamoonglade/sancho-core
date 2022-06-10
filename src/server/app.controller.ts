@@ -1,6 +1,6 @@
-import {Controller, Get, Req, Res} from "@nestjs/common";
+import {Controller, Get, Res} from "@nestjs/common";
 
-import {Request, Response} from "express";
+import {Response} from "express";
 
 
 @Controller()

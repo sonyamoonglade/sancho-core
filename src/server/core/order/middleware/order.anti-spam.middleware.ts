@@ -4,7 +4,7 @@ import * as relativeTime from "dayjs/plugin/relativeTime";
 import {Order} from "../../entities/Order";
 import {LastOrderIsNotYetVerified, OrderCreationLimitExceeded} from "../../exceptions/order.exceptions";
 import {OrderService} from "../order.service";
-import {AppRoles, OrderStatus} from "../../../../common/types";
+import {AppRoles} from "../../../../common/types";
 import {UserService} from "../../user/user.service";
 
 

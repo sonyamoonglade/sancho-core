@@ -3,7 +3,7 @@ import {Repository} from "../../shared/abstract/repository";
 import {Session, sessions} from "../entities/Session";
 import {filter, QueryBuilder} from "../query_builder/QueryBuilder";
 import {pg_conn} from "../database/db_provider-name";
-import {Pool, PoolClient} from "pg";
+import {Pool} from "pg";
 import {query_builder} from "../query_builder/provider-name";
 import {RepositoryException} from "../exceptions/repository.exceptions";
 

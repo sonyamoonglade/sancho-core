@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 import {useAppDispatch, windowActions} from "../../../redux";
 
 const WorkerNavigation = () => {

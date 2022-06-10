@@ -1,8 +1,7 @@
-import React, {FC, useMemo, useState} from 'react';
+import React, {FC} from 'react';
 import {AppResponsiveState} from "../../../types/types";
 import FormInput from "../../formInput/FormInput";
 import '../master-login.styles.scss'
-import {MasterFormState, MasterFormValues} from "../MasterLogin";
 import {useFormValidations} from "../../../hooks/useFormValidations";
 import {useAxios} from "../../../hooks/useAxios";
 import {useAuthentication} from "../../../hooks/useAuthentication";
@@ -23,8 +22,8 @@ const MasterForm:FC<masterFormProps> = ({appResponsiveState}) => {
     const router = useNavigate()
 
     const {
-        masterFormState,
-        setMasterFormState,
+        formValues,
+        setFormValues,
         getFormValues,
         formValidity
     } = useMasterLoginForm()
@@ -50,8 +49,8 @@ const MasterForm:FC<masterFormProps> = ({appResponsiveState}) => {
                 name={'login'}
                 type={'text'}
                 placeholder={"Логин"}
-                formValue={masterFormState.login}
-                setV={setMasterFormState}
+                formValue={formValues.login}
+                setV={setFormValues}
                 onBlurValue={""}
                 minLength={15}
                 fieldValidationFn={minLengthValidation}
@@ -60,9 +59,8 @@ const MasterForm:FC<masterFormProps> = ({appResponsiveState}) => {
                 name={'password'}
                 type={'password'}
                 placeholder={"Пароль"}
-                formValue={masterFormState.password}
-
-                setV={setMasterFormState}
+                formValue={formValues.password}
+                setV={setFormValues}
                 onBlurValue={""}
                 minLength={15}
                 fieldValidationFn={minLengthValidation}

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect} from 'react';
 import './master-login.styles.scss'
 import {useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector} from "../../redux";
 import {AppResponsiveState, FormField} from "../../types/types";

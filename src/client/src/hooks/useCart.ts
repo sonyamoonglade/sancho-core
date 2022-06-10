@@ -1,6 +1,5 @@
 import {CartInterface} from "../types/types";
 import {DatabaseCartProduct} from "../common/types";
-import {DELIVERY_PUNISHMENT_THRESHOLD, DELIVERY_PUNISHMENT_VALUE} from "../common/constants";
 
 const CART_KEY = 'cart'
 

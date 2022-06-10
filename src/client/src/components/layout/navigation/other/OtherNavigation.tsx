@@ -1,5 +1,6 @@
 import React from 'react';
 import './other-nav.styles.scss'
+
 const OtherNavigation = () => {
 
     return (

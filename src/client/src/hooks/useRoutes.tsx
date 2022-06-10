@@ -1,4 +1,4 @@
-import {Routes,Route,Navigate} from 'react-router-dom'
+import {Navigate, Route, Routes} from 'react-router-dom'
 import OrderQueueComponent from "../components/worker/queue/OrderQueueComponent";
 import {useMemo} from "react";
 

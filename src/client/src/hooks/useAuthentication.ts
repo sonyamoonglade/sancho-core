@@ -1,4 +1,3 @@
-import {useCallback} from "react";
 import {AxiosInstance} from "axios";
 import {useAppDispatch, userActions} from "../redux";
 import {MasterFormValues} from "../components/masterLogin/MasterLogin";

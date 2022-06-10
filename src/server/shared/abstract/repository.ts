@@ -1,5 +1,4 @@
-import { filter} from "../../core/query_builder/QueryBuilder";
-import { User } from "../../core/entities/User";
+import {filter} from "../../core/query_builder/QueryBuilder";
 
 
 export interface Repository<T> {

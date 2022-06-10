@@ -8,7 +8,8 @@ import {
     getCatalogProducts,
     productSelector,
     useAppDispatch,
-    useAppSelector, userSelector,
+    useAppSelector,
+    userSelector,
     windowActions,
     windowSelector
 } from "./redux";
