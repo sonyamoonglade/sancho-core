@@ -10,6 +10,7 @@ import {CancelOrderDto} from "./dto/cancel-order.dto";
 import {AppRoles} from "../../../common/types";
 import {CanCancelGuard} from "./guard/can-cancel.guard";
 import {AuthorizationGuard} from "../authorization/authorization.guard";
+import {CompleteOrderDto} from "./dto/complete-order.dto";
 
 @Controller(`${CONTROLLER_PATH_PREFIX}/order`)
 @UseGuards(AuthorizationGuard)
@@ -24,9 +25,9 @@ export class OrderController {
 
   @Post('/createUserOrder')
   @Role([AppRoles.user])
-  createUserOrder(@Body() dto:CreateUserOrderDto,
-                  @Res() res:Response,
-                  @Req() req:extendedRequest){
+  createUserOrder(@Res() res:Response,
+                  @Req() req:extendedRequest,
+                  @Body() dto:CreateUserOrderDto){
     return this.orderService.createUserOrder(dto,res,req)
   }
 
@@ -36,23 +37,28 @@ export class OrderController {
     return this.orderService.createMasterOrder(res,dto)
   }
 
-  @Put('/verifyOrder')
+  @Put('/verify')
   @Role([AppRoles.worker])
-  verifyOrder(@Body() verificationDetails:VerifyOrderDto, @Res() res: Response){
-    return this.orderService.verifyOrder(res,verificationDetails)
+  verifyOrder(@Res() res: Response,
+              @Body() dto:VerifyOrderDto){
+    return this.orderService.verifyOrder(res,dto)
   }
 
 
-  @Put('/cancelOrder')
+  @Put('/cancel')
   @UseGuards(CanCancelGuard)
   @Role([AppRoles.worker,AppRoles.user])
-  cancelOrder(@Res() res:Response,@Req() req:extendedRequest, @Body() dto:CancelOrderDto){
+  cancelOrder(@Res() res:Response,
+              @Req() req:extendedRequest,
+              @Body() dto:CancelOrderDto){
     return this.orderService.cancelOrder(res,req,dto)
   }
 
   @Get('/userOrderHistory')
   @Role([AppRoles.user])
-  userOrderHistory(@Res() res:Response, @Req() req: extendedRequest, @Query("to", ParseIntPipe) to: number){
+  userOrderHistory(@Res() res:Response,
+                   @Req() req: extendedRequest,
+                   @Query("to", ParseIntPipe) to: number){
     return this.orderService.userOrderHistory(res,req,to)
   }
 
@@ -67,5 +73,12 @@ export class OrderController {
     return this.orderService.initialQueue(res)
   }
 
+  @Put("/complete")
+  @Role([AppRoles.worker])
+  completeOrder(@Res() res:Response,
+                @Req() req: extendedRequest,
+                @Body() dto:CompleteOrderDto){
+    return this.orderService.completeOrder(req,res,dto)
+  }
 
 }

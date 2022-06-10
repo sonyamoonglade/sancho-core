@@ -26,6 +26,7 @@ import {ProductRepository} from "../../src/server/core/product/product.repositor
 import {UserService} from "../../src/server/core/user/user.service";
 import {VerifyOrderDto} from "../../src/server/core/order/dto/verify-order.dto";
 import {CancelOrderDto} from "../../src/server/core/order/dto/cancel-order.dto";
+import {CompleteOrderDto} from "../../src/server/core/order/dto/complete-order.dto";
 
 
 describe('AppController (e2e)', () => {
@@ -217,9 +218,6 @@ describe('AppController (e2e)', () => {
         await app.init();
     });
 
-
-
-
     it('/createUserOrder (POST) puts session of user which has got waiting order. Should return 400', async() => {
 
         const mockSIDCookie = [`SID=${mockSessionWithWaitingOrder.session_id}`]
@@ -390,7 +388,7 @@ describe('AppController (e2e)', () => {
                 })
             })
     })
-    it("/verifyOrder (PUT) tries to verify fresh user's order (0 waiting orders) should return 400", () => {
+    it("/verify (PUT) tries to verify fresh user's order (0 waiting orders) should return 400", () => {
 
         const dto:VerifyOrderDto =  {
             phone_number: mockUser.phone_number,
@@ -407,7 +405,7 @@ describe('AppController (e2e)', () => {
         jest.spyOn(orderService, "hasWaitingOrder")
 
         return request(app.getHttpServer())
-            .put('/api/v1/order/verifyOrder')
+            .put('/api/v1/order/verify')
             .set("Cookie",mockSIDCookie)
             .send(dto)
             .expect(400, {
@@ -420,7 +418,7 @@ describe('AppController (e2e)', () => {
                 expect(orderRepository.update).not.toHaveBeenCalled()
             })
     })
-    it("/verifyOrder (PUT) tries to verify user's order (1 waiting order). Should return 200", () => {
+    it("/verify (PUT) tries to verify user's order (1 waiting order). Should return 200", () => {
 
         const mockSIDCookie = [`SID=${mockWorkerSession.session_id}`]
 
@@ -437,7 +435,7 @@ describe('AppController (e2e)', () => {
         jest.spyOn(orderService, "hasWaitingOrder")
 
         return request(app.getHttpServer())
-            .put('/api/v1/order/verifyOrder')
+            .put('/api/v1/order/verify')
             .set("Cookie",mockSIDCookie)
             .send(dto)
             .expect(200)
@@ -453,7 +451,7 @@ describe('AppController (e2e)', () => {
                 expect(orderRepository.update).toHaveBeenCalled()
             })
     })
-    it("/cancelOrder (PUT) user cancels order (no cancel_ban). Should return 200 + ban cookie", () => {
+    it("/cancel (PUT) user cancels order (no cancel_ban). Should return 200 + ban cookie", () => {
 
         const dto:CancelOrderDto = {
             order_id: 3, //some mock order_id
@@ -469,7 +467,7 @@ describe('AppController (e2e)', () => {
         jest.spyOn(orderRepository,"update")
 
         return request(app.getHttpServer())
-            .put('/api/v1/order/cancelOrder')
+            .put('/api/v1/order/cancel')
             .send(dto)
             .set("Cookie",mockSIDCookie)
             .expect(200)
@@ -489,8 +487,7 @@ describe('AppController (e2e)', () => {
 
             })
     })
-
-    it("/cancelOrder (PUT) user cancels order (with cancel_ban) should return 403", () => {
+    it("/cancel (PUT) user cancels order (with cancel_ban) should return 403", () => {
 
         const dto:CancelOrderDto = {
             order_id: 3, // some mock order_id
@@ -500,9 +497,67 @@ describe('AppController (e2e)', () => {
         const mockSIDCookie = [`SID=${mockSession.session_id}`, `cancel_ban=true`]
 
         return request(app.getHttpServer())
-            .put('/api/v1/order/cancelOrder')
+            .put('/api/v1/order/cancel')
             .set("Cookie",mockSIDCookie)
             .send(dto)
             .expect(403)
+    })
+    it("/complete (PUT) Order status given by order_id *IS NOT* verified. Should return 400", () =>{
+
+        const dto: CompleteOrderDto = {
+            order_id: 3 // mock order_Id
+        }
+        const mockSIDCookie = [`SID=${mockWorkerSession.session_id}`]
+
+        // return 0 verified orders by given order_id
+        orderRepository.get = jest.fn(async() => [])
+        jest.spyOn(orderRepository,"get")
+
+        return request(app.getHttpServer())
+            .put('/api/v1/order/complete')
+            .set("Cookie",mockSIDCookie)
+            .send(dto)
+            .expect(400)
+            .then(res => {
+
+                const body = res.body
+                expect(body.message).toBe(`Статус заказа - ${dto.order_id} НЕ подтвержден!`)
+
+                expect(orderRepository.get).toHaveBeenCalled()
+
+
+
+            })
+    })
+    it("/complete (PUT) Order status given by order_id *IS* verified. Should return 200", () => {
+
+        const dto: CompleteOrderDto = {
+            order_id: 3 // mock order_Id
+        }
+        const mockSIDCookie = [`SID=${mockWorkerSession.session_id}`]
+
+
+        // return 0 verified orders by given order_id
+        orderRepository.get = jest.fn(async() => [mockOrder])
+        orderRepository.update = jest.fn(async() => {})
+
+        jest.spyOn(orderRepository,"get")
+        jest.spyOn(orderRepository, "update")
+
+        return request(app.getHttpServer())
+            .put('/api/v1/order/complete')
+            .set("Cookie",mockSIDCookie)
+            .send(dto)
+            .expect(200)
+            .then(res => {
+
+                const body = res.body
+                expect(body).toEqual({status: OrderStatus.completed})
+
+                expect(orderRepository.get).toHaveBeenCalled()
+                expect(orderRepository.update).toHaveBeenCalled()
+
+            })
+
     })
 });

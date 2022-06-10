@@ -1,4 +1,4 @@
-import {Inject, Injectable} from "@nestjs/common";
+import {Injectable} from "@nestjs/common";
 import {CreateMasterOrderDto, CreateUserOrderDto} from "./dto/create-order.dto";
 import {ValidationService} from "../validation/validation.service";
 import {UserService} from "../user/user.service";
@@ -11,19 +11,27 @@ import {JsonService} from "../database/json.service";
 import {User, users} from "../entities/User";
 import {VerifyOrderDto} from "./dto/verify-order.dto";
 import {CancelOrderDto} from "./dto/cancel-order.dto";
-import {CancelExplanationHasNotBeenProvided, OrderCannotBeVerified} from "../exceptions/order.exceptions";
+import {
+  CancelExplanationHasNotBeenProvided,
+  OrderCannotBeCompleted,
+  OrderCannotBeVerified
+} from "../exceptions/order.exceptions";
 import {Product, products} from "../entities/Product";
 import {ProductRepository} from "../product/product.repository";
 import {
   AppRoles,
-  DatabaseCartProduct, OrderQueue, OrderStatus,
-  ResponseUserOrder, VerifiedQueueOrder,
+  DatabaseCartProduct,
+  OrderQueue,
+  OrderStatus,
+  ResponseUserOrder,
+  VerifiedQueueOrder,
   WaitingQueueOrder
 } from "../../../common/types";
 import {CookieService} from "../../shared/cookie/cookie.service";
 import {DELIVERY_PUNISHMENT_THRESHOLD, DELIVERY_PUNISHMENT_VALUE} from "../../../common/constants";
 import {EventEmitter} from "events";
 import {ORDER_HAS_CREATED, ORDER_QUEUE_HAS_MODIFIED} from "../../types/types";
+import {CompleteOrderDto} from "./dto/complete-order.dto";
 
 @Injectable()
 export class OrderService {
@@ -220,6 +228,24 @@ export class OrderService {
     }
   }
 
+  public async completeOrder(req:extendedRequest, res:Response, dto:CompleteOrderDto) {
+
+    const {order_id} = dto
+
+    const o = (await this.orderRepository.get({where:{id:order_id, status:OrderStatus.verified}}))[0]
+    if(!o){ throw new  OrderCannotBeCompleted(order_id) }
+
+    const updated:Partial<Order> = {
+      completed_at: new Date(Date.now()),
+      status: OrderStatus.completed
+    }
+
+    await this.orderRepository.update(order_id, updated)
+    this.events.emit(ORDER_QUEUE_HAS_MODIFIED)
+
+    return res.status(200).send({status: OrderStatus.completed})
+  }
+
   public async userOrderHistory(res:Response,req:extendedRequest,to: number){
 
     const {user_id} = req
@@ -405,7 +431,6 @@ export class OrderService {
     return queue
   }
 
-
   public async initialQueue(res: Response){
     try {
       const queue = await this.fetchOrderQueue()
@@ -415,7 +440,6 @@ export class OrderService {
       throw new UnexpectedServerError("queue err")
     }
   }
-
 
   mapOrdersToQueueTypes(orders:VerifiedQueueOrder[]):OrderQueue{
     //map waitings
@@ -449,7 +473,6 @@ export class OrderService {
       verified: v
     }
   }
-
   applyDeliveryPunishment(p: number){
     if(p <= DELIVERY_PUNISHMENT_THRESHOLD){
       return p + DELIVERY_PUNISHMENT_VALUE

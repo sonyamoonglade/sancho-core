@@ -38,7 +38,7 @@ export const cancelOrder = (client:AxiosInstance, orderId: number, phoneNumber: 
             cancel_explanation: `${uce} `
         }
 
-        await client.put("order/cancelOrder", body)
+        await client.put("order/cancel", body);
         dispatch(orderActions.cancelById(orderId))
     }catch (e: any) {
         return Promise.reject(e.message)

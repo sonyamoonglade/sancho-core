@@ -22,3 +22,9 @@ export class OrderCannotBeVerified extends HttpException {
     super(`Все заказы по номеру ${phone_number} подтверждены!`,HttpStatus.BAD_REQUEST);
   }
 }
+
+export class OrderCannotBeCompleted extends HttpException {
+  constructor(orderId: number) {
+    super(`Статус заказа - ${orderId} НЕ подтвержден!`,HttpStatus.BAD_REQUEST);
+  }
+}

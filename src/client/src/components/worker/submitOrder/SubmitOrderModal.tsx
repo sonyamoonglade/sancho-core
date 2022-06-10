@@ -33,9 +33,8 @@ const SubmitOrderModal = () => {
 
         try {
             const body = getFormValues()
-            await client.put("order/verifyOrder", body)
+            await client.put("order/verify", body)
             dispatch(windowActions.toggleSubmitOrder())
-
         }catch (e) {
             console.log(e)
             alert(e)
