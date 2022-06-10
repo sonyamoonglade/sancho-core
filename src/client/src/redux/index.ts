@@ -16,6 +16,8 @@ export * from'./order/order.slice'
 export * from'./order/order.async-actions'
 export * from'./order/order.selecotrs'
 
+export * from "./worker/worker.slice"
+export * from "./worker/worker.selectors"
 
 export * from './store'
 

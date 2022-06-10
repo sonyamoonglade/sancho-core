@@ -1,5 +1,12 @@
 import React, {useState} from 'react';
-import {orderSelector, useAppDispatch, useAppSelector, windowActions, windowSelector} from "../../../redux";
+import {
+    orderSelector,
+    useAppDispatch,
+    useAppSelector,
+    windowActions,
+    windowSelector,
+    workerSelector
+} from "../../../redux";
 import "./verify-order.styles.scss"
 import "../../order/orderForm/order-form.styles.scss"
 import {RiSettings4Line} from "react-icons/ri";
@@ -50,16 +57,22 @@ const VerifyOrderModal = () => {
         setIsVirtualCartActive(p => !p)
     }
 
+    const {queryResults} = useAppSelector(workerSelector)
+
     const cart = useCart()
     return (
         <div className={worker.verifyOrder ? 'worker_modal --w-opened' : 'worker_modal'}>
             <p className='modal_title'>Подтвердить заказ</p>
 
             <RiSettings4Line onClick={toggleVirtualCart} className='submit_settings' size={25}/>
-            <div className='livesearch_container'>
+
+
+            <div className={isVirtualCartActive ? 'livesearch_container --ls-active' : "livesearch_container"}>
                 <LifeSearch extraClassName={"verify"} />
             </div>
-            <LiveSearchResultContainer result={null}/>
+            <LiveSearchResultContainer isActive={isVirtualCartActive} result={queryResults}/>
+
+
             <VirtualCart isActive={isVirtualCartActive} items={cart.getCart()}/>
             <VerifyOrderForm
                 presetDeliveryDetails={presetDeliveryDetails}

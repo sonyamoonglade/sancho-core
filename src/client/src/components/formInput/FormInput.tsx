@@ -40,7 +40,6 @@ const FormInput:FC<formInputProps> = (props) => {
         Regexp,
         minLength,
         isActiveForValidation,
-
     } = props
 
     const {value: v,isValid} = formValue
@@ -111,7 +110,6 @@ const FormInput:FC<formInputProps> = (props) => {
                                 return {...state, [e.target.name]: obj}
                             })
                         }
-
 
                     }}
                     className={`form_input`}

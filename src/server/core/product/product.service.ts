@@ -36,15 +36,17 @@ export class ProductService {
     if(words.length > 1){
       const joinedWords = words.join(' & ')
       sql = `
-        select * from products where to_tsvector('russian',translate) @@ to_tsquery('russian','${joinedWords}:*');
+        select * from products where to_tsvector('russian',translate) @@ to_tsquery('russian','${joinedWords}:*') order by price desc
        `
     }else {
       sql = `
-        select * from products where to_tsvector('russian',translate) @@ to_tsquery('russian','${q.trim()}:*');
+        select * from products where to_tsvector('russian',translate) @@ to_tsquery('russian','${q.trim()}:*') order by price desc
       `
     }
 
     const result:Product[] = await this.productRepository.customQuery(sql)
+
+
 
     return res.status(200).send({result})
   }

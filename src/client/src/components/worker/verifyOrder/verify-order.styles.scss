@@ -50,8 +50,9 @@
 .livesearch_container{
   position: absolute;
   box-shadow: 1px 2px 15px $dark-grey;
-
-  top: calc(0px - (35px + 20px + 2rem));
+  transition: all 0.4s ease-in-out;
+  top: 0;
+  right: 500%;
   background-color: white;
   width: 400px;
   border-radius: 10px;

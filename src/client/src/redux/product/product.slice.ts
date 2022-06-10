@@ -10,6 +10,7 @@ interface ProductState {
     totalCartPrice: number
     isPresentingNow: boolean
     isCartEmpty: boolean
+
 }
 
 const initialState:ProductState = {

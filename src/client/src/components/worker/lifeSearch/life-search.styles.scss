@@ -27,12 +27,14 @@
 
 .live_search_result{
   position: absolute;
-  left: calc(0px - (500px + 20px));
-  width: 500px;
-  top: 0;
+  right: 500%;
+  width: 400px;
+  top: calc(60px + 1rem);
   border-radius: 10px;
   background-color: $light-grey;
   padding: 1rem;
+  transition: all 0.4s ease-in-out;
+
 }
 
 .modal_title.ls{

@@ -6,6 +6,7 @@ import {FormField} from "../../../types/types";
 import {useFormValidations} from "../../../hooks/useFormValidations";
 import {useDebounce} from "../../../hooks/useDebounce";
 import {useAxios} from "../../../hooks/useAxios";
+import {useAppDispatch, workerActions} from "../../../redux";
 
 interface liveSearchFormState  {
     livesearch: FormField
@@ -26,18 +27,23 @@ const LifeSearch:FC<liveSearchProps> = ({extraClassName}) => {
 
     const {client} = useAxios()
 
-    const query = useDebounce(1000,formValues.livesearch.value)
 
-    if(query === formValues.livesearch.value){
-        if(query.trim().length === 0) {  }
-        else
-        fetchQueryResults(query)
-    }
+    const dispatch = useAppDispatch()
+    const query = useDebounce(300,formValues.livesearch.value)
+
+
+
+    useEffect(() => {
+        if(query.trim().length === 0) { dispatch(workerActions.overrideResults([])) }
+        else fetchQueryResults(query)
+    },[query])
+
+
 
 
     async function fetchQueryResults(query:string){
         const {data} = await client.get(`/product/?query=${query}`)
-        console.log(data)
+        dispatch(workerActions.overrideResults(data.result))
     }
 
 
