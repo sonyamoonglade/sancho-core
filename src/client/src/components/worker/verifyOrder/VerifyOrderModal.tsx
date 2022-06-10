@@ -67,7 +67,7 @@ const VerifyOrderModal = () => {
             <RiSettings4Line onClick={toggleVirtualCart} className='submit_settings' size={25}/>
 
 
-            <div className={isVirtualCartActive ? 'livesearch_container --ls-active' : "livesearch_container"}>
+            <div className={isVirtualCartActive ? 'livesearch_container --ls-active ' : "livesearch_container"}>
                 <LifeSearch extraClassName={"verify"} />
             </div>
             <LiveSearchResultContainer isActive={isVirtualCartActive} result={queryResults}/>

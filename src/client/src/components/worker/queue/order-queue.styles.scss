@@ -8,6 +8,8 @@
   width: 95%;
   margin: calc(((100vh - 80px) - 80vh)/2) auto 0;
   border-radius: 15px;
+  position: relative;
+  z-index: 1400;
   height: 80vh;
   @media (min-width:1500px) {
     max-width: 1450px;
