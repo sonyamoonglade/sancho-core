@@ -126,6 +126,7 @@ export class OrderService {
       return res.status(201).send({order:responseOrder})
 
     }catch (e){
+      console.log(e)
       throw new UnexpectedServerError()
     }
   }
@@ -162,6 +163,7 @@ export class OrderService {
         const phone = e.message.split(' ').pop()
         throw new OrderCannotBeVerified(phone)
       }
+      console.log(e)
       throw new UnexpectedServerError()
     }
 
@@ -281,7 +283,7 @@ export class OrderService {
     return ord
   }
 
-  public async hasWaitingOrder(user_id: number, phone_number?:string):Promise<{id: number | null, has: boolean}>{
+  public async hasWaitingOrder(user_id: number, phone_number:string):Promise<{id: number | null, has: boolean}>{
     if(!phone_number) {
       const ord = (await this.orderRepository.get({ where: {
         user_id, status:OrderStatus.waiting_for_verification },returning:["id"]}
@@ -291,12 +293,15 @@ export class OrderService {
           id: null,
           has: false
         }
+
       }
       return {
         id: ord.id,
         has: true
       }
     }
+
+
 
     const sql = `
         select o.id from ${orders} o join ${users} u on o.user_id=u.id

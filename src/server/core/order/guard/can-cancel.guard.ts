@@ -22,8 +22,7 @@ export class CanCancelGuard implements CanActivate {
             if(role === AppRoles.worker || role ===AppRoles.master){
                 return true
             }
-            const name = CookieNames.cancelBan
-            const ban = req.cookies[name]
+            const ban = req.cookies[CookieNames.cancelBan]
 
             if(ban == undefined) { return true }
 

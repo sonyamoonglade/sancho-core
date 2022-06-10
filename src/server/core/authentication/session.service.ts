@@ -26,7 +26,6 @@ export class SessionService {
 
 
   async createSession(user_id:number): Promise<string> {
-
     const currentTime = dayjs();
     const sessionIdBase = currentTime.unix().toString();
 
