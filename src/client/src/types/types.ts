@@ -5,10 +5,6 @@ export enum CategoryColor {
     'Пицца'  = '#eb5757',
     'Закуски' = '#3cb46e'
 }
-export enum ProductCategories {
-    pizza = 'Пицца',
-    drinks = 'Напитки',
-}
 
 export interface CartInterface {
 

@@ -19,7 +19,6 @@ import DesktopHeaderRight from "../desktopHeader/DesktopHeaderRight";
 import MasterLogin from "../../masterLogin/MasterLogin";
 import WorkerNavigation from "../../worker/navigation/WorkerNavigation";
 import WorkerNavigationRight from "../../worker/navigation/WorkerNavigationRight";
-import SubmitOrderModal from "../../worker/submitOrder/SubmitOrderModal";
 
 
 const mockPromotions:Promotion[] = [

@@ -45,7 +45,7 @@ const formDefaults:WorkerSubmitOrderFormState = {
     },
 }
 
-export function useSubmitOrderForm (orderQueue: OrderQueue){
+export function useVerifyOrderForm (orderQueue: OrderQueue){
     const [formValues,setFormValues] = useState<WorkerSubmitOrderFormState>(formDefaults)
     function getFormValues(){
         return {

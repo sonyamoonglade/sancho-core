@@ -4,7 +4,7 @@ import './layout.styles.scss'
 import Header from "../header/Header";
 import {useRoutes} from "../../../hooks/useRoutes";
 import {useAppSelector, userSelector} from "../../../redux";
-import SubmitOrderModal from "../../worker/submitOrder/SubmitOrderModal";
+import VerifyOrderModal from "../../worker/verifyOrder/VerifyOrderModal";
 import WorkerAppForm from "../../worker/appForm/WorkerAppForm";
 
 
@@ -28,7 +28,7 @@ const Layout:FC<layoutProps> = ({children}) => {
 
             {isMasterAuthenticated &&
                 <>
-                    <SubmitOrderModal />
+                    <VerifyOrderModal />
                     <WorkerAppForm/>
                  </>
             }

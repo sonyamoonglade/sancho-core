@@ -1,11 +1,11 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React from 'react';
 import {orderSelector, useAppDispatch, useAppSelector, windowActions, windowSelector} from "../../../redux";
-import "./submit-order.styles.scss"
+import "./verify-order.styles.scss"
 import "../../order/orderForm/order-form.styles.scss"
 import {RiSettings4Line} from "react-icons/ri";
 import {useAxios} from "../../../hooks/useAxios";
-import {useSubmitOrderForm} from "./hooks/useSubmitOrderForm";
-import SubmitOrderForm from "./submitForm/SubmitOrderForm";
+import {useVerifyOrderForm} from "./hooks/useVerifyOrderForm";
+import VerifyOrderForm from "./verifyForm/VerifyOrderForm";
 
 
 
@@ -24,7 +24,7 @@ const SubmitOrderModal = () => {
         setFormValues,
         setFormDefaults,
         isSubmitButtonActive
-    } = useSubmitOrderForm(orderQueue)
+    } = useVerifyOrderForm(orderQueue)
 
 
     async function handleOrderVerification(){
@@ -43,10 +43,10 @@ const SubmitOrderModal = () => {
 
 
     return (
-        <div className={worker.submitOrder ? 'worker_modal --w-opened': 'worker_modal'}>
+        <div className={worker.submitOrder ? 'worker_modal --w-opened' : 'worker_modal'}>
             <p className='submit_title'>Подтвердить заказ</p>
-            <RiSettings4Line className='submit_settings' size={25} />
-            <SubmitOrderForm
+            <RiSettings4Line className='submit_settings' size={25}/>
+            <VerifyOrderForm
                 presetDeliveryDetails={presetDeliveryDetails}
                 formValues={formValues}
                 setFormDefaults={setFormDefaults}

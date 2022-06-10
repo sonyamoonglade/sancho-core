@@ -4,7 +4,7 @@ import {useAppDispatch, useAppSelector, windowSelector} from "../../../../redux"
 import {FormField} from "../../../../types/types";
 import {useFormValidations} from "../../../../hooks/useFormValidations";
 import {OrderQueue} from "../../../../common/types";
-import {useSubmitOrderForm} from "../hooks/useSubmitOrderForm";
+import {useVerifyOrderForm} from "../hooks/useVerifyOrderForm";
 
 
 interface WorkerSubmitOrderFormState {
@@ -28,7 +28,7 @@ interface submitOrderFormProps {
     setFormDefaults: Function
 }
 
-const SubmitOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,setFormValues,presetDeliveryDetails}) => {
+const VerifyOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,setFormValues,presetDeliveryDetails}) => {
     const {worker} = useAppSelector(windowSelector)
 
     const {validatePhoneNumber,minLengthValidation} = useFormValidations()
@@ -159,4 +159,4 @@ const SubmitOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,se
     );
 };
 
-export default SubmitOrderForm;
+export default VerifyOrderForm;
