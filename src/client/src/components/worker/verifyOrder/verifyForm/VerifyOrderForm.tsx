@@ -37,10 +37,10 @@ const VerifyOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,se
 
 
     useEffect(() => {
-        if(!worker.submitOrder){
+        if(!worker.verifyOrder){
             setFormDefaults()
         }
-    },[worker.submitOrder])
+    },[worker.verifyOrder])
     useEffect(() => {
         if(formValues.phone_number_w.isValid){
             presetDeliveryDetails()
@@ -60,7 +60,7 @@ const VerifyOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,se
                 onBlurValue={""}
                 minLength={8}
                 maxLength={100}
-                isActiveForValidation={worker.submitOrder}
+                isActiveForValidation={worker.verifyOrder}
             />
 
             <FormInput
@@ -72,7 +72,7 @@ const VerifyOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,se
                 onBlurValue={'+7'}
                 maxLength={10}
                 fieldValidationFn={validatePhoneNumber}
-                Regexp={new RegExp("!?[A-Za-z]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
+                Regexp={new RegExp("!?[A-Za-z]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]")}
                 minLength={10}
 
             />

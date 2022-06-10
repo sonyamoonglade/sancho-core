@@ -1,11 +1,21 @@
 @import "src/./variables.scss";
 
+.worker_modal{
 
-.submit_title{
-  font-family: "Geometria Bold",sans-serif;
-  font-size: 1.3rem;
-  margin-bottom: 0.5rem;
+  z-index: 800  ;
 
+  input::placeholder{
+    color: $gray-promo !important;
+    font-size: $font-mder;
+  }
+  label{
+    color: $gray-promo;
+    font-size: $font-mder !important;
+
+  }
+  input{
+    font-size: $font-mder !important;
+  }
 }
 
 
@@ -36,14 +46,17 @@
   margin-bottom: 0.2rem;
 }
 
-.modal_button{
-  width: 100%;
-  border-radius: 15px;
-  outline: 0;
-  border-color: transparent;
-  background-color: $green-second;
-  height: 35px;
-  color: white;
-  font-family: "Geometria",sans-serif;
-  font-size: $font-mder;
+
+.livesearch_container{
+  position: absolute;
+  box-shadow: 1px 2px 15px $dark-grey;
+
+  top: calc(0px - (35px + 20px + 2rem));
+  background-color: white;
+  width: 400px;
+  border-radius: 10px;
+}
+
+.live_search.verify{
+
 }

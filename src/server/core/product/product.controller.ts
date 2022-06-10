@@ -38,6 +38,13 @@ export class ProductController {
     return this.productService.createProduct(res,createProductDto)
   }
 
+  @Get("/")
+  @Role([AppRoles.worker])
+  query(@Query("query") q: string, @Res() res:Response){
+      q = decodeURI(q)
+      return this.productService.query(q,res)
+  }
+
   @Post('/uploadProductImage')
   @Role([AppRoles.master])
   attachImageToProduct( @Res() res: Response, @Body() body){

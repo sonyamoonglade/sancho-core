@@ -23,7 +23,6 @@ const FormInput:FC<formInputProps> = (props) => {
 
 
     const [inputTagClasses,setInputTagClasses] = useState<string[]>([])
-    const {loadingSuccess,error} = useAppSelector(windowSelector)
     const inputRef = useRef<HTMLInputElement>(null)
 
 
@@ -98,7 +97,9 @@ const FormInput:FC<formInputProps> = (props) => {
                     value={v}
                     onChange={(e) => {
                         const inputValue = e.target.value
-                        if(Regexp && inputValue.match(Regexp)) return
+                        if(Regexp && inputValue.match(Regexp)) {
+                            return
+                        }
                         let validationResult = false
                         if(fieldValidationFn !== undefined){
                             validationResult = fieldValidationFn(inputValue, minLength)

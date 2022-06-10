@@ -5,16 +5,19 @@ const WorkerNavigation = () => {
 
     const dispatch = useAppDispatch()
 
-    function toggleOrderSubmitting(){
-        dispatch(windowActions.toggleSubmitOrder())
+    function toggleOrderVerification(){
+        dispatch(windowActions.toggleVerifyOrder())
+    }
+    function toggleOrderCreation(){
+        dispatch(windowActions.toggleCreateOrder())
     }
 
     return (
         <ul className='desktop_nav'>
-            <li className="d_nav_item">
+            <li className="d_nav_item" onClick={toggleOrderCreation}>
                 Создать заказ
             </li>
-            <li className="d_nav_item" onClick={toggleOrderSubmitting}>
+            <li className="d_nav_item" onClick={toggleOrderVerification}>
                 Подтвердить заказ
             </li>
             <li className="d_nav_item">

@@ -1,0 +1,40 @@
+@import "src/./variables.scss";
+
+
+.live_search{
+  display: flex;
+  padding: 1rem;
+  justify-content: space-between;
+
+  .form_input_container{
+    width: 80%;
+  }
+}
+
+.live_search_button{
+  background-color: $green-second;
+  border: 0;
+  padding: 0.5rem;
+  border-radius: 7px;
+  font-family: "Geometria Medium", sans-serif;
+  color: white;
+  font-size: $font-smer;
+  transition: all 0.05s ease-in
+}
+.live_search_button:active{
+  transform: scale(0.98);
+}
+
+.live_search_result{
+  position: absolute;
+  left: calc(0px - (500px + 20px));
+  width: 500px;
+  top: 0;
+  border-radius: 10px;
+  background-color: $light-grey;
+  padding: 1rem;
+}
+
+.modal_title.ls{
+  text-align: center;
+}

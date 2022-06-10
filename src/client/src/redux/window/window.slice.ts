@@ -18,7 +18,8 @@ interface WindowState {
         orders: boolean
     }
     worker: {
-        submitOrder: boolean
+        verifyOrder: boolean
+        createOrder: boolean
     }
 }
 
@@ -38,7 +39,8 @@ const initialState:WindowState = {
         orders: false
     },
     worker:{
-        submitOrder: false
+        verifyOrder: false,
+        createOrder: false
     }
 }
 
@@ -115,12 +117,17 @@ export const windowSlice = createSlice({
 
         },
 
-        toggleSubmitOrder: (s) => {
-            s.worker.submitOrder = !s.worker.submitOrder
+        toggleVerifyOrder: (s) => {
+            s.worker.verifyOrder = !s.worker.verifyOrder
         },
 
-        toggleWorker: (s) => {
-            s.worker.submitOrder = false
+        toggleCreateOrder: (s) =>{
+            s.worker.createOrder = !s.worker.createOrder
+        },
+
+        toggleWorkersOff: (s) => {
+            s.worker.verifyOrder = false
+            s.worker.createOrder = false
         }
 
 

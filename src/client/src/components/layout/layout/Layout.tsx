@@ -1,11 +1,14 @@
 import React, {FC} from 'react';
 
 import './layout.styles.scss'
+import "../../worker/worker-globals.scss"
+
 import Header from "../header/Header";
 import {useRoutes} from "../../../hooks/useRoutes";
 import {useAppSelector, userSelector} from "../../../redux";
 import VerifyOrderModal from "../../worker/verifyOrder/VerifyOrderModal";
 import WorkerAppForm from "../../worker/appForm/WorkerAppForm";
+import CreateOrderModal from "../../worker/createOrder/CreateOrderModal";
 
 
 interface layoutProps  {
@@ -29,6 +32,7 @@ const Layout:FC<layoutProps> = ({children}) => {
             {isMasterAuthenticated &&
                 <>
                     <VerifyOrderModal />
+                    <CreateOrderModal />
                     <WorkerAppForm/>
                  </>
             }

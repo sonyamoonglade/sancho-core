@@ -49,9 +49,20 @@ export class ProductRepository implements Repository<Product>{
     return rows as Product []
   }
 
-  async customQuery(query: string): Promise<Product[]> {
-    const {rows} = await this.db.query(query)
-    return rows as Product[]
+  async customQuery(query: string, v?: any[]): Promise<Product[]> {
+    try {
+      let result
+      if(v !== null){
+        result = await this.db.query(query)
+      }else {
+        result = await this.db.query(query,v)
+      }
+      const {rows} = result
+      return rows as Product[]
+    }catch (e) {
+      console.log(e)
+    }
+
   }
 
 

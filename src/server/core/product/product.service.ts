@@ -29,6 +29,26 @@ export class ProductService {
     return categories
   }
 
+  async query(q: string, res: Response){
+    if(q.trim().length === 0){ throw new ValidationErrorException() }
+    let sql: string;
+    const words = q.split(" ").filter(w => w.trim().length !== 0)
+    if(words.length > 1){
+      const joinedWords = words.join(' & ')
+      sql = `
+        select * from products where to_tsvector('russian',translate) @@ to_tsquery('russian','${joinedWords}:*');
+       `
+    }else {
+      sql = `
+        select * from products where to_tsvector('russian',translate) @@ to_tsquery('russian','${q.trim()}:*');
+      `
+    }
+
+    const result:Product[] = await this.productRepository.customQuery(sql)
+
+    return res.status(200).send({result})
+  }
+
   async createProduct(res:Response, createProductDto:CreateProductDto):Promise<Response>{
 
     const validationResult = this.validationService.validateObjectFromSqlInjection(createProductDto)

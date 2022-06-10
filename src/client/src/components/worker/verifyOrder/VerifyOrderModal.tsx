@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {orderSelector, useAppDispatch, useAppSelector, windowActions, windowSelector} from "../../../redux";
 import "./verify-order.styles.scss"
 import "../../order/orderForm/order-form.styles.scss"
@@ -6,9 +6,13 @@ import {RiSettings4Line} from "react-icons/ri";
 import {useAxios} from "../../../hooks/useAxios";
 import {useVerifyOrderForm} from "./hooks/useVerifyOrderForm";
 import VerifyOrderForm from "./verifyForm/VerifyOrderForm";
+import VirtualCart from "../virtualCart/VirtualCart";
+import {useCart} from "../../../hooks/useCart";
+import LifeSearch from "../lifeSearch/LifeSearch";
+import LiveSearchResultContainer from "../lifeSearch/LiveSearchResultContainer";
 
 
-const SubmitOrderModal = () => {
+const VerifyOrderModal = () => {
 
 
     const {worker} = useAppSelector(windowSelector)
@@ -33,18 +37,30 @@ const SubmitOrderModal = () => {
         try {
             const body = getFormValues()
             await client.put("order/verify", body)
-            dispatch(windowActions.toggleSubmitOrder())
+            dispatch(windowActions.toggleVerifyOrder())
         }catch (e) {
             console.log(e)
             alert(e)
         }
     }
 
+    const [isVirtualCartActive, setIsVirtualCartActive] = useState(false)
 
+    function toggleVirtualCart(){
+        setIsVirtualCartActive(p => !p)
+    }
+
+    const cart = useCart()
     return (
-        <div className={worker.submitOrder ? 'worker_modal --w-opened' : 'worker_modal'}>
-            <p className='submit_title'>Подтвердить заказ</p>
-            <RiSettings4Line className='submit_settings' size={25}/>
+        <div className={worker.verifyOrder ? 'worker_modal --w-opened' : 'worker_modal'}>
+            <p className='modal_title'>Подтвердить заказ</p>
+
+            <RiSettings4Line onClick={toggleVirtualCart} className='submit_settings' size={25}/>
+            <div className='livesearch_container'>
+                <LifeSearch extraClassName={"verify"} />
+            </div>
+            <LiveSearchResultContainer result={null}/>
+            <VirtualCart isActive={isVirtualCartActive} items={cart.getCart()}/>
             <VerifyOrderForm
                 presetDeliveryDetails={presetDeliveryDetails}
                 formValues={formValues}
@@ -56,4 +72,4 @@ const SubmitOrderModal = () => {
     );
 };
 
-export default SubmitOrderModal;
+export default VerifyOrderModal;
