@@ -5,16 +5,23 @@ import {currency} from "../../../common/constants";
 
 interface containerProps {
     result: Product[]
-    isActive: boolean
+    focusRef: any
 }
 
-const LiveSearchResultContainer:FC<containerProps> = ({result,isActive}) => {
+const LiveSearchResultContainer:FC<containerProps> = ({result,focusRef}) => {
+
+    function handleAddVirtualProduct(){
+
+        focusRef?.current.focus()
+
+        //logic
+    }
+
     return (
-        <div className={isActive ? 'live_search_result --ls-active' : "live_search_result"}>
-            <p className='modal_title ls'>Результаты поиска</p>
+        <div className={result.length !== 0 ? 'live_search_result --expanded' : "live_search_result"} >
             <ul className='virtual_list'>
                 {result?.map(r => (
-                    <li className='virtual_item'>
+                    <li key={r.id} className='virtual_item'>
                         <div className="v_leading">
                             <p>
                                 {r.translate} <i>|</i>
@@ -23,7 +30,7 @@ const LiveSearchResultContainer:FC<containerProps> = ({result,isActive}) => {
                         </div>
 
                         <div className="v_trailing">
-                            <button className='ls_add_button'>Добавить</button>
+                            <button onClick={handleAddVirtualProduct} className='ls_add_button'>Добавить</button>
                             <p>{r.price}{currency}</p>
                         </div>
                     </li>

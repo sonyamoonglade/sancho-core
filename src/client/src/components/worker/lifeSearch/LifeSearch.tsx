@@ -14,8 +14,9 @@ interface liveSearchFormState  {
 
 interface liveSearchProps {
     extraClassName?: string
+    focusRef: any
 }
-const LifeSearch:FC<liveSearchProps> = ({extraClassName}) => {
+const LifeSearch:FC<liveSearchProps> = ({extraClassName,focusRef}) => {
 
     const [formValues, setFormValues] = useState<liveSearchFormState>({
         livesearch:{
@@ -61,9 +62,11 @@ const LifeSearch:FC<liveSearchProps> = ({extraClassName}) => {
                 minLength={2}
                 extraClassName={"ls_input"}
                 onBlurValue={""}
+
                 formValue={formValues.livesearch}
                 setV={setFormValues}
                 isActiveForValidation={true}
+                focusRef={focusRef}
                 Regexp={new RegExp("!?[0-9]+|!?[A-Za-z]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
             />
 

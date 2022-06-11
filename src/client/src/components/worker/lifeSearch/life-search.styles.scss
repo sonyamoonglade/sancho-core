@@ -4,6 +4,7 @@
 .live_search{
   display: flex;
   padding: 1rem;
+  padding-bottom: 0rem;
   justify-content: space-between;
 
   .form_input_container{
@@ -26,14 +27,12 @@
 }
 
 .live_search_result{
-  position: absolute;
-  right: 500%;
   width: 400px;
-  top: calc(60px + 1rem);
-  border-radius: 10px;
-  background-color: $light-grey;
   padding: 1rem;
-  transition: all 0.4s ease-in-out;
+  padding-top: 0rem;
+  transition: right 0.4s ease-in-out;
+  background-color: $yellow-accent;
+  border-radius: 10px;
 
 }
 

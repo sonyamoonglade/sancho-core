@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useReducer, useRef, useState} from 'react';
 import {
     orderSelector,
     useAppDispatch,
@@ -52,6 +52,7 @@ const VerifyOrderModal = () => {
     }
 
     const [isVirtualCartActive, setIsVirtualCartActive] = useState(false)
+    const focusRef = useRef<HTMLInputElement>(null)
 
     function toggleVirtualCart(){
         setIsVirtualCartActive(p => !p)
@@ -68,12 +69,12 @@ const VerifyOrderModal = () => {
 
 
             <div className={isVirtualCartActive ? 'livesearch_container --ls-active ' : "livesearch_container"}>
-                <LifeSearch extraClassName={"verify"} />
+                <LifeSearch focusRef={focusRef} extraClassName={"verify"} />
+                <LiveSearchResultContainer focusRef={focusRef}  result={queryResults}/>
             </div>
-            <LiveSearchResultContainer isActive={isVirtualCartActive} result={queryResults}/>
 
 
-            <VirtualCart isActive={isVirtualCartActive} items={cart.getCart()}/>
+            <VirtualCart isActive={isVirtualCartActive} items={cart.getCart().splice(0,2)}/>
             <VerifyOrderForm
                 presetDeliveryDetails={presetDeliveryDetails}
                 formValues={formValues}

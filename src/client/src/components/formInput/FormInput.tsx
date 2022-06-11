@@ -17,13 +17,13 @@ interface formInputProps {
     minLength: number
     isActiveForValidation?: boolean,
     formValue: FormField
+    focusRef?: any
 }
 
 const FormInput:FC<formInputProps> = (props) => {
 
 
     const [inputTagClasses,setInputTagClasses] = useState<string[]>([])
-    const inputRef = useRef<HTMLInputElement>(null)
 
 
 
@@ -40,6 +40,7 @@ const FormInput:FC<formInputProps> = (props) => {
         Regexp,
         minLength,
         isActiveForValidation,
+        focusRef
     } = props
 
     const {value: v,isValid} = formValue
@@ -70,7 +71,7 @@ const FormInput:FC<formInputProps> = (props) => {
                 </label>
 
                 <input
-                    ref={inputRef}
+                    ref={focusRef ? focusRef : null}
 
                     onBlur={(e) => {
 

@@ -16,19 +16,47 @@ const VirtualCart:FC<virtualCartProps> = ({isActive,items}) => {
         <div className={isActive ? "virtual_cart --virtual-active" : "virtual_cart"}>
             <ul className='virtual_list'>
                 {items?.map((r:DatabaseCartProduct) => (
-                    <li key={r.id} className="virtual_item">
-                        <div className="v_leading">
-                            <p>
-                                {r.translate} <i>|</i>
-                            </p>
-                            <small>{r.category}</small>
-                        </div>
-                        <div className="v_trailing">
-                            {/*change to total r.price * quant!! easy*/}
-                            <p>{r.price}{currency}</p>
-                        </div>
-                     {/*    + N - button goes here*/}
-                    </li>
+                    <>
+                        <li key={r.id} className="virtual_item">
+                            <div className="v_leading">
+                                <p>
+                                    {r.translate} <i>|</i>
+                                </p>
+                                <small>{r.category}</small>
+                            </div>
+                            <div className="v_trailing">
+                                {/*change to total r.price * quant!! easy*/}
+                                <p>{r.price}{currency}</p>
+                            </div>
+                            {/*    + N - button goes here*/}
+                        </li>
+                        <li key={r.id} className="virtual_item">
+                            <div className="v_leading">
+                                <p>
+                                    {r.translate} <i>|</i>
+                                </p>
+                                <small>{r.category}</small>
+                            </div>
+                            <div className="v_trailing">
+                                {/*change to total r.price * quant!! easy*/}
+                                <p>{r.price}{currency}</p>
+                            </div>
+                            {/*    + N - button goes here*/}
+                        </li>
+                        <li key={r.id} className="virtual_item">
+                            <div className="v_leading">
+                                <p>
+                                    {r.translate} <i>|</i>
+                                </p>
+                                <small>{r.category}</small>
+                            </div>
+                            <div className="v_trailing">
+                                {/*change to total r.price * quant!! easy*/}
+                                <p>{r.price}{currency}</p>
+                            </div>
+                            {/*    + N - button goes here*/}
+                        </li>
+                    </>
                 ))}
             </ul>
         </div>

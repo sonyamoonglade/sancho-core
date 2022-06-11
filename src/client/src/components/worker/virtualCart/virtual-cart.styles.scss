@@ -4,25 +4,29 @@
 .virtual_cart{
   right: -500%;
   position: absolute;
-  width: 500px;
+  width: 400px;
   padding: 1rem;
   background-color: $light-grey;
   box-shadow: 1px 2px 15px $dark-grey;
   border-radius: 10px;
   z-index: 701;
-  top: 0px;
+  top: calc(67px + 1rem);
   transition: all 0.4s ease-in-out;
+  overflow-y: auto;
+
+  max-height: calc(320px - 1rem - 67px);
+}
+
+.virtual_cart::-webkit-scrollbar{
+  display: none;
 }
 
 .--virtual-active{
-  right: calc(0px - (500px + 1rem));
-  z-index: 1500;
+  right: calc(0px - (400px + 1rem));
+  z-index: 1400;
 }
 
 .virtual_item{
 
 }
 
-.virtual_list{
-
-}

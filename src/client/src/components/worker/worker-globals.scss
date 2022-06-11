@@ -52,7 +52,7 @@
 
 .virtual_list{
   margin: 0;
-  padding: 0 0.5rem;
+  padding: 0;
 }
 
 .virtual_item{
@@ -74,6 +74,9 @@
   cursor: default;
 }
 
+.virtual_item:last-of-type{
+  margin-bottom: 0;
+}
 
 .v_leading{
 
@@ -97,8 +100,16 @@
   color: white;
   margin-right: 0.7rem;
   font-size: $font-smer;
+  transition: all 0.05s ease-in-out;
+}
+.ls_add_button:active{
+  transform: scale(.98);
 }
 
 .--ls-active{
-  right: calc(1rem + 400px) !important
+  right: calc(-400px - 1rem) !important
+}
+
+.--expanded{
+  padding-top: 1rem !important;
 }
