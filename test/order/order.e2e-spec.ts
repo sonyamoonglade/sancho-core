@@ -321,7 +321,6 @@ describe('AppController (e2e)', () => {
                 //not saving session (user is already in!)
                 expect(sessionRepository.save).not.toHaveBeenCalled()
             })
-
     })
     it("/createMasterOrder (POST) user is not in system. Should createUser(exec userRepo.save). Expect 201", () => {
 
