@@ -15,4 +15,5 @@ export class VerifyOrderDto {
   is_delivered?: boolean
   cart?: DatabaseCartProduct[]
 
+
 }

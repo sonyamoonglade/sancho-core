@@ -19,6 +19,7 @@ import LifeSearch from "../lifeSearch/LifeSearch";
 import LiveSearchResultContainer from "../lifeSearch/LiveSearchResultContainer";
 import {useVirtualCart} from "../hooks/useVirtualCart";
 import {currency} from "../../../common/constants";
+import {DatabaseCartProduct} from "../../../common/types";
 
 
 const VerifyOrderModal = () => {
@@ -45,7 +46,16 @@ const VerifyOrderModal = () => {
         if(!isSubmitButtonActive) { return }
 
         try {
-            const body = getFormValues()
+            const body: any = getFormValues()
+            const order = orderQueue?.waiting.find(o => {
+                if(o.phone_number === `+7${formValues.phone_number_w.value}`){
+                    return o
+                }
+                return undefined
+            })
+            if(order?.total_cart_price !== totalOrderPrice){
+                body.cart = vcart
+            }
             await client.put("order/verify", body)
             dispatch(windowActions.toggleVerifyOrder())
         }catch (e) {
@@ -59,16 +69,34 @@ const VerifyOrderModal = () => {
 
     function toggleVirtualCart(){
         setIsVirtualCartActive(p => !p)
+        presetVirtualCartItems(formValues.phone_number_w.value)
+
+
+
     }
 
+    function presetVirtualCartItems(phoneNumber: string){
+        if(formValues.phone_number_w.isValid){
+            const order = orderQueue?.waiting.find(o => {
+                if(o.phone_number === `+7${phoneNumber}`){
+                    return o
+                }
+                return undefined
+            })
+            const parsedCart = order.cart.map((item) => {
+                return JSON.parse(item as unknown as string)
+            })
+            setVCart(parsedCart)
+            virtualCart.setVirtualCart(parsedCart)
+        }
+    }
     const {queryResults} = useAppSelector(workerSelector)
 
     const virtualCart = useVirtualCart()
-    const [vcart, setVCart] = useState([])
+    const [vcart, setVCart] = useState<DatabaseCartProduct[]>([])
     const [totalOrderPrice, setTotalOrderPrice] = useState<number>(0)
 
     useEffect(() => {
-
         if(!isVirtualCartActive){
             setVCart([])
             virtualCart.clearVirtualCart()
@@ -78,9 +106,6 @@ const VerifyOrderModal = () => {
         const currentCart = virtualCart.getCurrentCart()
         if(currentCart.length === 0){ // null value in local storage
             virtualCart.setVirtualCart([])
-        }else {
-            virtualCart.clearVirtualCart()
-            setVCart([])
         }
 
     },[isVirtualCartActive])
@@ -92,14 +117,10 @@ const VerifyOrderModal = () => {
     },[worker.verifyOrder])
 
     function getOrderTotalPrice(phoneNumber: string){
-       const order = orderQueue?.waiting.find(o => {
-            if(o.phone_number === `+7${phoneNumber}`){
-                return o
-            }
-            return undefined
-        })
-
-        return order?.total_cart_price || 0
+       return vcart.reduce((a,c) => {
+          a += c.price * c.quantity
+          return a
+       },0)
     }
 
     useEffect(() => {
@@ -109,7 +130,7 @@ const VerifyOrderModal = () => {
         }else{
             setTotalOrderPrice(0)
         }
-    },[formValues.phone_number_w.isValid])
+    },[formValues.phone_number_w.isValid,vcart])
 
     return (
         <div className={worker.verifyOrder ? 'worker_modal --w-opened' : 'worker_modal'}>

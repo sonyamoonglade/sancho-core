@@ -149,6 +149,8 @@ export class OrderService {
         throw new Error(`verification ${phone_number}`)
       }
 
+
+
       const updated:Partial<Order> = {
         verified_fullname:verifyOrderDto.verified_fullname,
         delivery_details:verifyOrderDto?.delivery_details || null,
@@ -158,8 +160,10 @@ export class OrderService {
       if(verifyOrderDto.is_delivered !== undefined){
         updated.is_delivered = verifyOrderDto.is_delivered
       }
-      else if(verifyOrderDto.cart !== undefined){
+      if(verifyOrderDto.cart !== undefined){
+        const recalculatedTotalCartPrice = await this.calculateTotalCartPrice(verifyOrderDto.cart)
         updated.cart = verifyOrderDto.cart
+        updated.total_cart_price = recalculatedTotalCartPrice
         this.jsonService.stringifyNestedObjects(updated)
       }
 
