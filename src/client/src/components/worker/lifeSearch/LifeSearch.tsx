@@ -15,8 +15,9 @@ interface liveSearchFormState  {
 interface liveSearchProps {
     extraClassName?: string
     focusRef: any
+    isActive: boolean
 }
-const LifeSearch:FC<liveSearchProps> = ({extraClassName,focusRef}) => {
+const LifeSearch:FC<liveSearchProps> = ({extraClassName,focusRef,isActive}) => {
 
     const [formValues, setFormValues] = useState<liveSearchFormState>({
         livesearch:{
@@ -24,6 +25,7 @@ const LifeSearch:FC<liveSearchProps> = ({extraClassName,focusRef}) => {
             isValid: false
         }
     })
+
 
 
     const {client} = useAxios()
@@ -39,6 +41,16 @@ const LifeSearch:FC<liveSearchProps> = ({extraClassName,focusRef}) => {
         else fetchQueryResults(query)
     },[query])
 
+    useEffect(() => {
+        if(!isActive){
+            setFormValues({
+                livesearch:{
+                    value: "",
+                    isValid: false
+                }
+            })
+        }
+    },[isActive])
 
 
 

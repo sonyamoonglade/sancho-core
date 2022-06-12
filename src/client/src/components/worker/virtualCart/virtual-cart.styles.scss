@@ -26,7 +26,31 @@
   z-index: 1400;
 }
 
-.virtual_item{
 
+.reduce_add_button{
+  display: flex;
+  width: 85px;
+  justify-content: space-between;
+  align-items: center;
 }
 
+.virtual_icon{
+  background-color: $santa-grey;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  transition: all 0.05s ease-in-out;
+}
+
+.virtual_icon:active{
+  transform: scale(.95)
+}
+
+.virtual_product_quantity{
+  margin-left: 0.4rem;
+  margin-right: 0.4rem;
+  user-select: none;
+}
+.virtual_total_price{
+  margin-right: 1rem;
+}

@@ -63,6 +63,36 @@ export function useVerifyOrderForm (orderQueue: OrderQueue){
 
     function setFormDefaults(){
         setFormValues(formDefaults)
+        formValues.is_delivered_w.value= false
+    }
+
+    function setFormDefaultsExceptPhoneNumberAndFullname(){
+        setFormValues((state:WorkerSubmitOrderFormState) =>{
+
+            return {...state,
+                is_delivered_w:{
+                    value: false,
+                    isValid: true
+                },
+                address_w: {
+                    value: "",
+                    isValid: false
+                },
+                entrance_number_w: {
+                    value: "",
+                    isValid: false
+                },
+                flat_call_w: {
+                    value: "",
+                    isValid: false,
+                },
+                floor_w: {
+                    value: "",
+                    isValid: false
+                },
+            }
+
+        })
     }
 
     function presetDeliveryDetails(){
@@ -112,5 +142,5 @@ export function useVerifyOrderForm (orderQueue: OrderQueue){
     },[formValues])
 
 
-    return {getFormValues, setFormDefaults, presetDeliveryDetails,formValues,formDefaults,setFormValues,isSubmitButtonActive}
+    return {getFormValues, setFormDefaults, presetDeliveryDetails,formValues,formDefaults,setFormValues,isSubmitButtonActive,setFormDefaultsExceptPhoneNumberAndFullname}
 }

@@ -1,26 +1,31 @@
 import React, {FC} from 'react';
 import {Product} from "../../../common/types";
 import {currency} from "../../../common/constants";
+import {VirtualCartInterface} from "../hooks/useVirtualCart";
 
 
 interface containerProps {
     result: Product[]
     focusRef: any
+    vcart: VirtualCartInterface
+    setVirtualCart: Function
 }
 
-const LiveSearchResultContainer:FC<containerProps> = ({result,focusRef}) => {
+const LiveSearchResultContainer:FC<containerProps> = ({result,focusRef, vcart, setVirtualCart}) => {
 
-    function handleAddVirtualProduct(){
+    function handleAddVirtualProduct(p: Product){
 
         focusRef?.current.focus()
 
-        //logic
+        vcart.addProduct(p)
+        const newVCart = vcart.getCurrentCart()
+        setVirtualCart(newVCart)
     }
 
     return (
-        <div className={result.length !== 0 ? 'live_search_result --expanded' : "live_search_result"} >
+        <div className={result?.length !== 0 ? 'live_search_result --expanded' : "live_search_result"} >
             <ul className='virtual_list'>
-                {result?.map(r => (
+                {result?.map((r:Product) => (
                     <li key={r.id} className='virtual_item'>
                         <div className="v_leading">
                             <p>
@@ -30,7 +35,7 @@ const LiveSearchResultContainer:FC<containerProps> = ({result,focusRef}) => {
                         </div>
 
                         <div className="v_trailing">
-                            <button onClick={handleAddVirtualProduct} className='ls_add_button'>Добавить</button>
+                            <button onClick={() => handleAddVirtualProduct(r)} className='ls_add_button'>Добавить</button>
                             <p>{r.price}{currency}</p>
                         </div>
                     </li>

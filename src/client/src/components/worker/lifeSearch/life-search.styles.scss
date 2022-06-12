@@ -39,3 +39,17 @@
 .modal_title.ls{
   text-align: center;
 }
+
+.livesearch_container{
+  position: absolute;
+  box-shadow: 1px 2px 15px $dark-grey;
+  transition: all 0.4s ease-in-out;
+  top: 0;
+  z-index: 1500;
+  background-color: $yellow-accent;
+
+  right: -500%;
+
+  width: 400px;
+  border-radius: 10px;
+}

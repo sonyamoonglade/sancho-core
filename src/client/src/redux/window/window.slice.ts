@@ -119,17 +119,19 @@ export const windowSlice = createSlice({
 
         toggleVerifyOrder: (s) => {
             s.worker.verifyOrder = !s.worker.verifyOrder
+            s.worker.createOrder = false
+
         },
 
         toggleCreateOrder: (s) =>{
             s.worker.createOrder = !s.worker.createOrder
+            s.worker.verifyOrder = false
         },
 
         toggleWorkersOff: (s) => {
             s.worker.verifyOrder = false
             s.worker.createOrder = false
-        }
-
+        },
 
 
 

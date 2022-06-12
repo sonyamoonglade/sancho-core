@@ -1,4 +1,4 @@
-import React, {FC, useEffect} from 'react';
+import React, {FC, useEffect, useMemo} from 'react';
 import FormInput from "../../../formInput/FormInput";
 import {useAppSelector, windowSelector} from "../../../../redux";
 import {FormField} from "../../../../types/types";
@@ -24,15 +24,17 @@ interface submitOrderFormProps {
     setFormValues: Function
     presetDeliveryDetails: Function
     setFormDefaults: Function
+    setFormDefaultsExceptPhoneNumberAndFullname: Function
 }
 
-const VerifyOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,setFormValues,presetDeliveryDetails}) => {
+const VerifyOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,setFormValues,presetDeliveryDetails,setFormDefaultsExceptPhoneNumberAndFullname}) => {
     const {worker} = useAppSelector(windowSelector)
 
     const {validatePhoneNumber,minLengthValidation} = useFormValidations()
 
-    const isDeliveryFormDisabledExpr = formValues["is_delivered_w"].value ? "delivery_text_w " : "--disabled w "
-
+    const isDeliveryFormDisabledExpr = useMemo(() => {
+        return formValues["is_delivered_w"].value ? "delivery_text_w " : "--disabled w "
+    },[formValues])
 
 
 
@@ -44,6 +46,8 @@ const VerifyOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,se
     useEffect(() => {
         if(formValues.phone_number_w.isValid){
             presetDeliveryDetails()
+        }else {
+            setFormDefaultsExceptPhoneNumberAndFullname()
         }
     },[formValues.phone_number_w.isValid])
 
