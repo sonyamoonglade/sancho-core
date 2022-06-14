@@ -33,13 +33,8 @@ export function useVerifyOrder (client:AxiosInstance,orderQueue: OrderQueue,tota
         return order
     }
 
-    const getOrderTotalPrice = useCallback(function (){
-        return vcart.reduce((a,c) => {
-            a += c.price * c.quantity
-            return a
-        },0)
-    },[vcart])
 
-    return {getOrderTotalPrice, verifyOrder, findWaitingOrderByPhoneNumber}
+
+    return {verifyOrder, findWaitingOrderByPhoneNumber}
 
 }

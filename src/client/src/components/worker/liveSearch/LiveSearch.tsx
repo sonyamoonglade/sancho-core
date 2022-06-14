@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useState} from 'react';
 
-import "./life-search.styles.scss"
+import "./live-search.styles.scss"
 import FormInput from "../../formInput/FormInput";
 import {FormField} from "../../../types/types";
 import {useFormValidations} from "../../../hooks/useFormValidations";

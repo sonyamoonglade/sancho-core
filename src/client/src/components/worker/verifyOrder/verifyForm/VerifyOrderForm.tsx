@@ -3,24 +3,13 @@ import FormInput from "../../../formInput/FormInput";
 import {useAppSelector, windowSelector} from "../../../../redux";
 import {FormField} from "../../../../types/types";
 import {useFormValidations} from "../../../../hooks/useFormValidations";
+import {WorkerVerifyOrderFormState} from "../hooks/useVerifyOrderForm";
 
 
-interface WorkerSubmitOrderFormState {
-    verified_fullname_w:FormField
-    phone_number_w:FormField
-    address_w: FormField
-    entrance_number_w: FormField
-    flat_call_w: FormField
-    floor_w: FormField
-    is_delivered_w:{
-        value: boolean,
-        isValid: boolean
-    }
-}
 
 
 interface submitOrderFormProps {
-    formValues: WorkerSubmitOrderFormState,
+    formValues: WorkerVerifyOrderFormState,
     setFormValues: Function
     presetDeliveryDetails: Function
     setFormDefaults: Function
@@ -86,7 +75,7 @@ const VerifyOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,se
                     <p className={isDeliveryFormDisabledExpr}>Нужна доставка?</p>
                     <input
                         checked={formValues.is_delivered_w.value}
-                        name={"is_delivered"} onChange={() => {
+                        name={"is_delivered_ц"} onChange={() => {
                         setFormValues((state: any) => {
                             const obj = state.is_delivered_w
                             obj.value = !obj.value

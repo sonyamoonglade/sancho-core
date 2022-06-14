@@ -2,7 +2,8 @@ import {useMemo, useState} from "react";
 import {FormField} from "../../../../types/types";
 import {OrderQueue} from "../../../../common/types";
 
-interface WorkerSubmitOrderFormState {
+
+export interface WorkerVerifyOrderFormState {
     verified_fullname_w:FormField
     phone_number_w:FormField
     address_w: FormField
@@ -14,7 +15,7 @@ interface WorkerSubmitOrderFormState {
         isValid: boolean
     }
 }
-const formDefaults:WorkerSubmitOrderFormState = {
+const formDefaults:WorkerVerifyOrderFormState = {
     verified_fullname_w:{
         value: "",
         isValid: false
@@ -45,8 +46,9 @@ const formDefaults:WorkerSubmitOrderFormState = {
     },
 }
 
+
 export function useVerifyOrderForm (orderQueue: OrderQueue){
-    const [formValues,setFormValues] = useState<WorkerSubmitOrderFormState>(formDefaults)
+    const [formValues,setFormValues] = useState<WorkerVerifyOrderFormState>(formDefaults)
     function getFormValues(){
         return {
             phone_number:`+7${formValues.phone_number_w.value}`,
@@ -63,11 +65,11 @@ export function useVerifyOrderForm (orderQueue: OrderQueue){
 
     function setFormDefaults(){
         setFormValues(formDefaults)
-        formValues.is_delivered_w.value= false
+        formValues.is_delivered_w.value = false
     }
 
     function setFormDefaultsExceptPhoneNumberAndFullname(){
-        setFormValues((state:WorkerSubmitOrderFormState) =>{
+        setFormValues((state:WorkerVerifyOrderFormState) =>{
 
             return {...state,
                 is_delivered_w:{
@@ -102,7 +104,7 @@ export function useVerifyOrderForm (orderQueue: OrderQueue){
         if(order?.is_delivered){
             const {address, flat_call, entrance_number,floor} = order?.delivery_details
 
-            setFormValues((formState: WorkerSubmitOrderFormState) => {
+            setFormValues((formState: WorkerVerifyOrderFormState) => {
                 return {...formState,
                     address_w: {
                         value: address,

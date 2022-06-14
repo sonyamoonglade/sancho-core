@@ -3,8 +3,7 @@
 
 .live_search{
   display: flex;
-  padding: 1rem;
-  padding-bottom: 0rem;
+  padding: 1rem 1rem 0rem;
   justify-content: space-between;
 
   .form_input_container{
@@ -28,12 +27,10 @@
 
 .live_search_result{
   width: 400px;
-  padding: 1rem;
-  padding-top: 0rem;
+  padding: 0rem 1rem 1rem;
   transition: right 0.4s ease-in-out;
   background-color: $yellow-accent;
   border-radius: 10px;
-
 }
 
 .modal_title.ls{
@@ -47,9 +44,7 @@
   top: 0;
   z-index: 1500;
   background-color: $yellow-accent;
-
-  right: -500%;
-
+  right: -400%;
   width: 400px;
   border-radius: 10px;
 }

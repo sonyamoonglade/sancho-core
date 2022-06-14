@@ -14,12 +14,10 @@ import {useAxios} from "../../../hooks/useAxios";
 import {useVerifyOrderForm} from "./hooks/useVerifyOrderForm";
 import VerifyOrderForm from "./verifyForm/VerifyOrderForm";
 import VirtualCart from "../virtualCart/VirtualCart";
-import LifeSearch from "../lifeSearch/LiveSearch";
-import LiveSearchResultContainer from "../lifeSearch/LiveSearchResultContainer";
 import {useVirtualCart} from "../hooks/useVirtualCart";
 import {currency} from "../../../common/constants";
-import {DatabaseCartProduct} from "../../../common/types";
 import {useVerifyOrder} from "./hooks/useVerifyOrder";
+import {utils} from "../../../utils/util.functions";
 
 
 const VerifyOrderModal = () => {
@@ -47,7 +45,6 @@ const VerifyOrderModal = () => {
     const {
         verifyOrder,
         findWaitingOrderByPhoneNumber,
-        getOrderTotalPrice
     } = useVerifyOrder(client,orderQueue,totalOrderPrice,virtualCartState.items)
 
 
@@ -86,7 +83,7 @@ const VerifyOrderModal = () => {
     },[worker.verifyOrder])
     useEffect(() => {
         if(formValues.phone_number_w.isValid){
-            const price = getOrderTotalPrice()
+            const price = utils.getOrderTotalPrice(virtualCartState.items)
             setTotalOrderPrice(price)
         }else{
             setTotalOrderPrice(0)

@@ -17,6 +17,13 @@ const OrderQueueComponent = () => {
         dispatch(startEventSourcingForQueue())
     },[])
 
+    useEffect(() => {
+        document.body.style.overflowY = 'hidden'
+
+        return () => {
+            document.body.style.overflowY = "visible"
+        }
+    },[])
 
 
     return (

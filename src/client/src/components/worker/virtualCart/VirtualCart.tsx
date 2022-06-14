@@ -6,8 +6,8 @@ import {currency} from "../../../common/constants";
 import ReduceAddButton from "./ReduceAddButton";
 import {useVirtualCart} from "../hooks/useVirtualCart";
 import {useAppDispatch, useAppSelector, windowSelector, workerActions, workerSelector} from "../../../redux";
-import LifeSearch from "../lifeSearch/LiveSearch";
-import LiveSearchResultContainer from "../lifeSearch/LiveSearchResultContainer";
+import LifeSearch from "../liveSearch/LiveSearch";
+import LiveSearchResultContainer from "../liveSearch/LiveSearchResultContainer";
 
 
 const VirtualCart = () => {

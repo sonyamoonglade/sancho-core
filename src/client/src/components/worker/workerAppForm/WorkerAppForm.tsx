@@ -24,7 +24,7 @@ const WorkerAppForm = () => {
 
             return true
         }
-        document.body.style.overflow = 'visible'
+        document.body.style.overflow = 'visible hidden'
         return false
     },[worker])
 

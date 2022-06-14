@@ -116,22 +116,17 @@ export const windowSlice = createSlice({
 
         turnOffAllDesktop: (s) => {
             s.masterLogin = false
-
         },
 
         toggleVerifyOrder: (s) => {
             s.worker.verifyOrder = !s.worker.verifyOrder
-            if(!s.worker.verifyOrder){
-                s.worker.virtualCart = false
-            }
+            s.worker.virtualCart = false
             s.worker.createOrder = false
         },
 
         toggleCreateOrder: (s) =>{
             s.worker.createOrder = !s.worker.createOrder
-            if(!s.worker.createOrder){
-                s.worker.virtualCart = false
-            }
+            s.worker.virtualCart = false
             s.worker.verifyOrder = false
         },
 

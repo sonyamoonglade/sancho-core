@@ -7,9 +7,8 @@ import Header from "../header/Header";
 import {useRoutes} from "../../../hooks/useRoutes";
 import {useAppSelector, userSelector} from "../../../redux";
 import VerifyOrderModal from "../../worker/verifyOrder/VerifyOrderModal";
-import WorkerAppForm from "../../worker/appForm/WorkerAppForm";
+import WorkerAppForm from "../../worker/workerAppForm/WorkerAppForm";
 import CreateOrderModal from "../../worker/createOrder/CreateOrderModal";
-import VirtualCart from "../../worker/virtualCart/VirtualCart";
 
 
 interface layoutProps  {
