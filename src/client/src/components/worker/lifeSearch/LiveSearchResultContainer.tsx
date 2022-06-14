@@ -7,18 +7,16 @@ import {VirtualCartInterface} from "../hooks/useVirtualCart";
 interface containerProps {
     result: Product[]
     focusRef: any
-    vcart: VirtualCartInterface
+    virtualCart: VirtualCartInterface
     setVirtualCart: Function
 }
 
-const LiveSearchResultContainer:FC<containerProps> = ({result,focusRef, vcart, setVirtualCart}) => {
+const LiveSearchResultContainer:FC<containerProps> = ({result,focusRef, virtualCart, setVirtualCart}) => {
 
     function handleAddVirtualProduct(p: Product){
-
         focusRef?.current.focus()
-
-        vcart.addProduct(p)
-        const newVCart = vcart.getCurrentCart()
+        virtualCart.addProduct(p)
+        const newVCart = virtualCart.getCurrentCart()
         setVirtualCart(newVCart)
     }
 

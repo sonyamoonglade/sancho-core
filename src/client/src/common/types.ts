@@ -42,7 +42,11 @@ export type Product = {
   description: string
 }
 
-
+export type LocalStorageCartProduct = {
+  id: number
+  translate: string
+  price: number
+}
 
 export type DatabaseCartProduct = {
   id: number

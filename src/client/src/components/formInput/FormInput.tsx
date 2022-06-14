@@ -1,7 +1,6 @@
-import React, {FC, HTMLInputTypeAttribute, useEffect, useRef, useState} from 'react';
+import React, {FC, HTMLInputTypeAttribute, useEffect, useState} from 'react';
 
 import './form-input.styles.scss'
-import {useAppSelector, windowSelector} from "../../redux";
 import {FormField} from "../../types/types";
 
 interface formInputProps {

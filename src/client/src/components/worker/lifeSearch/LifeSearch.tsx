@@ -25,32 +25,30 @@ const LifeSearch:FC<liveSearchProps> = ({extraClassName,focusRef,isActive}) => {
             isValid: false
         }
     })
-
-
-
     const {client} = useAxios()
-
-
     const dispatch = useAppDispatch()
+    const {minLengthValidation} = useFormValidations()
+
     const query = useDebounce(300,formValues.livesearch.value)
-
-
 
     useEffect(() => {
         if(query.trim().length === 0) { dispatch(workerActions.overrideResults([])) }
         else fetchQueryResults(query)
     },[query])
-
     useEffect(() => {
         if(!isActive){
-            setFormValues({
+            setFormDefaults()
+        }
+    },[isActive])
+
+    function setFormDefaults(){
+        setFormValues({
                 livesearch:{
                     value: "",
                     isValid: false
-                }
-            })
-        }
-    },[isActive])
+                }}
+        )
+    }
 
 
 
@@ -60,8 +58,6 @@ const LifeSearch:FC<liveSearchProps> = ({extraClassName,focusRef,isActive}) => {
     }
 
 
-
-    const {minLengthValidation} = useFormValidations()
 
     return (
         <div className={`live_search ${extraClassName || null}`}>

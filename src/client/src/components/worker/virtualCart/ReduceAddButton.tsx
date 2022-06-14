@@ -2,8 +2,7 @@ import React, {FC} from 'react';
 import "./virtual-cart.styles.scss"
 import {BsPlus} from 'react-icons/bs'
 import {BiMinus} from 'react-icons/bi'
-import {DatabaseCartProduct, Product} from "../../../common/types";
-
+import {DatabaseCartProduct} from "../../../common/types";
 
 
 interface reduceAddButtonProps {

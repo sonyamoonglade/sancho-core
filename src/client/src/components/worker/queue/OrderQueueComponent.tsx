@@ -2,51 +2,20 @@ import React, {useEffect} from 'react';
 import {useAxios} from "../../../hooks/useAxios";
 import OrderHistoryItem from "../../orderHistory/OrderHistoryItem";
 import "./order-queue.styles.scss"
-import {orderActions, orderSelector, useAppDispatch, useAppSelector} from "../../../redux";
+import {useAppDispatch, useAppSelector, workerSelector} from "../../../redux";
+import {getInitialQueue, startEventSourcingForQueue} from "../../../redux/worker/worker.async-actions";
 
 
 const OrderQueueComponent = () => {
 
     const {client} = useAxios()
-    const {orderQueue: queue} = useAppSelector(orderSelector)
+    const {orderQueue: queue} = useAppSelector(workerSelector)
     const dispatch = useAppDispatch()
+
     useEffect(() => {
-        getInitialQueue()
-        const s = startEventSourcing()
-
-
+        dispatch(getInitialQueue(client))
+        dispatch(startEventSourcingForQueue())
     },[])
-
-
-    function startEventSourcing(){
-        let s:EventSource;
-        try {
-            s = new EventSource(`${process.env.REACT_APP_BACKEND_URL}/order/queue`,{
-                withCredentials: true
-            })
-            s.onmessage = function (event){
-                const data = JSON.parse(event.data)
-                dispatch(orderActions.setOrderQueue(data?.queue))
-            }
-            s.onerror = function (ev){
-                s.close()
-            }
-            return s
-        }catch (e) {
-            s?.close()
-        }
-    }
-
-    async function getInitialQueue(){
-        try {
-            const {data} = await client.get("/order/initialQueue")
-            dispatch(orderActions.setOrderQueue(data?.queue))
-        }catch (e) {
-            console.log(e)
-            alert(e)
-        }
-    }
-
 
 
 

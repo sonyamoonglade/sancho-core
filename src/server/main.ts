@@ -27,7 +27,6 @@ async function bootstrap() {
     app.useGlobalPipes(new ValidationPipe())
 
     const APP_PORT = Number(process.env.PORT) || 5001
-    //todo: apply dto validation!!
     await app.listen(APP_PORT, () => {
         console.log('Application has started on port', APP_PORT);
     });
