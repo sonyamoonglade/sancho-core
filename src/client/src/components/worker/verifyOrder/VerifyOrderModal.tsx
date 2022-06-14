@@ -1,5 +1,12 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {useAppDispatch, useAppSelector, windowSelector, workerSelector} from "../../../redux";
+import {
+    useAppDispatch,
+    useAppSelector,
+    windowActions,
+    windowSelector,
+    workerActions,
+    workerSelector
+} from "../../../redux";
 import "./verify-order.styles.scss"
 import "../../order/orderForm/order-form.styles.scss"
 import {RiSettings4Line} from "react-icons/ri";
@@ -7,7 +14,7 @@ import {useAxios} from "../../../hooks/useAxios";
 import {useVerifyOrderForm} from "./hooks/useVerifyOrderForm";
 import VerifyOrderForm from "./verifyForm/VerifyOrderForm";
 import VirtualCart from "../virtualCart/VirtualCart";
-import LifeSearch from "../lifeSearch/LifeSearch";
+import LifeSearch from "../lifeSearch/LiveSearch";
 import LiveSearchResultContainer from "../lifeSearch/LiveSearchResultContainer";
 import {useVirtualCart} from "../hooks/useVirtualCart";
 import {currency} from "../../../common/constants";
@@ -19,15 +26,12 @@ const VerifyOrderModal = () => {
 
 
     const {worker} = useAppSelector(windowSelector)
-    const {orderQueue,queryResults} = useAppSelector(workerSelector)
-
+    const {orderQueue,virtualCart:virtualCartState} = useAppSelector(workerSelector)
+    const dispatch = useAppDispatch()
     const {client} = useAxios()
     const virtualCart = useVirtualCart()
 
-    const focusRef = useRef<HTMLInputElement>(null)
-    
-    const [isVirtualCartActive, setIsVirtualCartActive] = useState<boolean>(false)
-    const [vcart, setVCart] = useState<DatabaseCartProduct[]>([])
+
     const [totalOrderPrice, setTotalOrderPrice] = useState<number>(0)
 
     const {
@@ -44,7 +48,7 @@ const VerifyOrderModal = () => {
         verifyOrder,
         findWaitingOrderByPhoneNumber,
         getOrderTotalPrice
-    } = useVerifyOrder(client,orderQueue,totalOrderPrice,vcart)
+    } = useVerifyOrder(client,orderQueue,totalOrderPrice,virtualCartState.items)
 
 
     async function handleOrderVerification(){
@@ -55,7 +59,7 @@ const VerifyOrderModal = () => {
     }
 
     function toggleVirtualCart(){
-        setIsVirtualCartActive(p => !p)
+        dispatch(windowActions.toggleVirtualCart())
         presetVirtualCartItems(formValues.phone_number_w.value)
     }
     function presetVirtualCartItems(phoneNumber: string){
@@ -64,15 +68,14 @@ const VerifyOrderModal = () => {
             const parsedCart = order.cart.map((item) => {
                 return JSON.parse(item as unknown as string)
             })
-            setVCart(parsedCart)
+            dispatch(workerActions.setVirtualCart(parsedCart))
             virtualCart.setVirtualCart(parsedCart)
         }
     }
 
     useEffect(() => {
         if(!worker.verifyOrder){
-            setIsVirtualCartActive(false)
-            setVCart([])
+            dispatch(workerActions.setVirtualCart([]))
             virtualCart.clearVirtualCart()
             return
         }
@@ -88,7 +91,7 @@ const VerifyOrderModal = () => {
         }else{
             setTotalOrderPrice(0)
         }
-    },[formValues.phone_number_w.isValid,vcart])
+    },[formValues.phone_number_w.isValid,virtualCartState.items])
 
 
     return (
@@ -96,24 +99,8 @@ const VerifyOrderModal = () => {
             <p className='modal_title'>Подтвердить заказ</p>
             <RiSettings4Line onClick={toggleVirtualCart} className='submit_settings' size={25}/>
 
-            <div className={isVirtualCartActive ? 'livesearch_container --ls-active ' : "livesearch_container"}>
-                <LifeSearch
-                    isActive={isVirtualCartActive}
-                    focusRef={focusRef}
-                    extraClassName={"verify"}
-                />
-                <LiveSearchResultContainer
-                    virtualCart={virtualCart}
-                    setVirtualCart={setVCart}
-                    focusRef={focusRef}
-                    result={queryResults}
-                />
-            </div>
-            <VirtualCart
-                isActive={isVirtualCartActive}
-                items={vcart}
-                setVirtualCart={setVCart}
-            />
+
+            <VirtualCart/>
             <VerifyOrderForm
                 setFormDefaultsExceptPhoneNumberAndFullname={setFormDefaultsExceptPhoneNumberAndFullname}
                 presetDeliveryDetails={presetDeliveryDetails}

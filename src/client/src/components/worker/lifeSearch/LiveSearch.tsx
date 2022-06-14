@@ -6,7 +6,8 @@ import {FormField} from "../../../types/types";
 import {useFormValidations} from "../../../hooks/useFormValidations";
 import {useDebounce} from "../../../hooks/useDebounce";
 import {useAxios} from "../../../hooks/useAxios";
-import {useAppDispatch, workerActions} from "../../../redux";
+import {useAppDispatch, useAppSelector, windowSelector, workerActions} from "../../../redux";
+import {fetchQueryLiveSearchResults} from "../../../redux/worker/worker.async-actions";
 
 interface liveSearchFormState  {
     livesearch: FormField
@@ -15,9 +16,8 @@ interface liveSearchFormState  {
 interface liveSearchProps {
     extraClassName?: string
     focusRef: any
-    isActive: boolean
 }
-const LifeSearch:FC<liveSearchProps> = ({extraClassName,focusRef,isActive}) => {
+const LiveSearch:FC<liveSearchProps> = ({extraClassName,focusRef}) => {
 
     const [formValues, setFormValues] = useState<liveSearchFormState>({
         livesearch:{
@@ -31,15 +31,18 @@ const LifeSearch:FC<liveSearchProps> = ({extraClassName,focusRef,isActive}) => {
 
     const query = useDebounce(300,formValues.livesearch.value)
 
+    const {worker} = useAppSelector(windowSelector)
+
+
     useEffect(() => {
         if(query.trim().length === 0) { dispatch(workerActions.overrideResults([])) }
-        else fetchQueryResults(query)
+        else dispatch(fetchQueryLiveSearchResults(query, client))
     },[query])
     useEffect(() => {
-        if(!isActive){
+        if(!worker.virtualCart){
             setFormDefaults()
         }
-    },[isActive])
+    },[worker.virtualCart])
 
     function setFormDefaults(){
         setFormValues({
@@ -52,10 +55,6 @@ const LifeSearch:FC<liveSearchProps> = ({extraClassName,focusRef,isActive}) => {
 
 
 
-    async function fetchQueryResults(query:string){
-        const {data} = await client.get(`/product/?query=${query}`)
-        dispatch(workerActions.overrideResults(data.result))
-    }
 
 
 
@@ -85,4 +84,4 @@ const LifeSearch:FC<liveSearchProps> = ({extraClassName,focusRef,isActive}) => {
     );
 };
 
-export default LifeSearch;
+export default LiveSearch;

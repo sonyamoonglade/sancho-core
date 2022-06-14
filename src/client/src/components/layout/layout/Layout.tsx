@@ -9,6 +9,7 @@ import {useAppSelector, userSelector} from "../../../redux";
 import VerifyOrderModal from "../../worker/verifyOrder/VerifyOrderModal";
 import WorkerAppForm from "../../worker/appForm/WorkerAppForm";
 import CreateOrderModal from "../../worker/createOrder/CreateOrderModal";
+import VirtualCart from "../../worker/virtualCart/VirtualCart";
 
 
 interface layoutProps  {
@@ -33,6 +34,7 @@ const Layout:FC<layoutProps> = ({children}) => {
                 <>
                     <VerifyOrderModal />
                     <CreateOrderModal />
+
                     <WorkerAppForm/>
                  </>
             }

@@ -9,7 +9,6 @@ const WorkerNavigationRight = () => {
 
     function handleLogout(){
         dispatch(userActions.logoutMaster())
-
     }
 
     return (

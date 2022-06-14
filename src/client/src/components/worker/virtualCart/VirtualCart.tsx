@@ -1,36 +1,50 @@
-import React, {FC} from 'react';
+import React, {FC, useRef} from 'react';
 import {DatabaseCartProduct} from "../../../common/types";
 import "./virtual-cart.styles.scss"
 import "../worker-globals.scss"
 import {currency} from "../../../common/constants";
 import ReduceAddButton from "./ReduceAddButton";
 import {useVirtualCart} from "../hooks/useVirtualCart";
+import {useAppDispatch, useAppSelector, windowSelector, workerActions, workerSelector} from "../../../redux";
+import LifeSearch from "../lifeSearch/LiveSearch";
+import LiveSearchResultContainer from "../lifeSearch/LiveSearchResultContainer";
 
-interface virtualCartProps {
-    isActive: boolean
-    items: DatabaseCartProduct[]
-    setVirtualCart: Function
-}
 
-const VirtualCart:FC<virtualCartProps> = ({isActive,items,setVirtualCart}) => {
+const VirtualCart = () => {
 
     const virtualCart = useVirtualCart()
-
+    const {queryResults,virtualCart:virtualCartState} = useAppSelector(workerSelector)
+    const {worker} = useAppSelector(windowSelector)
+    const focusRef = useRef<HTMLInputElement>(null)
+    const dispatch = useAppDispatch()
 
     function addQuantity(p: DatabaseCartProduct){
         virtualCart.addProduct(p)
-        setVirtualCart(virtualCart.getCurrentCart())
+        const cc = virtualCart.getCurrentCart()
+        dispatch(workerActions.setVirtualCart(cc))
     }
 
     function reduceQuantity(id: number){
         virtualCart.removeProduct(id)
-        setVirtualCart(virtualCart.getCurrentCart())
+        const cc = virtualCart.getCurrentCart()
+        dispatch(workerActions.setVirtualCart(cc))
     }
-
     return (
-        <div className={isActive ? "virtual_cart --virtual-active" : "virtual_cart"}>
-            <ul className='virtual_list'>
-                {items?.map((r:DatabaseCartProduct) => (
+        <>
+            <div className={worker.virtualCart ? 'livesearch_container --ls-active ' : "livesearch_container"}>
+                <LifeSearch
+                    focusRef={focusRef}
+                    extraClassName={"verify"}
+                />
+                <LiveSearchResultContainer
+                    virtualCart={virtualCart}
+                    focusRef={focusRef}
+                    result={queryResults}
+                />
+            </div>
+            <div className={worker.virtualCart ? "virtual_cart --virtual-active" : "virtual_cart"}>
+                <ul className='virtual_list'>
+                    {virtualCartState.items?.map((r:DatabaseCartProduct) => (
                         <li key={r.id} className="virtual_item">
                             <div className="v_leading">
                                 <p>
@@ -44,9 +58,10 @@ const VirtualCart:FC<virtualCartProps> = ({isActive,items,setVirtualCart}) => {
                             </div>
 
                         </li>
-                ))}
-            </ul>
-        </div>
+                    ))}
+                </ul>
+            </div>
+        </>
     );
 };
 

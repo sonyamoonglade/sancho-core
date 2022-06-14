@@ -20,6 +20,7 @@ interface WindowState {
     worker: {
         verifyOrder: boolean
         createOrder: boolean
+        virtualCart: boolean
     }
 }
 
@@ -40,7 +41,8 @@ const initialState:WindowState = {
     },
     worker:{
         verifyOrder: false,
-        createOrder: false
+        createOrder: false,
+        virtualCart: false
     }
 }
 
@@ -119,19 +121,29 @@ export const windowSlice = createSlice({
 
         toggleVerifyOrder: (s) => {
             s.worker.verifyOrder = !s.worker.verifyOrder
+            if(!s.worker.verifyOrder){
+                s.worker.virtualCart = false
+            }
             s.worker.createOrder = false
-
         },
 
         toggleCreateOrder: (s) =>{
             s.worker.createOrder = !s.worker.createOrder
+            if(!s.worker.createOrder){
+                s.worker.virtualCart = false
+            }
             s.worker.verifyOrder = false
         },
 
         toggleWorkersOff: (s) => {
+            s.worker.virtualCart = false
             s.worker.verifyOrder = false
             s.worker.createOrder = false
         },
+
+        toggleVirtualCart: function (s){
+            s.worker.virtualCart = !s.worker.virtualCart
+        }
 
 
 

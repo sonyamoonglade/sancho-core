@@ -1,14 +1,18 @@
 import React, {useMemo} from 'react';
-import {useAppDispatch, useAppSelector, windowActions, windowSelector} from "../../../redux";
+import {useAppDispatch, useAppSelector, windowActions, windowSelector, workerActions} from "../../../redux";
+import {useVirtualCart} from "../hooks/useVirtualCart";
 
 const WorkerAppForm = () => {
 
 
     const {worker} = useAppSelector(windowSelector)
     const dispatch = useAppDispatch()
+    const {setVirtualCart} = useVirtualCart()
     function disableAllWorker(){
         if(isActive){
             dispatch(windowActions.toggleWorkersOff())
+            dispatch(workerActions.setVirtualCart([]))
+            setVirtualCart([])
         }
     }
 

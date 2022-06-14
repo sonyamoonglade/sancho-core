@@ -1,18 +1,25 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {OrderQueue, Product} from "../../common/types";
+import {DatabaseCartProduct, OrderQueue, Product} from "../../common/types";
 
 
 
 interface WorkerInitialState {
     queryResults: Product[]
+    virtualCart: {
+        items: DatabaseCartProduct[]
+    }
     error: string
     orderQueue: OrderQueue
+
 }
 
 const initialState:WorkerInitialState = {
     queryResults: null,
     error: null,
-    orderQueue: null
+    orderQueue: null,
+    virtualCart: {
+        items: []
+    },
 }
 
 const workerSlice = createSlice({
@@ -32,6 +39,10 @@ const workerSlice = createSlice({
             s.orderQueue = a.payload
             s.error = null
         },
+        setVirtualCart: function(s, a:PayloadAction<DatabaseCartProduct[]>){
+            s.virtualCart.items = a.payload
+        }
+
     }
 })
 

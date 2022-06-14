@@ -15,7 +15,6 @@ export const getInitialQueue = (client: AxiosInstance) => async (dispatch: AppDi
 
 }
 
-
 export const startEventSourcingForQueue = () => async (dispatch: AppDispatch) => {
 
     try {
@@ -33,5 +32,18 @@ export const startEventSourcingForQueue = () => async (dispatch: AppDispatch) =>
     }catch (e) {
         alert(e)
     }
+
+}
+
+export const fetchQueryLiveSearchResults = (query: string, client: AxiosInstance) => async(dispatch:AppDispatch) => {
+
+
+    try {
+        const {data} = await client.get(`/product/?query=${query}`)
+        dispatch(workerActions.overrideResults(data.result))
+    }catch (e: any) {
+        dispatch(workerActions.setError(e.message))
+    }
+
 
 }

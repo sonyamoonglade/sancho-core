@@ -1,11 +1,19 @@
 import React from 'react';
-import {useAppSelector, windowSelector} from "../../../redux";
+import {useAppDispatch, useAppSelector, windowActions, windowSelector, workerActions} from "../../../redux";
 import "./create-order.styles.scss"
 import CreateOrderForm from "./createForm/CreateOrderForm";
+import {RiSettings4Line} from "react-icons/ri";
+import VirtualCart from "../virtualCart/VirtualCart";
 
 const CreateOrderModal = () => {
 
     const {worker} = useAppSelector(windowSelector)
+
+    const dispatch = useAppDispatch()
+
+    function toggleVirtualCart(){
+        dispatch(windowActions.toggleVirtualCart())
+    }
 
 
 
@@ -15,8 +23,8 @@ const CreateOrderModal = () => {
 
 
         <p className='modal_title'>Создать заказ</p>
-        {/*lifesearch go here*/}
-
+        <RiSettings4Line onClick={toggleVirtualCart} className='submit_settings' size={25}/>
+        <VirtualCart/>
         <CreateOrderForm
 
         />

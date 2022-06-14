@@ -2,22 +2,24 @@ import React, {FC} from 'react';
 import {Product} from "../../../common/types";
 import {currency} from "../../../common/constants";
 import {VirtualCartInterface} from "../hooks/useVirtualCart";
+import {useAppDispatch, workerActions} from "../../../redux";
 
 
 interface containerProps {
     result: Product[]
     focusRef: any
     virtualCart: VirtualCartInterface
-    setVirtualCart: Function
 }
 
-const LiveSearchResultContainer:FC<containerProps> = ({result,focusRef, virtualCart, setVirtualCart}) => {
+const LiveSearchResultContainer:FC<containerProps> = ({result,focusRef, virtualCart}) => {
+
+    const dispatch = useAppDispatch()
 
     function handleAddVirtualProduct(p: Product){
         focusRef?.current.focus()
         virtualCart.addProduct(p)
-        const newVCart = virtualCart.getCurrentCart()
-        setVirtualCart(newVCart)
+        const cc = virtualCart.getCurrentCart()
+        dispatch(workerActions.setVirtualCart(cc))
     }
 
     return (
