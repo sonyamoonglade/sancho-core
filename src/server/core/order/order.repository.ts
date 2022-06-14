@@ -65,6 +65,7 @@ export class OrderRepository implements Repository<Order>{
 
       return rows as Order[]
     }catch (e) {
+
       throw new RepositoryException('order repository', e.message)
     }
 

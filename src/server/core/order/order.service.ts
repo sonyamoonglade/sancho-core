@@ -254,11 +254,12 @@ export class OrderService {
 
     const {user_id} = req
 
-    const sql = `select * from ${orders} where user_id=${user_id}`
+    const sql = `SELECT * FROM ${orders} WHERE user_id=${user_id} ORDER BY orders.created_at DESC, orders.status DESC`
 
-    let userOrders:Order[] | ResponseUserOrder[] = await this.orderRepository.customQuery(sql)
 
-    userOrders = userOrders.map((o) => {
+    const userOrders:Order[] | ResponseUserOrder[] = await this.orderRepository.customQuery(sql)
+    let mappedToResponse: ResponseUserOrder[]
+    mappedToResponse = userOrders.map((o) => {
         const {
           total_cart_price,
           id,
@@ -280,32 +281,9 @@ export class OrderService {
       return rso
     })
 
-    const ol = userOrders.length
 
-    let slice: ResponseUserOrder[]
-    let hasMore: boolean
-    switch (true){
-      case to == 10 && to < ol:
-        slice = userOrders.slice(0, to)
-        hasMore = true
-        break;
-      case to == 10 && to > ol:
-        slice = userOrders.slice(0, ol)
-        hasMore = false
-        break
-      case to > ol:
-        slice = userOrders.slice(to - 9,ol)
-        hasMore = false
-        break
-      case to < ol:
-        slice = userOrders.slice(to - 9, to)
-        hasMore = true
-        break
-    }
-
-
-    res.status(200).send({orders:slice, hasMore})
-
+    let hasMore: boolean = false
+    return res.status(200).send({orders:mappedToResponse, hasMore})
   }
 
   public async getLastVerifiedOrder(user_id:number):Promise<Partial<Order>>{
@@ -427,7 +405,7 @@ export class OrderService {
     const sql = `
         select o.id,o.cart,o.total_cart_price,o.status,o.is_delivered,o.delivery_details,o.created_at,
         o.verified_fullname,u.phone_number from ${orders} o join ${users} u on o.user_id= 
-        u.id where o.status = '${OrderStatus.waiting_for_verification}' or o.status = '${OrderStatus.verified}'
+        u.id where o.status = '${OrderStatus.waiting_for_verification}' or o.status = '${OrderStatus.verified}' order by o.created_at desc
       `
     const result: VerifiedQueueOrder[] = await this.orderRepository.customQuery(sql)
 

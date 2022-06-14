@@ -10,7 +10,7 @@ export function useVerifyOrder (client:AxiosInstance,orderQueue: OrderQueue,tota
 
     const verifyOrder = useCallback(async function(body: any, phoneNumber: string){
         const order = findWaitingOrderByPhoneNumber(phoneNumber)
-        if(order?.total_cart_price !== totalOrderPrice){
+        if(order?.total_cart_price !== totalOrderPrice && totalOrderPrice !== 0){
             body.cart = vcart
         }
         try {

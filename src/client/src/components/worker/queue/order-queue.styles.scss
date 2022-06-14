@@ -2,6 +2,7 @@
 
 
 .queue_container{
+  overflow-y: auto;
   display: grid;
   grid-template-columns: 50% 50%;
   padding: 1rem;
@@ -25,3 +26,4 @@
 .queue_col:first-child{
   border-right: 1px solid $dark-grey;
 }
+
