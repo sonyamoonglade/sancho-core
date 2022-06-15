@@ -1,20 +1,24 @@
-import React, {useEffect, useMemo} from 'react';
+import React, {FC, useEffect, useMemo} from 'react';
 import {useCreateOrderForm, WorkerCreateOrderFormState} from "../hooks/useCreateOrderForm";
 import FormInput from "../../../formInput/FormInput";
 import {useFormValidations} from "../../../../hooks/useFormValidations";
 import {useAppSelector, windowSelector} from "../../../../redux";
+import {WorkerVerifyOrderFormState} from "../../verifyOrder/hooks/useVerifyOrderForm";
 
 
+interface createMasterOrderFormProps {
+    formValues: WorkerCreateOrderFormState,
+    setFormValues: Function
+    setFormDefaults: Function
+}
 
-const CreateOrderForm = () => {
+const CreateOrderForm:FC<createMasterOrderFormProps> = ({formValues,
+                                                  setFormDefaults,
+                                                  setFormValues}) => {
 
     const {worker} = useAppSelector(windowSelector)
 
-    const {
-        formValues,
-        setFormDefaults,
-        setFormValues
-    } = useCreateOrderForm()
+
 
     const {minLengthValidation,validatePhoneNumber} = useFormValidations()
 

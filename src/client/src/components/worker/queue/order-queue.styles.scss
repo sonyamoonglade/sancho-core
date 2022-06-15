@@ -2,6 +2,7 @@
 
 
 .queue_container{
+
   overflow-y: auto;
   display: grid;
   grid-template-columns: 50% 50%;
@@ -27,3 +28,6 @@
   border-right: 1px solid $dark-grey;
 }
 
+.queue_container::-webkit-scrollbar{
+  //width: 10px;
+}

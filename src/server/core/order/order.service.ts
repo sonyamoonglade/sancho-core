@@ -104,13 +104,17 @@ export class OrderService {
       total_cart_price = this.applyDeliveryPunishment(total_cart_price)
 
       const masterOrder:Order = {
-        ...createMasterOrderDto,
+        verified_fullname: createMasterOrderDto.verified_fullname,
+        is_delivered: createMasterOrderDto.is_delivered,
+        cart: createMasterOrderDto.cart,
+        delivery_details: createMasterOrderDto.is_delivered ? createMasterOrderDto.delivery_details : null,
         total_cart_price,
         user_id,
         status:OrderStatus.verified,
         created_at: new Date(Date.now()),
         verified_at: new Date(Date.now())
       }
+
 
       if(masterOrder.is_delivered === true){
         const stringDetails: string = JSON.stringify(masterOrder.delivery_details)

@@ -11,8 +11,8 @@ import {WorkerVerifyOrderFormState} from "../hooks/useVerifyOrderForm";
 interface submitOrderFormProps {
     formValues: WorkerVerifyOrderFormState,
     setFormValues: Function
-    presetDeliveryDetails: Function
     setFormDefaults: Function
+    presetDeliveryDetails: Function
     setFormDefaultsExceptPhoneNumberAndFullname: Function
 }
 

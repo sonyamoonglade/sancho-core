@@ -1,5 +1,6 @@
-import {useState} from "react";
+import {useMemo, useState} from "react";
 import {FormField} from "../../../../types/types";
+import {log} from "util";
 
 export interface WorkerCreateOrderFormState {
     verified_fullname_c:FormField
@@ -58,10 +59,35 @@ export function useCreateOrderForm (){
         formValues.is_delivered_c.value = false
     }
 
+    const isSubmitButtonActive = useMemo(() => {
+        const values = Object.values(formValues)
+        const withAddressAndAllValid = values.every(v => v.isValid)
+        const withoutAddressAndRestValid = formValues.phone_number_c.isValid && !formValues.is_delivered_c.value && formValues.verified_fullname_c.isValid
+        const formValidity =  withAddressAndAllValid || withoutAddressAndRestValid
+
+        return formValidity
+
+    },[formValues])
 
 
 
-    return {setFormDefaults, setFormValues, formValues}
+
+    function getFormValues(){
+        const result = {
+            delivery_details: {
+                address: formValues.address_c.value,
+                floor: Number(formValues.floor_c.value),
+                entrance_number: Number(formValues.entrance_number_c.value),
+                flat_call: Number(formValues.flat_call_c.value)
+            },
+            is_delivered: formValues.is_delivered_c.value,
+            phone_number: `+7${formValues.phone_number_c.value}`,
+            verified_fullname: formValues.verified_fullname_c.value
+        }
+        return result
+    }
+
+    return {setFormDefaults, setFormValues, formValues,getFormValues, isSubmitButtonActive}
 
 
 
