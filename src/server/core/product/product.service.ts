@@ -9,16 +9,13 @@ import {
     ProductAlreadyExistsException,
     ProductDoesNotExistException
 } from "../exceptions/product.exceptions";
-import {ValidationService} from "../validation/validation.service";
 import {ValidationErrorException} from "../exceptions/validation.exceptions";
 import {Categories} from "../../../common/types";
 
 @Injectable()
 export class ProductService {
 
-  constructor(private productRepository:ProductRepository,
-              private validationService:ValidationService
-              ) {
+  constructor(private productRepository:ProductRepository) {
   }
 
   getCategories(): string[]{
@@ -29,7 +26,7 @@ export class ProductService {
     return categories
   }
 
-  async query(q: string, res: Response){
+  async query(q: string): Promise<Product[]>{
     if(q.trim().length === 0){ throw new ValidationErrorException() }
     let sql: string;
     const words = q.split(" ").filter(w => w.trim().length !== 0)
@@ -45,16 +42,10 @@ export class ProductService {
     }
 
     const result:Product[] = await this.productRepository.customQuery(sql)
-
-
-
-    return res.status(200).send({result})
+    return result
   }
 
-  async createProduct(res:Response, createProductDto:CreateProductDto):Promise<Response>{
-
-    const validationResult = this.validationService.validateObjectFromSqlInjection(createProductDto)
-    if(!validationResult) { throw new ValidationErrorException() }
+  async createProduct(createProductDto:CreateProductDto):Promise<Product>{
 
     const {name,category} = createProductDto
     if(await this.doesProductAlreadyExist(name)){ throw new ProductAlreadyExistsException(name) }
@@ -68,8 +59,7 @@ export class ProductService {
 
       const savedProduct = await this.productRepository.save(product)
       const parsedProduct = this.parseJSONProductFeatures(savedProduct)
-      return res.status(201).send({product:parsedProduct})
-
+      return parsedProduct
     }catch (e) {
       throw new UnexpectedServerError()
     }
@@ -106,40 +96,22 @@ export class ProductService {
 
   }
 
-  async getCatalogProducts(res:Response){
-    try {
-      let products: Product[] = await this.productRepository.get({where:{has_image: true}})
-      products = products.map(product => this.parseJSONProductFeatures(product))
-      const sorted = this.sortByCategory(products)
-      return res.status(200).send(sorted)
-    }catch (e) {
-      throw new UnexpectedServerError()
-    }
+  async getCatalogProducts():Promise<Product[]>{
+    let products: Product[] = await this.productRepository.get({where:{has_image: true}})
+    products = products.map(product => this.parseJSONProductFeatures(product))
+    const sorted = this.sortByCategory(products)
+    return sorted
   }
 
-  async deleteProduct(res:Response, id:number){
-    try {
+  async deleteProduct(res:Response, id:number): Promise<void>{
       await this.productRepository.delete(id)
-      res.status(200).end()
-    }catch (e) {
-      throw new UnexpectedServerError()
-    }
+      return
   }
   // TODO: APPLY MIDDLEWARE TO CHECK IF EXIST OR NOT!!
-  async updateProduct(res:Response, updated: Partial<Product>, id: number){
-
-    const validationResult = this.validationService.validateObjectFromSqlInjection(updated)
-    if(!validationResult) throw new ValidationErrorException()
-
-    if(!await this.doesProductEvenExists(id)) throw new ProductDoesNotExistException(id)
-
-    try {
-      await this.productRepository.update(id,updated)
-      res.status(200).send({updated})
-    }catch (e) {
-      throw new UnexpectedServerError()
-    }
-
+  async updateProduct(res:Response, updated: Partial<Product>, id: number): Promise<void>{
+    if(!await this.doesProductEvenExists(id)) { throw new ProductDoesNotExistException(id) }
+    await this.productRepository.update(id,updated)
+    return
   }
 
   async doesProductAlreadyExist(name: string): Promise<boolean>{

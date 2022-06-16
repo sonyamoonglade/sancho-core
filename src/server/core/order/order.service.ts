@@ -1,6 +1,5 @@
 import {Injectable} from "@nestjs/common";
 import {CreateMasterOrderDto, CreateUserOrderDto} from "./dto/create-order.dto";
-import {ValidationService} from "../validation/validation.service";
 import {UserService} from "../user/user.service";
 import {OrderRepository} from "./order.repository";
 import {Response} from "express";
@@ -38,12 +37,10 @@ export class OrderService {
 
   private events: EventEmitter
 
-  constructor(private validationService:ValidationService,
-              private orderRepository:OrderRepository,
+  constructor(private orderRepository:OrderRepository,
               private userService:UserService,
               private jsonService:JsonService,
               private productRepository:ProductRepository,
-              private cookieService: CookieService,
               ) {
     this.events = new EventEmitter()
   }

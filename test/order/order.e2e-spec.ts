@@ -339,12 +339,12 @@ describe('OrderController (e2e)', () => {
         userRepository.save = jest.fn(async() => mockUserWhichDoesNotExistYet)
         //imitating user is not in system
         userService.getUserId = jest.fn(async () => undefined)
+
         sessionRepository.save = jest.fn(async() => mockSessionWithWaitingOrder)
         productRepository.customQuery = jest.fn(async() => [mockProduct,mockProduct2])
         orderRepository.get = jest.fn(async () => [])
 
-        const id = await userService.getUserId("d")
-        expect(id).toBeUndefined()
+
 
         jest.spyOn(userRepository,"save")
         jest.spyOn(userRepository,"get")
@@ -362,8 +362,7 @@ describe('OrderController (e2e)', () => {
             .expect(201)
             .then(res => {
 
-
-
+                //order is saved
                 expect(orderRepository.save).toHaveBeenCalled()
                 //authorization middleware
                 expect(userRepository.get).toHaveBeenCalled()

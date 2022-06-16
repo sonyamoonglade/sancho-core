@@ -3,6 +3,8 @@ import {AppModule} from './app.module';
 import * as cookieParser from 'cookie-parser'
 import * as path from 'path'
 import {ValidationPipe} from "@nestjs/common";
+import {UserRepository} from "./core/user/user.repository";
+import {SessionRepository} from "./core/authentication/session.repository";
 
 require('dotenv').config({
     path: path.resolve(__dirname,'.env'),
@@ -12,6 +14,9 @@ require('dotenv').config({
 async function bootstrap() {
 
     const app = await NestFactory.create(AppModule);
+
+
+
     const origins = [
     "https://zharpizza-front.herokuapp.com",
     "http://localhost:3001",

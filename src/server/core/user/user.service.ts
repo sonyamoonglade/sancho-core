@@ -4,7 +4,6 @@ import {UserRepository} from "./user.repository";
 import {UnexpectedServerError} from "../exceptions/unexpected-errors.exceptions";
 import {SessionService} from "../authentication/session.service";
 import {Request, Response} from "express";
-import {ValidationService} from "../validation/validation.service";
 import {User} from "../entities/User";
 import {CreateMasterUserDto} from "./dto/create-master-user.dto";
 
@@ -26,8 +25,7 @@ import {LoginMasterUserDto} from "./dto/login-master-user.dto";
 @Injectable()
 export class UserService {
   constructor(private sessionService:SessionService,
-              private userRepository:UserRepository,
-              private validationService: ValidationService) {}
+              private userRepository:UserRepository) {}
 
 
 

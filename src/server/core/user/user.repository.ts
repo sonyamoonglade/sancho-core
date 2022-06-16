@@ -60,5 +60,9 @@ export class UserRepository implements Repository<User>{
     return Promise.resolve(undefined);
   }
 
+  public getDb(){
+      return this.db
+  }
+
 
 }

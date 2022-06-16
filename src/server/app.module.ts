@@ -2,7 +2,6 @@ import {MiddlewareConsumer, Module, NestModule, RequestMethod} from "@nestjs/com
 import {UserModule} from "./core/user/user.module";
 import {DbModule} from "./core/database/db.module";
 import {QueryBuilderModule} from "./core/query_builder/qb.module";
-import {ValidationModule} from "./core/validation/validation.module";
 import {SessionMiddleware} from "./core/authentication/middleware/session.middleware";
 import {UserController} from "./core/user/user.controller";
 import {SessionService} from "./core/authentication/session.service";
@@ -23,8 +22,8 @@ import {SessionModule} from "./core/authentication/session.module";
 @Module({
   imports: [
     UserModule,DbModule,QueryBuilderModule,
-    ValidationModule,ProductModule,
-    OrderModule,CookieModule,SessionModule
+    ProductModule, OrderModule,CookieModule,
+    SessionModule
   ],
   controllers: [AppController],
   providers: [
@@ -55,5 +54,7 @@ export class AppModule implements NestModule{
       )
 
   }
+
+
 
 }

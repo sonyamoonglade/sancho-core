@@ -3,23 +3,18 @@ import {
     Controller,
     Delete,
     Get,
-    ParseBoolPipe,
     ParseIntPipe,
     Post,
     Put,
     Query,
     Res,
-    UploadedFile,
     UseGuards,
-    UseInterceptors
 } from "@nestjs/common";
 import {ProductService} from "./product.service";
 import {CONTROLLER_PATH_PREFIX} from "../types/constants";
 import {Response} from "express";
 import {CreateProductDto} from "./dto/create-product.dto";
-import {FileInterceptor} from "@nestjs/platform-express";
 import {Role} from "../decorators/role/Role";
-import {IMAGE_UPLOAD_FILENAME} from "../../types/types";
 import {AppRoles} from "../../../common/types";
 import {AuthorizationGuard} from "../authorization/authorization.guard";
 
@@ -33,51 +28,58 @@ export class ProductController {
 
   @Post('/createProduct')
   @Role([AppRoles.master])
-  createProduct(@Body() createProductDto: CreateProductDto,
-                @Res() res: Response){
-    return this.productService.createProduct(res,createProductDto)
+  async createProduct(@Body() createProductDto: CreateProductDto, @Res() res: Response){
+    try {
+        const createdProduct = await this.productService.createProduct(createProductDto)
+        return res.status(201).send({product:createdProduct})
+    }catch (e) {
+        throw e
+    }
   }
 
   @Get("/")
   @Role([AppRoles.worker])
-  query(@Query("query") q: string, @Res() res:Response){
-      q = decodeURI(q)
-      return this.productService.query(q,res)
+  async query(@Query("query") q: string, @Res() res:Response){
+      try {
+          q = decodeURI(q)
+          const resultQuery = await this.productService.query(q)
+          return res.status(200).send({result: resultQuery})
+      }catch (e) {
+          throw e
+      }
   }
 
-  @Post('/uploadProductImage')
-  @Role([AppRoles.master])
-  attachImageToProduct( @Res() res: Response, @Body() body){
-    return this.productService.attachImageToProduct(res,Number(body.product_id))
-  }
-  @Post('/changeProductImage')
-  @Role([AppRoles.master])
-  @UseInterceptors(FileInterceptor(IMAGE_UPLOAD_FILENAME))
-  changeProductImage(@Res() res: Response, @UploadedFile() productImageFile,@Body() body){
-    return this.productService.changeProductImage(res,productImageFile,Number(body.product_id))
-  }
-
-  @Get('/listOfProducts')
-  @Role([AppRoles.worker])
-  getListOfProducts(@Res() res:Response,@Query('has_image',ParseBoolPipe) hasImage: boolean){
-    return this.productService.getListOfProducts(res,hasImage);
-  }
 
   @Get('/catalogProducts')
-  getCatalogProducts(@Res() res:Response){
-    return this.productService.getCatalogProducts(res)
+  async getCatalogProducts(@Res() res:Response){
+    try {
+        const catalog = await this.productService.getCatalogProducts()
+        return res.status(200).send(catalog)
+    }catch (e) {
+       throw e
+    }
   }
 
   @Put('/updateProduct')
   @Role([AppRoles.master])
-  updateProduct(@Res() res: Response, @Query('id', ParseIntPipe) id: number, @Body() updatedProduct){
-    return this.productService.updateProduct(res,updatedProduct,id)
+  async updateProduct(@Res() res: Response, @Query('id', ParseIntPipe) id: number, @Body() updatedProduct){
+      try {
+          await this.productService.updateProduct(res,updatedProduct,id)
+          return res.status(200).end()
+      }catch (e) {
+          throw e
+      }
   }
 
   @Delete('/deleteProduct')
   @Role([AppRoles.master])
-  deleteProduct(@Res() res:Response,@Query('id', ParseIntPipe) id: number){
-    return this.productService.deleteProduct(res,id)
+  async deleteProduct(@Res() res:Response,@Query('id', ParseIntPipe) id: number){
+    try {
+        await this.productService.deleteProduct(res,id)
+        res.status(200).end()
+    }catch (e) {
+        throw e
+    }
   }
 
 }

@@ -58,4 +58,7 @@ export class SessionRepository implements Repository<Session> {
 
   }
 
+  public getDb(){
+    return this.db
+  }
 }
