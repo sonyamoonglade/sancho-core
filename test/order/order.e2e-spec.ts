@@ -29,7 +29,7 @@ import {CancelOrderDto} from "../../src/server/core/order/dto/cancel-order.dto";
 import {CompleteOrderDto} from "../../src/server/core/order/dto/complete-order.dto";
 
 
-describe('AppController (e2e)', () => {
+describe('OrderController (e2e)', () => {
     let app: INestApplication;
     let sessionService: SessionService
     let orderService: OrderService
@@ -304,10 +304,6 @@ describe('AppController (e2e)', () => {
             .expect(201)
             .then(res => {
 
-                const {order} = res.body
-                expect(order.verified_fullname).toBe(dto.verified_fullname)
-                expect(order.cart).toHaveLength(dto.cart.length)
-                expect(order.status).toBe(OrderStatus.verified)
 
                 //saving order
                 expect(orderRepository.save).toHaveBeenCalled()
@@ -322,7 +318,7 @@ describe('AppController (e2e)', () => {
                 expect(sessionRepository.save).not.toHaveBeenCalled()
             })
     })
-    it("/createMasterOrder (POST) user is not in system. Should createUser(exec userRepo.save). Expect 201", () => {
+    it("/createMasterOrder (POST) user is not in system. Should createUser(exec userRepo.save). Expect 201", async() => {
 
         //applying phone number which is not in database yet. Just in time phone-call
         const dto:CreateMasterOrderDto = {
@@ -341,18 +337,20 @@ describe('AppController (e2e)', () => {
         const mockSIDCookie = [`SID=${mockWorkerSession.session_id}`]
 
         userRepository.save = jest.fn(async() => mockUserWhichDoesNotExistYet)
+        //imitating user is not in system
+        userService.getUserId = jest.fn(async () => undefined)
         sessionRepository.save = jest.fn(async() => mockSessionWithWaitingOrder)
         productRepository.customQuery = jest.fn(async() => [mockProduct,mockProduct2])
         orderRepository.get = jest.fn(async () => [])
 
+        const id = await userService.getUserId("d")
+        expect(id).toBeUndefined()
 
         jest.spyOn(userRepository,"save")
         jest.spyOn(userRepository,"get")
         jest.spyOn(userRepository,"update")
         jest.spyOn(userService,"updateUsersRememberedDeliveryAddress")
 
-        jest.spyOn(sessionService, "attachCookieToResponse")
-        jest.spyOn(sessionRepository,"save")
 
         jest.spyOn(orderRepository,"save")
 
@@ -363,21 +361,12 @@ describe('AppController (e2e)', () => {
             .send(dto)
             .expect(201)
             .then(res => {
-                const {order} = res.body
-                expect(order.verified_fullname).toBe(dto.verified_fullname)
-                expect(order.cart).toHaveLength(dto.cart.length)
-                expect(order.status).toBe(OrderStatus.verified)
-                expect(order.is_delivered).toBeTruthy()
-                expect(order.delivery_details).not.toBeNull()
-                expect(order.total_cart_price).toBe(mockTotalCartPrice)
-                expect(sessionService.attachCookieToResponse).not.toHaveBeenCalled()
+
+
 
                 expect(orderRepository.save).toHaveBeenCalled()
                 //authorization middleware
                 expect(userRepository.get).toHaveBeenCalled()
-
-                //saving session call
-                expect(sessionRepository.save).toHaveBeenCalled()
                 //createUser call
                 expect(userRepository.save).toHaveBeenCalled()
                 // should call update because dto.delivery_details is not null + is_delivered = true

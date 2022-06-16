@@ -13,7 +13,7 @@ import {AppRoles, OrderStatus} from "../../src/common/types";
 import {OrderRepository} from "../../src/server/core/order/order.repository";
 import {Order} from "../../src/server/core/entities/Order";
 
-describe('User Controller (e2e)', () => {
+describe('UserController (e2e)', () => {
 
 
     let app: INestApplication;
