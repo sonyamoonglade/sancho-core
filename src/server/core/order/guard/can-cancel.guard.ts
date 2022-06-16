@@ -1,8 +1,7 @@
 import {CanActivate, ExecutionContext, Injectable} from "@nestjs/common";
-import {extendedRequest} from "../../types/types";
 import {UserService} from "../../user/user.service";
 import {AppRoles} from "../../../../common/types";
-import {CookieNames} from "../../../types/types";
+import {CookieNames, extendedRequest} from "../../../types/types";
 
 
 @Injectable()

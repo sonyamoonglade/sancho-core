@@ -1,10 +1,7 @@
-import {Body, Controller, Get, ParseIntPipe, Post, Put, Query, Req, Res, UseGuards} from "@nestjs/common";
-import {CONTROLLER_PATH_PREFIX} from "../types/constants";
+import {Body, Controller, Get, Post, Put, Req, Res, UseGuards} from "@nestjs/common";
 import {CreateMasterOrderDto, CreateUserOrderDto} from "./dto/create-order.dto";
 import {OrderService} from "./order.service";
 import {Response} from "express";
-import {extendedRequest} from "../types/types";
-import {Role} from "../decorators/role/Role";
 import {VerifyOrderDto} from "./dto/verify-order.dto";
 import {CancelOrderDto} from "./dto/cancel-order.dto";
 import {AppRoles, OrderStatus} from "../../../common/types";
@@ -12,8 +9,10 @@ import {CanCancelGuard} from "./guard/can-cancel.guard";
 import {AuthorizationGuard} from "../authorization/authorization.guard";
 import {CompleteOrderDto} from "./dto/complete-order.dto";
 import {CookieService} from "../../shared/cookie/cookie.service";
+import {Role} from "../../shared/decorators/role/Role";
+import {extendedRequest} from "../../types/types";
 
-@Controller(`${CONTROLLER_PATH_PREFIX}/order`)
+@Controller("/order")
 @UseGuards(AuthorizationGuard)
 export class OrderController {
 

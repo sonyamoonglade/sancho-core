@@ -2,10 +2,10 @@ import {Injectable} from "@nestjs/common";
 import {Session} from "../entities/Session";
 import * as dayjs from "dayjs";
 import {SessionRepository} from "./session.repository";
-import {UnexpectedServerError} from "../exceptions/unexpected-errors.exceptions";
 import {Response} from "express";
 import SimpleCrypto from "simple-crypto-js";
 import {CookieNames} from "../../types/types";
+import {UnexpectedServerError} from "../../shared/exceptions/unexpected-errors.exceptions";
 
 require('dotenv').config()
 

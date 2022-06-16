@@ -2,10 +2,10 @@ import {Injectable, NestMiddleware} from "@nestjs/common";
 import * as dayjs from "dayjs";
 import * as relativeTime from "dayjs/plugin/relativeTime";
 import {Order} from "../../entities/Order";
-import {LastOrderIsNotYetVerified, OrderCreationLimitExceeded} from "../../exceptions/order.exceptions";
 import {OrderService} from "../order.service";
 import {AppRoles} from "../../../../common/types";
 import {UserService} from "../../user/user.service";
+import {LastOrderIsNotYetVerified, OrderCreationLimitExceeded} from "../../../shared/exceptions/order.exceptions";
 
 
 @Injectable()

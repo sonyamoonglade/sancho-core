@@ -1,4 +1,3 @@
-import {DeliveryDetails} from "../../../../common/types";
 import {IsDefined, IsString} from "class-validator";
 
 export class RegisterUserDto {

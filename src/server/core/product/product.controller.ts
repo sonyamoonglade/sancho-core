@@ -1,25 +1,13 @@
-import {
-    Body,
-    Controller,
-    Delete,
-    Get,
-    ParseIntPipe,
-    Post,
-    Put,
-    Query,
-    Res,
-    UseGuards,
-} from "@nestjs/common";
+import {Body, Controller, Delete, Get, ParseIntPipe, Post, Put, Query, Res, UseGuards,} from "@nestjs/common";
 import {ProductService} from "./product.service";
-import {CONTROLLER_PATH_PREFIX} from "../types/constants";
 import {Response} from "express";
 import {CreateProductDto} from "./dto/create-product.dto";
-import {Role} from "../decorators/role/Role";
 import {AppRoles} from "../../../common/types";
 import {AuthorizationGuard} from "../authorization/authorization.guard";
+import {Role} from "../../shared/decorators/role/Role";
 
 
-@Controller(`${CONTROLLER_PATH_PREFIX}/product`)
+@Controller("/product")
 @UseGuards(AuthorizationGuard)
 export class ProductController {
 

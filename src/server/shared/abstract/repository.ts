@@ -1,5 +1,4 @@
-import {filter} from "../../core/query_builder/QueryBuilder";
-
+import {filter} from "../query_builder/QueryBuilder";
 
 export interface Repository<T> {
 

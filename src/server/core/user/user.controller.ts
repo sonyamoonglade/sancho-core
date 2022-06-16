@@ -1,16 +1,15 @@
 import {Body, Controller, Get, Post, Put, Query, Req, Res, UseGuards} from "@nestjs/common";
-import {extendedRequest, getUserParamsInterface} from "../types/types";
 import {UserService} from "./user.service";
 import {Request, Response} from "express";
 import {CreateMasterUserDto} from "./dto/create-master-user.dto";
-import {CONTROLLER_PATH_PREFIX} from "../types/constants";
 import {PreventAuthedGuard} from "./guard/prevent-authed.guard";
 import {LoginMasterUserDto} from "./dto/login-master-user.dto";
 import {SessionService} from "../authentication/session.service";
 import {AppRoles} from "../../../common/types";
 import {RegisterUserDto} from "./dto/register-user.dto";
+import {extendedRequest} from "../../types/types";
 
-@Controller(`${CONTROLLER_PATH_PREFIX}/users`)
+@Controller("/users")
 export class UserController {
 
   constructor(
@@ -74,14 +73,6 @@ export class UserController {
     }
   }
 
-  @Get("/getUser:phone_number")
-  getUser(@Query() params:getUserParamsInterface,@Res() res: Response, @Req() req: Request){
-  }
-
-  @Put("/updateUser:phone_number")
-  updateUser(@Query() params: getUserParamsInterface,@Res() res: Response, @Req() req: Request){
-
-  }
 
 
 

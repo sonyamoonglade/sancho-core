@@ -2,7 +2,7 @@ import {CanActivate, ExecutionContext, Injectable} from "@nestjs/common";
 import {Request} from "express";
 import {SessionService} from "../../authentication/session.service";
 import {OrderService} from "../../order/order.service";
-import {LastOrderIsNotYetVerified} from "../../exceptions/order.exceptions";
+import {LastOrderIsNotYetVerified} from "../../../shared/exceptions/order.exceptions";
 
 
 @Injectable()

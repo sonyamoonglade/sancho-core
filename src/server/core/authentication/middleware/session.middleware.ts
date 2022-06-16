@@ -3,8 +3,7 @@ import {Response} from "express";
 import {Session} from "../../entities/Session";
 import {SessionService} from "../session.service";
 import {SessionRepository} from "../session.repository";
-import {extendedRequest} from "../../types/types";
-import {CookieNames} from "../../../types/types";
+import {CookieNames, extendedRequest} from "../../../types/types";
 
 
 @Injectable()

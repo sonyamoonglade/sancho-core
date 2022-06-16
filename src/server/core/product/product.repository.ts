@@ -1,10 +1,10 @@
 import {Inject, Injectable} from "@nestjs/common";
 import {Repository} from "../../shared/abstract/repository";
 import {Product, products} from "../entities/Product";
-import {query_builder} from "../query_builder/provider-name";
-import {filter, QueryBuilder} from "../query_builder/QueryBuilder";
-import {pg_conn} from "../database/db_provider-name";
 import {Pool} from "pg";
+import {filter, QueryBuilder} from "../../shared/query_builder/QueryBuilder";
+import {pg_conn} from "../../shared/database/db_provider-name";
+import {query_builder} from "../../shared/query_builder/provider-name";
 
 
 @Injectable()

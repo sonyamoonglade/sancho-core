@@ -1,11 +1,11 @@
 import {Module} from "@nestjs/common";
 import {SessionService} from "./session.service";
 import {SessionMiddleware} from "./middleware/session.middleware";
-import {QueryBuilderModule} from "../query_builder/qb.module";
-import {DbModule} from "../database/db.module";
 import {SessionRepository} from "./session.repository";
 import {UserService} from "../user/user.service";
 import {RegisterSpamGuard} from "./guard/register-spam.guard";
+import {QueryBuilderModule} from "../../shared/query_builder/qb.module";
+import {DbModule} from "../../shared/database/db.module";
 
 
 Module({

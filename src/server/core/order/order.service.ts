@@ -3,18 +3,10 @@ import {CreateMasterOrderDto, CreateUserOrderDto} from "./dto/create-order.dto";
 import {UserService} from "../user/user.service";
 import {OrderRepository} from "./order.repository";
 import {Response} from "express";
-import {extendedRequest} from "../types/types";
 import {Order, orders} from "../entities/Order";
-import {UnexpectedServerError} from "../exceptions/unexpected-errors.exceptions";
-import {JsonService} from "../database/json.service";
 import {User, users} from "../entities/User";
 import {VerifyOrderDto} from "./dto/verify-order.dto";
 import {CancelOrderDto} from "./dto/cancel-order.dto";
-import {
-  CancelExplanationHasNotBeenProvided,
-  OrderCannotBeCompleted,
-  OrderCannotBeVerified
-} from "../exceptions/order.exceptions";
 import {Product, products} from "../entities/Product";
 import {ProductRepository} from "../product/product.repository";
 import {
@@ -26,11 +18,17 @@ import {
   VerifiedQueueOrder,
   WaitingQueueOrder
 } from "../../../common/types";
-import {CookieService} from "../../shared/cookie/cookie.service";
 import {DELIVERY_PUNISHMENT_THRESHOLD, DELIVERY_PUNISHMENT_VALUE} from "../../../common/constants";
 import {EventEmitter} from "events";
-import {ORDER_HAS_CREATED, ORDER_QUEUE_HAS_MODIFIED} from "../../types/types";
 import {CompleteOrderDto} from "./dto/complete-order.dto";
+import {UnexpectedServerError} from "../../shared/exceptions/unexpected-errors.exceptions";
+import {
+  CancelExplanationHasNotBeenProvided,
+  OrderCannotBeCompleted,
+  OrderCannotBeVerified
+} from "../../shared/exceptions/order.exceptions";
+import {JsonService} from "../../shared/database/json.service";
+import {Events} from "../../shared/event/events";
 
 @Injectable()
 export class OrderService {
@@ -72,7 +70,7 @@ export class OrderService {
       delivery_details: userOrder.delivery_details ? userOrder.delivery_details : null,
       total_cart_price
     }
-    this.events.emit(ORDER_HAS_CREATED)
+    this.events.emit(Events.ORDER_HAS_CREATED)
 
     return responseOrder
   }
@@ -110,7 +108,7 @@ export class OrderService {
 
     await this.orderRepository.save(masterOrder)
 
-    this.events.emit(ORDER_HAS_CREATED)
+    this.events.emit(Events.ORDER_HAS_CREATED)
     return
   }
 
@@ -142,7 +140,7 @@ export class OrderService {
 
       await this.orderRepository.update(orderId,updated)
 
-      this.events.emit(ORDER_QUEUE_HAS_MODIFIED)
+      this.events.emit(Events.ORDER_QUEUE_HAS_MODIFIED)
       return OrderStatus.verified
     }catch (e) {
       if(e.message.includes('verification')){
@@ -175,7 +173,7 @@ export class OrderService {
           cancelled_by: userId
         }
         await this.orderRepository.update(o.id,updated)
-        this.events.emit(ORDER_QUEUE_HAS_MODIFIED)
+        this.events.emit(Events.ORDER_QUEUE_HAS_MODIFIED)
         return true
       }catch (e) {
         throw new UnexpectedServerError("Ошибка отмены заказа")
@@ -196,7 +194,7 @@ export class OrderService {
 
       await this.orderRepository.update(cancelOrderDto.order_id,updated)
 
-      this.events.emit(ORDER_QUEUE_HAS_MODIFIED)
+      this.events.emit(Events.ORDER_QUEUE_HAS_MODIFIED)
       return false
     }catch (e) {
       throw new UnexpectedServerError("Ошибка отмены заказа")
@@ -216,7 +214,7 @@ export class OrderService {
     }
 
     await this.orderRepository.update(order_id, updated)
-    this.events.emit(ORDER_QUEUE_HAS_MODIFIED)
+    this.events.emit(Events.ORDER_QUEUE_HAS_MODIFIED)
 
     return OrderStatus.completed
   }
@@ -339,13 +337,13 @@ export class OrderService {
   }
 
   public async orderQueue(res: Response) {
-    this.events.on(ORDER_HAS_CREATED, async () => {
+    this.events.on(Events.ORDER_HAS_CREATED, async () => {
       const queue = await this.fetchOrderQueue()
       const chunk = `data: ${JSON.stringify({queue})}\n\n`
       return res.write(chunk)
     })
 
-    this.events.on(ORDER_QUEUE_HAS_MODIFIED, async () => {
+    this.events.on(Events.ORDER_QUEUE_HAS_MODIFIED, async () => {
       const queue = await this.fetchOrderQueue()
       const chunk = `data: ${JSON.stringify({queue})}\n\n`
       return res.write(chunk)

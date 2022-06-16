@@ -3,14 +3,14 @@ import {ProductRepository} from "./product.repository";
 import {Response} from "express";
 import {CreateProductDto} from "./dto/create-product.dto";
 import {Product} from "../entities/Product";
-import {UnexpectedServerError} from "../exceptions/unexpected-errors.exceptions";
-import {
-    InvalidCategoryException,
-    ProductAlreadyExistsException,
-    ProductDoesNotExistException
-} from "../exceptions/product.exceptions";
-import {ValidationErrorException} from "../exceptions/validation.exceptions";
 import {Categories} from "../../../common/types";
+import {
+  InvalidCategoryException,
+  ProductAlreadyExistsException,
+  ProductDoesNotExistException
+} from "../../shared/exceptions/product.exceptions";
+import {ValidationErrorException} from "../../shared/exceptions/validation.exceptions";
+import {UnexpectedServerError} from "../../shared/exceptions/unexpected-errors.exceptions";
 
 @Injectable()
 export class ProductService {

@@ -1,11 +1,11 @@
-import {pg_conn} from "../database/db_provider-name";
 import {Pool} from "pg";
 import {Inject} from "@nestjs/common";
-import {filter, QueryBuilder} from "../query_builder/QueryBuilder";
 import {Repository} from "../../shared/abstract/repository";
 import {User, users} from "../entities/User";
-import {query_builder} from "../query_builder/provider-name";
-import {RepositoryException} from "../exceptions/repository.exceptions";
+import {filter, QueryBuilder} from "../../shared/query_builder/QueryBuilder";
+import {pg_conn} from "../../shared/database/db_provider-name";
+import {query_builder} from "../../shared/query_builder/provider-name";
+import {RepositoryException} from "../../shared/exceptions/repository.exceptions";
 
 
 export class UserRepository implements Repository<User>{
