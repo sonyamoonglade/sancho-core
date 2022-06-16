@@ -6,30 +6,55 @@ import {CreateMasterUserDto} from "./dto/create-master-user.dto";
 import {CONTROLLER_PATH_PREFIX} from "../types/constants";
 import {PreventAuthedGuard} from "./guard/prevent-authed.guard";
 import {LoginMasterUserDto} from "./dto/login-master-user.dto";
+import {SessionService} from "../authentication/session.service";
+import {AppRoles} from "../../../common/types";
 
 @Controller(`${CONTROLLER_PATH_PREFIX}/users`)
 export class UserController {
 
-  constructor(private userService:UserService) {
+  constructor(
+      private userService:UserService,
+      private sessionService: SessionService
+  ) {
   }
-
 
 
 
   @Post("/loginMaster")
   // @UseGuards(RegisterSpamGuard)
-  loginMaster(@Res() res:Response, @Body() b: LoginMasterUserDto){
-    return this.userService.loginMaster(res,b)
+  async loginMaster(@Res() res:Response, @Body() b: LoginMasterUserDto){
+   try {
+     const masterId = await this.userService.loginMaster(b)
+     const SID = await this.sessionService.getSIDByUserId(masterId)
+     this.sessionService.attachCookieToResponse(res,SID)
+     return res.status(200).end()
+   }catch (e) {
+     // todo:
+     throw e
+   }
   }
 
   @Get("/auth/me")
-  authMe(@Res() res:Response,@Req() req:extendedRequest) {
-    return this.userService.authMe(req,res)
+  async authMe(@Res() res:Response,@Req() req:extendedRequest) {
+    try {
+      const userId = req.user_id
+      const user = await this.userService.authMe(userId)
+      if(user.role === AppRoles.user){
+        return res.status(200).send({phone_number:user.phone_number})
+      }
+      return res.status(200).end()
+    }catch (e) {
+        throw e
+    }
   }
   @Post("/login")
   @UseGuards(PreventAuthedGuard)
-  login(@Res() res:Response, @Req() req:extendedRequest, @Body() b:{phone_number:string}){
-    return this.userService.login(req,res,b)
+  async login(@Res() res:Response, @Req() req:extendedRequest, @Body() b:{phone_number:string}){
+    const user = await this.userService.login(b)
+    const SID = await this.sessionService.getSIDByUserId(user.id)
+    this.sessionService.attachCookieToResponse(res,SID)
+
+    return res.status(200).end()
   }
   // TODO: APPLY GUARD AND METHOD TO BECOME MASTER / CHECK IF SESSION BELONGS TO MASTER USER
   @Post("/registerMasterUser")

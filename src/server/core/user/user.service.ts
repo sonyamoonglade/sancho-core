@@ -39,7 +39,7 @@ export class UserService {
     await this.userRepository.update(userId, updated)
   }
 
-  async loginMaster(res: Response, b: LoginMasterUserDto){
+  async loginMaster(b: LoginMasterUserDto): Promise<number>{
     const {login, password} = b
 
     const u = (await this.userRepository.get({where:{login}}))[0]
@@ -51,13 +51,10 @@ export class UserService {
     const compResult = await bcrypt.compare(password, userPassword)
     if(!compResult) { throw new InvalidPasswordException() }
 
-    const SID = await this.sessionService.getSIDByUserId(u.id)
-    this.sessionService.attachCookieToResponse(res,SID)
-
-    return res.status(200).end()
+    return u.id
   }
 
-  async login(req:extendedRequest,res:Response,body:{phone_number:string}){
+  async login(body:{phone_number:string}):Promise<Partial<User> | null>{
 
   const {phone_number} = body
 
@@ -69,26 +66,19 @@ export class UserService {
       ))[0]
 
     if(!user) {
-      return this.createUser(res,{phone_number})
+      return null
     }
-    const SID = await this.sessionService.getSIDByUserId(user.id)
-    this.sessionService.attachCookieToResponse(res,SID)
 
-    return res.status(200).end()
-
+    return user
   }
 
-  async authMe(@Req() req: extendedRequest, @Res() res:Response) {
-    const {user_id} = req
-    const users = await this.userRepository.get({where:{id:user_id},returning:["phone_number","role"]})
+  async authMe(userId: number): Promise<Partial<User>> {
+    const users = await this.userRepository.get({where:{id:userId},returning:["phone_number","role"]})
     const u = users[0]
-    if(u.role === AppRoles.user){
-      return res.status(200).send({phone_number:u.phone_number})
-    }
-    return res.status(200).end()
+    return u
   }
 
-  async createUser(res:Response,registerUserDto:RegisterUserDto, quiet:boolean = false):Promise<User | Response>{
+  async createUser(registerUserDto:RegisterUserDto, quiet:boolean = false):Promise<User>{
     const {phone_number} = registerUserDto
 
     try {
@@ -98,12 +88,8 @@ export class UserService {
         }
 
       const user = await this.userRepository.save(basicUser)
-      const SID = await this.sessionService.createSession(user.id)
 
-      if(quiet) return user
-
-      this.sessionService.attachCookieToResponse(res,SID)
-      return res.status(201).end()
+      return user
     }catch (e) {
       const msg:string = e.message
       if(msg.includes('duplicate')) throw new PhoneIsAlreadyTakenException(phone_number)

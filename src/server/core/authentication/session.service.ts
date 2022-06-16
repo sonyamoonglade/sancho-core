@@ -49,17 +49,13 @@ export class SessionService {
 
   }
   attachCookieToResponse(res: Response, SID: string): void {
-
     res.cookie(CookieNames.SID, SID, {
       httpOnly: true,
       secure: true,
       sameSite:'none',
       // signed: true,
       path: '/'
-
     });
-
-
     return
 
   }
