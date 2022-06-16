@@ -26,10 +26,9 @@ export const orderSlice = createSlice({
             const o = a.payload
             s.orderHistory = s.orderHistory.concat(o)
         },
-        addManyAndSetHasMore: (s, a:PayloadAction<{orders: ResponseUserOrder[], hasMore: boolean}>) => {
-            const {orders,hasMore} = a.payload
+        addManyAndSetHasMore: (s, a:PayloadAction<{orders: ResponseUserOrder[]}>) => {
+            const {orders} = a.payload
             s.orderHistory = orders
-            s.hasMore = hasMore
         },
         setIsFetching: (s, a:PayloadAction<boolean>) => {
             s.isFetching = a.payload

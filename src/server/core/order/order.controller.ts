@@ -7,17 +7,18 @@ import {extendedRequest} from "../types/types";
 import {Role} from "../decorators/role/Role";
 import {VerifyOrderDto} from "./dto/verify-order.dto";
 import {CancelOrderDto} from "./dto/cancel-order.dto";
-import {AppRoles} from "../../../common/types";
+import {AppRoles, OrderStatus} from "../../../common/types";
 import {CanCancelGuard} from "./guard/can-cancel.guard";
 import {AuthorizationGuard} from "../authorization/authorization.guard";
 import {CompleteOrderDto} from "./dto/complete-order.dto";
+import {CookieService} from "../../shared/cookie/cookie.service";
 
 @Controller(`${CONTROLLER_PATH_PREFIX}/order`)
 @UseGuards(AuthorizationGuard)
 export class OrderController {
 
 
-  constructor(private orderService:OrderService) {
+  constructor(private orderService:OrderService, private cookieService: CookieService) {
   }
 
 
@@ -25,60 +26,113 @@ export class OrderController {
 
   @Post('/createUserOrder')
   @Role([AppRoles.user])
-  createUserOrder(@Res() res:Response,
+  async createUserOrder(@Res() res:Response,
                   @Req() req:extendedRequest,
                   @Body() dto:CreateUserOrderDto){
-    return this.orderService.createUserOrder(dto,res,req)
+    try {
+      const userId = req.user_id
+      const responseUserOrder = await this.orderService.createUserOrder(dto,userId)
+      return res.status(201).send({order:responseUserOrder})
+    }catch (e) {
+      throw e
+    }
   }
 
   @Post('/createMasterOrder')
   @Role([AppRoles.worker])
-  createMasterOrder(@Res() res:Response, @Body() dto:CreateMasterOrderDto){
-    return this.orderService.createMasterOrder(res,dto)
+  async createMasterOrder(@Res() res:Response, @Body() dto:CreateMasterOrderDto){
+    try {
+      await this.orderService.createMasterOrder(dto)
+      return res.status(201).end()
+    }catch (e) {
+      throw e
+    }
   }
 
   @Put('/verify')
   @Role([AppRoles.worker])
-  verifyOrder(@Res() res: Response,
+  async verifyOrder(@Res() res: Response,
               @Body() dto:VerifyOrderDto){
-    return this.orderService.verifyOrder(res,dto)
+   try {
+     const orderStatus = await this.orderService.verifyOrder(dto)
+     return res.status(200).send({status:orderStatus as OrderStatus.verified})
+   }catch (e) {
+     throw e
+   }
   }
 
 
   @Put('/cancel')
   @UseGuards(CanCancelGuard)
   @Role([AppRoles.worker,AppRoles.user])
-  cancelOrder(@Res() res:Response,
+  async cancelOrder(@Res() res:Response,
               @Req() req:extendedRequest,
               @Body() dto:CancelOrderDto){
-    return this.orderService.cancelOrder(res,req,dto)
+
+    try {
+      const userId = req.user_id
+      const isCancelledByUser = await this.orderService.cancelOrder(userId,dto)
+      if(isCancelledByUser){
+        // todo: set to env / config var / pg var
+        const cancelBanTtl = 5
+        res = this.cookieService.setCanCancelCookie(res,cancelBanTtl)
+      }
+      return res.status(200).end()
+    }catch (e) {
+      throw e
+    }
   }
 
   @Get('/userOrderHistory')
   @Role([AppRoles.user])
-  userOrderHistory(@Res() res:Response,
-                   @Req() req: extendedRequest,
-                   @Query("to", ParseIntPipe) to: number){
-    return this.orderService.userOrderHistory(res,req,to)
+  async userOrderHistory(@Res() res:Response,
+                   @Req() req: extendedRequest){
+    try {
+      const userId = req.user_id
+      const orderHistory = await this.orderService.userOrderHistory(userId)
+      return res.status(200).send({orders:orderHistory})
+    }catch (e) {
+      throw e
+    }
   }
 
   @Get("/queue")
   @Role([AppRoles.worker])
   orderQueue(@Res() res: Response){
-    return this.orderService.orderQueue(res)
+
+   try {
+     res.writeHead(200, {
+       "Content-Type": "text/event-stream",
+       "Connection": "keep-alive",
+       "Cache-Control": "no-cache"
+     })
+     return this.orderService.orderQueue(res)
+   }catch (e) {
+     throw e
+   }
   }
   @Get("/initialQueue")
   @Role([AppRoles.worker])
-  initialQueue(@Res() res:Response){
-    return this.orderService.initialQueue(res)
+  async initialQueue(@Res() res:Response){
+    try {
+      const initialQueue = await this.orderService.initialQueue()
+      return res.status(200).send({queue:initialQueue})
+    }catch (e) {
+      throw e
+    }
   }
 
   @Put("/complete")
   @Role([AppRoles.worker])
-  completeOrder(@Res() res:Response,
+  async completeOrder(@Res() res:Response,
                 @Req() req: extendedRequest,
                 @Body() dto:CompleteOrderDto){
-    return this.orderService.completeOrder(req,res,dto)
+    try{
+      const orderStatus = await this.orderService.completeOrder(dto)
+      return res.status(200).send({status:orderStatus as OrderStatus.completed})
+    } catch (e) {
+      throw e
+    }
   }
 
 }

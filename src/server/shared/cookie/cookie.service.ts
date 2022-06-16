@@ -13,7 +13,7 @@ export class CookieService{
 
 
 
-    setCanCancelCookie(res:Response, ttl: number): void{
+    setCanCancelCookie(res:Response, ttl: number): Response{
         const now = dayjs()
         const afterTtl = now.add(ttl,"minutes").toDate()
         res.cookie(CookieNames.cancelBan,false,{
@@ -22,7 +22,7 @@ export class CookieService{
             expires: afterTtl,
             sameSite:'none'
         })
-        return
+        return res
     }
 
 }

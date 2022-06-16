@@ -5,7 +5,6 @@ import {ResponseUserOrder} from "../../common/types";
 import {USER_CANCEL_EXPLANATION} from "../../common/constants";
 
 type userOrderHistoryResponse = {
-    hasMore: boolean
     orders: ResponseUserOrder[]
 }
 
@@ -18,9 +17,8 @@ export const getOrderHistory = (client: AxiosInstance, to: number) => async (dis
         const {data} = await client.get<userOrderHistoryResponse>(`/order/userOrderHistory?to=${to.toString()}`)
 
         const sortedOrders = data.orders.sort(sortFuncByStatus)
-        dispatch(orderActions.addManyAndSetHasMore({...data,orders:sortedOrders}))
+        dispatch(orderActions.addManyAndSetHasMore({orders:sortedOrders}))
         dispatch(orderActions.setIsFetching(false))
-
 
     }catch (e: any) {
         dispatch(orderActions.setIsFetching(false))

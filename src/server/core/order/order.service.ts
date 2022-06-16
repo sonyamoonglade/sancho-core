@@ -48,102 +48,76 @@ export class OrderService {
     this.events = new EventEmitter()
   }
 
-  public async createUserOrder(createUserOrderDto:CreateUserOrderDto, res:Response,req: extendedRequest){
+  public async createUserOrder(createUserOrderDto:CreateUserOrderDto, userId: number):Promise<ResponseUserOrder>{
+    let total_cart_price = await this.calculateTotalCartPrice(createUserOrderDto.cart)
+    total_cart_price = this.applyDeliveryPunishment(total_cart_price)
 
-    const {user_id} = req
-    try {
-
-      let total_cart_price = await this.calculateTotalCartPrice(createUserOrderDto.cart)
-      total_cart_price = this.applyDeliveryPunishment(total_cart_price)
-      const userOrder:Order = {
-        total_cart_price,
-        ...createUserOrderDto,
-        user_id,
-        status:OrderStatus.waiting_for_verification,
-        created_at: new Date(Date.now())
-      }
-
-      const createdOrder = await this.orderRepository.save(userOrder)
-      if(userOrder.is_delivered === true){
-        const stringDetails: string = JSON.stringify(userOrder.delivery_details)
-        await this.userService.updateUsersRememberedDeliveryAddress(user_id,stringDetails)
-      }
-
-      const responseOrder:ResponseUserOrder = {
-        id: createdOrder.id,
-        cart: userOrder.cart,
-        created_at: userOrder.created_at,
-        status: userOrder.status,
-        is_delivered: userOrder.is_delivered,
-        delivery_details: userOrder.delivery_details ? userOrder.delivery_details : null,
-        total_cart_price
-      }
-      this.events.emit(ORDER_HAS_CREATED)
-      return res.status(201).send({order:responseOrder})
-    }catch (e) {
-      throw new UnexpectedServerError()
+    const userOrder:Order = {
+      total_cart_price,
+      ...createUserOrderDto,
+      user_id:userId,
+      status:OrderStatus.waiting_for_verification,
+      created_at: new Date(Date.now())
     }
+
+    const createdOrder = await this.orderRepository.save(userOrder)
+    if(userOrder.is_delivered === true){
+      const stringDetails: string = JSON.stringify(userOrder.delivery_details)
+      await this.userService.updateUsersRememberedDeliveryAddress(userId,stringDetails)
+    }
+
+    const responseOrder:ResponseUserOrder = {
+      id: createdOrder.id,
+      cart: userOrder.cart,
+      created_at: userOrder.created_at,
+      status: userOrder.status,
+      is_delivered: userOrder.is_delivered,
+      delivery_details: userOrder.delivery_details ? userOrder.delivery_details : null,
+      total_cart_price
+    }
+    this.events.emit(ORDER_HAS_CREATED)
+
+    return responseOrder
   }
 
-  public async createMasterOrder(res:Response, createMasterOrderDto:CreateMasterOrderDto){
+  public async createMasterOrder(createMasterOrderDto:CreateMasterOrderDto):Promise<void>{
 
-    try {
-
-      let user_id = await this.userService.getUserId(createMasterOrderDto.phone_number)
-      if(!user_id){
-        const registeredUser:User = await this.userService
-          .createUser(
-            res,
-            { phone_number: createMasterOrderDto.phone_number },
-            true) as User
-
-        user_id = registeredUser.id
-      }
-
-      let total_cart_price = await this.calculateTotalCartPrice(createMasterOrderDto.cart)
-      total_cart_price = this.applyDeliveryPunishment(total_cart_price)
-
-      const masterOrder:Order = {
-        verified_fullname: createMasterOrderDto.verified_fullname,
-        is_delivered: createMasterOrderDto.is_delivered,
-        cart: createMasterOrderDto.cart,
-        delivery_details: createMasterOrderDto.is_delivered ? createMasterOrderDto.delivery_details : null,
-        total_cart_price,
-        user_id,
-        status:OrderStatus.verified,
-        created_at: new Date(Date.now()),
-        verified_at: new Date(Date.now())
-      }
-
-
-      if(masterOrder.is_delivered === true){
-        const stringDetails: string = JSON.stringify(masterOrder.delivery_details)
-        await this.userService.updateUsersRememberedDeliveryAddress(user_id,stringDetails)
-      }
-
-      this.jsonService.stringifyNestedObjects(masterOrder)
-
-      await this.orderRepository.save(masterOrder)
-
-      const responseOrder:Partial<Order> = {
-        cart: masterOrder.cart,
-        verified_fullname: masterOrder.verified_fullname,
-        created_at: masterOrder.created_at,
-        status: masterOrder.status,
-        is_delivered: masterOrder.is_delivered,
-        delivery_details: masterOrder.delivery_details ? masterOrder.delivery_details : null,
-        total_cart_price
-      }
-      this.events.emit(ORDER_HAS_CREATED)
-      return res.status(201).send({order:responseOrder})
-
-    }catch (e){
-      console.log(e)
-      throw new UnexpectedServerError()
+    let userId = await this.userService.getUserId(createMasterOrderDto.phone_number)
+    if(userId === undefined){
+      const registeredUser:User = await this.userService
+        .createUser({phone_number: createMasterOrderDto.phone_number}) as User
+      userId = registeredUser.id
     }
+
+    let total_cart_price = await this.calculateTotalCartPrice(createMasterOrderDto.cart)
+    total_cart_price = this.applyDeliveryPunishment(total_cart_price)
+
+    const masterOrder:Order = {
+      verified_fullname: createMasterOrderDto.verified_fullname,
+      is_delivered: createMasterOrderDto.is_delivered,
+      cart: createMasterOrderDto.cart,
+      delivery_details: createMasterOrderDto.is_delivered ? createMasterOrderDto.delivery_details : null,
+      total_cart_price,
+      user_id:userId,
+      status:OrderStatus.verified,
+      created_at: new Date(Date.now()),
+      verified_at: new Date(Date.now())
+    }
+
+    if(masterOrder.is_delivered === true){
+      const stringDetails: string = JSON.stringify(masterOrder.delivery_details)
+      await this.userService.updateUsersRememberedDeliveryAddress(userId,stringDetails)
+    }
+    //todo: get rid of this ( make array of jsons )
+    this.jsonService.stringifyNestedObjects(masterOrder)
+
+    await this.orderRepository.save(masterOrder)
+
+    this.events.emit(ORDER_HAS_CREATED)
+    return
   }
 
-  public async verifyOrder(res:Response, verifyOrderDto:VerifyOrderDto){
+  public async verifyOrder(verifyOrderDto:VerifyOrderDto):Promise<OrderStatus>{
     try {
       const {phone_number} = verifyOrderDto
       const hw = await this.hasWaitingOrder(null,phone_number)
@@ -152,8 +126,6 @@ export class OrderService {
       if(!has){
         throw new Error(`verification ${phone_number}`)
       }
-
-
 
       const updated:Partial<Order> = {
         verified_fullname:verifyOrderDto.verified_fullname,
@@ -172,8 +144,9 @@ export class OrderService {
       }
 
       await this.orderRepository.update(orderId,updated)
+
       this.events.emit(ORDER_QUEUE_HAS_MODIFIED)
-      return res.status(200).send({status:OrderStatus.verified})
+      return OrderStatus.verified
     }catch (e) {
       if(e.message.includes('verification')){
         const phone = e.message.split(' ').pop()
@@ -185,10 +158,10 @@ export class OrderService {
 
   }
 
-  public async cancelOrder(res:Response,req:extendedRequest, cancelOrderDto:CancelOrderDto){
+  public async cancelOrder(userId:number,cancelOrderDto:CancelOrderDto): Promise<boolean | string>{
 
-    const {user_id} = req
-    const role = await this.userService.getUserRole(user_id)
+
+    const role = await this.userService.getUserRole(userId)
 
     // user cancels
     if(!(role == AppRoles.worker || role == AppRoles.master)){
@@ -202,12 +175,11 @@ export class OrderService {
           cancel_explanation: cancelOrderDto.cancel_explanation,
           status:OrderStatus.cancelled,
           cancelled_at: new Date(Date.now()),
-          cancelled_by: user_id
+          cancelled_by: userId
         }
         await this.orderRepository.update(o.id,updated)
-        this.cookieService.setCanCancelCookie(res,5)
         this.events.emit(ORDER_QUEUE_HAS_MODIFIED)
-        return res.status(200).end()
+        return true
       }catch (e) {
         throw new UnexpectedServerError("Ошибка отмены заказа")
       }
@@ -222,21 +194,19 @@ export class OrderService {
         cancel_explanation: cancelOrderDto.cancel_explanation,
         status:OrderStatus.cancelled,
         cancelled_at: new Date(Date.now()),
-        cancelled_by: user_id
+        cancelled_by: userId
       }
 
       await this.orderRepository.update(cancelOrderDto.order_id,updated)
-      const cancelWorkerLogin:string = await this.userService.getMasterLogin(user_id)
+
       this.events.emit(ORDER_QUEUE_HAS_MODIFIED)
-      return res.status(200).send(
-          {message:`Заказ ${cancelOrderDto.order_id} успешно отменен! Отменил - ${cancelWorkerLogin}`
-        })
+      return false
     }catch (e) {
       throw new UnexpectedServerError("Ошибка отмены заказа")
     }
   }
 
-  public async completeOrder(req:extendedRequest, res:Response, dto:CompleteOrderDto) {
+  public async completeOrder(dto:CompleteOrderDto):Promise<OrderStatus> {
 
     const {order_id} = dto
 
@@ -251,17 +221,15 @@ export class OrderService {
     await this.orderRepository.update(order_id, updated)
     this.events.emit(ORDER_QUEUE_HAS_MODIFIED)
 
-    return res.status(200).send({status: OrderStatus.completed})
+    return OrderStatus.completed
   }
 
-  public async userOrderHistory(res:Response,req:extendedRequest,to: number){
+  public async userOrderHistory(userId: number):Promise<ResponseUserOrder[]>{
 
-    const {user_id} = req
-
-    const sql = `SELECT * FROM ${orders} WHERE user_id=${user_id} ORDER BY orders.created_at DESC, orders.status DESC`
-
+    const sql = `SELECT * FROM ${orders} WHERE user_id=${userId} ORDER BY orders.created_at DESC, orders.status DESC LIMIT = 15`
 
     const userOrders:Order[] | ResponseUserOrder[] = await this.orderRepository.customQuery(sql)
+
     let mappedToResponse: ResponseUserOrder[]
     mappedToResponse = userOrders.map((o) => {
         const {
@@ -286,8 +254,7 @@ export class OrderService {
     })
 
 
-    let hasMore: boolean = false
-    return res.status(200).send({orders:mappedToResponse, hasMore})
+    return mappedToResponse
   }
 
   public async getLastVerifiedOrder(user_id:number):Promise<Partial<Order>>{
@@ -375,15 +342,6 @@ export class OrderService {
   }
 
   public async orderQueue(res: Response) {
-
-
-    res.writeHead(200, {
-      "Content-Type": "text/event-stream",
-      "Connection": "keep-alive",
-      "Cache-Control": "no-cache"
-    })
-
-
     this.events.on(ORDER_HAS_CREATED, async () => {
       const queue = await this.fetchOrderQueue()
       const chunk = `data: ${JSON.stringify({queue})}\n\n`
@@ -399,32 +357,29 @@ export class OrderService {
     res.on("close", () => {
       console.log("closing queue conn..")
       this.events.removeAllListeners()
-      res.end()
+      return res.end()
     })
-
-
   }
 
   private async fetchOrderQueue(): Promise<OrderQueue> {
-    const sql = `
+   try {
+     const sql = `
         select o.id,o.cart,o.total_cart_price,o.status,o.is_delivered,o.delivery_details,o.created_at,
         o.verified_fullname,u.phone_number from ${orders} o join ${users} u on o.user_id= 
         u.id where o.status = '${OrderStatus.waiting_for_verification}' or o.status = '${OrderStatus.verified}' order by o.created_at desc
       `
-    const result: VerifiedQueueOrder[] = await this.orderRepository.customQuery(sql)
+     const result: VerifiedQueueOrder[] = await this.orderRepository.customQuery(sql)
 
-    const queue = this.mapOrdersToQueueTypes(result)
-    return queue
+     const queue = this.mapOrdersToQueueTypes(result)
+     return queue
+   }catch (e) {
+     throw new UnexpectedServerError("error occured fetching queue")
+   }
   }
 
-  public async initialQueue(res: Response){
-    try {
-      const queue = await this.fetchOrderQueue()
-
-      res.status(200).send({queue})
-    }catch (e) {
-      throw new UnexpectedServerError("queue err")
-    }
+  public async initialQueue(){
+    const queue = await this.fetchOrderQueue()
+    return queue
   }
 
   mapOrdersToQueueTypes(orders:VerifiedQueueOrder[]):OrderQueue{

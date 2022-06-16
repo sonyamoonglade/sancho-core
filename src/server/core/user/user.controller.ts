@@ -8,6 +8,7 @@ import {PreventAuthedGuard} from "./guard/prevent-authed.guard";
 import {LoginMasterUserDto} from "./dto/login-master-user.dto";
 import {SessionService} from "../authentication/session.service";
 import {AppRoles} from "../../../common/types";
+import {RegisterUserDto} from "./dto/register-user.dto";
 
 @Controller(`${CONTROLLER_PATH_PREFIX}/users`)
 export class UserController {
@@ -26,7 +27,7 @@ export class UserController {
    try {
      const masterId = await this.userService.loginMaster(b)
      const SID = await this.sessionService.getSIDByUserId(masterId)
-     this.sessionService.attachCookieToResponse(res,SID)
+     res = this.sessionService.attachCookieToResponse(res,SID)
      return res.status(200).end()
    }catch (e) {
      // todo:
@@ -49,17 +50,28 @@ export class UserController {
   }
   @Post("/login")
   @UseGuards(PreventAuthedGuard)
-  async login(@Res() res:Response, @Req() req:extendedRequest, @Body() b:{phone_number:string}){
-    const user = await this.userService.login(b)
-    const SID = await this.sessionService.getSIDByUserId(user.id)
-    this.sessionService.attachCookieToResponse(res,SID)
-
+  async login(@Res() res:Response, @Req() req:extendedRequest, @Body() b:RegisterUserDto){
+    const oldUser = await this.userService.login(b)
+    if(oldUser === null){
+      const newUser = await this.userService.createUser(b)
+      const SID = await this.sessionService.createSession(newUser.id)
+      res = this.sessionService.attachCookieToResponse(res,SID)
+      return res.status(201).end()
+    }
+    const SID = await this.sessionService.getSIDByUserId(oldUser.id)
+    res = this.sessionService.attachCookieToResponse(res,SID)
     return res.status(200).end()
   }
-  // TODO: APPLY GUARD AND METHOD TO BECOME MASTER / CHECK IF SESSION BELONGS TO MASTER USER
   @Post("/registerMasterUser")
-  registerMasterUser(@Res() res:Response, @Req() req:Request, @Body() b:CreateMasterUserDto){
-    return this.userService.createMasterUser(req,res,b)
+  async registerMasterUser(@Res() res:Response, @Req() req:Request, @Body() b:CreateMasterUserDto){
+    try {
+      const masterUser = await this.userService.createMasterUser(b)
+      const MASTER_SID = await this.sessionService.createSession(masterUser.id)
+      res = this.sessionService.attachCookieToResponse(res,MASTER_SID)
+      return res.status(200).end()
+    }catch (e) {
+      throw e
+    }
   }
 
   @Get("/getUser:phone_number")

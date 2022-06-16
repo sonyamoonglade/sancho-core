@@ -13,7 +13,7 @@ import {extendedRequest} from "../types/types";
 import {ValidationErrorException} from "../exceptions/validation.exceptions";
 import {
   InvalidPasswordException,
-  InvalidRoleException,
+  InvalidRoleException, MasterLoginHasAlreadyBeenTaken,
   PasswordIsTooShortException,
   PhoneIsAlreadyTakenException,
   UserDoesNotExistException
@@ -65,9 +65,7 @@ export class UserService {
           returning:['id']}
       ))[0]
 
-    if(!user) {
-      return null
-    }
+    if(!user) { return null }
 
     return user
   }
@@ -78,7 +76,7 @@ export class UserService {
     return u
   }
 
-  async createUser(registerUserDto:RegisterUserDto, quiet:boolean = false):Promise<User>{
+  async createUser(registerUserDto:RegisterUserDto):Promise<User>{
     const {phone_number} = registerUserDto
 
     try {
@@ -98,56 +96,36 @@ export class UserService {
 
   }
 
-  async createMasterUser(req:Request, res:Response, createMasterUserDto:CreateMasterUserDto){
+  async createMasterUser(createMasterUserDto:CreateMasterUserDto):Promise<User>{
 
-    const validationResult = this.validationService.validateObjectFromSqlInjection(createMasterUserDto)
-    if(!validationResult) throw new ValidationErrorException()
+    const hashedPass = await bcrypt.hash(createMasterUserDto.password,10)
+    const {role:inputRole} = createMasterUserDto
 
-      const hashedPass = await bcrypt.hash(createMasterUserDto.password,10)
-      const {role:inputRole} = createMasterUserDto
+    if(!APP_ROLES.includes(inputRole)){
+      throw new InvalidRoleException(inputRole)
+    }
 
-      if(!APP_ROLES.includes(inputRole)){
-        throw new InvalidRoleException(inputRole)
-      }
+    if(createMasterUserDto.password.length < 8) {
+      throw new PasswordIsTooShortException()
+    }
 
-      if(createMasterUserDto.password.length < 8) {
-        throw new PasswordIsTooShortException()
-      }
+    const user:User = {
+      ...createMasterUserDto,
+      password: hashedPass
+    }
 
     try {
-      const user:User = {
-        ...createMasterUserDto,
-        password: hashedPass
-      }
-      let savedUser;
-      try {
-        savedUser = await this.userRepository.save(user)
-      }catch (e) {
-        return res.status(400).send({
-          statusCode: 400,
-          message:"Не уникальный логин!",
-        })
-      }
-
-      const MASTER_SID = await this.sessionService.createSession(savedUser.id)
-      this.sessionService.attachCookieToResponse(res,MASTER_SID)
-      return res.status(200).end()
-
+      const masterUser = await this.userRepository.save(user)
+      return masterUser
     }catch (e) {
-      console.log(e)
-      throw new UnexpectedServerError()
+      throw new MasterLoginHasAlreadyBeenTaken()
     }
 
   }
 
-  async getUserId(phone_number:string){
-    try {
-      const id = (await this.userRepository.get({where:{phone_number},returning:['id']}))[0].id
-      return id
-    }catch (e) {
-     return undefined
-    }
-
+  async getUserId(phone_number:string):Promise<number | undefined>{
+    const user = (await this.userRepository.get({where:{phone_number},returning:['id']}))[0]
+    return user === undefined ? undefined : user.id
   }
 
 

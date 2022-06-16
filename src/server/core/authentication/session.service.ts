@@ -48,7 +48,7 @@ export class SessionService {
     }
 
   }
-  attachCookieToResponse(res: Response, SID: string): void {
+  attachCookieToResponse(res: Response, SID: string): Response {
     res.cookie(CookieNames.SID, SID, {
       httpOnly: true,
       secure: true,
@@ -56,7 +56,7 @@ export class SessionService {
       // signed: true,
       path: '/'
     });
-    return
+    return res
 
   }
   async deAttachCookieFromResponse(res: Response, SID: string): Promise<void> {

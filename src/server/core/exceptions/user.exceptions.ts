@@ -31,3 +31,9 @@ export class PasswordIsTooShortException extends HttpException {
     super(`минимальная длина пароля - 8`, HttpStatus.BAD_REQUEST);
   }
 }
+
+export class MasterLoginHasAlreadyBeenTaken extends HttpException {
+  constructor() {
+    super("Данный логин уже занят",HttpStatus.BAD_REQUEST);
+  }
+}
