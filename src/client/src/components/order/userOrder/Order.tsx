@@ -52,6 +52,7 @@ const Order = () => {
     const {userOrder} = useAppSelector(windowSelector)
     const {isAuthenticated,phoneNumber:userPhoneNumber} = useAppSelector(userSelector)
     const dispatch = useAppDispatch()
+
     const {
         formValues,
         isSubmitButtonActive,
@@ -145,6 +146,7 @@ const Order = () => {
 
                 <div className="form_top">
                     <Check isDelivered={formValues.is_delivered.value} cart={cart} />
+
                 </div>
                 <OrderForm
                     formValues={formValues}

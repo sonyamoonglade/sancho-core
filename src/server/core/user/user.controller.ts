@@ -50,16 +50,20 @@ export class UserController {
   @Post("/login")
   @UseGuards(PreventAuthedGuard)
   async login(@Res() res:Response, @Req() req:extendedRequest, @Body() b:RegisterUserDto){
-    const oldUser = await this.userService.login(b)
-    if(oldUser === null){
-      const newUser = await this.userService.createUser(b)
-      const SID = await this.sessionService.createSession(newUser.id)
+    try {
+      const oldUser = await this.userService.login(b)
+      if(oldUser === null){
+        const newUser = await this.userService.createUser(b)
+        const SID = await this.sessionService.createSession(newUser.id)
+        res = this.sessionService.attachCookieToResponse(res,SID)
+        return res.status(201).end()
+      }
+      const SID = await this.sessionService.getSIDByUserId(oldUser.id)
       res = this.sessionService.attachCookieToResponse(res,SID)
-      return res.status(201).end()
+      return res.status(200).end()
+    }catch (e) {
+      throw e
     }
-    const SID = await this.sessionService.getSIDByUserId(oldUser.id)
-    res = this.sessionService.attachCookieToResponse(res,SID)
-    return res.status(200).end()
   }
   @Post("/registerMasterUser")
   async registerMasterUser(@Res() res:Response, @Req() req:Request, @Body() b:CreateMasterUserDto){

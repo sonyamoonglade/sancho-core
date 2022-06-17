@@ -30,15 +30,14 @@
 .order_h_item{
   position: relative;
   background-color: $black-18;
-  padding: .7rem;
-  padding-top: 0.4rem;
+  padding: 0.4rem .7rem .7rem;
   border-radius: 7px;
   z-index: 500;
-  height: 70px;
+  height: 93px;
   display: flex;
   flex-direction: column;
   margin-bottom: 1rem;
-  justify-content: space-between;;
+  justify-content: space-between;
   transform: translateY(0);
 }
 
@@ -61,20 +60,42 @@
 }
 .bottom{
   display: flex;
-  align-items: center;
-  justify-content: space-between;
+  flex-direction: column;
   span{
     position: relative;
     height: 25px;
   }
 }
-.bottom_left{
+.bottom_first_row{
   display: flex;
+  width: 100%;
+  margin-bottom: 0.2rem;
+  .first_row_left{
+    display: flex;
+    align-items: center;
+    width: 100%;
+
+  }
 }
+
+.bottom_second_row{
+  display: flex;
+  align-items: center;
+  width: 100%;
+  position: relative;
+  justify-content: space-between;
+  .second_row_left{
+    display: flex;
+    align-items: center;
+  }
+}
+
+
 .creation_pre{
   margin-right: 0.2rem;
-  font-family: "Geometria",sans-serif;
+  font-family: "Geometria Bold",sans-serif;
   font-size: $font-md;
+  width: 100px;
   @media (min-width: 1440px) {
     font-size: $font-regular;
   }
@@ -135,7 +156,7 @@
   position: absolute;
   top: 0;
   width: calc(100% - 2rem);
-  height: 70px;
+  height: 93px;
   border-radius: 7px;
   z-index: 400;
   background-color: $red;

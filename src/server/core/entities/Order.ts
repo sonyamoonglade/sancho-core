@@ -7,6 +7,8 @@ export type Order = {
   total_cart_price: number
   status: OrderStatus
   is_delivered: boolean
+  delivered_at?: Date
+  is_delivered_asap?: boolean
   delivery_details?: DeliveryDetails
   created_at: Date
   verified_at?: Date

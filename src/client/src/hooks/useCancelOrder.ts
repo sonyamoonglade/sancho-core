@@ -28,7 +28,7 @@ export function useCancelOrder (order:ResponseUserOrder){
         setIsAnimating(false)
     }
     function onMove(e:any){
-        if(order.status === OrderStatus.cancelled){ return }
+        if(order.status !== OrderStatus.waiting_for_verification){ return }
         if(!screenWidthX && animationRef.current !== null){
             screenWidthX = animationRef.current.getBoundingClientRect().width
         }

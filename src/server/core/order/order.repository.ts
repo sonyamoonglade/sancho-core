@@ -55,7 +55,6 @@ export class OrderRepository implements Repository<Order>{
   async get(expression: filter<Order>): Promise<Partial<Order>[]> {
     const selectSql = this.qb.ofTable(orders).select<Order>(expression)
     const {rows} = await this.db.query(selectSql)
-
     return rows
   }
 

@@ -19,10 +19,14 @@ export class PreventAuthedGuard implements CanActivate {
 
         const {SID} = req.cookies
         if(SID === undefined) { return true }
+        try {
+            const userId = await this.sessionService.getUserIdBySID(SID)
+            const {has} = await this.orderService.hasWaitingOrder(userId, null)
+            if(!has) { return true }
+        }catch (e) {
 
-        const userId = await this.sessionService.getUserIdBySID(SID)
-        const {has} = await this.orderService.hasWaitingOrder(userId, null)
-        if(!has) { return true }
+        }
+
 
         throw new LastOrderIsNotYetVerified()
 

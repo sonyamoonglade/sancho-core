@@ -5,7 +5,8 @@ import {BiShoppingBag} from "react-icons/bi";
 import {useCorrectOrderData} from "./hooks/useCorrectOrderData";
 import {CgCloseO} from 'react-icons/cg'
 import {useCancelOrder} from "../../hooks/useCancelOrder";
-import {orderSelector, useAppSelector} from "../../redux";
+import {orderSelector, useAppSelector, windowSelector} from "../../redux";
+import {AppResponsiveState} from "../../types/types";
 
 
 interface orderHistoryItemProps {
@@ -36,8 +37,6 @@ const OrderHistoryItem:FC<orderHistoryItemProps> = ({order,isFirstOrder,extraDat
     useEffect(() => {
        correctData()
     },[orderHistory])
-
-
 
 
     return (
@@ -75,27 +74,23 @@ const OrderHistoryItem:FC<orderHistoryItemProps> = ({order,isFirstOrder,extraDat
                            </>
                         }
                     </div>
-
-
                     <p className='total_order_price'>{order.total_cart_price} {currency}</p>
                 </div>
                 <div className="bottom">
-                    <div className="bottom_left">
-                        <p className='creation_pre'>Оформлен:</p>
-                        <p className='creation_date'>
-                            {cdate}
-                            &nbsp;|
-                            <strong style={{fontFamily:"Geometria"}}>
-                                {order.is_delivered ? " Доставка" : " Самовывоз"}
-                            </strong>
-                        </p>
+                    <div className="bottom_first_row">
+                        <div className='first_row_left'>
+                            <p className='creation_pre'>Оформлен:</p>
+                            <p className='creation_date'>{cdate}</p>
+                        </div>
                     </div>
-                    <span>
+                    <div className="bottom_second_row">
+                        <div className="second_row_left">
+                            <p className="creation_pre">Доставка:</p>
+                            <p className='creation_date delivery_date'>{order.is_delivered ? "17 Мая 19:21" : " Самовывоз"}</p>
+                        </div>
                         <div className='green_dot'>&nbsp;</div>
-                        <BiShoppingBag className='cart_button' size={25} />
-                    </span>
-
-
+                        <BiShoppingBag size={25} />
+                    </div>
                 </div>
 
             </li>
