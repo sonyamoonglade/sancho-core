@@ -7,7 +7,7 @@ import {useAppSelector, workerSelector} from "../../../../../redux";
 
 export interface CancelOrderFormState {
     orderId: FormField
-    cancelExplanation: FormField
+    cancelExplanation: string
     cancellable: boolean
 }
 
@@ -16,10 +16,7 @@ const formDefaults:CancelOrderFormState = {
         value: "",
         isValid: false
     },
-    cancelExplanation: {
-        value: "",
-        isValid: false
-    },
+    cancelExplanation: "",
     cancellable: false
 }
 
@@ -35,9 +32,7 @@ export function useCancelOrderForm(){
     const [formValues,setFormValues] = useState<CancelOrderFormState>(formDefaults)
     const {orderQueue} = useAppSelector(workerSelector)
 
-    function setFormDefaults(){
-        setFormValues(formDefaults)
-    }
+
 
     useEffect(() => {
         if(formValues.orderId.isValid){
@@ -64,7 +59,18 @@ export function useCancelOrderForm(){
         return
     }
 
+    function setFormDefaults(){
+        setFormValues(formDefaults)
+    }
+
+    function getFormValues(): {order_id: number, cancel_explanation: string}{
+        return Object.assign({
+            order_id: Number(formValues.orderId.value),
+            cancel_explanation: formValues.cancelExplanation
+        })
+    }
 
 
-    return {formValues, setFormValues, setFormDefaults,cancellable}
+
+    return {formValues, setFormValues, setFormDefaults,cancellable, getFormValues}
 }

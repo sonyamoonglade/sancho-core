@@ -5,6 +5,7 @@ import {CancelOrderFormState, useCancelOrderForm} from "./hooks/useCancelOrderFo
 import "../../../order/orderForm/order-form.styles.scss"
 import "./cancel-order.styles.scss"
 import {CancelExplanationPresets} from "../../../../types/types";
+import {useCancelMasterOrder} from "./hooks/useCancelMasterOrder";
 
 const CancelOrderModal = () => {
 
@@ -15,15 +16,27 @@ const CancelOrderModal = () => {
         formValues,
         setFormDefaults,
         setFormValues,
-        cancellable
+        cancellable,
+        getFormValues
     } = useCancelOrderForm()
+
+    const {cancelMasterOrder} = useCancelMasterOrder()
 
     async function handleOrderCancellation(){
         if(!cancellable) { return }
+
+        const body = getFormValues()
+        await cancelMasterOrder(body)
     }
 
     const [explanationSet, setExplanationSet] = useState<CancelExplanationPresets>(CancelExplanationPresets.CUSTOMER_WILL)
     const [isCustomExplFieldActive, setIsCustomExplFieldActive] = useState<boolean>(false)
+
+    function affectRealFormValuesWithExplanationSet(set: CancelExplanationPresets){
+        setFormValues((state: CancelOrderFormState) => {
+            return {...state, cancelExplanation:set}
+        })
+    }
 
     function setExplanationPreset(value: CancelExplanationPresets): void {
         switch (value){
@@ -33,6 +46,7 @@ const CancelOrderModal = () => {
                 return
             case value:
                 setExplanationSet(value)
+                affectRealFormValuesWithExplanationSet(value)
                 setIsCustomExplFieldActive(false)
                 return
         }
@@ -70,12 +84,9 @@ const CancelOrderModal = () => {
             <textarea
                 className={isCustomExplFieldActive ? "cancel_explanation_area --area-active" : "cancel_explanation_area"}
                 placeholder="Своя причина отмены"
-                value={formValues.cancelExplanation.value}
-                onChange={e => setFormValues((state:CancelOrderFormState) => {
-                    return {...state, cancelExplanation: {
-                            value: e.target.value,
-                            isValid: state.cancelExplanation.isValid
-                        }}
+                value={formValues.cancelExplanation}
+                onChange={(e) => setFormValues((state:CancelOrderFormState) => {
+                    return {...state, cancelExplanation:e.target.value}
                 })}
             />
 
