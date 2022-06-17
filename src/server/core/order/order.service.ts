@@ -221,7 +221,7 @@ export class OrderService {
 
   public async userOrderHistory(userId: number):Promise<ResponseUserOrder[]>{
 
-    const sql = `SELECT * FROM ${orders} WHERE user_id=${userId} ORDER BY orders.created_at DESC, orders.status DESC LIMIT = 15`
+    const sql = `SELECT * FROM ${orders} WHERE user_id=${userId} ORDER BY orders.created_at DESC, orders.status DESC LIMIT 15`
 
     const userOrders:Order[] | ResponseUserOrder[] = await this.orderRepository.customQuery(sql)
 

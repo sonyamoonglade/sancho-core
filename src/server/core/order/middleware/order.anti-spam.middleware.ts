@@ -29,7 +29,6 @@ export class OrderAntiSpamMiddleware implements NestMiddleware {
       const dto:CreateMasterOrderDto = req.body
       const phoneNumber: string = dto.phone_number
       const lw:Partial<Order> = await this.orderService.getLastVerifiedOrder(phoneNumber)
-      console.log(lw)
       if(lw === undefined) { return next() }
 
       const {afterRate, minutesLeft, now} = this.handleVerifiedOrderTimeOperations(lw)

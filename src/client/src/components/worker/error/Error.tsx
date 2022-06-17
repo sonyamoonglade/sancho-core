@@ -1,5 +1,7 @@
 import React from 'react';
-import {useAppDispatch, useAppSelector, workerActions, workerSelector} from "../../redux";
+import {useAppDispatch, useAppSelector, workerActions, workerSelector} from "../../../redux";
+
+import "./error.styles.scss"
 
 const Error = () => {
 

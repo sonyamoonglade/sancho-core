@@ -32,8 +32,6 @@ export function useCancelOrderForm(){
     const [formValues,setFormValues] = useState<CancelOrderFormState>(formDefaults)
     const {orderQueue} = useAppSelector(workerSelector)
 
-
-
     useEffect(() => {
         if(formValues.orderId.isValid){
             const orderId = Number(formValues.orderId.value)
@@ -47,7 +45,6 @@ export function useCancelOrderForm(){
 
     },[formValues.orderId.isValid])
 
-
     const cancellable = useMemo(() => {
         return formValues.cancellable
     },[formValues.cancellable])
@@ -58,11 +55,9 @@ export function useCancelOrderForm(){
         })
         return
     }
-
     function setFormDefaults(){
         setFormValues(formDefaults)
     }
-
     function getFormValues(): {order_id: number, cancel_explanation: string}{
         return Object.assign({
             order_id: Number(formValues.orderId.value),

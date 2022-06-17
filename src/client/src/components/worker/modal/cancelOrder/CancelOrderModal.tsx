@@ -57,57 +57,52 @@ const CancelOrderModal = () => {
 
     return (
         <div className={worker.cancelOrder ? "worker_modal cancel --w-opened" : "worker_modal"}>
+            <div>
+                <p className='modal_title'>Отменить заказ</p>
+                <CancelOrderForm
+                    formValues={formValues}
+                    setFormValues={setFormValues}
+                    setFormDefaults={setFormDefaults}
+                    setExplanationPreset={setExplanationPreset}
+                />
+                <span className="cancel_container">
+                    <p>Причина отмены</p>
+                     <select
+                         name="cancelExplanationSelect"
+                         value={explanationSet}
+                         className="cancel_explanation_select"
+                         onChange={(event) =>{
+                             setExplanationPreset(event.target.value as CancelExplanationPresets)
+                         }}>
 
-        <div>
-            <p className='modal_title'>Отменить заказ</p>
-            <CancelOrderForm
-                formValues={formValues}
-                setFormValues={setFormValues}
-                setFormDefaults={setFormDefaults}
-                setExplanationPreset={setExplanationPreset}
-            />
-
-            <span className="cancel_container">
-                <p>Причина отмены</p>
-                 <select
-                     name="cancelExplanationSelect"
-                     value={explanationSet}
-                     className="cancel_explanation_select"
-                     onChange={(event) =>{
-                         setExplanationPreset(event.target.value as CancelExplanationPresets)
-                     }}>
-
-                    <option value={CancelExplanationPresets.CUSTOMER_WILL} >По инициативе заказчика</option>
-                    <option value={CancelExplanationPresets.SYSTEM_ERROR}>Ошибка в системе</option>
-                    <option value={CancelExplanationPresets.ORDER_ERROR}>Ошибка в заказе</option>
-                    <option value={CancelExplanationPresets.CUSTOM}>Своя причина</option>
-                </select>
-            </span>
-            <textarea
-                className={isCustomExplFieldActive ? "cancel_explanation_area --area-active" : "cancel_explanation_area"}
-                placeholder="Своя причина отмены"
-                value={formValues.cancelExplanation}
-                onChange={(e) => setFormValues((state:CancelOrderFormState) => {
-                    return {...state, cancelExplanation:e.target.value}
-                })}
-            />
-
-        </div>
-
-        <div>
-            <div className="cancel_status">
-                <p>Заказ</p>
-                <p>
-                    {
-                        cancellable ?
-                        "Может быть отменен" :
-                        "Не может быть отменен"
-                    }
-                </p>
+                        <option value={CancelExplanationPresets.CUSTOMER_WILL}>По инициативе заказчика</option>
+                        <option value={CancelExplanationPresets.SYSTEM_ERROR}>Ошибка в системе</option>
+                        <option value={CancelExplanationPresets.ORDER_ERROR}>Ошибка в заказе</option>
+                        <option value={CancelExplanationPresets.CUSTOM}>Своя причина</option>
+                    </select>
+                </span>
+                <textarea
+                    className={isCustomExplFieldActive ? "cancel_explanation_area --area-active" : "cancel_explanation_area"}
+                    placeholder="Своя причина отмены"
+                    value={formValues.cancelExplanation}
+                    onChange={(e) => setFormValues((state:CancelOrderFormState) => {
+                        return {...state, cancelExplanation:e.target.value}
+                    })}
+                />
             </div>
-            <button onClick={handleOrderCancellation} className='modal_button cancel'>Отменить заказ</button>
-        </div>
-
+            <div>
+                <div className="cancel_status">
+                    <p>Заказ</p>
+                    <p>
+                        {
+                            cancellable ?
+                            "Может быть отменен" :
+                            "Не может быть отменен"
+                        }
+                    </p>
+                </div>
+                <button onClick={handleOrderCancellation} className='modal_button cancel'>Отменить заказ</button>
+            </div>
         </div>
     );
 };

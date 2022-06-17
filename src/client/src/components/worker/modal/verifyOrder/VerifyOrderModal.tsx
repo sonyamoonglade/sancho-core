@@ -30,7 +30,7 @@ const VerifyOrderModal = () => {
     const virtualCart = useVirtualCart()
 
 
-    const [totalOrderPrice, setTotalOrderPrice] = useState<number>(0)
+    const [totalOrderPrice, setTotalOrderPrice] = useState<number>()
 
     const {
         formValues,
@@ -83,11 +83,17 @@ const VerifyOrderModal = () => {
         }
     },[worker.verifyOrder])
     useEffect(() => {
-        if(formValues.phone_number_w.isValid){
+        if(formValues.phone_number_w.isValid === false){
+            setTotalOrderPrice(0);
+            return
+        }
+        if(formValues.phone_number_w.isValid && worker.virtualCart){
             const price = utils.getOrderTotalPrice(virtualCartState.items)
             setTotalOrderPrice(price)
-        }else{
-            setTotalOrderPrice(0)
+        }else {
+            const o = findWaitingOrderByPhoneNumber(formValues.phone_number_w.value)
+            const price = utils.getOrderTotalPriceByCart(o?.cart)
+            setTotalOrderPrice(price)
         }
     },[formValues.phone_number_w.isValid,virtualCartState.items])
 
@@ -107,7 +113,7 @@ const VerifyOrderModal = () => {
                 setFormValues={setFormValues}
             />
             <div className="verify_sum">
-                <p>Сумма заказа </p>
+                <p>Сумма заказа</p>
                 <p>{totalOrderPrice}.00 {currency}</p>
             </div>
             <button onClick={handleOrderVerification} className='modal_button'>Подтвердить</button>

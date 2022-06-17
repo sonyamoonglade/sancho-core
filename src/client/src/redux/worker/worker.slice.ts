@@ -40,8 +40,8 @@ const workerSlice = createSlice({
         setError: function (s, a:PayloadAction<string>){
             s.error.val = a.payload
         },
-        toggleErrorModal: function (s){
-            s.error.modal = !s.error.modal
+        toggleErrorModal: function (s, a:PayloadAction<boolean>){
+            s.error.modal = a?.payload || !s.error.modal
         },
         setOrderQueue: function(s, a:PayloadAction<OrderQueue>) {
             s.orderQueue = a.payload

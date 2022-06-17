@@ -22,10 +22,11 @@ export function useAxios (){
         if(process.env.NODE_ENV === 'development'){
             // console.log(error)
         }
+        if(statusCode === 500){ return Promise.reject(error) }
         const responseData: any = error.response.data
         const errMSg = responseData?.message || "Непредвиденная ошибка сервера!"
         dispatch(workerActions.setError(errMSg))
-        dispatch(workerActions.toggleErrorModal())
+        dispatch(workerActions.toggleErrorModal(true    ))
         return Promise.reject(error)
 
     }

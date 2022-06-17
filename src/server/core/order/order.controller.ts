@@ -90,6 +90,7 @@ export class OrderController {
       const orderHistory = await this.orderService.userOrderHistory(userId)
       return res.status(200).send({orders:orderHistory})
     }catch (e) {
+      console.log(e)
       throw e
     }
   }
