@@ -13,7 +13,6 @@ export class SessionMiddleware implements NestMiddleware{
   }
 
   async use(req: extendedRequest, res: Response, next: (error?: any) => void): Promise<any> {
-
     const SID = req.cookies[CookieNames.SID]
     try {
       if(SID == undefined) return res.status(401).end()
@@ -22,6 +21,7 @@ export class SessionMiddleware implements NestMiddleware{
         const { user_id } = session
         req.user_id = user_id
         return next()
+
       }else {
         return res.status(401).end()
       }

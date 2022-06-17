@@ -252,9 +252,16 @@ export class OrderService {
     return mappedToResponse
   }
 
-  public async getLastVerifiedOrder(user_id:number):Promise<Partial<Order>>{
-    const ord = (await this.orderRepository.get({where:{user_id}}))[0]
+  public async getLastVerifiedOrder(phoneNumber:string):Promise<Partial<Order> | undefined>{
+
+    const sql = `
+      SELECT o.created_at,o.id,o.status FROM ${orders} o JOIN users u ON o.user_id = u.id
+      WHERE u.phone_number = '${phoneNumber}' AND o.status = '${OrderStatus.verified}'
+      ORDER BY o.created_at DESC LIMIT 1    
+    `
+    const ord = (await this.orderRepository.customQuery(sql))[0]
     return ord
+
   }
 
   public async hasWaitingOrder(user_id: number, phone_number:string):Promise<{id: number | null, has: boolean}>{

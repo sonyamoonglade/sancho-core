@@ -4,6 +4,7 @@ import OrderHistoryItem from "../../orderHistory/OrderHistoryItem";
 import "./order-queue.styles.scss"
 import {useAppDispatch, useAppSelector, workerSelector} from "../../../redux";
 import {getInitialQueue, startEventSourcingForQueue} from "../../../redux/worker/worker.async-actions";
+import Error from "../Error";
 
 
 const OrderQueueComponent = () => {
@@ -28,7 +29,7 @@ const OrderQueueComponent = () => {
 
     return (
         <div className='queue_container'>
-
+            <Error />
             <div className="waiting queue_col">
                 <ul>
                     {queue?.waiting.map(wo => (

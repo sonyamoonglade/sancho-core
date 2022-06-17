@@ -115,3 +115,22 @@
 .--expanded{
   padding-top: 1rem !important;
 }
+
+.err{
+  position: fixed;
+  width: 500px;
+  left: -500px;
+  border-radius: 0 10px 10px 0;
+  color: white;
+  cursor: pointer;
+  font-family: "Geometria Medium",sans-serif;
+  font-size: $font-md;
+  top: 50%;
+  padding: 0.5rem 0.5rem 0.5rem 3rem;
+  transition: all 0.5s ease-in-out;
+  background-color: $red;
+}
+
+.--err-active{
+  left: 0;
+}

@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {useAppSelector, windowSelector} from "../../../../redux";
+import {useAppDispatch, useAppSelector, windowActions, windowSelector} from "../../../../redux";
 import CancelOrderForm from "./cancelForm/CancelOrderForm";
 import {CancelOrderFormState, useCancelOrderForm} from "./hooks/useCancelOrderForm";
 import "../../../order/orderForm/order-form.styles.scss"
@@ -8,9 +8,9 @@ import {CancelExplanationPresets} from "../../../../types/types";
 import {useCancelMasterOrder} from "./hooks/useCancelMasterOrder";
 
 const CancelOrderModal = () => {
-
-
     const {worker} = useAppSelector(windowSelector)
+
+    const dispatch = useAppDispatch()
 
     const {
         formValues,
@@ -27,6 +27,7 @@ const CancelOrderModal = () => {
 
         const body = getFormValues()
         await cancelMasterOrder(body)
+        dispatch(windowActions.toggleCancelOrder())
     }
 
     const [explanationSet, setExplanationSet] = useState<CancelExplanationPresets>(CancelExplanationPresets.CUSTOMER_WILL)
@@ -42,6 +43,7 @@ const CancelOrderModal = () => {
         switch (value){
             case CancelExplanationPresets.CUSTOM:
                 setExplanationSet(CancelExplanationPresets.CUSTOM)
+                affectRealFormValuesWithExplanationSet("" as CancelExplanationPresets)
                 setIsCustomExplFieldActive(true)
                 return
             case value:

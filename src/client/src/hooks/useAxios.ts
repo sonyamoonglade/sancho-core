@@ -1,5 +1,5 @@
-import axios from 'axios'
-import {useAppDispatch, userSlice} from "../redux";
+import axios, {AxiosError} from 'axios'
+import {useAppDispatch, userSlice, workerActions} from "../redux";
 
 let BACKEND_URL = process.env.REACT_APP_BACKEND_URL
 // todo: use nginx
@@ -13,7 +13,7 @@ export function useAxios (){
 
     const dispatch = useAppDispatch()
 
-    function responseErrorHandler(error: any){
+    function responseErrorHandler(error: AxiosError){
         const statusCode = error.response.status
         if(statusCode === 401) {
             dispatch(userActions.logout())
@@ -22,6 +22,10 @@ export function useAxios (){
         if(process.env.NODE_ENV === 'development'){
             // console.log(error)
         }
+        const responseData: any = error.response.data
+        const errMSg = responseData?.message || "Непредвиденная ошибка сервера!"
+        dispatch(workerActions.setError(errMSg))
+        dispatch(workerActions.toggleErrorModal())
         return Promise.reject(error)
 
     }

@@ -10,7 +10,6 @@ import {ProductController} from "./core/product/product.controller";
 import {OrderController} from "./core/order/order.controller";
 import {OrderService} from "./core/order/order.service";
 import {OrderRepository} from "./core/order/order.repository";
-import {OrderAntiSpamMiddleware} from "./core/order/middleware/order.anti-spam.middleware";
 import {AppController} from "./app.controller";
 import {CookieModule} from "./shared/cookie/cookie.module";
 import {SessionModule} from "./core/authentication/session.module";
@@ -33,7 +32,8 @@ import {DbModule} from "./shared/database/db.module";
 export class AppModule implements NestModule{
 
   configure(consumer: MiddlewareConsumer): any {
-    consumer.apply(SessionMiddleware)
+    consumer
+      .apply(SessionMiddleware)
       .exclude(
       {path: "/api/v1/users/loginMaster", method: RequestMethod.POST},
             {path:"/api/v1/users/registerUser", method:RequestMethod.POST},
@@ -46,11 +46,8 @@ export class AppModule implements NestModule{
         ProductController,
         OrderController
       )
-      .apply(OrderAntiSpamMiddleware)
-      .forRoutes(
-    {path:"/api/v1/order/createMasterOrder",method:RequestMethod.POST},
-          {path:"/api/v1/order/createUserOrder",method:RequestMethod.POST}
-      )
+
+
 
   }
 

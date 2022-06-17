@@ -8,14 +8,20 @@ interface WorkerInitialState {
     virtualCart: {
         items: DatabaseCartProduct[]
     }
-    error: string
+    error: {
+        modal: boolean
+        val: string
+    }
     orderQueue: OrderQueue
 
 }
 
 const initialState:WorkerInitialState = {
     queryResults: null,
-    error: null,
+    error: {
+        val: "",
+        modal: false
+    },
     orderQueue: null,
     virtualCart: {
         items: []
@@ -29,15 +35,16 @@ const workerSlice = createSlice({
 
         overrideResults: function (s,a:PayloadAction<Product[]>) {
             s.queryResults = a.payload
-            s.error = null
         },
 
         setError: function (s, a:PayloadAction<string>){
-            s.error = a.payload
+            s.error.val = a.payload
+        },
+        toggleErrorModal: function (s){
+            s.error.modal = !s.error.modal
         },
         setOrderQueue: function(s, a:PayloadAction<OrderQueue>) {
             s.orderQueue = a.payload
-            s.error = null
         },
         setVirtualCart: function(s, a:PayloadAction<DatabaseCartProduct[]>){
             s.virtualCart.items = a.payload

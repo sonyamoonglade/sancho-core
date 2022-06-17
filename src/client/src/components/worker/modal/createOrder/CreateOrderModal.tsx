@@ -16,6 +16,7 @@ import {utils} from "../../../../utils/util.functions";
 import {useCreateOrderForm} from "./hooks/useCreateOrderForm";
 import {useCreateMasterOrder} from "./hooks/useCreateMasterOrder";
 import {log} from "util";
+import {useVirtualCart} from "../../hooks/useVirtualCart";
 
 const CreateOrderModal = () => {
 
@@ -40,15 +41,23 @@ const CreateOrderModal = () => {
         createMasterOrder,
     } = useCreateMasterOrder()
 
+    const virtualCart = useVirtualCart()
+
     async function handleOrderCreation(){
         if(!isSubmitButtonActive) { return }
         if (totalOrderPrice === 0) { return }
         if (virtualCartState.items.length === 0) { return }
-
+        console.log('here')
         // todo: apply typing!
         const body: any = getFormValues()
         body.cart = virtualCartState.items
+        console.log('before')
         await createMasterOrder(body)
+        console.log('after')
+        console.log('here')
+        dispatch(windowActions.toggleCreateOrder())
+        dispatch(workerActions.setVirtualCart([]))
+        virtualCart.clearVirtualCart()
     }
 
 

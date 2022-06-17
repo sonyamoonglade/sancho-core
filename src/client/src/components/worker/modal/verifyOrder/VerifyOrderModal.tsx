@@ -53,6 +53,7 @@ const VerifyOrderModal = () => {
         const phoneNumber = formValues.phone_number_w.value
         const body: any = getFormValues()
         await verifyOrder(body,phoneNumber)
+        dispatch(windowActions.toggleVerifyOrder())
     }
 
     function toggleVirtualCart(){

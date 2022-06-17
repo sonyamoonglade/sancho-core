@@ -1,11 +1,9 @@
 import {DatabaseCartProduct, OrderQueue, WaitingQueueOrder} from "../../../../../common/types";
 import {AxiosInstance} from "axios";
-import {useAppDispatch, windowActions} from "../../../../../redux";
 import {useCallback} from "react";
 
 export function useVerifyOrder (client:AxiosInstance,orderQueue: OrderQueue,totalOrderPrice: number, vcart: DatabaseCartProduct[]) {
 
-    const dispatch = useAppDispatch()
 
 
     const verifyOrder = useCallback(async function(body: any, phoneNumber: string){
@@ -13,13 +11,7 @@ export function useVerifyOrder (client:AxiosInstance,orderQueue: OrderQueue,tota
         if(order?.total_cart_price !== totalOrderPrice && totalOrderPrice !== 0){
             body.cart = vcart
         }
-        try {
-            await client.put("order/verify", body)
-            dispatch(windowActions.toggleVerifyOrder())
-        }catch (e) {
-            console.log(e)
-            alert(e)
-        }
+        await client.put("order/verify", body)
     },[vcart,totalOrderPrice,orderQueue])
 
 

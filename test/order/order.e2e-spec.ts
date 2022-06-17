@@ -18,7 +18,6 @@ import {SessionRepository} from "../../src/server/core/authentication/session.re
 import {Session} from "../../src/server/core/entities/Session";
 import {User, users} from "../../src/server/core/entities/User";
 import {Pool} from "pg";
-import {QueryBuilder} from "../../src/server/core/query_builder/QueryBuilder";
 import {SessionService} from "../../src/server/core/authentication/session.service";
 import * as cookieParser from "cookie-parser"
 import {AppModule} from "../../src/server/app.module";
@@ -27,6 +26,7 @@ import {UserService} from "../../src/server/core/user/user.service";
 import {VerifyOrderDto} from "../../src/server/core/order/dto/verify-order.dto";
 import {CancelOrderDto} from "../../src/server/core/order/dto/cancel-order.dto";
 import {CompleteOrderDto} from "../../src/server/core/order/dto/complete-order.dto";
+import {QueryBuilder} from "../../src/server/shared/query_builder/QueryBuilder";
 
 
 describe('OrderController (e2e)', () => {
@@ -287,6 +287,7 @@ describe('OrderController (e2e)', () => {
         productRepository.customQuery = jest.fn(async() => [mockProduct,mockProduct2])
         orderRepository.save = jest.fn(async () => mockOrder)
         sessionRepository.save = jest.fn(async () => mockSession)
+        //todo: change orderRepo custom query
         orderRepository.get = jest.fn(async () => [])
 
 

@@ -1,5 +1,6 @@
 import {useMemo, useState} from "react";
 import {FormField} from "../../../../../types/types";
+import {useVirtualCart} from "../../../hooks/useVirtualCart";
 
 export interface WorkerCreateOrderFormState {
     verified_fullname_c:FormField
@@ -51,11 +52,12 @@ export function useCreateOrderForm (){
 
     const [formValues, setFormValues] = useState<WorkerCreateOrderFormState>(formDefaults)
 
-
+    const virtualCart = useVirtualCart()
 
     function setFormDefaults(){
         setFormValues(formDefaults)
         formValues.is_delivered_c.value = false
+        virtualCart.clearVirtualCart()
     }
 
     const isSubmitButtonActive = useMemo(() => {
