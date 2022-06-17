@@ -1,4 +1,4 @@
-import React, {useEffect, useMemo, useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
     useAppDispatch,
     useAppSelector,
@@ -15,7 +15,6 @@ import {currency} from "../../../../common/constants";
 import {utils} from "../../../../utils/util.functions";
 import {useCreateOrderForm} from "./hooks/useCreateOrderForm";
 import {useCreateMasterOrder} from "./hooks/useCreateMasterOrder";
-import {log} from "util";
 import {useVirtualCart} from "../../hooks/useVirtualCart";
 
 const CreateOrderModal = () => {

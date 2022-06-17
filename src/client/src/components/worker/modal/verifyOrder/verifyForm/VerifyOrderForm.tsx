@@ -5,8 +5,6 @@ import {useFormValidations} from "../../../../../hooks/useFormValidations";
 import {WorkerVerifyOrderFormState} from "../hooks/useVerifyOrderForm";
 
 
-
-
 interface submitOrderFormProps {
     formValues: WorkerVerifyOrderFormState,
     setFormValues: Function

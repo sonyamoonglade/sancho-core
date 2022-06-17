@@ -181,9 +181,8 @@ export class QueryBuilder  {
 
         const mapToUpdate = expression.set
         const keysToUpdate = Object.keys(mapToUpdate)
-        const valuesToUpdate = Object.values(mapToUpdate)
 
-        const setAssignmentStatement = QueryBuilder.generateAssignments(keysToUpdate,valuesToUpdate)
+
         const [_,values] = QueryBuilder.makeInsertValuesSql(mapToUpdate)
         const setWithPlaceholders = QueryBuilder.generatePlaceholdersForSet(keysToUpdate)
         const SQL = `update ${this.getTableName} set ${setWithPlaceholders} where ${whereStatement}`

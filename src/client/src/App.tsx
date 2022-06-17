@@ -5,6 +5,7 @@ import Layout from "./components/layout/layout/Layout";
 import AppForm from "./components/appForm/AppForm";
 
 import {
+    fetchMiscData,
     getCatalogProducts,
     productSelector,
     useAppDispatch,
@@ -51,6 +52,7 @@ function App() {
     useEffect(() => {
         dispatch(authMe(client))
         dispatch(getCatalogProducts(client))
+        dispatch(fetchMiscData(client))
     },[])
 
     useEffect(() => {

@@ -19,5 +19,7 @@ export * from'./order/order.selecotrs'
 export * from "./worker/worker.slice"
 export * from "./worker/worker.selectors"
 
+export * from "./misc"
+
 export * from './store'
 

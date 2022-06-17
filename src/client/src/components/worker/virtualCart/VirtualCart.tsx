@@ -1,4 +1,4 @@
-import React, {FC, useRef} from 'react';
+import React, {useRef} from 'react';
 import {DatabaseCartProduct} from "../../../common/types";
 import "./virtual-cart.styles.scss"
 import "../worker-globals.scss"

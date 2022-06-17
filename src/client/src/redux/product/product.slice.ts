@@ -10,7 +10,6 @@ interface ProductState {
     totalCartPrice: number
     isPresentingNow: boolean
     isCartEmpty: boolean
-
 }
 
 const initialState:ProductState = {
@@ -38,7 +37,6 @@ export const productSlice = createSlice({
             s.isProductListLoading = false
         },
         setErrorMessage:(s,a:PayloadAction<string>) => {
-            console.log(a)
             s.onLoadErrorMessage = a.payload
         },
         startPresentation:(s,a:PayloadAction<Product>) => {

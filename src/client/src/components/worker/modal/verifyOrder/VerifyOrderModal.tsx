@@ -102,8 +102,6 @@ const VerifyOrderModal = () => {
         <div className={worker.verifyOrder ? 'worker_modal --w-opened' : 'worker_modal'}>
             <p className='modal_title'>Подтвердить заказ</p>
             <RiSettings4Line onClick={toggleVirtualCart} className='submit_settings' size={25}/>
-
-
             <VirtualCart/>
             <VerifyOrderForm
                 setFormDefaultsExceptPhoneNumberAndFullname={setFormDefaultsExceptPhoneNumberAndFullname}

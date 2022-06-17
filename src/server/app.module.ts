@@ -15,13 +15,16 @@ import {CookieModule} from "./shared/cookie/cookie.module";
 import {SessionModule} from "./core/authentication/session.module";
 import {QueryBuilderModule} from "./shared/query_builder/qb.module";
 import {DbModule} from "./shared/database/db.module";
+import {MiscModule} from "./core/miscellaneous/misc.module";
+import {MiscController} from "./core/miscellaneous/misc.controller";
+import {AuthorizationModule} from "./core/authorization/authorization.module";
 
 
 @Module({
   imports: [
     UserModule,DbModule,QueryBuilderModule,
     ProductModule, OrderModule,CookieModule,
-    SessionModule
+    SessionModule,MiscModule
   ],
   controllers: [AppController],
   providers: [
@@ -39,12 +42,14 @@ export class AppModule implements NestModule{
             {path:"/api/v1/users/registerUser", method:RequestMethod.POST},
             {path:"/api/v1/users/registerMasterUser",method:RequestMethod.POST},
             {path:"/api/v1/users/login",method:RequestMethod.POST},
-            {path:"/api/v1/product/catalogProducts", method:RequestMethod.GET}
+            {path:"/api/v1/product/catalogProducts", method:RequestMethod.GET},
+            {path:"/api/v1/misc", method:RequestMethod.GET},
       )
       .forRoutes(
         UserController,
         ProductController,
-        OrderController
+        OrderController,
+        MiscController
       )
 
 

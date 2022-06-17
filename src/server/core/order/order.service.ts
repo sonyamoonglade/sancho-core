@@ -10,22 +10,22 @@ import {CancelOrderDto} from "./dto/cancel-order.dto";
 import {Product, products} from "../entities/Product";
 import {ProductRepository} from "../product/product.repository";
 import {
-  AppRoles,
-  DatabaseCartProduct,
-  OrderQueue,
-  OrderStatus,
-  ResponseUserOrder,
-  VerifiedQueueOrder,
-  WaitingQueueOrder
+    AppRoles,
+    DatabaseCartProduct,
+    OrderQueue,
+    OrderStatus,
+    ResponseUserOrder,
+    VerifiedQueueOrder,
+    WaitingQueueOrder
 } from "../../../common/types";
 import {DELIVERY_PUNISHMENT_THRESHOLD, DELIVERY_PUNISHMENT_VALUE} from "../../../common/constants";
 import {EventEmitter} from "events";
 import {CompleteOrderDto} from "./dto/complete-order.dto";
 import {UnexpectedServerError} from "../../shared/exceptions/unexpected-errors.exceptions";
 import {
-  CancelExplanationHasNotBeenProvided,
-  OrderCannotBeCompleted,
-  OrderCannotBeVerified
+    CancelExplanationHasNotBeenProvided,
+    OrderCannotBeCompleted,
+    OrderCannotBeVerified
 } from "../../shared/exceptions/order.exceptions";
 import {JsonService} from "../../shared/database/json.service";
 import {Events} from "../../shared/event/events";

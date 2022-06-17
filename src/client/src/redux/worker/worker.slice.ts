@@ -2,7 +2,6 @@ import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 import {DatabaseCartProduct, OrderQueue, Product} from "../../common/types";
 
 
-
 interface WorkerInitialState {
     queryResults: Product[]
     virtualCart: {

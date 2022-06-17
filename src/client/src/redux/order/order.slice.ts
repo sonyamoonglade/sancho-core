@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from "@reduxjs/toolkit";
-import {OrderQueue, OrderStatus, ResponseUserOrder} from "../../common/types";
+import {OrderStatus, ResponseUserOrder} from "../../common/types";
 
 
 interface InitialOrderStateInterface {

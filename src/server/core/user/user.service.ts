@@ -10,10 +10,12 @@ import * as bcrypt from 'bcrypt'
 import {AppRoles, DeliveryDetails} from "../../../common/types";
 import {LoginMasterUserDto} from "./dto/login-master-user.dto";
 import {
-  InvalidPasswordException, InvalidRoleException,
-  MasterLoginHasAlreadyBeenTaken,
-  PasswordIsTooShortException,
-  PhoneIsAlreadyTakenException, UserDoesNotExistException
+    InvalidPasswordException,
+    InvalidRoleException,
+    MasterLoginHasAlreadyBeenTaken,
+    PasswordIsTooShortException,
+    PhoneIsAlreadyTakenException,
+    UserDoesNotExistException
 } from "../../shared/exceptions/user.exceptions";
 import {UnexpectedServerError} from "../../shared/exceptions/unexpected-errors.exceptions";
 import {APP_ROLES} from "../../types/contants";

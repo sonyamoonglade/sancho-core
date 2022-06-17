@@ -17,7 +17,7 @@ export class UserRepository implements Repository<User>{
     const deleteSql = this.qb.ofTable(users).delete<User>({where:{id}})
     await this.db.query(deleteSql)
   }
-  // todo: there it is!
+
   async getById(id: number | string): Promise<User | undefined> {
     const selectSql = this.qb.ofTable(users).select<User>({where:{id: id as number}})
     const {rows} = await this.db.query(selectSql)
