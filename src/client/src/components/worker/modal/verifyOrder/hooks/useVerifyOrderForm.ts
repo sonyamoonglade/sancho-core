@@ -1,6 +1,6 @@
 import {useMemo, useState} from "react";
-import {FormField} from "../../../../types/types";
-import {OrderQueue} from "../../../../common/types";
+import {FormField} from "../../../../../types/types";
+import {OrderQueue} from "../../../../../common/types";
 
 
 export interface WorkerVerifyOrderFormState {

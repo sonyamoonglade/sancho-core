@@ -46,3 +46,10 @@ export interface FormField {
     isValid: boolean
     value: string
 }
+
+export enum CancelExplanationPresets {
+    CUSTOMER_WILL = "Заказ отменен по инициативе заказчика.",
+    SYSTEM_ERROR = "Произошла ошибка в системе.",
+    ORDER_ERROR = "Произошла ошибка в заказе.",
+    CUSTOM = "Своя"
+}

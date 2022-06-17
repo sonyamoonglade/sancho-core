@@ -12,6 +12,10 @@ const WorkerNavigation = () => {
         dispatch(windowActions.toggleCreateOrder())
     }
 
+    function toggleOrderCancellation(){
+        dispatch(windowActions.toggleCancelOrder())
+    }
+
     return (
         <ul className='desktop_nav'>
             <li className="d_nav_item" onClick={toggleOrderCreation}>
@@ -20,7 +24,7 @@ const WorkerNavigation = () => {
             <li className="d_nav_item" onClick={toggleOrderVerification}>
                 Подтвердить заказ
             </li>
-            <li className="d_nav_item">
+            <li className="d_nav_item" onClick={toggleOrderCancellation}>
                 Отменить заказ
             </li>
         </ul>

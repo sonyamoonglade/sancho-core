@@ -1,48 +1,51 @@
 import React, {FC, useEffect, useMemo} from 'react';
-import {useCreateOrderForm, WorkerCreateOrderFormState} from "../hooks/useCreateOrderForm";
-import FormInput from "../../../formInput/FormInput";
-import {useFormValidations} from "../../../../hooks/useFormValidations";
-import {useAppSelector, windowSelector} from "../../../../redux";
-import {WorkerVerifyOrderFormState} from "../../verifyOrder/hooks/useVerifyOrderForm";
+import FormInput from "../../../../formInput/FormInput";
+import {useAppSelector, windowSelector} from "../../../../../redux";
+import {useFormValidations} from "../../../../../hooks/useFormValidations";
+import {WorkerVerifyOrderFormState} from "../hooks/useVerifyOrderForm";
 
 
-interface createMasterOrderFormProps {
-    formValues: WorkerCreateOrderFormState,
+
+
+interface submitOrderFormProps {
+    formValues: WorkerVerifyOrderFormState,
     setFormValues: Function
     setFormDefaults: Function
+    presetDeliveryDetails: Function
+    setFormDefaultsExceptPhoneNumberAndFullname: Function
 }
 
-const CreateOrderForm:FC<createMasterOrderFormProps> = ({formValues,
-                                                  setFormDefaults,
-                                                  setFormValues}) => {
-
+const VerifyOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,setFormValues,presetDeliveryDetails,setFormDefaultsExceptPhoneNumberAndFullname}) => {
     const {worker} = useAppSelector(windowSelector)
 
-
-
-    const {minLengthValidation,validatePhoneNumber} = useFormValidations()
-
-    useEffect(() => {
-        if(!worker.createOrder){
-            setFormDefaults()
-        }
-    },[worker.createOrder])
+    const {validatePhoneNumber,minLengthValidation} = useFormValidations()
 
     const isDeliveryFormDisabledExpr = useMemo(() => {
-        return formValues["is_delivered_c"].value ? "delivery_text_w " : "--disabled w "
-    },[formValues.is_delivered_c.value])
+        return formValues["is_delivered_w"].value ? "delivery_text_w " : "--disabled w "
+    },[formValues])
 
+
+
+    useEffect(() => {
+        if(!worker.verifyOrder){
+            setFormDefaults()
+        }
+    },[worker.verifyOrder])
+    useEffect(() => {
+        if(formValues.phone_number_w.isValid){
+            presetDeliveryDetails()
+        }else {
+            setFormDefaultsExceptPhoneNumberAndFullname()
+        }
+    },[formValues.phone_number_w.isValid])
 
     return (
         <>
-
-
-
             <FormInput
-                name={"verified_fullname_c"}
+                name={"verified_fullname_w"}
                 type={"text"}
                 placeholder={"Полное имя заказчика"}
-                formValue={formValues["verified_fullname_c"]}
+                formValue={formValues["verified_fullname_w"]}
                 setV={setFormValues}
                 extraClassName={`verified_fullname_input w`}
                 fieldValidationFn={minLengthValidation}
@@ -53,11 +56,10 @@ const CreateOrderForm:FC<createMasterOrderFormProps> = ({formValues,
             />
 
             <FormInput
-                name={'phone_number_c'}
-                extraClassName={"phone_number_input c"}
+                name={'phone_number_w'}
                 type={'text'}
                 placeholder={'Номер телефона'}
-                formValue={formValues["phone_number_c"]}
+                formValue={formValues["phone_number_w"]}
                 setV={setFormValues}
                 onBlurValue={'+7'}
                 maxLength={10}
@@ -67,25 +69,25 @@ const CreateOrderForm:FC<createMasterOrderFormProps> = ({formValues,
 
             />
 
-            <div className="delivery_input w c">
+            <div className="delivery_input w">
                 <div className="is_delivered_checkbox w">
                     <p className={isDeliveryFormDisabledExpr}>Нужна доставка?</p>
                     <input
-                        checked={formValues.is_delivered_c.value}
-                        name={"is_delivered_с"} onChange={() => {
-                        setFormValues((state: WorkerCreateOrderFormState) => {
-                            const obj = state.is_delivered_c
+                        checked={formValues.is_delivered_w.value}
+                        name={"is_delivered_ц"} onChange={() => {
+                        setFormValues((state: any) => {
+                            const obj = state.is_delivered_w
                             obj.value = !obj.value
-                            return {...state,is_delivered_c:obj}
+                            return {...state,is_delivered_w:obj}
                         })
                     }} type="checkbox"
                     />
                 </div>
                 <FormInput
-                    name={"address_c"}
+                    name={"address_w"}
                     type={"text"}
                     placeholder={"Адрес доставки"}
-                    formValue={formValues["address_c"]}
+                    formValue={formValues["address_w"]}
                     setV={setFormValues}
                     onBlurValue={"ул."}
                     minLength={5}
@@ -95,12 +97,13 @@ const CreateOrderForm:FC<createMasterOrderFormProps> = ({formValues,
                     fieldValidationFn={minLengthValidation}
 
                 />
+
                 <div className="delivery_details_container">
                     <FormInput
-                        name={"entrance_number_c"}
+                        name={"entrance_number_w"}
                         type={"text"}
                         placeholder={"1"}
-                        formValue={formValues["entrance_number_c"]}
+                        formValue={formValues["entrance_number_w"]}
                         setV={setFormValues}
                         onBlurValue={"подъезд"}
                         maxLength={2}
@@ -112,10 +115,10 @@ const CreateOrderForm:FC<createMasterOrderFormProps> = ({formValues,
                     />
 
                     <FormInput
-                        name={"flat_call_c"}
+                        name={"flat_call_w"}
                         type={"text"}
                         placeholder={"5"}
-                        formValue={formValues["flat_call_c"]}
+                        formValue={formValues["flat_call_w"]}
                         setV={setFormValues}
                         onBlurValue={"кв."}
                         maxLength={3}
@@ -127,10 +130,10 @@ const CreateOrderForm:FC<createMasterOrderFormProps> = ({formValues,
                     />
 
                     <FormInput
-                        name={"floor_c"}
+                        name={"floor_w"}
                         type={"text"}
                         placeholder={"9"}
-                        formValue={formValues["floor_c"]}
+                        formValue={formValues["floor_w"]}
                         setV={setFormValues}
                         onBlurValue={"этаж "}
                         maxLength={2}
@@ -141,11 +144,9 @@ const CreateOrderForm:FC<createMasterOrderFormProps> = ({formValues,
                     />
 
                 </div>
-
             </div>
-
         </>
     );
 };
 
-export default CreateOrderForm;
+export default VerifyOrderForm;

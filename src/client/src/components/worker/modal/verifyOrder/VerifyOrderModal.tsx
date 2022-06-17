@@ -6,18 +6,18 @@ import {
     windowSelector,
     workerActions,
     workerSelector
-} from "../../../redux";
+} from "../../../../redux";
 import "./verify-order.styles.scss"
-import "../../order/orderForm/order-form.styles.scss"
+import "../../../order/orderForm/order-form.styles.scss"
 import {RiSettings4Line} from "react-icons/ri";
-import {useAxios} from "../../../hooks/useAxios";
+import {useAxios} from "../../../../hooks/useAxios";
 import {useVerifyOrderForm} from "./hooks/useVerifyOrderForm";
 import VerifyOrderForm from "./verifyForm/VerifyOrderForm";
-import VirtualCart from "../virtualCart/VirtualCart";
-import {useVirtualCart} from "../hooks/useVirtualCart";
-import {currency} from "../../../common/constants";
+import VirtualCart from "../../virtualCart/VirtualCart";
+import {useVirtualCart} from "../../hooks/useVirtualCart";
+import {currency} from "../../../../common/constants";
 import {useVerifyOrder} from "./hooks/useVerifyOrder";
-import {utils} from "../../../utils/util.functions";
+import {utils} from "../../../../utils/util.functions";
 
 
 const VerifyOrderModal = () => {
@@ -62,7 +62,7 @@ const VerifyOrderModal = () => {
     function presetVirtualCartItems(phoneNumber: string){
         if(formValues.phone_number_w.isValid){
             const order = findWaitingOrderByPhoneNumber(phoneNumber)
-            const parsedCart = order.cart.map((item) => {
+            const parsedCart = order.cart.map((item: any) => {
                 return JSON.parse(item as unknown as string)
             })
             dispatch(workerActions.setVirtualCart(parsedCart))

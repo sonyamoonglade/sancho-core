@@ -1,6 +1,6 @@
-import {DatabaseCartProduct, OrderQueue, WaitingQueueOrder} from "../../../../common/types";
+import {DatabaseCartProduct, OrderQueue, WaitingQueueOrder} from "../../../../../common/types";
 import {AxiosInstance} from "axios";
-import {useAppDispatch, windowActions} from "../../../../redux";
+import {useAppDispatch, windowActions} from "../../../../../redux";
 import {useCallback} from "react";
 
 export function useVerifyOrder (client:AxiosInstance,orderQueue: OrderQueue,totalOrderPrice: number, vcart: DatabaseCartProduct[]) {

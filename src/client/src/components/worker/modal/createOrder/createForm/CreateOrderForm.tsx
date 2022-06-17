@@ -1,52 +1,44 @@
 import React, {FC, useEffect, useMemo} from 'react';
-import FormInput from "../../../formInput/FormInput";
-import {useAppSelector, windowSelector} from "../../../../redux";
-import {FormField} from "../../../../types/types";
-import {useFormValidations} from "../../../../hooks/useFormValidations";
-import {WorkerVerifyOrderFormState} from "../hooks/useVerifyOrderForm";
+import {WorkerCreateOrderFormState} from "../hooks/useCreateOrderForm";
+import FormInput from "../../../../formInput/FormInput";
+import {useFormValidations} from "../../../../../hooks/useFormValidations";
+import {useAppSelector, windowSelector} from "../../../../../redux";
 
 
-
-
-interface submitOrderFormProps {
-    formValues: WorkerVerifyOrderFormState,
+interface createMasterOrderFormProps {
+    formValues: WorkerCreateOrderFormState,
     setFormValues: Function
     setFormDefaults: Function
-    presetDeliveryDetails: Function
-    setFormDefaultsExceptPhoneNumberAndFullname: Function
 }
 
-const VerifyOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,setFormValues,presetDeliveryDetails,setFormDefaultsExceptPhoneNumberAndFullname}) => {
+const CreateOrderForm:FC<createMasterOrderFormProps> = ({formValues,
+                                                  setFormDefaults,
+                                                  setFormValues}) => {
+
     const {worker} = useAppSelector(windowSelector)
-
-    const {validatePhoneNumber,minLengthValidation} = useFormValidations()
-
-    const isDeliveryFormDisabledExpr = useMemo(() => {
-        return formValues["is_delivered_w"].value ? "delivery_text_w " : "--disabled w "
-    },[formValues])
-
-
+    const {minLengthValidation,validatePhoneNumber} = useFormValidations()
 
     useEffect(() => {
-        if(!worker.verifyOrder){
+        if(!worker.createOrder){
             setFormDefaults()
         }
-    },[worker.verifyOrder])
-    useEffect(() => {
-        if(formValues.phone_number_w.isValid){
-            presetDeliveryDetails()
-        }else {
-            setFormDefaultsExceptPhoneNumberAndFullname()
-        }
-    },[formValues.phone_number_w.isValid])
+    },[worker.createOrder])
+
+    const isDeliveryFormDisabledExpr = useMemo(() => {
+        return formValues["is_delivered_c"].value ? "delivery_text_w " : "--disabled w "
+    },[formValues.is_delivered_c.value])
+
 
     return (
         <>
+
+
+
             <FormInput
-                name={"verified_fullname_w"}
+                name={"verified_fullname_c"}
                 type={"text"}
                 placeholder={"Полное имя заказчика"}
-                formValue={formValues["verified_fullname_w"]}
+                formValue={formValues["verified_fullname_c"]}
                 setV={setFormValues}
                 extraClassName={`verified_fullname_input w`}
                 fieldValidationFn={minLengthValidation}
@@ -57,10 +49,11 @@ const VerifyOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,se
             />
 
             <FormInput
-                name={'phone_number_w'}
+                name={'phone_number_c'}
+                extraClassName={"phone_number_input c"}
                 type={'text'}
                 placeholder={'Номер телефона'}
-                formValue={formValues["phone_number_w"]}
+                formValue={formValues["phone_number_c"]}
                 setV={setFormValues}
                 onBlurValue={'+7'}
                 maxLength={10}
@@ -70,25 +63,25 @@ const VerifyOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,se
 
             />
 
-            <div className="delivery_input w">
+            <div className="delivery_input w c">
                 <div className="is_delivered_checkbox w">
                     <p className={isDeliveryFormDisabledExpr}>Нужна доставка?</p>
                     <input
-                        checked={formValues.is_delivered_w.value}
-                        name={"is_delivered_ц"} onChange={() => {
-                        setFormValues((state: any) => {
-                            const obj = state.is_delivered_w
+                        checked={formValues.is_delivered_c.value}
+                        name={"is_delivered_с"} onChange={() => {
+                        setFormValues((state: WorkerCreateOrderFormState) => {
+                            const obj = state.is_delivered_c
                             obj.value = !obj.value
-                            return {...state,is_delivered_w:obj}
+                            return {...state,is_delivered_c:obj}
                         })
                     }} type="checkbox"
                     />
                 </div>
                 <FormInput
-                    name={"address_w"}
+                    name={"address_c"}
                     type={"text"}
                     placeholder={"Адрес доставки"}
-                    formValue={formValues["address_w"]}
+                    formValue={formValues["address_c"]}
                     setV={setFormValues}
                     onBlurValue={"ул."}
                     minLength={5}
@@ -98,13 +91,12 @@ const VerifyOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,se
                     fieldValidationFn={minLengthValidation}
 
                 />
-
                 <div className="delivery_details_container">
                     <FormInput
-                        name={"entrance_number_w"}
+                        name={"entrance_number_c"}
                         type={"text"}
                         placeholder={"1"}
-                        formValue={formValues["entrance_number_w"]}
+                        formValue={formValues["entrance_number_c"]}
                         setV={setFormValues}
                         onBlurValue={"подъезд"}
                         maxLength={2}
@@ -116,10 +108,10 @@ const VerifyOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,se
                     />
 
                     <FormInput
-                        name={"flat_call_w"}
+                        name={"flat_call_c"}
                         type={"text"}
                         placeholder={"5"}
-                        formValue={formValues["flat_call_w"]}
+                        formValue={formValues["flat_call_c"]}
                         setV={setFormValues}
                         onBlurValue={"кв."}
                         maxLength={3}
@@ -131,10 +123,10 @@ const VerifyOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,se
                     />
 
                     <FormInput
-                        name={"floor_w"}
+                        name={"floor_c"}
                         type={"text"}
                         placeholder={"9"}
-                        formValue={formValues["floor_w"]}
+                        formValue={formValues["floor_c"]}
                         setV={setFormValues}
                         onBlurValue={"этаж "}
                         maxLength={2}
@@ -145,9 +137,11 @@ const VerifyOrderForm:FC<submitOrderFormProps> = ({formValues,setFormDefaults,se
                     />
 
                 </div>
+
             </div>
+
         </>
     );
 };
 
-export default VerifyOrderForm;
+export default CreateOrderForm;

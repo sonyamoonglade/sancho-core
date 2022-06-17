@@ -6,9 +6,10 @@ import "../../worker/worker-globals.scss"
 import Header from "../header/Header";
 import {useRoutes} from "../../../hooks/useRoutes";
 import {useAppSelector, userSelector} from "../../../redux";
-import VerifyOrderModal from "../../worker/verifyOrder/VerifyOrderModal";
 import WorkerAppForm from "../../worker/workerAppForm/WorkerAppForm";
-import CreateOrderModal from "../../worker/createOrder/CreateOrderModal";
+import CreateOrderModal from "../../worker/modal/createOrder/CreateOrderModal";
+import VerifyOrderModal from "../../worker/modal/verifyOrder/VerifyOrderModal";
+import CancelOrderModal from "../../worker/modal/cancelOrder/CancelOrderModal";
 
 
 interface layoutProps  {
@@ -33,7 +34,7 @@ const Layout:FC<layoutProps> = ({children}) => {
                 <>
                     <VerifyOrderModal />
                     <CreateOrderModal />
-
+                    <CancelOrderModal />
                     <WorkerAppForm/>
                  </>
             }
