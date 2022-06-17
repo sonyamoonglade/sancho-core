@@ -86,6 +86,9 @@ button{
   pointer-events: none;
   color: $santa-grey;
   opacity: 0.7;
+  select{
+    opacity: 0.5;
+  }
 }
 
 @font-face {
@@ -124,16 +127,7 @@ button{
 .--grey{
   background-color: $light-grey !important;
 }
-.Toastify{
-  position: absolute;
-  bottom: 10vh;
-  z-index: 1000;
-}
 
-.Toastify__toast-icon{
-  width: 20px;
-  height: 20px;
-}
 
 .app_form.w{
   z-index: 1500;

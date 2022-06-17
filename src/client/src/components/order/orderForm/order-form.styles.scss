@@ -3,15 +3,20 @@
 
 
 .order_form{
-  padding: .8rem 1.5rem 1.5rem;
+  padding: .5rem 1rem 1rem;
 }
 
 .delivery_input{
-  margin-bottom: 1.5rem;
+  margin-bottom: 1rem;
   @media (min-height: 700px) {
     font-size: $font-mder;
   }
+  @media (max-height: 700px) {
+    margin-bottom: .7rem;
+  }
 }
+
+
 
 .is_delivered_checkbox{
   justify-content: space-between;
@@ -76,5 +81,43 @@
   width: 20% !important;
   @media (min-height: 810px) {
     width: 21% !important;
+  }
+}
+
+
+.delivered_at_select_container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.2rem;
+  @media (min-height: 700px) {
+    margin-bottom: 0.8rem;
+  }
+
+}
+
+.delivered_at_select{
+  outline: none;
+  border: 1px solid $black-50;
+  background-color: $light-grey-50;
+  border-radius: 7px;
+  padding: 0.2rem;
+  font-family: "Geometria Medium",sans-serif;
+  @media (max-height: 700px) {
+    transform: translateX(4px);
+  }
+  @media (min-height: 700px) {
+    font-size: $font-md;
+  }
+  option{
+    font-family: "Geometria Medium",sans-serif;
+
+  }
+}
+.delivered_at_title{
+  font-family: "Geometria Bold",sans-serif;
+  font-size: 1rem;
+  @media (min-height: 700px) {
+    font-size: $font-mder
   }
 }

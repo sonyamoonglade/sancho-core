@@ -93,7 +93,13 @@ const OrderForm:FC<orderFormProps> = ({formValues,setFormValues}) => {
                     />
 
                 </div>
-
+            </div>
+            <div className={`delivered_at_select_container ${isDeliveryFormDisabledExpr}`}>
+                <p className="delivered_at_title">Когда доставить?</p>
+                <select className="delivered_at_select">
+                    <option>скажу по телефону</option>
+                    <option>в ближайшее время</option>
+                </select>
             </div>
             <div className="contacts_input">
                 <div className='contacts_title'>

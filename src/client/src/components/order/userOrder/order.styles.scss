@@ -5,7 +5,7 @@
   z-index: 180 !important;
   top: 0 !important;
   overflow-y: auto;
-  padding-bottom: 17rem;
+  padding-bottom: 20rem;
 
 }
 
@@ -44,6 +44,9 @@
 
 .make_user_order_form{
   padding: 1rem;
+  @media (max-height: 700px) {
+    padding-top: 0.8rem;
+  }
   top: 60px;
   position: relative;
 }
