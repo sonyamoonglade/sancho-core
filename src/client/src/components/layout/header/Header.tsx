@@ -7,7 +7,7 @@ import './header.styles.scss'
 import {useAppDispatch, useAppSelector, userSelector, windowSelector, windowSlice} from "../../../redux";
 import MobileNavigation from "../navigation/mobile/MobileNavigation";
 import Cart from "../../cart/cart/Cart";
-import Order from "../../order/userOrder/Order";
+import Order from "../../createUserOrder/Order";
 import Loading from "../../loading/Loading";
 import {Promotion} from "../../../common/types";
 import OrderHistory from "../../orderHistory/OrderHistory";

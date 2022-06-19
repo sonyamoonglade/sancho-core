@@ -30,8 +30,8 @@ export class OrderController {
                   @Body() dto:CreateUserOrderDto){
     try {
       const userId = req.user_id
-      const responseUserOrder = await this.orderService.createUserOrder(dto,userId)
-      return res.status(201).send({order:responseUserOrder})
+      await this.orderService.createUserOrder(dto,userId)
+      return res.status(201).end()
     }catch (e) {
       throw e
     }

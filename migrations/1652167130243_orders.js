@@ -30,6 +30,15 @@ exports.up = pgm => {
       type:'boolean',
       notNull: true
     },
+    delivered_at:{
+      type: "timestamp",
+      notNull: false,
+      default: null,
+    },
+    is_delivered_asap:{
+      type: "boolean",
+      notNull: true
+    },
     delivery_details:{
       type:'varchar(1500)',
       notNull: false,
@@ -73,7 +82,7 @@ exports.up = pgm => {
     }
   })
   pgm.createIndex('orders','user_id')
-  pgm.createIndex('orders','cancelled_by')
+  pgm.createIndex('orders','status')
 };
 
 exports.down = pgm => {

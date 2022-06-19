@@ -43,7 +43,7 @@ export class OrderService {
     this.events = new EventEmitter()
   }
 
-  public async createUserOrder(createUserOrderDto:CreateUserOrderDto, userId: number):Promise<ResponseUserOrder>{
+  public async createUserOrder(createUserOrderDto:CreateUserOrderDto, userId: number):Promise<void>{
     let total_cart_price = await this.calculateTotalCartPrice(createUserOrderDto.cart)
     total_cart_price = this.applyDeliveryPunishment(total_cart_price)
 
@@ -54,25 +54,14 @@ export class OrderService {
       status:OrderStatus.waiting_for_verification,
       created_at: new Date(Date.now())
     }
+    await this.orderRepository.save(userOrder)
 
-    const createdOrder = await this.orderRepository.save(userOrder)
     if(userOrder.is_delivered === true){
       const stringDetails: string = JSON.stringify(userOrder.delivery_details)
       await this.userService.updateUsersRememberedDeliveryAddress(userId,stringDetails)
     }
-
-    const responseOrder:ResponseUserOrder = {
-      id: createdOrder.id,
-      cart: userOrder.cart,
-      created_at: userOrder.created_at,
-      status: userOrder.status,
-      is_delivered: userOrder.is_delivered,
-      delivery_details: userOrder.delivery_details ? userOrder.delivery_details : null,
-      total_cart_price
-    }
     this.events.emit(Events.ORDER_HAS_CREATED)
-
-    return responseOrder
+    return
   }
 
   public async createMasterOrder(createMasterOrderDto:CreateMasterOrderDto):Promise<void>{
@@ -87,16 +76,27 @@ export class OrderService {
     let total_cart_price = await this.calculateTotalCartPrice(createMasterOrderDto.cart)
     total_cart_price = this.applyDeliveryPunishment(total_cart_price)
 
+    const {
+        verified_fullname,
+        is_delivered_asap,
+        delivery_details,
+        is_delivered,
+        delivered_at,
+        cart,
+    } = createMasterOrderDto
+    const now = new Date(Date.now())
     const masterOrder:Order = {
-      verified_fullname: createMasterOrderDto.verified_fullname,
-      is_delivered: createMasterOrderDto.is_delivered,
-      cart: createMasterOrderDto.cart,
-      delivery_details: createMasterOrderDto.is_delivered ? createMasterOrderDto.delivery_details : null,
+      verified_fullname,
+      is_delivered,
+      cart,
+      delivery_details: is_delivered ? delivery_details : null,
       total_cart_price,
+      is_delivered_asap,
       user_id:userId,
       status:OrderStatus.verified,
-      created_at: new Date(Date.now()),
-      verified_at: new Date(Date.now())
+      created_at: now,
+      verified_at: now,
+      delivered_at: is_delivered_asap ? now : delivered_at
     }
 
     if(masterOrder.is_delivered === true){
@@ -121,19 +121,25 @@ export class OrderService {
       if(!has){
         throw new Error(`verification ${phone_number}`)
       }
-
+      const {
+          verified_fullname,
+          delivery_details,
+          is_delivered,
+          cart
+      } = verifyOrderDto
+      const now = new Date(Date.now())
       const updated:Partial<Order> = {
-        verified_fullname:verifyOrderDto.verified_fullname,
-        delivery_details:verifyOrderDto?.delivery_details || null,
+        verified_fullname,
+        delivery_details: delivery_details !== undefined ? delivery_details : null,
         status:OrderStatus.verified,
-        verified_at: new Date(Date.now()),
+        verified_at: now,
       }
       if(verifyOrderDto.is_delivered !== undefined){
-        updated.is_delivered = verifyOrderDto.is_delivered
+        updated.is_delivered = is_delivered
       }
       if(verifyOrderDto.cart !== undefined){
-        const recalculatedTotalCartPrice = await this.calculateTotalCartPrice(verifyOrderDto.cart)
-        updated.cart = verifyOrderDto.cart
+        const recalculatedTotalCartPrice = await this.calculateTotalCartPrice(cart)
+        updated.cart = cart
         updated.total_cart_price = recalculatedTotalCartPrice
         this.jsonService.stringifyNestedObjects(updated)
       }

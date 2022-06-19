@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {useAppDispatch, useAppSelector, windowActions, windowSelector} from "../../../../redux";
 import CancelOrderForm from "./cancelForm/CancelOrderForm";
 import {CancelOrderFormState, useCancelOrderForm} from "./hooks/useCancelOrderForm";
-import "../../../order/orderForm/order-form.styles.scss"
+import "../../../createUserOrder/orderForm/order-form.styles.scss"
 import "./cancel-order.styles.scss"
 import {CancelExplanationPresets} from "../../../../types/types";
 import {useCancelMasterOrder} from "./hooks/useCancelMasterOrder";

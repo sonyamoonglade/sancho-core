@@ -8,7 +8,7 @@ import {
     workerSelector
 } from "../../../../redux";
 import "./verify-order.styles.scss"
-import "../../../order/orderForm/order-form.styles.scss"
+import "../../../createUserOrder/orderForm/order-form.styles.scss"
 import {RiSettings4Line} from "react-icons/ri";
 import {useAxios} from "../../../../hooks/useAxios";
 import {useVerifyOrderForm} from "./hooks/useVerifyOrderForm";

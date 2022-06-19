@@ -1,9 +1,9 @@
 import React from 'react';
-import {DELIVERY_PUNISHMENT_VALUE} from "../../../common/constants";
+import {miscSelector, useAppSelector} from "../../../redux";
 
 const DeliveryPunishmentItem = () => {
 
-    const value = DELIVERY_PUNISHMENT_VALUE
+    const {DELIVERY_PUNISHMENT_VALUE: value} = useAppSelector(miscSelector)
 
     return (
         <li className='check_item'>

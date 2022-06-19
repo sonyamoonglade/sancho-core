@@ -1,7 +1,7 @@
 import {AxiosInstance} from "axios";
-import {UserOrderFormValuesInterface} from "../components/order/userOrder/Order";
 import {useCallback} from "react";
-import {DatabaseCartProduct} from "../common/types";
+import {UserOrderFormValuesInterface} from "../Order";
+import {DatabaseCartProduct} from "../../../common/types";
 
 export function useCreateOrder (client: AxiosInstance){
 
@@ -17,9 +17,6 @@ export function useCreateOrder (client: AxiosInstance){
 
         const response = await client.post(`order/createUserOrder`, body)
         return response.data
-
-
-
     },[])
 
     return {createUserOrder}

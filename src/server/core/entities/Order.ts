@@ -8,7 +8,7 @@ export type Order = {
   status: OrderStatus
   is_delivered: boolean
   delivered_at?: Date
-  is_delivered_asap?: boolean
+  is_delivered_asap: boolean
   delivery_details?: DeliveryDetails
   created_at: Date
   verified_at?: Date

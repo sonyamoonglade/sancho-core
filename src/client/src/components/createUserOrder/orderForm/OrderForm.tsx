@@ -3,7 +3,7 @@ import FormInput from "../../formInput/FormInput";
 import {useFormValidations} from "../../../hooks/useFormValidations";
 
 import './order-form.styles.scss'
-import {UserOrderFormState} from "../userOrder/Order";
+import {UserOrderFormState} from "../Order";
 
 
 interface orderFormProps {

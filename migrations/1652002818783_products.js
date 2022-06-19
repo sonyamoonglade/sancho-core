@@ -4,7 +4,6 @@
 exports.shorthands = undefined;
 
 exports.up = pgm => {
-
   pgm.createTable('products', {
     id: {
       type:'id',
@@ -47,7 +46,6 @@ exports.up = pgm => {
       default: false
     }
   })
-
 
 };
 

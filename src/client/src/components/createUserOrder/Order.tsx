@@ -3,25 +3,18 @@ import React, {useEffect} from 'react';
 import './order.styles.scss'
 import {TiArrowBack} from "react-icons/ti";
 import {GrFormClose} from 'react-icons/gr'
-import {
-    productActions,
-    useAppDispatch,
-    useAppSelector,
-    userSelector,
-    windowActions,
-    windowSelector
-} from "../../../redux";
-import {baseUrl} from "../../product/productPresentation/ProductPresentation";
-import OrderForm from "../orderForm/OrderForm";
-import Check from "../check/Check";
-import {useCart} from "../../../hooks/useCart";
-import SubmitOrderButton from "../submitOrderButton/SubmitOrderButton";
-import {useAxios} from "../../../hooks/useAxios";
-import {useCreateOrder} from "../../../hooks/useCreateOrder";
-import {useAuthentication} from "../../../hooks/useAuthentication";
-import {useUserOrderForm} from "../hooks/useUserOrderForm";
-import {DeliveryDetails} from "../../../common/types";
-import {FormField} from "../../../types/types";
+import {useCreateOrder} from "./hooks/useCreateOrder";
+import {useCart} from "../../hooks/useCart";
+import {productActions, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector} from "../../redux";
+import OrderForm from "./orderForm/OrderForm";
+import SubmitOrderButton from "./submitOrderButton/SubmitOrderButton";
+import Check from "./check/Check";
+import {useUserOrderForm} from "./hooks/useUserOrderForm";
+import {baseUrl} from "../product/productPresentation/ProductPresentation";
+import {useAxios} from "../../hooks/useAxios";
+import {useAuthentication} from "../../hooks/useAuthentication";
+import {FormField} from "../../types/types";
+import {DeliveryDetails} from "../../common/types";
 
 
 export interface UserOrderFormValuesInterface {

@@ -1,5 +1,5 @@
 import {DatabaseCartProduct, DeliveryDetails} from "../../../../common/types";
-import {IsDefined, IsString} from "class-validator";
+import {IsBoolean, IsDefined, IsString} from "class-validator";
 
 export class VerifyOrderDto {
 
@@ -11,6 +11,11 @@ export class VerifyOrderDto {
   @IsString()
   phone_number: string
 
+  @IsDefined()
+  @IsBoolean()
+  is_delivered_asap: boolean
+
+  delivered_at?: Date
   delivery_details?: DeliveryDetails
   is_delivered?: boolean
   cart?: DatabaseCartProduct[]

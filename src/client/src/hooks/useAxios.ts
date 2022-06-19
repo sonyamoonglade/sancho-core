@@ -18,6 +18,7 @@ export function useAxios (){
         if(statusCode === 401) {
             dispatch(userActions.logout())
             dispatch(userActions.logoutMaster());
+            return
         } // unauthorized
         if(process.env.NODE_ENV === 'development'){
             // console.log(error)
@@ -26,7 +27,7 @@ export function useAxios (){
         const responseData: any = error.response.data
         const errMSg = responseData?.message || "Непредвиденная ошибка сервера!"
         dispatch(workerActions.setError(errMSg))
-        dispatch(workerActions.toggleErrorModal(true    ))
+        dispatch(workerActions.toggleErrorModal(true))
         return Promise.reject(error)
 
     }

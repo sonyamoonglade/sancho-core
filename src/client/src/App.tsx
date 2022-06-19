@@ -15,7 +15,7 @@ import {
     windowSelector
 } from "./redux";
 import CartLink from "./components/cart/cartLink/CartLink";
-import OrderLink from "./components/order/orderLink/OrderLink";
+import OrderLink from "./components/createUserOrder/orderLink/OrderLink";
 import ProductPresentation from "./components/product/productPresentation/ProductPresentation";
 import Catalog from "./components/catalog/Catalog";
 import {authMe} from "./redux/user/user-async.actions";

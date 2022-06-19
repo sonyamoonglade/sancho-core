@@ -1,11 +1,11 @@
 import React, {FC, useEffect, useMemo, useState} from 'react';
 
 import {baseUrl} from "../../product/productPresentation/ProductPresentation";
-import {productSelector, useAppSelector} from "../../../redux";
+import {miscSelector, productSelector, useAppSelector} from "../../../redux";
 import CheckList from "./checkList/CheckList";
 import {CartInterface} from "../../../types/types";
 import {DatabaseCartProduct} from "../../../common/types";
-import {currency, DELIVERY_PUNISHMENT_THRESHOLD, DELIVERY_PUNISHMENT_VALUE} from "../../../common/constants";
+import {currency} from "../../../common/constants";
 
 interface checkProps{
     cart: CartInterface
@@ -16,6 +16,10 @@ const Check:FC<checkProps> = ({cart,isDelivered}) => {
 
     const [checkProducts, setCheckProducts] = useState<DatabaseCartProduct[]>(cart.getCart())
     const {totalCartPrice} = useAppSelector(productSelector)
+    const {
+        DELIVERY_PUNISHMENT_VALUE,
+        DELIVERY_PUNISHMENT_THRESHOLD
+    } = useAppSelector(miscSelector)
 
     useEffect(() => {
         setCheckProducts(cart.getCart())
