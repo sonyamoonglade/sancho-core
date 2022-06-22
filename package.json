@@ -9,7 +9,7 @@
     "prebuild": "rimraf dist",
     "build:prod": "rm tsconfig.*.tsbuildinfo && nest build",
     "build": " cp -R ./src/common/* ./src/client/src/common && rm tsconfig.*.tsbuildinfo && nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \"src/**/*.ts\" \"src/client/**/*.ts\"",
     "start": "npm run migrate up && node dist/server/main.js",
     "start:dev": "npm run build && nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -20,8 +20,7 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migrate": "node-pg-migrate",
-    "migrate-down:all": "npm run migrate down && npm run migrate down && npm run migrate down"
+    "migrate": "node-pg-migrate"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",

@@ -20,6 +20,7 @@ import {DeliveryDetails} from "../../common/types";
 export interface UserOrderFormValuesInterface {
     is_delivered: boolean
     phone_number: string
+    is_delivered_asap: boolean
     delivery_details?: DeliveryDetails
 }
 
@@ -27,6 +28,10 @@ export interface UserOrderFormState {
 
     phone_number:FormField
     is_delivered:{
+        value: boolean,
+        isValid: boolean
+    }
+    is_delivered_asap:{
         value: boolean,
         isValid: boolean
     }

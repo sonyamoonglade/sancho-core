@@ -1,4 +1,3 @@
-import {RootState} from "../store";
+import { RootState } from "../store";
 
-
-export const userSelector = (state:RootState) => state.userReducer
+export const userSelector = (state: RootState) => state.userReducer;

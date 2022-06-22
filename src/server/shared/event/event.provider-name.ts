@@ -1,1 +1,1 @@
-export const emitter = "event_emitter"
+export const emitter = "event_emitter";

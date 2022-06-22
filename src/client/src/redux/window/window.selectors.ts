@@ -1,3 +1,3 @@
-import {RootState} from "../store";
+import { RootState } from "../store";
 
-export const windowSelector = (state:RootState) => state.windowReducer
+export const windowSelector = (state: RootState) => state.windowReducer;

@@ -1,3 +1,1 @@
-
-
-export const query_builder = 'query_builder'
+export const query_builder = "query_builder";

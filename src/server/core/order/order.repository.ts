@@ -1,74 +1,63 @@
-import {Inject, Injectable} from "@nestjs/common";
-import {Repository} from "../../shared/abstract/repository";
-import {Order, orders} from "../entities/Order";
-import {Pool} from "pg";
-import {filter, QueryBuilder} from "../../shared/query_builder/QueryBuilder";
-import {pg_conn} from "../../shared/database/db_provider-name";
-import {query_builder} from "../../shared/query_builder/provider-name";
-import {RepositoryException} from "../../shared/exceptions/repository.exceptions";
-
+import { Inject, Injectable } from "@nestjs/common";
+import { Repository } from "../../shared/abstract/repository";
+import { Order, orders } from "../entities/Order";
+import { Pool } from "pg";
+import { filter, QueryBuilder } from "../../shared/query_builder/QueryBuilder";
+import { pg_conn } from "../../shared/database/db_provider-name";
+import { query_builder } from "../../shared/query_builder/provider-name";
+import { RepositoryException } from "../../shared/exceptions/repository.exceptions";
 
 @Injectable()
+export class OrderRepository implements Repository<Order> {
+   constructor(@Inject(query_builder) private qb: QueryBuilder, @Inject(pg_conn) private db: Pool) {}
 
-export class OrderRepository implements Repository<Order>{
+   async delete(id: number): Promise<void | undefined> {
+      const deleteSql = this.qb.ofTable(orders).delete<Order>({ where: { id } });
+      await this.db.query(deleteSql);
+   }
+   // todo: there it is!
+   async getById(id: number | string): Promise<Order | undefined> {
+      const selectSql = this.qb.ofTable(orders).select<Order>({ where: { id: id as number } });
+      const { rows } = await this.db.query(selectSql);
+      return rows[0] ? (rows[0] as Order) : undefined;
+   }
 
-  constructor(@Inject(query_builder) private qb:QueryBuilder, @Inject(pg_conn) private db:Pool) {
-  }
+   async save(dto: any): Promise<Order> {
+      const [insertSql, insertValues] = this.qb.ofTable(orders).insert<Order>(dto);
+      const { rows } = await this.db.query(insertSql, insertValues);
 
-  async delete(id: number): Promise<void | undefined> {
-    const deleteSql = this.qb.ofTable(orders).delete<Order>({where:{id}})
-    await this.db.query(deleteSql)
-  }
-  // todo: there it is!
-  async getById(id: number | string): Promise<Order | undefined> {
-    const selectSql = this.qb.ofTable(orders).select<Order>({where:{id: id as number}})
-    const {rows} = await this.db.query(selectSql)
-    return rows[0] ? rows[0] as Order : undefined
-  }
+      return rows[0] as unknown as Order;
+   }
 
-  async save(dto: any): Promise<Order> {
-    const [insertSql,insertValues] = this.qb.ofTable(orders).insert<Order>(dto)
-    const {rows}  = await this.db.query(insertSql,insertValues)
+   async update(id: number, updated: Partial<Order | undefined>): Promise<void> {
+      try {
+         const [updateSql, values] = this.qb.ofTable(orders).update<Order>({ where: { id }, set: updated });
+         await this.db.query(updateSql, values);
+         return;
+      } catch (e) {
+         throw new RepositoryException("order repository", e);
+      }
+   }
 
-    return rows[0] as unknown as Order
+   async getAll(): Promise<Order[]> {
+      const selectSql = this.qb.ofTable(orders).select<Order>();
+      const { rows } = await this.db.query(selectSql);
+      return rows;
+   }
 
-  }
+   async get(expression: filter<Order>): Promise<Partial<Order>[]> {
+      const selectSql = this.qb.ofTable(orders).select<Order>(expression);
+      const { rows } = await this.db.query(selectSql);
+      return rows;
+   }
 
-  async update(id: number, updated: Partial<Order | undefined>): Promise<void> {
-    try{
-      const [updateSql,values] = this.qb.ofTable(orders).update<Order>({where:{id},set:updated})
-      await this.db.query(updateSql,values)
-      return
-    }catch(e){
-      throw new RepositoryException("order repository",e)
-    }
+   async customQuery(query: string, values?: any[]): Promise<any[]> {
+      try {
+         const { rows } = await this.db.query(query, values);
 
-
-  }
-
-  async getAll():Promise<Order[]>{
-    const selectSql = this.qb.ofTable(orders).select<Order>()
-    const {rows} = await this.db.query(selectSql)
-    return rows
-  }
-
-  async get(expression: filter<Order>): Promise<Partial<Order>[]> {
-    const selectSql = this.qb.ofTable(orders).select<Order>(expression)
-    const {rows} = await this.db.query(selectSql)
-    return rows
-  }
-
-  async customQuery(query: string,values?: any[]): Promise<any[]> {
-    try {
-      const {rows} = await this.db.query(query,values)
-
-      return rows as Order[]
-    }catch (e) {
-
-      throw new RepositoryException('order repository', e.message)
-    }
-
-  }
-
-
+         return rows as Order[];
+      } catch (e) {
+         throw new RepositoryException("order repository", e.message);
+      }
+   }
 }

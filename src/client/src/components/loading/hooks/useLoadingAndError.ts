@@ -1,6 +1,3 @@
-import {Loading} from "../Loading";
+import { Loading } from "../Loading";
 
-
-export function useLoadingAndError({loading,duration,stopDotsAnimation,dots,stopDots,loadingStep,stepsAnimation,dotsAnimation}: Loading ){
-
-}
+export function useLoadingAndError({ loading, duration, stopDotsAnimation, dots, stopDots, loadingStep, stepsAnimation, dotsAnimation }: Loading) {}

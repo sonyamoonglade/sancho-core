@@ -1,8 +1,11 @@
 @import "src/./variables.scss";
 
 .worker_modal{
+  height: 400px;
+  z-index: 800;
+  padding-bottom: 1.5rem;
+  top: calc((100% - 400px) /2);
 
-  z-index: 800  ;
 
   input::placeholder{
     color: $gray-promo !important;
@@ -13,7 +16,7 @@
     font-size: $font-prelg !important;
   }
   input{
-    font-size: $font-prelg !important;
+    font-size: $font-prelg ;
   }
 }
 
@@ -25,8 +28,6 @@
 .delivery_input.w{
   margin-top: .5rem;
   margin-bottom: 1rem;
-
-
 }
 
 .flat_call_input.w{
@@ -87,8 +88,64 @@
   align-items: center;
   p{
     font-family: "Geometria Bold",sans-serif;
-    font-size: $font-mder;
+    font-size: $font-prelg;
   }
+}
 
+.delivered_at_title.w{
+  font-size: $font-prelg;
+}
+.delivered_at_select_container.w{
+  margin-bottom: 0;
+  margin-top: 0.5rem;
+}
+.delivered_at_select.w{
+  transform: translateY(2.5px);
+}
 
+.exact_time_select{
+  font-size: $font-mder !important;
+  outline: none;
+  border: 1px solid $black-50;
+  border-radius: 7px;
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  padding: 1rem;
+  background-color: $yellow-accent;
+  width: 100%;
+  height: 100%;
+  font-family: "Geometria Medium",sans-serif;
+}
+
+.exact_time_select_wrapper{
+  position: absolute;
+  opacity: 0;
+  transition: all 0.5s ease-in-out;
+  width: 220px;
+  bottom: 100px;
+  left: 700px;
+  box-shadow: 1px 3px 5px $dark-grey;
+  display: flex;
+  align-items: center;
+
+}
+.exact_time_select_wrapper:after{
+  content:"🕛";
+  position: absolute;
+  right: 5px;
+  font-size: 1.5rem;
+  top: 13px;
+}
+.exact_time_select::-webkit-calendar-picker-indicator{
+  position: absolute;
+  right: 5px;
+  z-index: 5000;
+  font-size: 3rem;
+  width: 200px;
+  opacity: 0;
+}
+
+.--exact-active{
+  left: 100%;
+  opacity: 1;
 }

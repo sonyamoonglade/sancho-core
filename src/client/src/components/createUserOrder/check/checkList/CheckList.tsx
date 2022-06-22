@@ -1,35 +1,32 @@
-import React, {FC, useMemo} from 'react';
+import React, { FC, useMemo } from "react";
 import CheckItem from "./CheckItem";
-
-import '../check.styles.scss'
-import {DatabaseCartProduct} from "../../../../common/types";
+import "../check.styles.scss";
+import { DatabaseCartProduct } from "../../../../common/types";
 import DeliveryPunishmentItem from "../DeliveryPunishmentItem";
-import {DELIVERY_PUNISHMENT_THRESHOLD} from "../../../../common/constants";
+import { miscSelector, useAppSelector } from "../../../../redux";
 
 interface checkListProps {
-    products: DatabaseCartProduct[]
-    totalCartPrice: number
-    isDelivered: boolean
-
+   products: DatabaseCartProduct[];
+   totalCartPrice: number;
+   isDelivered: boolean;
 }
 
-const CheckList:FC<checkListProps> = ({products,totalCartPrice,isDelivered}) => {
+const CheckList: FC<checkListProps> = ({ products, totalCartPrice, isDelivered }) => {
+   const { DELIVERY_PUNISHMENT_THRESHOLD } = useAppSelector(miscSelector);
+   console.log(DELIVERY_PUNISHMENT_THRESHOLD);
+   const isPunished = useMemo(() => {
+      console.log(totalCartPrice);
+      return totalCartPrice <= DELIVERY_PUNISHMENT_THRESHOLD;
+   }, [totalCartPrice]);
 
-
-    const isPunished = useMemo(() => {
-        return totalCartPrice <= DELIVERY_PUNISHMENT_THRESHOLD;
-    },[totalCartPrice])
-
-
-    return (
-        <ul>
-            {products.map(p => (
-                <CheckItem product={p} key={p.translate} />
-            ))
-            }
-            {(isPunished && isDelivered) && <DeliveryPunishmentItem />}
-        </ul>
-    );
+   return (
+      <ul>
+         {products.map((p) => (
+            <CheckItem product={p} key={p.translate} />
+         ))}
+         {isPunished && isDelivered && <DeliveryPunishmentItem />}
+      </ul>
+   );
 };
 
 export default CheckList;

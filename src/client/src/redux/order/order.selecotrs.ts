@@ -1,4 +1,3 @@
-import {RootState} from "../store";
+import { RootState } from "../store";
 
-
-export const orderSelector = (state: RootState) => state.orderReducer
+export const orderSelector = (state: RootState) => state.orderReducer;

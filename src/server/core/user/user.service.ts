@@ -1,152 +1,160 @@
-import {Injectable} from "@nestjs/common";
-import {RegisterUserDto} from "./dto/register-user.dto";
-import {UserRepository} from "./user.repository";
-import {SessionService} from "../authentication/session.service";
-import {User} from "../entities/User";
-import {CreateMasterUserDto} from "./dto/create-master-user.dto";
+import { Injectable } from "@nestjs/common";
+import { RegisterUserDto } from "./dto/register-user.dto";
+import { UserRepository } from "./user.repository";
+import { SessionService } from "../authentication/session.service";
+import { User } from "../entities/User";
+import { CreateMasterUserDto } from "./dto/create-master-user.dto";
 
-import * as bcrypt from 'bcrypt'
+import * as bcrypt from "bcrypt";
 
-import {AppRoles, DeliveryDetails} from "../../../common/types";
-import {LoginMasterUserDto} from "./dto/login-master-user.dto";
+import { AppRoles, DeliveryDetails } from "../../../common/types";
+import { LoginMasterUserDto } from "./dto/login-master-user.dto";
 import {
-    InvalidPasswordException,
-    InvalidRoleException,
-    MasterLoginHasAlreadyBeenTaken,
-    PasswordIsTooShortException,
-    PhoneIsAlreadyTakenException,
-    UserDoesNotExistException
+   InvalidPasswordException,
+   InvalidRoleException,
+   MasterLoginHasAlreadyBeenTaken,
+   PasswordIsTooShortException,
+   PhoneIsAlreadyTakenException,
+   UserDoesNotExistException
 } from "../../shared/exceptions/user.exceptions";
-import {UnexpectedServerError} from "../../shared/exceptions/unexpected-errors.exceptions";
-import {APP_ROLES} from "../../types/contants";
-
+import { UnexpectedServerError } from "../../shared/exceptions/unexpected-errors.exceptions";
+import { APP_ROLES } from "../../types/contants";
 
 @Injectable()
 export class UserService {
-  constructor(private sessionService:SessionService,
-              private userRepository:UserRepository) {}
+   constructor(private sessionService: SessionService, private userRepository: UserRepository) {}
 
+   async updateUsersRememberedDeliveryAddress(userId: number, deliveryDetails: string): Promise<void> {
+      const updated: Partial<User> = {
+         remembered_delivery_address: deliveryDetails as unknown as DeliveryDetails
+      };
+      await this.userRepository.update(userId, updated);
+   }
 
+   async loginMaster(b: LoginMasterUserDto): Promise<number> {
+      const { login, password } = b;
 
+      const u = (await this.userRepository.get({ where: { login } }))[0];
+      if (!u) {
+         throw new UserDoesNotExistException(null, login);
+      }
+      const userPassword = u.password;
 
-  async updateUsersRememberedDeliveryAddress(userId: number, deliveryDetails: string): Promise<void>{
-    const updated:Partial<User> = {
-      remembered_delivery_address: deliveryDetails as unknown as DeliveryDetails
-    }
-    await this.userRepository.update(userId, updated)
-  }
+      const compResult = await bcrypt.compare(password, userPassword);
+      if (!compResult) {
+         throw new InvalidPasswordException();
+      }
 
-  async loginMaster(b: LoginMasterUserDto): Promise<number>{
-    const {login, password} = b
+      return u.id;
+   }
 
-    const u = (await this.userRepository.get({where:{login}}))[0]
-    if(!u){
-      throw new UserDoesNotExistException(null,login)
-    }
-    const userPassword = u.password
+   async login(body: { phone_number: string }): Promise<Partial<User> | null> {
+      const { phone_number } = body;
 
-    const compResult = await bcrypt.compare(password, userPassword)
-    if(!compResult) { throw new InvalidPasswordException() }
+      const user: Partial<User> = (
+         await this.userRepository.get({
+            where: { phone_number },
+            returning: ["id"]
+         })
+      )[0];
 
-    return u.id
-  }
+      if (!user) {
+         return null;
+      }
 
-  async login(body:{phone_number:string}):Promise<Partial<User> | null>{
+      return user;
+   }
 
-  const {phone_number} = body
+   async authMe(userId: number): Promise<Partial<User>> {
+      const users = await this.userRepository.get({
+         where: { id: userId },
+         returning: ["phone_number", "role"]
+      });
+      const u = users[0];
+      return u;
+   }
 
-    const user:Partial<User> = (
-      await this.userRepository.get(
-        {
-          where:{phone_number},
-          returning:['id']}
-      ))[0]
+   async createUser(registerUserDto: RegisterUserDto): Promise<User> {
+      const { phone_number } = registerUserDto;
 
-    if(!user) { return null }
+      try {
+         const basicUser: User = {
+            role: AppRoles.user,
+            phone_number
+         };
 
-    return user
-  }
+         const user = await this.userRepository.save(basicUser);
 
-  async authMe(userId: number): Promise<Partial<User>> {
-    const users = await this.userRepository.get({where:{id:userId},returning:["phone_number","role"]})
-    const u = users[0]
-    return u
-  }
+         return user;
+      } catch (e) {
+         const msg: string = e.message;
+         if (msg.includes("duplicate")) throw new PhoneIsAlreadyTakenException(phone_number);
+         throw new UnexpectedServerError();
+      }
+   }
 
-  async createUser(registerUserDto:RegisterUserDto):Promise<User>{
-    const {phone_number} = registerUserDto
+   async createMasterUser(createMasterUserDto: CreateMasterUserDto): Promise<User> {
+      const hashedPass = await bcrypt.hash(createMasterUserDto.password, 10);
+      const { role: inputRole } = createMasterUserDto;
 
-    try {
-        const basicUser:User = {
-          role: AppRoles.user,
-          phone_number
-        }
+      if (!APP_ROLES.includes(inputRole)) {
+         throw new InvalidRoleException(inputRole);
+      }
 
-      const user = await this.userRepository.save(basicUser)
+      if (createMasterUserDto.password.length < 8) {
+         throw new PasswordIsTooShortException();
+      }
 
-      return user
-    }catch (e) {
-      const msg:string = e.message
-      if(msg.includes('duplicate')) throw new PhoneIsAlreadyTakenException(phone_number)
-      throw new UnexpectedServerError()
-    }
+      const user: User = {
+         ...createMasterUserDto,
+         password: hashedPass
+      };
 
-  }
+      try {
+         const masterUser = await this.userRepository.save(user);
+         return masterUser;
+      } catch (e) {
+         throw new MasterLoginHasAlreadyBeenTaken();
+      }
+   }
 
-  async createMasterUser(createMasterUserDto:CreateMasterUserDto):Promise<User>{
+   async getUserId(phone_number: string): Promise<number | undefined> {
+      const user = (
+         await this.userRepository.get({
+            where: { phone_number },
+            returning: ["id"]
+         })
+      )[0];
+      return user === undefined ? undefined : user.id;
+   }
 
-    const hashedPass = await bcrypt.hash(createMasterUserDto.password,10)
-    const {role:inputRole} = createMasterUserDto
+   async getUserRole(user_id: number): Promise<string> {
+      const user = (
+         await this.userRepository.get({
+            where: { id: user_id },
+            returning: ["role"]
+         })
+      )[0];
+      if (!user) throw new UserDoesNotExistException(user_id);
 
-    if(!APP_ROLES.includes(inputRole)){
-      throw new InvalidRoleException(inputRole)
-    }
+      return user.role;
+   }
 
-    if(createMasterUserDto.password.length < 8) {
-      throw new PasswordIsTooShortException()
-    }
+   async getUserPhone(user_id: number): Promise<string> {
+      const user = (
+         await this.userRepository.get({
+            where: { id: user_id },
+            returning: ["phone_number"]
+         })
+      )[0];
 
-    const user:User = {
-      ...createMasterUserDto,
-      password: hashedPass
-    }
+      if (!user) throw new UserDoesNotExistException(user_id);
 
-    try {
-      const masterUser = await this.userRepository.save(user)
-      return masterUser
-    }catch (e) {
-      throw new MasterLoginHasAlreadyBeenTaken()
-    }
+      return user.phone_number;
+   }
 
-  }
-
-  async getUserId(phone_number:string):Promise<number | undefined>{
-    const user = (await this.userRepository.get({where:{phone_number},returning:['id']}))[0]
-    return user === undefined ? undefined : user.id
-  }
-
-
-
-  async getUserRole(user_id: number):Promise<string>{
-
-    const user = (await this.userRepository.get({where:{id:user_id},returning:['role']}))[0]
-    if(!user) throw new UserDoesNotExistException(user_id)
-
-    return user.role
-
-  }
-
-  async getUserPhone(user_id:number):Promise<string>{
-    const user = (await this.userRepository.get({where:{id:user_id},returning:['phone_number']}))[0]
-
-    if(!user) throw new UserDoesNotExistException(user_id)
-
-    return user.phone_number
-  }
-
-  async getMasterLogin(user_id: number):Promise<string>{
-    const user = await this.userRepository.getById(user_id)
-    return user?.login
-  }
-
+   async getMasterLogin(user_id: number): Promise<string> {
+      const user = await this.userRepository.getById(user_id);
+      return user?.login;
+   }
 }

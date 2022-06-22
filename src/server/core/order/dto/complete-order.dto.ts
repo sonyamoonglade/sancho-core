@@ -1,8 +1,7 @@
-import {IsDefined, IsNumber} from "class-validator";
+import { IsDefined, IsNumber } from "class-validator";
 
 export class CompleteOrderDto {
-
-    @IsDefined()
-    @IsNumber()
-    order_id: number
+   @IsDefined()
+   @IsNumber()
+   order_id: number;
 }

@@ -1,96 +1,92 @@
-
 export enum AppRoles {
-  worker = 'worker',
-  master = 'master',
-  user = 'user'
+   worker = "worker",
+   master = "master",
+   user = "user"
 }
 export enum OrderStatus {
-  waiting_for_verification = 'waiting_for_verification',
-  verified = 'verified',
-  completed = 'completed',
-  cancelled = 'cancelled'
+   waiting_for_verification = "waiting_for_verification",
+   verified = "verified",
+   completed = "completed",
+   cancelled = "cancelled"
 }
 export interface DeliveryDetails {
-  address: string
-  entrance_number: number
-  floor: number
-  flat_call?: number
+   address: string;
+   entrance_number: number;
+   floor: number;
+   flat_call?: number;
 }
 
 export interface Features {
-  weight: number
-  energy_value?: number
-  volume?: number
-  nutrients?: nutrients
+   weight: number;
+   energy_value?: number;
+   volume?: number;
+   nutrients?: nutrients;
 }
 
 export type nutrients = {
-  carbs: number
-  fats: number
-  proteins: number
-}
-
+   carbs: number;
+   fats: number;
+   proteins: number;
+};
 
 export type Product = {
-  id: number
-  category: Categories
-  features: Features
-  name: string
-  translate: string
-  currency: string
-  price: number
-  description: string
-}
+   id: number;
+   category: Categories;
+   features: Features;
+   name: string;
+   translate: string;
+   currency: string;
+   price: number;
+   description: string;
+};
 
 export type LocalStorageCartProduct = {
-  id: number
-  translate: string
-  price: number
-}
+   id: number;
+   translate: string;
+   price: number;
+};
 
 export type DatabaseCartProduct = {
-  id: number
-  category: Categories
-  quantity: number
-  translate: string
-  price: number
-}
+   id: number;
+   category: Categories;
+   quantity: number;
+   translate: string;
+   price: number;
+};
 
 export type Promotion = {
-  id: number
-  title: string
-  touched_title: string
-  touched_text: string
-}
+   id: number;
+   title: string;
+   touched_title: string;
+   touched_text: string;
+};
 
 export type ResponseUserOrder = {
-  id: number
-  cart: DatabaseCartProduct[]
-  created_at: Date
-  status: OrderStatus
-  is_delivered: boolean
-  delivery_details: null | DeliveryDetails
-  total_cart_price: number
-}
+   id: number;
+   cart: DatabaseCartProduct[];
+   created_at: Date;
+   status: OrderStatus;
+   is_delivered: boolean;
+   delivery_details: null | DeliveryDetails;
+   total_cart_price: number;
+   is_delivered_asap: boolean;
+   delivered_at: Date;
+};
 
-export interface VerifiedQueueOrder extends ResponseUserOrder{
-  phone_number: string
-  verified_fullname: string
+export interface VerifiedQueueOrder extends ResponseUserOrder {
+   phone_number: string;
+   verified_fullname: string;
 }
 export interface WaitingQueueOrder extends ResponseUserOrder {
-  phone_number: string
+   phone_number: string;
 }
-
 
 export type OrderQueue = {
-
-  waiting: WaitingQueueOrder[]
-  verified: VerifiedQueueOrder[]
-
-}
-
+   waiting: WaitingQueueOrder[];
+   verified: VerifiedQueueOrder[];
+};
 
 export enum Categories {
-  PIZZA = "Пицца",
-  DRINKS = "Напитки",
+   PIZZA = "Пицца",
+   DRINKS = "Напитки"
 }

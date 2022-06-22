@@ -1,2 +1,1 @@
-
-export const pg_conn = 'pg-conn'
+export const pg_conn = "pg-conn";
