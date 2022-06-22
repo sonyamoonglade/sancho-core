@@ -19,10 +19,10 @@ export function useCancelOrder(order: ResponseUserOrder) {
 
    let screenWidthX: number;
    let cancelBreakpoint: number;
-   function animateBin() {
+   function animateIcon() {
       setIsAnimating(true);
       if (cancelIconAnimationRef.current !== null) {
-         cancelIconAnimationRef.current.style.transform = "translateX(-25%)";
+         cancelIconAnimationRef.current.style.transform = "translateX(-23%)";
       }
       setIsAnimating(false);
    }
@@ -34,7 +34,7 @@ export function useCancelOrder(order: ResponseUserOrder) {
          screenWidthX = animationRef.current.getBoundingClientRect().width;
       }
       if (!cancelBreakpoint) {
-         cancelBreakpoint = screenWidthX * 0.4;
+         cancelBreakpoint = screenWidthX * 0.2;
       }
       const clx = e.touches[0].clientX;
 
@@ -56,13 +56,13 @@ export function useCancelOrder(order: ResponseUserOrder) {
          });
 
          if (!isAnimating) {
-            animateBin();
+            animateIcon();
          }
          return;
       }
       if (!isCanceling) {
          if (cancelIconAnimationRef.current !== null) {
-            cancelIconAnimationRef.current.style.transform = "translateX(0%)";
+            cancelIconAnimationRef.current.style.transform = "translateX(0%)"; // return to default state
          }
       }
 
@@ -71,12 +71,12 @@ export function useCancelOrder(order: ResponseUserOrder) {
       });
       setX((x) => {
          if (cx.prev > cx.curr && x > 0) {
-            return x - 2;
+            return x - 5; // slide backwards
          }
          if (cx.prev > cx.curr) {
             return x;
          }
-         return x + 2;
+         return x + 5; // slide forwards
       });
    }
    function onEnd() {

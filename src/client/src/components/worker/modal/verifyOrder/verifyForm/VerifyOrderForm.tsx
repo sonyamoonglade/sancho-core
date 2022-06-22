@@ -31,7 +31,8 @@ const VerifyOrderForm: FC<submitOrderFormProps> = ({
    const deliveryTimeOption = useMemo(() => {
       return formValues.is_delivered_asap.value ? opt2 : opt1;
    }, [formValues, opt1, opt2]);
-   const [selectV, setSelectV] = useState<string>(opt1);
+
+   const [selectV, setSelectV] = useState<string>(deliveryTimeOption);
 
    useEffect(() => {
       setSelectV(deliveryTimeOption);

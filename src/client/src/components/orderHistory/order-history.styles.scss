@@ -162,16 +162,16 @@
   background-color: $red;
 
   span{
+    width: 100%;
     display: flex;
     align-items: center;
-    width: 100%;
-    transition: all .7s ease-in-out;
+    transition: all .25s ease-in-out;
   }
 }
 .delete_icon{
   transform: translateY(-3px);
   margin-left: 30%;
-  transition: all 0.2s ease-in;
+  transition: all 0.05s ease-in;
 }
 
 .phone_number{

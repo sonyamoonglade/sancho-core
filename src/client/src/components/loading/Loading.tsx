@@ -37,6 +37,7 @@ const Loading: FC<loadingProps> = ({ duration }) => {
       dispatch(windowActions.toggleLoading(false));
       dispatch(windowActions.closeAll());
       dispatch(windowActions.loadingSuccess());
+      dispatch(windowActions.toggleOrderHistory());
       setDefaults();
    }
 

@@ -216,10 +216,9 @@ export class OrderService {
    }
 
    public async userOrderHistory(userId: number): Promise<ResponseUserOrder[]> {
-      const sql = `SELECT * FROM ${orders} o WHERE user_id=${userId} ORDER BY o.created_at ASC LIMIT 15`;
+      const sql = `SELECT * FROM ${orders} o WHERE user_id=${userId} ORDER BY o.created_at DESC LIMIT 15`;
 
       const userOrders: Order[] = await this.orderRepository.customQuery(sql);
-      console.log(userOrders);
       let mappedToResponse: ResponseUserOrder[];
       mappedToResponse = userOrders.map((o: Order) => {
          const { total_cart_price, id, created_at, status, is_delivered, delivery_details, cart, is_delivered_asap, delivered_at } = o;
@@ -236,7 +235,6 @@ export class OrderService {
          };
          return rso;
       });
-      console.log(mappedToResponse);
       return mappedToResponse;
    }
 

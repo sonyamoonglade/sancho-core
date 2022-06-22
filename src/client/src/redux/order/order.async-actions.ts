@@ -9,15 +9,11 @@ type userOrderHistoryResponse = {
 };
 
 export const getOrderHistory = (client: AxiosInstance, to: number) => async (dispatch: AppDispatch) => {
-   function sortFuncByStatus(a: ResponseUserOrder, b: ResponseUserOrder) {
-      return b.status.length - a.status.length;
-   }
    try {
       dispatch(orderActions.setIsFetching(true));
       const { data } = await client.get<userOrderHistoryResponse>(`/order/userOrderHistory?to=${to.toString()}`);
 
-      const sortedOrders = data.orders.sort(sortFuncByStatus);
-      dispatch(orderActions.addManyAndSetHasMore({ orders: sortedOrders }));
+      dispatch(orderActions.addManyAndSetHasMore(data));
       dispatch(orderActions.setIsFetching(false));
    } catch (e: any) {
       dispatch(orderActions.setIsFetching(false));

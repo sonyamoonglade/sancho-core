@@ -1,12 +1,11 @@
 import React, { FC, useEffect } from "react";
-import { ResponseUserOrder } from "../../common/types";
+import { OrderStatus, ResponseUserOrder } from "../../common/types";
 import { currency } from "../../common/constants";
 import { BiShoppingBag } from "react-icons/bi";
 import { useCorrectOrderData } from "./hooks/useCorrectOrderData";
 import { CgCloseO } from "react-icons/cg";
 import { useCancelOrder } from "../../hooks/useCancelOrder";
-import { orderSelector, useAppSelector, windowSelector } from "../../redux";
-import { AppResponsiveState } from "../../types/types";
+import { orderSelector, useAppSelector } from "../../redux";
 
 interface orderHistoryItemProps {
    order: ResponseUserOrder;
@@ -15,7 +14,6 @@ interface orderHistoryItemProps {
 }
 
 const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extraData }) => {
-   console.log(order);
    const { orderHistory } = useAppSelector(orderSelector);
    const { cid, cstatus, cdate, cddate, correctData, orderItemCorrespondingClassName } = useCorrectOrderData(order);
 
@@ -67,14 +65,18 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
                   <div className="second_row_left">
                      <p className="creation_pre">Доставка:</p>
                      <p className="creation_date delivery_date">
-                        {order.is_delivered && order.is_delivered_asap === false
+                        {order.is_delivered && !order.is_delivered_asap && order.status === OrderStatus.waiting_for_verification
+                           ? `скажу по телефону`
+                           : order.status === OrderStatus.cancelled
+                           ? "заказ отменен"
+                           : order.is_delivered && !order.is_delivered_asap
                            ? `к ${cddate}`
                            : order.is_delivered_asap && order.is_delivered
                            ? "как можно скорее"
                            : "самовывоз"}
                      </p>
                   </div>
-                  <div className="green_dot">&nbsp;</div>
+                  {order.status !== OrderStatus.cancelled && <div className="green_dot">&nbsp;</div>}
                   <BiShoppingBag size={25} />
                </div>
             </div>
