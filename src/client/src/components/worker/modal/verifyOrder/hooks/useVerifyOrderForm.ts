@@ -120,11 +120,9 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
       }
       const phoneNumber = formValues.phone_number_w.value;
       const order = orderQueue.waiting.find((o) => o.phone_number === `+7${phoneNumber}`);
-      console.log(order);
       if (order?.is_delivered) {
          const { address, flat_call, entrance_number, floor } = order?.delivery_details;
          const { is_delivered_asap } = order;
-
          setFormValues((formState: WorkerVerifyOrderFormState) => {
             return {
                ...formState,
@@ -154,7 +152,6 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
                }
             };
          });
-         console.log(is_delivered_asap);
          return;
       }
 

@@ -1,0 +1,10 @@
+
+
+app:
+  port: "5000"
+
+db:
+  name: "wgkqvvpe"
+  user: "wgkqvvpe"
+  port: "5432"
+  host: "abul.db.elephantsql.com"

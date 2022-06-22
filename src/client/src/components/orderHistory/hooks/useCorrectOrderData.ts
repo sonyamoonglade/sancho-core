@@ -4,9 +4,10 @@ import { DATE_FORMAT_TEMPLATE, OrderStatusTranslate } from "../../../types/types
 import dayjs from "dayjs";
 
 export function useCorrectOrderData(order: ResponseUserOrder) {
-   const [cid, setCid] = useState("");
-   const [cstatus, setCStatus] = useState("");
-   const [cdate, setCDate] = useState("");
+   const [cid, setCid] = useState(""); // id
+   const [cstatus, setCStatus] = useState(""); // status
+   const [cdate, setCDate] = useState(""); // creation date
+   const [cddate, setCDDate] = useState(""); // delivery date
 
    const orderItemCorrespondingClassName = useMemo(() => {
       return order.status === OrderStatus.waiting_for_verification
@@ -47,12 +48,23 @@ export function useCorrectOrderData(order: ResponseUserOrder) {
    }
    function parseCreationTime() {
       const createdAt = dayjs(order.created_at);
-      const formatted = createdAt.format(DATE_FORMAT_TEMPLATE).split(" ");
+      const deliveredAt = dayjs(order.delivered_at);
+
+      const formattedc = createdAt.format(DATE_FORMAT_TEMPLATE).split(" ");
+      const formattedd = deliveredAt.format(DATE_FORMAT_TEMPLATE).split(" ");
+
       let indexOfMonth = 1;
-      const currMonth = formatted[indexOfMonth];
-      formatted[indexOfMonth] = monthTranslations.get(currMonth); // getting translation
-      const output = formatted.join(" ");
-      setCDate(output);
+      const currMonthc = formattedc[indexOfMonth];
+      const currMonthd = formattedd[indexOfMonth];
+
+      formattedc[indexOfMonth] = monthTranslations.get(currMonthc); // getting translation
+      formattedd[indexOfMonth] = monthTranslations.get(currMonthd); // getting translation
+
+      const outputc = formattedc.join(" ");
+      setCDate(outputc);
+
+      const outputd = formattedd.join(" ");
+      setCDDate(outputd);
    }
    function setupMonthTranslations() {
       const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -71,5 +83,5 @@ export function useCorrectOrderData(order: ResponseUserOrder) {
       parseCreationTime();
    }
 
-   return { correctData, cdate, cstatus, cid, orderItemCorrespondingClassName };
+   return { correctData, cdate, cddate, cstatus, cid, orderItemCorrespondingClassName };
 }

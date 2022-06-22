@@ -3,13 +3,18 @@ import { AppModule } from "./app.module";
 import * as cookieParser from "cookie-parser";
 import * as path from "path";
 import { ValidationPipe } from "@nestjs/common";
+import { getConfig } from "./config/config";
 
 require("dotenv").config({
    path: path.resolve(__dirname, ".env")
 });
 
 async function bootstrap() {
-   const app = await NestFactory.create(AppModule);
+   const config = getConfig(process.env.NODE_ENV);
+   console.log("config has initialized");
+   const app = await NestFactory.create(AppModule, {
+      logger: ["error"]
+   });
 
    app.setGlobalPrefix("/api/v1");
 
@@ -21,9 +26,9 @@ async function bootstrap() {
    });
    app.useGlobalPipes(new ValidationPipe());
 
-   const APP_PORT = Number(process.env.PORT) || 5001;
+   const APP_PORT = Number(config.app.port);
    await app.listen(APP_PORT, () => {
-      console.log("Application has started on port", APP_PORT);
+      console.log(`application is listening :${APP_PORT}`);
    });
 }
 bootstrap();

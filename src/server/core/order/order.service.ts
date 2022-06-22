@@ -112,13 +112,15 @@ export class OrderService {
          if (!has) {
             throw new Error(`verification ${phone_number}`);
          }
-         const { verified_fullname, delivery_details, is_delivered, cart } = verifyOrderDto;
+         const { verified_fullname, delivery_details, is_delivered, cart, delivered_at, is_delivered_asap } = verifyOrderDto;
          const now = new Date(Date.now());
          const updated: Partial<Order> = {
             verified_fullname,
             delivery_details: delivery_details !== undefined ? delivery_details : null,
             status: OrderStatus.verified,
-            verified_at: now
+            verified_at: now,
+            delivered_at,
+            is_delivered_asap
          };
          if (verifyOrderDto.is_delivered !== undefined) {
             updated.is_delivered = is_delivered;
@@ -214,10 +216,10 @@ export class OrderService {
    }
 
    public async userOrderHistory(userId: number): Promise<ResponseUserOrder[]> {
-      const sql = `SELECT * FROM ${orders} WHERE user_id=${userId} ORDER BY orders.created_at DESC, orders.status DESC LIMIT 15`;
+      const sql = `SELECT * FROM ${orders} o WHERE user_id=${userId} ORDER BY o.created_at ASC LIMIT 15`;
 
       const userOrders: Order[] = await this.orderRepository.customQuery(sql);
-
+      console.log(userOrders);
       let mappedToResponse: ResponseUserOrder[];
       mappedToResponse = userOrders.map((o: Order) => {
          const { total_cart_price, id, created_at, status, is_delivered, delivery_details, cart, is_delivered_asap, delivered_at } = o;
@@ -234,7 +236,7 @@ export class OrderService {
          };
          return rso;
       });
-
+      console.log(mappedToResponse);
       return mappedToResponse;
    }
 

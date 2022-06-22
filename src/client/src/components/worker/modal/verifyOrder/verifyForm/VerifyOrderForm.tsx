@@ -30,8 +30,21 @@ const VerifyOrderForm: FC<submitOrderFormProps> = ({
    const [opt1, opt2] = ["выбрать точное время", "в ближайшее время"];
    const deliveryTimeOption = useMemo(() => {
       return formValues.is_delivered_asap.value ? opt2 : opt1;
-   }, [formValues.is_delivered_asap.value, opt1, opt2]);
-   const [selectV, setSelectV] = useState<string>(deliveryTimeOption);
+   }, [formValues, opt1, opt2]);
+   const [selectV, setSelectV] = useState<string>(opt1);
+
+   useEffect(() => {
+      setSelectV(deliveryTimeOption);
+      if (formValues.is_delivered_asap.value) {
+         setFormValues((state: WorkerVerifyOrderFormState) => {
+            const obj = state.delivered_at;
+            obj.value = "";
+            obj.isValid = true;
+            return { ...state, delivered_at: obj };
+         });
+      }
+   }, [formValues.is_delivered_asap.value]);
+   console.log(formValues);
 
    function handleSelectChange(event: any) {
       const v = event.target.value;
@@ -73,8 +86,9 @@ const VerifyOrderForm: FC<submitOrderFormProps> = ({
          obj.value = v;
          return { ...state, delivered_at: obj };
       });
-      if (v.length === minLengthValidation(v, 16)) {
+      if (minLengthValidation(v, 16)) {
          setFormValues((state: WorkerVerifyOrderFormState) => {
+            console.log("here");
             const obj = state.delivered_at;
             obj.isValid = true;
             return { ...state, delivered_at: obj };

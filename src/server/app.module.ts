@@ -19,9 +19,9 @@ import { MiscModule } from "./core/miscellaneous/misc.module";
 import { MiscController } from "./core/miscellaneous/misc.controller";
 
 @Module({
-   imports: [UserModule, DbModule, QueryBuilderModule, ProductModule, OrderModule, CookieModule, SessionModule, MiscModule],
    controllers: [AppController],
-   providers: [SessionMiddleware, SessionService, SessionRepository, OrderService, OrderRepository]
+   providers: [SessionMiddleware, SessionService, SessionRepository, OrderService, OrderRepository],
+   imports: [UserModule, DbModule, QueryBuilderModule, ProductModule, OrderModule, CookieModule, SessionModule, MiscModule]
 })
 export class AppModule implements NestModule {
    configure(consumer: MiddlewareConsumer): any {

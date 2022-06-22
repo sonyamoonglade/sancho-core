@@ -52,9 +52,10 @@ const VerifyOrderModal = () => {
    function presetVirtualCartItems(phoneNumber: string) {
       if (formValues.phone_number_w.isValid) {
          const order = findWaitingOrderByPhoneNumber(phoneNumber);
-         const parsedCart = order.cart.map((item: any) => {
-            return JSON.parse(item as unknown as string);
-         });
+         const parsedCart =
+            order?.cart.map((item: any) => {
+               return JSON.parse(item as unknown as string);
+            }) || [];
          dispatch(workerActions.setVirtualCart(parsedCart));
          virtualCart.setVirtualCart(parsedCart);
       }

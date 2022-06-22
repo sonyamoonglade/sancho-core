@@ -13,9 +13,7 @@ interface checkListProps {
 
 const CheckList: FC<checkListProps> = ({ products, totalCartPrice, isDelivered }) => {
    const { DELIVERY_PUNISHMENT_THRESHOLD } = useAppSelector(miscSelector);
-   console.log(DELIVERY_PUNISHMENT_THRESHOLD);
    const isPunished = useMemo(() => {
-      console.log(totalCartPrice);
       return totalCartPrice <= DELIVERY_PUNISHMENT_THRESHOLD;
    }, [totalCartPrice]);
 
