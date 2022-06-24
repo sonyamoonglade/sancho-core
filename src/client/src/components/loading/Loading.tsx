@@ -113,4 +113,4 @@ const Loading: FC<loadingProps> = ({ duration }) => {
    );
 };
 
-export default React.memo(Loading);
+export default Loading;

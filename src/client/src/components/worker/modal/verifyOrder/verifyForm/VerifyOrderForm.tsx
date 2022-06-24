@@ -3,6 +3,7 @@ import FormInput from "../../../../formInput/FormInput";
 import { useAppSelector, windowSelector } from "../../../../../redux";
 import { useFormValidations } from "../../../../../hooks/useFormValidations";
 import { WorkerVerifyOrderFormState } from "../hooks/useVerifyOrderForm";
+import DeliveryTimeSelect from "../../deliveryTimeSelect/DeliveryTimeSelect";
 
 interface submitOrderFormProps {
    formValues: WorkerVerifyOrderFormState;
@@ -45,57 +46,6 @@ const VerifyOrderForm: FC<submitOrderFormProps> = ({
          });
       }
    }, [formValues.is_delivered_asap.value]);
-   console.log(formValues);
-
-   function handleSelectChange(event: any) {
-      const v = event.target.value;
-      switch (true) {
-         case v === opt1:
-            setSelectV(opt1);
-            setFormValues((state: WorkerVerifyOrderFormState) => {
-               const obj = state.is_delivered_asap;
-               obj.value = false;
-               return { ...state, is_delivered_asap: obj };
-            });
-            setFormValues((state: WorkerVerifyOrderFormState) => {
-               const obj = state.delivered_at;
-               obj.value = "";
-               obj.isValid = false;
-               return { ...state, delivered_at: obj };
-            });
-            break;
-         case v === opt2:
-            setSelectV(opt2);
-            setFormValues((state: WorkerVerifyOrderFormState) => {
-               const obj = state.is_delivered_asap;
-               obj.value = true;
-               return { ...state, is_delivered_asap: obj };
-            });
-            setFormValues((state: WorkerVerifyOrderFormState) => {
-               const obj = state.delivered_at;
-               obj.value = "";
-               obj.isValid = true;
-               return { ...state, delivered_at: obj };
-            });
-            break;
-      }
-   }
-   function handleTimeChange(event: any) {
-      const v = event.target.value;
-      setFormValues((state: WorkerVerifyOrderFormState) => {
-         const obj = state.delivered_at;
-         obj.value = v;
-         return { ...state, delivered_at: obj };
-      });
-      if (minLengthValidation(v, 16)) {
-         setFormValues((state: WorkerVerifyOrderFormState) => {
-            console.log("here");
-            const obj = state.delivered_at;
-            obj.isValid = true;
-            return { ...state, delivered_at: obj };
-         });
-      }
-   }
 
    useEffect(() => {
       if (!worker.verifyOrder) {
@@ -217,24 +167,16 @@ const VerifyOrderForm: FC<submitOrderFormProps> = ({
                   />
                </div>
             </>
-            <div className={`delivered_at_select_container w ${isDeliveryFormDisabledExpr}`}>
-               <p className="delivered_at_title w">Время доставки</p>
-               <select value={selectV} onChange={handleSelectChange} className="delivered_at_select w">
-                  <option value={opt1}>{opt1}</option>
-                  <option value={opt2}>{opt2}</option>
-               </select>
-            </div>
-            <div
-               className={
-                  selectV === opt1 && formValues.is_delivered_w.value ? `exact_time_select_wrapper --exact-active` : `exact_time_select_wrapper`
-               }>
-               <input
-                  value={formValues.delivered_at.value}
-                  onChange={handleTimeChange}
-                  className={`${isDeliveryFormDisabledExpr}exact_time_select`}
-                  type="datetime-local"
-               />
-            </div>
+            <DeliveryTimeSelect
+               isDeliveryFormDisabledExpr={isDeliveryFormDisabledExpr}
+               opt1={opt1}
+               opt2={opt2}
+               selectV={selectV}
+               prefix={"_w"}
+               setSelectV={setSelectV}
+               formValues={formValues}
+               setFormValues={setFormValues}
+            />
          </div>
       </>
    );

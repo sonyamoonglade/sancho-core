@@ -1,6 +1,6 @@
 import { Order } from "../../entities/Order";
 import { DatabaseCartProduct, DeliveryDetails } from "../../../../common/types";
-import { IsBoolean, IsDate, IsDefined, IsString } from "class-validator";
+import { IsBoolean, IsDate, IsDateString, IsDefined, IsString } from "class-validator";
 
 export class CreateUserOrderDto implements Partial<Order> {
    @IsDefined()
@@ -34,7 +34,7 @@ export class CreateMasterOrderDto implements Partial<Order> {
    is_delivered_asap: boolean;
 
    @IsDefined()
-   @IsDate()
+   @IsDateString()
    delivered_at: Date;
 
    delivery_details?: DeliveryDetails;

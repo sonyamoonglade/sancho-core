@@ -13,6 +13,14 @@ export interface WorkerCreateOrderFormState {
       value: boolean;
       isValid: boolean;
    };
+   delivered_at: {
+      value: "";
+      isValid: boolean;
+   };
+   is_delivered_asap: {
+      value: boolean;
+      isValid: boolean;
+   };
 }
 
 const formDefaults: WorkerCreateOrderFormState = {
@@ -41,6 +49,14 @@ const formDefaults: WorkerCreateOrderFormState = {
       isValid: false
    },
    is_delivered_c: {
+      value: false,
+      isValid: true
+   },
+   delivered_at: {
+      value: "",
+      isValid: false
+   },
+   is_delivered_asap: {
       value: false,
       isValid: true
    }
@@ -77,7 +93,9 @@ export function useCreateOrderForm() {
          },
          is_delivered: formValues.is_delivered_c.value,
          phone_number: `+7${formValues.phone_number_c.value}`,
-         verified_fullname: formValues.verified_fullname_c.value
+         verified_fullname: formValues.verified_fullname_c.value,
+         delivered_at: new Date(formValues.delivered_at.value),
+         is_delivered_asap: formValues.is_delivered_asap.value
       };
       return result;
    }

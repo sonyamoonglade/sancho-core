@@ -62,7 +62,7 @@ export class SessionService {
          const session = await this.sessionRepository.get({
             where: { user_id }
          });
-         return session[0].session_id;
+         return session[0]?.session_id;
       } catch (e) {
          throw new UnexpectedServerError();
       }

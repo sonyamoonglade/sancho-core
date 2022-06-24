@@ -65,6 +65,7 @@ export class OrderController {
          }
          return res.status(200).end();
       } catch (e) {
+         console.log(e);
          throw e;
       }
    }
@@ -93,6 +94,7 @@ export class OrderController {
          });
          return this.orderService.orderQueue(res);
       } catch (e) {
+         console.log(e);
          throw e;
       }
    }
@@ -103,6 +105,7 @@ export class OrderController {
          const initialQueue = await this.orderService.initialQueue();
          return res.status(200).send({ queue: initialQueue });
       } catch (e) {
+         console.log(e);
          throw e;
       }
    }
@@ -114,6 +117,7 @@ export class OrderController {
          const orderStatus = await this.orderService.completeOrder(dto);
          return res.status(200).send({ status: orderStatus as OrderStatus.completed });
       } catch (e) {
+         console.log(e);
          throw e;
       }
    }
