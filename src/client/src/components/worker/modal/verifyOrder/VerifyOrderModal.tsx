@@ -76,11 +76,12 @@ const VerifyOrderModal = () => {
          virtualCart.setVirtualCart([]);
       }
 
-      if (worker.verifyOrder && drag.item.id !== null) {
+      if (worker.verifyOrder && drag.item && drag.item.id !== 0) {
+         const phoneNumber = drag.item.phoneNumber.substring(2, drag.item.phoneNumber.length);
          setFormValues((state: WorkerVerifyOrderFormState) => {
             const obj = state.phone_number_w;
-            obj.value = drag.item.phoneNumber;
-            obj.isValid = minLengthValidation(drag.item.phoneNumber, 10);
+            obj.value = phoneNumber;
+            obj.isValid = minLengthValidation(phoneNumber, 10);
             return { ...state, phone_number_w: obj };
          });
          presetDeliveryDetails();

@@ -4,13 +4,7 @@ import PromotionList from "../promotion/PromotionList";
 import "../layout/layout.styles.scss";
 
 import "./header.styles.scss";
-import {
-   useAppDispatch,
-   useAppSelector,
-   userSelector,
-   windowSelector,
-   windowSlice,
-} from "../../../redux";
+import { useAppDispatch, useAppSelector, userSelector, windowSelector, windowSlice } from "../../../redux";
 import MobileNavigation from "../navigation/mobile/MobileNavigation";
 import Cart from "../../cart/cart/Cart";
 import Order from "../../createUserOrder/Order";
@@ -30,24 +24,21 @@ const mockPromotions: Promotion[] = [
    {
       id: 1,
       title: "Скидка 10% на доставку с понедельника по четверг",
-      touched_text:
-         "На все заказы, оформленные с понедельника по четверг с 11:00 до 16:00.",
-      touched_title: "Скидка 10% на доставку",
+      touched_text: "На все заказы, оформленные с понедельника по четверг с 11:00 до 16:00.",
+      touched_title: "Скидка 10% на доставку"
    },
    {
       id: 2,
       title: "Акция!  2 пиццы по цене 3!",
-      touched_text:
-         "Акция действует с 25 мая по 31 июля. Успей получить халяву!",
-      touched_title: "Две по цене трех",
+      touched_text: "Акция действует с 25 мая по 31 июля. Успей получить халяву!",
+      touched_title: "Две по цене трех"
    },
    {
       id: 3,
       title: "Акция!  2 пиццы по цене 3!",
-      touched_text:
-         "Акция действует с 25 мая по 31 июля. Успей получить халяву!",
-      touched_title: "Две по цене трех",
-   },
+      touched_text: "Акция действует с 25 мая по 31 июля. Успей получить халяву!",
+      touched_title: "Две по цене трех"
+   }
 ];
 const windowActions = windowSlice.actions;
 
@@ -84,24 +75,18 @@ const Header: FC = () => {
 
             {appResponsiveState === AppResponsiveState.mobileOrTablet ? (
                navigation ? (
-                  <RiCloseCircleLine
-                     onClick={toggleMenu}
-                     size={30}
-                     className="menu_close_icon"
-                  />
+                  <RiCloseCircleLine onClick={toggleMenu} size={30} className="menu_close_icon" />
                ) : (
                   <CgMenuRound onClick={toggleMenu} size={30} />
                )
             ) : null}
 
-            {appResponsiveState === AppResponsiveState.computer &&
-            !isMasterAuthenticated ? (
+            {appResponsiveState === AppResponsiveState.computer && !isMasterAuthenticated ? (
                <>
                   <OtherNavigation />
                   <DesktopHeaderRight />
                </>
-            ) : appResponsiveState === AppResponsiveState.computer &&
-              isMasterAuthenticated ? (
+            ) : appResponsiveState === AppResponsiveState.computer && isMasterAuthenticated ? (
                <>
                   <>
                      <WorkerNavigation />
@@ -121,9 +106,7 @@ const Header: FC = () => {
                <OrderHistory />
                <MasterLogin />
                <Loading duration={4000} />
-               {appResponsiveState === AppResponsiveState.mobileOrTablet && (
-                  <MobileNavigation />
-               )}
+               {appResponsiveState === AppResponsiveState.mobileOrTablet && <MobileNavigation />}
             </>
          )}
       </header>

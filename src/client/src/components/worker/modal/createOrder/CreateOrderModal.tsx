@@ -42,7 +42,6 @@ const CreateOrderModal = () => {
          return;
       }
       body.cart = virtualCartState.items;
-      console.log(body, "b");
       await createMasterOrder(body);
       dispatch(windowActions.toggleCreateOrder());
       dispatch(workerActions.setVirtualCart([]));

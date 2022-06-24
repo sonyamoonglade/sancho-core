@@ -2,7 +2,7 @@ import { Pool, PoolClient } from "pg";
 require("dotenv").config();
 
 export class DbInstanceProvider {
-   private readonly pool: Pool | PoolClient;
+   public pool: Pool | PoolClient;
 
    private retries: number = 5;
    private retryDelay: number = 500;

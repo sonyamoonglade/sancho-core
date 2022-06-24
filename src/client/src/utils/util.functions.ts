@@ -1,6 +1,16 @@
 import { DatabaseCartProduct, OrderQueue, VerifiedQueueOrder, WaitingQueueOrder } from "../common/types";
+import { Droppable } from "../components/orderHistory/OrderHistoryItem";
 
 export const utils = {
+   sixifyOrderId: function (item: Droppable) {
+      let currentId: string[] = item.id.toString().split("");
+      for (let i = 0; i < 6; i++) {
+         if (currentId.length !== 6) {
+            currentId.unshift("0");
+         }
+      }
+      return currentId.join("");
+   },
    getOrderTotalPrice: function (vcart: DatabaseCartProduct[]) {
       return vcart.reduce((a, c) => {
          a += c.price * c.quantity;

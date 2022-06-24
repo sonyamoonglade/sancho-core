@@ -69,6 +69,7 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
    const dispatch = useAppDispatch();
 
    function handleDrop(dropzone: string, item: Droppable) {
+      dispatch(windowActions.setDropItem(item));
       switch (dropzone) {
          case DropZones.CANCEL:
             if (item.status === OrderStatus.completed || item.status === OrderStatus.cancelled) {
@@ -76,21 +77,22 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
             }
             console.log("OK");
             // toggle cancelModal with orderid here
+            dispatch(windowActions.toggleCancelOrder());
             break;
          case DropZones.VERIFY:
             if (item.status !== OrderStatus.waiting_for_verification) {
                return;
             }
-            console.log("OK");
             // toggle verifyModal with phoneNumber here
-
+            dispatch(windowActions.toggleVerifyOrder());
             break;
          case DropZones.COMPLETE:
             if (item.status !== OrderStatus.verified) {
                return;
             }
+            dispatch(windowActions.toggleCompleteOrder());
+            // toggle complete order modal here with order id
             console.log("OK");
-         // toggle complete order modal here with order id
       }
    }
 

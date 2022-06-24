@@ -4,7 +4,6 @@ import { useFormValidations } from "../../../hooks/useFormValidations";
 
 import "./order-form.styles.scss";
 import { UserOrderFormState } from "../Order";
-import { WorkerVerifyOrderFormState } from "../../worker/modal/verifyOrder/hooks/useVerifyOrderForm";
 
 interface orderFormProps {
    formValues: UserOrderFormState;

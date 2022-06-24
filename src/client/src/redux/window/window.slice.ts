@@ -22,6 +22,7 @@ interface WindowState {
       createOrder: boolean;
       cancelOrder: boolean;
       virtualCart: boolean;
+      completeOrder: boolean;
    };
 
    drag: {
@@ -49,7 +50,8 @@ const initialState: WindowState = {
       verifyOrder: false,
       createOrder: false,
       cancelOrder: false,
-      virtualCart: false
+      virtualCart: false,
+      completeOrder: false
    },
    drag: {
       dropzone: "",
@@ -65,7 +67,14 @@ export const windowSlice = createSlice({
    initialState,
    name: "window",
    reducers: {
-      setDropItem: function (s, a) {
+      toggleCompleteOrder: function (s, a: PayloadAction<boolean>) {
+         s.worker.completeOrder = a.payload || !s.worker.completeOrder;
+         s.worker.virtualCart = false;
+         s.worker.createOrder = false;
+         s.worker.cancelOrder = false;
+         s.worker.verifyOrder = false;
+      },
+      setDropItem: function (s, a: PayloadAction<Droppable>) {
          s.drag.item = a.payload;
       },
       setResponsiveState: (s, a: PayloadAction<AppResponsiveState>) => {
@@ -135,6 +144,7 @@ export const windowSlice = createSlice({
 
       toggleVerifyOrder: (s, a: PayloadAction<string>) => {
          s.worker.verifyOrder = !s.worker.verifyOrder;
+         s.worker.completeOrder = false;
          s.worker.virtualCart = false;
          s.worker.createOrder = false;
          s.worker.cancelOrder = false;
@@ -142,6 +152,7 @@ export const windowSlice = createSlice({
 
       toggleCreateOrder: (s) => {
          s.worker.createOrder = !s.worker.createOrder;
+         s.worker.completeOrder = false;
          s.worker.virtualCart = false;
          s.worker.verifyOrder = false;
          s.worker.cancelOrder = false;
@@ -152,6 +163,7 @@ export const windowSlice = createSlice({
          s.worker.verifyOrder = false;
          s.worker.createOrder = false;
          s.worker.cancelOrder = false;
+         s.worker.completeOrder = false;
       },
 
       toggleVirtualCart: function (s) {
@@ -159,6 +171,7 @@ export const windowSlice = createSlice({
       },
 
       toggleCancelOrder: function (s) {
+         s.worker.completeOrder = false;
          s.worker.virtualCart = false;
          s.worker.verifyOrder = false;
          s.worker.createOrder = false;

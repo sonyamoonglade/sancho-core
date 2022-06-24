@@ -86,13 +86,15 @@ export class OrderService {
          user_id: userId,
          status: OrderStatus.verified,
          created_at: now,
-         verified_at: now,
-         delivered_at
+         verified_at: now
       };
 
       if (masterOrder.is_delivered === true) {
          const stringDetails: string = JSON.stringify(masterOrder.delivery_details);
          await this.userService.updateUsersRememberedDeliveryAddress(userId, stringDetails);
+      }
+      if (delivered_at !== null) {
+         masterOrder.delivered_at = delivered_at;
       }
       //todo: get rid of this ( make array of jsons )
       this.jsonService.stringifyNestedObjects(masterOrder);
@@ -119,7 +121,6 @@ export class OrderService {
             delivery_details: delivery_details !== undefined ? delivery_details : null,
             status: OrderStatus.verified,
             verified_at: now,
-            delivered_at,
             is_delivered_asap
          };
          if (verifyOrderDto.is_delivered !== undefined) {
@@ -130,6 +131,9 @@ export class OrderService {
             updated.cart = cart;
             updated.total_cart_price = recalculatedTotalCartPrice;
             this.jsonService.stringifyNestedObjects(updated);
+         }
+         if (delivered_at !== null) {
+            updated.delivered_at = delivered_at;
          }
 
          await this.orderRepository.update(orderId, updated);

@@ -11,15 +11,9 @@ const config = getConfig(process.env.NODE_ENV);
 
 const instanceProvider = new DbInstanceProvider(config);
 
-const dbInstance: Promise<PoolClient | Pool> = instanceProvider.connect();
-
-if (!dbInstance) {
-   throw new Error("Database connection is not set");
-}
-
 const dbProvider = {
    provide: pg_conn,
-   useValue: dbInstance
+   useValue: instanceProvider.pool.connect()
 };
 
 @Module({

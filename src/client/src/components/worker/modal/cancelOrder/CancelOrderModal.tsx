@@ -6,12 +6,14 @@ import "../../../createUserOrder/orderForm/order-form.styles.scss";
 import "./cancel-order.styles.scss";
 import { CancelExplanationPresets } from "../../../../types/types";
 import { useCancelMasterOrder } from "./hooks/useCancelMasterOrder";
+import { Droppable } from "../../../orderHistory/OrderHistoryItem";
+import { utils } from "../../../../utils/util.functions";
 
 const CancelOrderModal = () => {
-   const { worker } = useAppSelector(windowSelector);
+   const { worker, drag } = useAppSelector(windowSelector);
 
    const dispatch = useAppDispatch();
-   const { formValues, setFormDefaults, setFormValues, cancellable, getFormValues } = useCancelOrderForm();
+   const { formValues, setFormDefaults, setFormValues, cancellable, getFormValues, setCancellable } = useCancelOrderForm();
    const { cancelMasterOrder } = useCancelMasterOrder();
 
    async function handleOrderCancellation() {
@@ -26,7 +28,18 @@ const CancelOrderModal = () => {
    const [explanationSet, setExplanationSet] = useState<CancelExplanationPresets>(CancelExplanationPresets.CUSTOMER_WILL);
    const [isCustomExplFieldActive, setIsCustomExplFieldActive] = useState<boolean>(false);
 
-   useEffect(() => {}, [worker.cancelOrder]);
+   useEffect(() => {
+      if (worker.cancelOrder && drag.item && drag.item.id !== 0) {
+         setFormValues((state: CancelOrderFormState) => {
+            const obj = state.orderId;
+            const correctIdFormat = utils.sixifyOrderId(drag.item);
+            obj.value = correctIdFormat;
+            obj.isValid = true;
+            return { ...state, orderId: obj };
+         });
+         setCancellable(true);
+      }
+   }, [worker.cancelOrder]);
 
    function affectRealFormValuesWithExplanationSet(set: CancelExplanationPresets) {
       setFormValues((state: CancelOrderFormState) => {

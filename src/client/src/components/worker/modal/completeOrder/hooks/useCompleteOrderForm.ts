@@ -4,53 +4,50 @@ import { utils } from "../../../../../utils/util.functions";
 import { WaitingQueueOrder } from "../../../../../common/types";
 import { useAppSelector, workerSelector } from "../../../../../redux";
 
-export interface CancelOrderFormState {
+export interface CompleteOrderFormState {
    orderId: FormField;
-   cancelExplanation: string;
-   cancellable: boolean;
+   completable: boolean;
 }
 
-const formDefaults: CancelOrderFormState = {
+const formDefaults: CompleteOrderFormState = {
    orderId: {
       value: "",
       isValid: false
    },
-   cancelExplanation: "",
-   cancellable: false
+   completable: false
 };
 
-export function useCancelOrderForm() {
-   const [formValues, setFormValues] = useState<CancelOrderFormState>(formDefaults);
+export function useCompleteOrderForm() {
+   const [formValues, setFormValues] = useState<CompleteOrderFormState>(formDefaults);
    const { orderQueue } = useAppSelector(workerSelector);
 
    useEffect(() => {
       if (formValues.orderId.isValid) {
          const orderId = Number(formValues.orderId.value);
-         const o: WaitingQueueOrder = utils.findOrderInWaitingQ(orderQueue, orderId) || utils.findOrderInVerifiedQ(orderQueue, orderId);
+         const o: WaitingQueueOrder = utils.findOrderInVerifiedQ(orderQueue, orderId);
          if (o) {
-            return setCancellable(true);
+            return setCompletable(true);
          }
       }
-      return setCancellable(false);
+      return setCompletable(false);
    }, [formValues.orderId.isValid]);
-   const cancellable = useMemo(() => {
-      return formValues.cancellable;
-   }, [formValues.cancellable]);
+   const completable = useMemo(() => {
+      return formValues.completable;
+   }, [formValues.completable]);
 
-   function setCancellable(v: boolean): void {
-      setFormValues((state: CancelOrderFormState) => {
-         return { ...state, cancellable: v };
+   function setCompletable(v: boolean): void {
+      setFormValues((state: CompleteOrderFormState) => {
+         return { ...state, completable: v };
       });
       return;
    }
    function setFormDefaults() {
       setFormValues(formDefaults);
-      setCancellable(false);
+      setCompletable(false);
    }
    function getFormValues(): { order_id: number; cancel_explanation: string } {
       return Object.assign({
-         order_id: Number(formValues.orderId.value),
-         cancel_explanation: formValues.cancelExplanation
+         order_id: Number(formValues.orderId.value)
       });
    }
 
@@ -58,8 +55,8 @@ export function useCancelOrderForm() {
       formValues,
       setFormValues,
       setFormDefaults,
-      cancellable,
       getFormValues,
-      setCancellable
+      setCompletable,
+      completable
    };
 }
