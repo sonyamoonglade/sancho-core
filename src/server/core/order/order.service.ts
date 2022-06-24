@@ -87,7 +87,7 @@ export class OrderService {
          status: OrderStatus.verified,
          created_at: now,
          verified_at: now,
-         delivered_at: is_delivered_asap ? now : delivered_at
+         delivered_at
       };
 
       if (masterOrder.is_delivered === true) {
@@ -194,7 +194,6 @@ export class OrderService {
 
    public async completeOrder(dto: CompleteOrderDto): Promise<OrderStatus> {
       const { order_id } = dto;
-
       const o = (
          await this.orderRepository.get({
             where: { id: order_id, status: OrderStatus.verified }

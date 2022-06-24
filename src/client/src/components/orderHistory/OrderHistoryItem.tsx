@@ -1,16 +1,39 @@
 import React, { FC, useEffect } from "react";
-import { OrderStatus, ResponseUserOrder } from "../../common/types";
+import { OrderStatus, ResponseUserOrder, WaitingQueueOrder } from "../../common/types";
 import { currency } from "../../common/constants";
 import { BiShoppingBag } from "react-icons/bi";
 import { useCorrectOrderData } from "./hooks/useCorrectOrderData";
 import { CgCloseO } from "react-icons/cg";
 import { useCancelOrder } from "../../hooks/useCancelOrder";
-import { orderSelector, useAppSelector } from "../../redux";
+import { orderSelector, useAppDispatch, useAppSelector, windowActions, windowSelector } from "../../redux";
+import { AppResponsiveState } from "../../types/types";
+import { useDrag } from "react-dnd";
 
 interface orderHistoryItemProps {
    order: ResponseUserOrder;
    isFirstOrder: boolean;
    extraData?: any;
+}
+export interface Droppable {
+   phoneNumber: string;
+   id: number;
+   status: string;
+}
+
+interface DropResult {
+   zone: string;
+}
+
+export const defaultItem: Droppable = {
+   status: "",
+   id: 0,
+   phoneNumber: ""
+};
+
+export enum DropZones {
+   COMPLETE = "complete",
+   VERIFY = "verify",
+   CANCEL = "cancel"
 }
 
 const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extraData }) => {
@@ -19,17 +42,73 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
 
    const { onEnd, onMove, cancelIconAnimationRef, animationRef, x } = useCancelOrder(order);
 
+   const { appResponsiveState } = useAppSelector(windowSelector);
+
    useEffect(() => {
       correctData();
    }, [orderHistory]);
 
+   const [{ isDragging, item }, drag, dragPreview] = useDrag(() => ({
+      type: "ORDER",
+      item: {
+         id: order.id,
+         phoneNumber: (order as WaitingQueueOrder).phone_number,
+         status: order.status
+      },
+      collect: (monitor) => ({
+         isDragging: monitor.isDragging(),
+         item: monitor.getItem()
+      }),
+      end: (item, monitor) => {
+         const dropResult: DropResult = monitor.getDropResult();
+         if (item && dropResult) {
+            handleDrop(dropResult.zone, item);
+         }
+      }
+   }));
+   const dispatch = useAppDispatch();
+
+   function handleDrop(dropzone: string, item: Droppable) {
+      switch (dropzone) {
+         case DropZones.CANCEL:
+            if (item.status === OrderStatus.completed || item.status === OrderStatus.cancelled) {
+               return;
+            }
+            console.log("OK");
+            // toggle cancelModal with orderid here
+            break;
+         case DropZones.VERIFY:
+            if (item.status !== OrderStatus.waiting_for_verification) {
+               return;
+            }
+            console.log("OK");
+            // toggle verifyModal with phoneNumber here
+
+            break;
+         case DropZones.COMPLETE:
+            if (item.status !== OrderStatus.verified) {
+               return;
+            }
+            console.log("OK");
+         // toggle complete order modal here with order id
+      }
+   }
+
+   useEffect(() => {
+      if (isDragging) {
+         dispatch(windowActions.setDropItem(item));
+      }
+      dispatch(windowActions.setDropItem(null));
+   }, [isDragging]);
+
    return (
-      <>
+      <div ref={dragPreview}>
          <li
-            style={{ transform: `translateX(${x}px)` }}
+            role="Handle"
+            style={{ transform: `translateX(${x}px)`, opacity: isDragging ? 0.4 : 1 }}
             onTouchMove={(e) => onMove(e)}
             onTouchEnd={(e) => onEnd()}
-            ref={animationRef}
+            ref={appResponsiveState === AppResponsiveState.computer ? drag : animationRef}
             className={orderItemCorrespondingClassName}>
             <div className="top">
                <div className="top_left">
@@ -88,7 +167,7 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
                </span>
             </div>
          )}
-      </>
+      </div>
    );
 };
 

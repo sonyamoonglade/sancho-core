@@ -4,16 +4,17 @@ import "./verify-order.styles.scss";
 import "../../../createUserOrder/orderForm/order-form.styles.scss";
 import { RiSettings4Line } from "react-icons/ri";
 import { useAxios } from "../../../../hooks/useAxios";
-import { useVerifyOrderForm } from "./hooks/useVerifyOrderForm";
+import { useVerifyOrderForm, WorkerVerifyOrderFormState } from "./hooks/useVerifyOrderForm";
 import VerifyOrderForm from "./verifyForm/VerifyOrderForm";
 import VirtualCart from "../../virtualCart/VirtualCart";
 import { useVirtualCart } from "../../hooks/useVirtualCart";
 import { currency } from "../../../../common/constants";
 import { useVerifyOrder } from "./hooks/useVerifyOrder";
 import { utils } from "../../../../utils/util.functions";
+import { useFormValidations } from "../../../../hooks/useFormValidations";
 
 const VerifyOrderModal = () => {
-   const { worker } = useAppSelector(windowSelector);
+   const { worker, drag } = useAppSelector(windowSelector);
    const { orderQueue, virtualCart: virtualCartState } = useAppSelector(workerSelector);
    const dispatch = useAppDispatch();
    const { client } = useAxios();
@@ -32,6 +33,8 @@ const VerifyOrderModal = () => {
    } = useVerifyOrderForm(orderQueue);
 
    const { verifyOrder, findWaitingOrderByPhoneNumber } = useVerifyOrder(client, orderQueue, totalOrderPrice, virtualCartState.items);
+
+   const { minLengthValidation } = useFormValidations();
 
    const { DELIVERY_PUNISHMENT_THRESHOLD, DELIVERY_PUNISHMENT_VALUE } = useAppSelector(miscSelector);
 
@@ -71,6 +74,16 @@ const VerifyOrderModal = () => {
       if (currentCart.length === 0) {
          // null value in local storage
          virtualCart.setVirtualCart([]);
+      }
+
+      if (worker.verifyOrder && drag.item.id !== null) {
+         setFormValues((state: WorkerVerifyOrderFormState) => {
+            const obj = state.phone_number_w;
+            obj.value = drag.item.phoneNumber;
+            obj.isValid = minLengthValidation(drag.item.phoneNumber, 10);
+            return { ...state, phone_number_w: obj };
+         });
+         presetDeliveryDetails();
       }
    }, [worker.verifyOrder]);
    useEffect(() => {

@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { AppResponsiveState } from "../../types/types";
+import { Droppable } from "../../components/orderHistory/OrderHistoryItem";
 
 interface WindowState {
    masterLogin: boolean;
@@ -20,8 +21,12 @@ interface WindowState {
       verifyOrder: boolean;
       createOrder: boolean;
       cancelOrder: boolean;
-
       virtualCart: boolean;
+   };
+
+   drag: {
+      item: Droppable;
+      dropzone: string;
    };
 }
 
@@ -44,8 +49,15 @@ const initialState: WindowState = {
       verifyOrder: false,
       createOrder: false,
       cancelOrder: false,
-
       virtualCart: false
+   },
+   drag: {
+      dropzone: "",
+      item: {
+         id: 0,
+         status: "",
+         phoneNumber: ""
+      }
    }
 };
 
@@ -53,6 +65,9 @@ export const windowSlice = createSlice({
    initialState,
    name: "window",
    reducers: {
+      setDropItem: function (s, a) {
+         s.drag.item = a.payload;
+      },
       setResponsiveState: (s, a: PayloadAction<AppResponsiveState>) => {
          s.appResponsiveState = a.payload;
       },
@@ -118,7 +133,7 @@ export const windowSlice = createSlice({
          s.masterLogin = false;
       },
 
-      toggleVerifyOrder: (s) => {
+      toggleVerifyOrder: (s, a: PayloadAction<string>) => {
          s.worker.verifyOrder = !s.worker.verifyOrder;
          s.worker.virtualCart = false;
          s.worker.createOrder = false;

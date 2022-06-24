@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useAppDispatch, useAppSelector, windowActions, windowSelector } from "../../../../redux";
 import CancelOrderForm from "./cancelForm/CancelOrderForm";
 import { CancelOrderFormState, useCancelOrderForm } from "./hooks/useCancelOrderForm";
@@ -11,16 +11,13 @@ const CancelOrderModal = () => {
    const { worker } = useAppSelector(windowSelector);
 
    const dispatch = useAppDispatch();
-
    const { formValues, setFormDefaults, setFormValues, cancellable, getFormValues } = useCancelOrderForm();
-
    const { cancelMasterOrder } = useCancelMasterOrder();
 
    async function handleOrderCancellation() {
       if (!cancellable) {
          return;
       }
-
       const body = getFormValues();
       await cancelMasterOrder(body);
       dispatch(windowActions.toggleCancelOrder());
@@ -28,12 +25,14 @@ const CancelOrderModal = () => {
 
    const [explanationSet, setExplanationSet] = useState<CancelExplanationPresets>(CancelExplanationPresets.CUSTOMER_WILL);
    const [isCustomExplFieldActive, setIsCustomExplFieldActive] = useState<boolean>(false);
+
+   useEffect(() => {}, [worker.cancelOrder]);
+
    function affectRealFormValuesWithExplanationSet(set: CancelExplanationPresets) {
       setFormValues((state: CancelOrderFormState) => {
          return { ...state, cancelExplanation: set };
       });
    }
-
    function setExplanationPreset(value: CancelExplanationPresets): void {
       switch (value) {
          case CancelExplanationPresets.CUSTOM:

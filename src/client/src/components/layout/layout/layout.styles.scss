@@ -7,7 +7,7 @@
   height: 100vh;
   display: block;
   position: relative;
-
+  overflow-x: hidden;
 }
 
 html{
@@ -131,4 +131,8 @@ button{
 
 .app_form.w{
   z-index: 1500;
+}
+
+.--no-overflow{
+  overflow: hidden;
 }

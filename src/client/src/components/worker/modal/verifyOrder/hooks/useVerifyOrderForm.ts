@@ -84,6 +84,12 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
    function setFormDefaults() {
       setFormValues(formDefaults);
       formValues.is_delivered_w.value = false;
+      setFormValues((state: WorkerVerifyOrderFormState) => {
+         const obj = state.phone_number_w;
+         obj.value = "";
+         obj.isValid = false;
+         return { ...state, phone_number_w: obj };
+      });
    }
 
    function setFormDefaultsExceptPhoneNumberAndFullname() {

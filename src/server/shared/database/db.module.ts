@@ -1,22 +1,25 @@
 import { Inject, Module } from "@nestjs/common";
-import { Pool } from "pg";
+import { Pool, PoolClient } from "pg";
 import { pg_conn } from "./db_provider-name";
 import { JsonService } from "./json.service";
 import { getConfig } from "../../config/config";
+import { DbInstanceProvider } from "./db-instance.provider";
 
 require("dotenv").config();
 
 const config = getConfig(process.env.NODE_ENV);
 
+const instanceProvider = new DbInstanceProvider(config);
+
+const dbInstance: Promise<PoolClient | Pool> = instanceProvider.connect();
+
+if (!dbInstance) {
+   throw new Error("Database connection is not set");
+}
+
 const dbProvider = {
    provide: pg_conn,
-   useValue: new Pool({
-      user: config.db.user,
-      host: config.db.host,
-      database: config.db.name,
-      port: Number(config.db.port),
-      password: process.env.DB_PASSWORD
-   }).connect()
+   useValue: dbInstance
 };
 
 @Module({

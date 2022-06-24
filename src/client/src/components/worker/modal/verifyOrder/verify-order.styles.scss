@@ -123,7 +123,7 @@
   transition: all 0.5s ease-in-out;
   width: 220px;
   bottom: 100px;
-  left: 700px;
+  left: 100%;
   box-shadow: 1px 3px 5px $dark-grey;
   display: flex;
   align-items: center;
@@ -146,6 +146,6 @@
 }
 
 .--exact-active{
-  left: 100%;
+
   opacity: 1;
 }

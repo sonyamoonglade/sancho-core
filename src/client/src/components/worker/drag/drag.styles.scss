@@ -1,0 +1,63 @@
+@import "src/./variables.scss";
+
+
+.drag{
+  position: absolute;
+  height: 30vh;
+  border-top-left-radius: 7px;
+  border-bottom-left-radius: 7px;
+  z-index: 1350;
+}
+.verify_order.drag{
+  left: 0;
+  width: 55px;
+  @media (min-width: 1500px) {
+    width: 65px;
+  }
+  background-color: $yellow;
+  border-radius: 0 7px 7px 0;
+  top: calc(calc(((100vh - 80px) - 80vh)/2) + 80px);
+}
+.cancel_order.drag{
+  bottom: 0;
+  background-color: $red;
+  height: 60px !important;
+  width: 40%;
+  border-bottom-left-radius: 0;
+  border-top-right-radius: 7px;
+  left: calc((100vw - 40%)/2);
+  @media (min-width: 1500px) {
+    max-width: 500px;
+    left: calc((100vw - 500px) / 2 );
+  }
+}
+
+.complete_order.drag{
+  right: 0;
+  width: 55px;
+  @media (min-width: 1500px) {
+    width: 65px;
+  }
+  background-color: $green-lighter;
+  top: calc(calc(((100vh - 80px) - 80vh)/2) + 80px);
+
+}
+
+.drag_title{
+  cursor: default;
+  transform: rotate(-90deg) translateY(-1px);
+  font-family: "Geometria Bold",sans-serif;
+  font-size: $font-lg;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+  //letter-spacin/g: 1px;
+  align-items: center;
+  color: black;
+
+}
+
+.--no-reverse{
+  transform: none;
+
+}
