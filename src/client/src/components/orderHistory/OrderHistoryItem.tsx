@@ -75,15 +75,12 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
             if (item.status === OrderStatus.completed || item.status === OrderStatus.cancelled) {
                return;
             }
-            console.log("OK");
-            // toggle cancelModal with orderid here
             dispatch(windowActions.toggleCancelOrder());
             break;
          case DropZones.VERIFY:
             if (item.status !== OrderStatus.waiting_for_verification) {
                return;
             }
-            // toggle verifyModal with phoneNumber here
             dispatch(windowActions.toggleVerifyOrder());
             break;
          case DropZones.COMPLETE:
@@ -91,8 +88,6 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
                return;
             }
             dispatch(windowActions.toggleCompleteOrder());
-            // toggle complete order modal here with order id
-            console.log("OK");
       }
    }
 

@@ -3,7 +3,7 @@ import CheckItem from "./CheckItem";
 import "../check.styles.scss";
 import { DatabaseCartProduct } from "../../../../common/types";
 import DeliveryPunishmentItem from "../DeliveryPunishmentItem";
-import { miscSelector, useAppSelector } from "../../../../redux";
+import { miscSelector, useAppSelector, windowSelector } from "../../../../redux";
 
 interface checkListProps {
    products: DatabaseCartProduct[];
@@ -13,9 +13,10 @@ interface checkListProps {
 
 const CheckList: FC<checkListProps> = ({ products, totalCartPrice, isDelivered }) => {
    const { DELIVERY_PUNISHMENT_THRESHOLD } = useAppSelector(miscSelector);
+   const { userOrder } = useAppSelector(windowSelector);
    const isPunished = useMemo(() => {
       return totalCartPrice <= DELIVERY_PUNISHMENT_THRESHOLD;
-   }, [totalCartPrice]);
+   }, [totalCartPrice, isDelivered, userOrder]);
 
    return (
       <ul>

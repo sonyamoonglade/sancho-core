@@ -5,7 +5,7 @@ import { TiArrowBack } from "react-icons/ti";
 import { GrFormClose } from "react-icons/gr";
 import { useCreateOrder } from "./hooks/useCreateOrder";
 import { useCart } from "../../hooks/useCart";
-import { productActions, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector } from "../../redux";
+import { miscSelector, productActions, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector } from "../../redux";
 import OrderForm from "./orderForm/OrderForm";
 import SubmitOrderButton from "./submitOrderButton/SubmitOrderButton";
 import Check from "./check/Check";
@@ -15,6 +15,7 @@ import { useAxios } from "../../hooks/useAxios";
 import { useAuthentication } from "../../hooks/useAuthentication";
 import { FormField } from "../../types/types";
 import { DeliveryDetails } from "../../common/types";
+import { currency } from "../../common/constants";
 
 export interface UserOrderFormValuesInterface {
    is_delivered: boolean;
@@ -115,7 +116,7 @@ const Order = () => {
          return dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."));
       }
    }
-
+   const { DELIVERY_PUNISHMENT_VALUE: value, DELIVERY_PUNISHMENT_THRESHOLD: threshold } = useAppSelector(miscSelector);
    return (
       <div className={userOrder ? "make_user_order modal modal--visible" : "make_user_order modal"}>
          <div className="user_order_header">
@@ -130,6 +131,7 @@ const Order = () => {
             <div className="form_top">
                <Check isDelivered={formValues.is_delivered.value} cart={cart} />
             </div>
+
             <OrderForm formValues={formValues} setFormValues={setFormValues} />
 
             {userOrder && <SubmitOrderButton handler={handleOrderCreation} isActive={isSubmitButtonActive} />}

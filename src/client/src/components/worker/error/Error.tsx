@@ -19,8 +19,10 @@ const Error = () => {
       const second = 1000;
       if (error.modal) {
          t = setTimeout(() => {
-            dispatch(workerActions.setError(""));
             dispatch(workerActions.toggleErrorModal(false));
+            setTimeout(() => {
+               dispatch(workerActions.setError(""));
+            }, second);
          }, second * 5);
       }
       return () => clearTimeout(t);

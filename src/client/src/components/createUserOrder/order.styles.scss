@@ -72,7 +72,20 @@
 
 
 
-
+.delivery_hint{
+  font-family: "Geometria",sans-serif;
+  margin-top: -0.2rem;
+  color: #8B0000FF;
+  @media(min-height: 700px){
+    font-size: $font-md;
+  }
+  @media (min-width: 400px) {
+    font-size: $font-md;
+  }
+  @media (max-width: 380px) {
+    font-size: 14px;
+  }
+}
 
 // TODO: DROPSHADOW DLYA TRIANGLE!
 

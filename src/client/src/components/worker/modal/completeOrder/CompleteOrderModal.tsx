@@ -23,14 +23,14 @@ const CompleteOrderModal = () => {
 
    async function handleOrderCompletion() {}
    return (
-      <div className={worker.completeOrder ? "worker_modal create --w-opened" : "worker_modal"}>
+      <div className={worker.completeOrder ? "worker_modal complete --w-opened" : "worker_modal"}>
          <div>
             <p className="modal_title">Подтвердить готовность заказа</p>
 
             <CompleteOrderForm setFormDefaults={setFormDefaults} setFormValues={setFormValues} formValues={formValues} />
-            <div className="info">
+            <div className="complete info">
                <p>
-                  Подтверждая заказ, вы утверждаете, что содержимое заказа полностью готово и пригодно к употреблению и подготовлено к самовывозу или
+                  Подтверждая заказ, вы утверждаете, что содержимое заказа полностью готово и пригодно к употреблению, и подготовлено к самовывозу или
                   доставке курьером
                </p>
                <hr className="separator" />

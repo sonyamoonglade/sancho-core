@@ -1,6 +1,6 @@
 @import "src/./variables.scss";
 
-.worker_modal.create{
+.worker_modal.complete{
   div{
     width: 100%;
   }
@@ -15,8 +15,8 @@
 .modal_button.complete{
   background-color: $green-second;
 }
-.info{
-  margin-top: .8rem;
+.info.complete{
+  margin-top: 1.4rem;
   p{
     font-family: "Geometria",sans-serif;
   }
