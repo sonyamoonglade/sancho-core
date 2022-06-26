@@ -9,10 +9,16 @@ import { orderSelector, useAppDispatch, useAppSelector, windowActions, windowSel
 import { AppResponsiveState } from "../../types/types";
 import { useDrag } from "react-dnd";
 
+export interface ExtraData {
+   phoneNumber?: string;
+   verifiedFullname?: string;
+}
+
 interface orderHistoryItemProps {
    order: ResponseUserOrder;
    isFirstOrder: boolean;
-   extraData?: any;
+   extraData?: ExtraData;
+   canDrag?: boolean;
 }
 export interface Droppable {
    phoneNumber: string;
@@ -36,7 +42,7 @@ export enum DropZones {
    CANCEL = "cancel"
 }
 
-const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extraData }) => {
+const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extraData, canDrag = true }) => {
    const { orderHistory } = useAppSelector(orderSelector);
    const { cid, cstatus, cdate, cddate, correctData, orderItemCorrespondingClassName } = useCorrectOrderData(order);
 
@@ -105,7 +111,7 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
             style={{ transform: `translateX(${x}px)`, opacity: isDragging ? 0.4 : 1 }}
             onTouchMove={(e) => onMove(e)}
             onTouchEnd={(e) => onEnd()}
-            ref={appResponsiveState === AppResponsiveState.computer ? drag : animationRef}
+            ref={appResponsiveState === AppResponsiveState.computer && canDrag ? drag : animationRef}
             className={orderItemCorrespondingClassName}>
             <div className="top">
                <div className="top_left">
@@ -152,7 +158,7 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
                            : "самовывоз"}
                      </p>
                   </div>
-                  {order.status !== OrderStatus.cancelled && <div className="green_dot">&nbsp;</div>}
+                  {order.status !== OrderStatus.cancelled && order.status !== OrderStatus.completed && <div className="green_dot">&nbsp;</div>}
                   <BiShoppingBag size={25} />
                </div>
             </div>

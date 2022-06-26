@@ -90,3 +90,8 @@ export enum Categories {
    PIZZA = "Пицца",
    DRINKS = "Напитки"
 }
+
+export interface ListResponse {
+   cancel: VerifiedQueueOrder[];
+   complete: VerifiedQueueOrder[];
+}

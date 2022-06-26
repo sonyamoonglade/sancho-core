@@ -1,6 +1,7 @@
 import { AppDispatch } from "../store";
 import { AxiosInstance } from "axios";
 import { workerActions } from "./worker.slice";
+import { ListResponse, OrderStatus, WaitingQueueOrder } from "../../common/types";
 
 export const getInitialQueue = (client: AxiosInstance) => async (dispatch: AppDispatch) => {
    try {
@@ -30,10 +31,12 @@ export const startEventSourcingForQueue = () => async (dispatch: AppDispatch) =>
 };
 
 export const fetchQueryLiveSearchResults = (query: string, client: AxiosInstance) => async (dispatch: AppDispatch) => {
-   try {
-      const { data } = await client.get(`/product/?query=${query}`);
-      dispatch(workerActions.overrideResults(data.result));
-   } catch (e: any) {
-      dispatch(workerActions.setError(e.message));
-   }
+   const { data } = await client.get(`/product/?query=${query}`);
+   dispatch(workerActions.overrideQueryResults(data.result));
+};
+
+export const getOrderList = (status: OrderStatus, client: AxiosInstance) => async (dispatch: AppDispatch) => {
+   const url = "/order/list";
+   const { data } = await client.get<ListResponse>(`${url}?status=${status}`);
+   dispatch(workerActions.setOrderList(data));
 };

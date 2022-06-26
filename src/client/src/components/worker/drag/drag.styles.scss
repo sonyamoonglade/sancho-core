@@ -7,9 +7,12 @@
   border-top-left-radius: 7px;
   border-bottom-left-radius: 7px;
   z-index: 1350;
+  cursor: pointer;
 }
 .verify_order.drag{
   left: 0;
+  cursor: default;
+
   width: 55px;
   @media (min-width: 1500px) {
     width: 65px;
@@ -59,5 +62,6 @@
 
 .--no-reverse{
   transform: none;
+  cursor: pointer;
 
 }

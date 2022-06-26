@@ -5,6 +5,7 @@ import "./order-queue.styles.scss";
 import { useAppDispatch, useAppSelector, workerSelector } from "../../../redux";
 import { getInitialQueue, startEventSourcingForQueue } from "../../../redux/worker/worker.async-actions";
 import Error from "../error/Error";
+import CompleteList from "../orderList/complete/CompleteList";
 
 const OrderQueueComponent = () => {
    const client = useAxios();
@@ -41,6 +42,7 @@ const OrderQueueComponent = () => {
             </ul>
          </div>
          <Error />
+         <CompleteList />
          <div className="verified queue_col">
             <ul>
                {queue?.verified.map((vo) => (

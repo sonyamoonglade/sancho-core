@@ -7,7 +7,6 @@ export function useRoutes(isWorkerAuthenticated: boolean) {
       () => (
          <Routes>
             <Route path="/worker/queue" element={<OrderQueueComponent />} />
-            <Route path="/worker/create" />
             <Route path="*" element={<Navigate to="/worker/queue" />} />
          </Routes>
       ),

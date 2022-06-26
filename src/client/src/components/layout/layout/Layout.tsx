@@ -14,6 +14,7 @@ import CompleteOrderDrag from "../../worker/drag/complete/CompleteOrderDrag";
 import CancelOrderDrag from "../../worker/drag/cancel/CancelOrderDrag";
 import VerifyOrderDrag from "../../worker/drag/verify/VerifyOrderDrag";
 import CompleteOrderModal from "../../worker/modal/completeOrder/CompleteOrderModal";
+import CompleteList from "../../worker/orderList/complete/CompleteList";
 
 interface layoutProps {
    children: any;

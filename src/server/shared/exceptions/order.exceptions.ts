@@ -30,3 +30,9 @@ export class OrderCannotBeCompleted extends HttpException {
       super(`Статус заказа - ${orderId} НЕ подтвержден!`, HttpStatus.BAD_REQUEST);
    }
 }
+
+export class InvalidOrderStatus extends HttpException {
+   constructor(type: string) {
+      super(`Тип ${type} не существует`, HttpStatus.BAD_REQUEST);
+   }
+}

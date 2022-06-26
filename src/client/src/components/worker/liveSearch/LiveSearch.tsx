@@ -34,7 +34,7 @@ const LiveSearch: FC<liveSearchProps> = ({ extraClassName, focusRef }) => {
 
    useEffect(() => {
       if (query.trim().length === 0) {
-         dispatch(workerActions.overrideResults([]));
+         dispatch(workerActions.overrideQueryResults([]));
       } else dispatch(fetchQueryLiveSearchResults(query, client));
    }, [query]);
    useEffect(() => {

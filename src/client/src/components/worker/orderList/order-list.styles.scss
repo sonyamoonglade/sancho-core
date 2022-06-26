@@ -1,0 +1,53 @@
+
+@import "src/./variables.scss";
+
+
+.order_list{
+  position: fixed;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  transition: all 0.2s ease-in;
+  padding: 0;
+  background-color: $yellow-accent;
+  border: 0;
+  border-radius: 7px 0 0 7px;
+  ul{
+    padding: 0;
+    list-style: none;
+  }
+}
+.order_list::-webkit-scrollbar{
+  display: none;
+}
+
+.order_list.complete{
+  right: 0;
+  top: calc(calc(((100vh - 80px) - 80vh)/2 + 80px));
+}
+
+
+.list_title{
+  font-size: $font-mder;
+  text-align: center;
+
+  font-family: "Geometria Bold",sans-serif;
+}
+
+.order_list_back_icon{
+  position: absolute;
+  right: 1rem;
+  top: calc(35px/2 - 0.6rem);
+  transform: translateY(2px);
+  cursor: pointer;
+}
+
+.--olist-open.complete{
+  height: 50vh;
+  width: 600px;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding: 1rem;
+  border: 1px solid $black-50;
+
+}

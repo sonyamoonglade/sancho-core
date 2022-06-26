@@ -6,6 +6,8 @@ import { filter, QueryBuilder } from "../../shared/query_builder/QueryBuilder";
 import { pg_conn } from "../../shared/database/db_provider-name";
 import { query_builder } from "../../shared/query_builder/provider-name";
 import { RepositoryException } from "../../shared/exceptions/repository.exceptions";
+import { OrderStatus, VerifiedQueueOrder, WaitingQueueOrder } from "../../../common/types";
+import { users } from "../entities/User";
 
 @Injectable()
 export class OrderRepository implements Repository<Order> {
@@ -15,7 +17,7 @@ export class OrderRepository implements Repository<Order> {
       const deleteSql = this.qb.ofTable(orders).delete<Order>({ where: { id } });
       await this.db.query(deleteSql);
    }
-   // todo: there it is!
+
    async getById(id: number | string): Promise<Order | undefined> {
       const selectSql = this.qb.ofTable(orders).select<Order>({ where: { id: id as number } });
       const { rows } = await this.db.query(selectSql);
@@ -59,5 +61,14 @@ export class OrderRepository implements Repository<Order> {
       } catch (e) {
          throw new RepositoryException("order repository", e.message);
       }
+   }
+
+   async getOrderList(status: OrderStatus): Promise<VerifiedQueueOrder[]> {
+      const sql = `
+        SELECT o.id,o.cart,o.total_cart_price,o.status,o.is_delivered,o.delivery_details,o.created_at,
+        o.verified_fullname,u.phone_number,o.delivered_at,o.is_delivered_asap FROM ${orders} o JOIN ${users} u ON o.user_id= 
+        u.id WHERE o.status = '${status}' ORDER BY o.created_at DESC LIMIT 15`;
+      const { rows } = await this.db.query(sql);
+      return rows as unknown as VerifiedQueueOrder[];
    }
 }

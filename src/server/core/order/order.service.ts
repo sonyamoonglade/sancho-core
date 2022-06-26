@@ -12,6 +12,8 @@ import { ProductRepository } from "../product/product.repository";
 import {
    AppRoles,
    DatabaseCartProduct,
+   DeliveryDetails,
+   ListResponse,
    OrderQueue,
    OrderStatus,
    ResponseUserOrder,
@@ -21,7 +23,12 @@ import {
 import { EventEmitter } from "events";
 import { CompleteOrderDto } from "./dto/complete-order.dto";
 import { UnexpectedServerError } from "../../shared/exceptions/unexpected-errors.exceptions";
-import { CancelExplanationHasNotBeenProvided, OrderCannotBeCompleted, OrderCannotBeVerified } from "../../shared/exceptions/order.exceptions";
+import {
+   CancelExplanationHasNotBeenProvided,
+   InvalidOrderStatus,
+   OrderCannotBeCompleted,
+   OrderCannotBeVerified
+} from "../../shared/exceptions/order.exceptions";
 import { JsonService } from "../../shared/database/json.service";
 import { Events } from "../../shared/event/events";
 import { MiscService } from "../miscellaneous/misc.service";
@@ -370,6 +377,48 @@ export class OrderService {
       return queue;
    }
 
+   public async orderList(status: OrderStatus): Promise<ListResponse | null> {
+      if (!Object.values(OrderStatus).includes(status)) {
+         throw new InvalidOrderStatus(status);
+      } else if (!status || status.trim().length == 0) {
+         throw new InvalidOrderStatus("");
+      }
+
+      let list: VerifiedQueueOrder[] = null;
+      let output: ListResponse;
+      //switch case prevents calls with orders which status is not completed or cancelled by throwing exception
+      switch (status) {
+         case OrderStatus.completed:
+            list = await this.orderRepository.getOrderList(status);
+            list = list.map((o) => {
+               o.cart = this.parseJsonCart(o.cart as unknown as string[]);
+               o.delivery_details = this.parseJsonDeliveryDetails(o.delivery_details as unknown as string);
+               return o;
+            });
+            output = {
+               cancel: [],
+               complete: list
+            };
+            break;
+         case OrderStatus.cancelled:
+            list = await this.orderRepository.getOrderList(status);
+            list = list.map((o) => {
+               o.cart = this.parseJsonCart(o.cart as unknown as string[]);
+               o.delivery_details = this.parseJsonDeliveryDetails(o.delivery_details as unknown as string);
+               return o;
+            });
+            output = {
+               cancel: list,
+               complete: []
+            };
+            break;
+         default:
+            throw new InvalidOrderStatus(status);
+      }
+
+      return output;
+   }
+
    mapOrdersToQueueTypes(orders: VerifiedQueueOrder[]): OrderQueue {
       //map waitings
       const w = orders
@@ -411,5 +460,12 @@ export class OrderService {
       }
 
       return p;
+   }
+
+   parseJsonCart(currentCart: string[]): DatabaseCartProduct[] {
+      return currentCart.map((item) => JSON.parse(item as unknown as string));
+   }
+   parseJsonDeliveryDetails(currentDetails: string): DeliveryDetails {
+      return JSON.parse(currentDetails);
    }
 }

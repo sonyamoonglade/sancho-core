@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { CreateMasterOrderDto, CreateUserOrderDto } from "./dto/create-order.dto";
 import { OrderService } from "./order.service";
 import { Response } from "express";
@@ -11,6 +11,7 @@ import { CompleteOrderDto } from "./dto/complete-order.dto";
 import { CookieService } from "../../shared/cookie/cookie.service";
 import { Role } from "../../shared/decorators/role/Role";
 import { extendedRequest } from "../../types/types";
+import { InvalidOrderStatus } from "../../shared/exceptions/order.exceptions";
 
 @Controller("/order")
 @UseGuards(AuthorizationGuard)
@@ -116,6 +117,18 @@ export class OrderController {
       try {
          const orderStatus = await this.orderService.completeOrder(dto);
          return res.status(200).send({ status: orderStatus as OrderStatus.completed });
+      } catch (e) {
+         console.log(e);
+         throw e;
+      }
+   }
+
+   @Get("/list")
+   @Role([AppRoles.worker])
+   async orderList(@Res() res: Response, @Req() req: extendedRequest, @Query("status") status: string) {
+      try {
+         const lists = await this.orderService.orderList(status as OrderStatus);
+         return res.status(200).send(lists);
       } catch (e) {
          console.log(e);
          throw e;

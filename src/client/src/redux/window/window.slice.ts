@@ -23,6 +23,8 @@ interface WindowState {
       cancelOrder: boolean;
       virtualCart: boolean;
       completeOrder: boolean;
+      completeList: boolean;
+      cancelList: boolean;
    };
 
    drag: {
@@ -51,7 +53,9 @@ const initialState: WindowState = {
       createOrder: false,
       cancelOrder: false,
       virtualCart: false,
-      completeOrder: false
+      completeOrder: false,
+      cancelList: false,
+      completeList: false
    },
    drag: {
       dropzone: "",
@@ -67,6 +71,22 @@ export const windowSlice = createSlice({
    initialState,
    name: "window",
    reducers: {
+      toggleCompleteList: function (s, a: PayloadAction<boolean>) {
+         s.worker.completeList = a?.payload || !s.worker.completeList;
+         s.worker.virtualCart = false;
+         s.worker.createOrder = false;
+         s.worker.cancelOrder = false;
+         s.worker.verifyOrder = false;
+         s.worker.completeOrder = false;
+      },
+      toggleCancelList: function (s, a: PayloadAction<boolean>) {
+         s.worker.cancelList = a?.payload || !s.worker.cancelList;
+         s.worker.virtualCart = false;
+         s.worker.createOrder = false;
+         s.worker.cancelOrder = false;
+         s.worker.verifyOrder = false;
+         s.worker.completeOrder = false;
+      },
       toggleCompleteOrder: function (s, a: PayloadAction<boolean>) {
          s.worker.completeOrder = a.payload || !s.worker.completeOrder;
          s.worker.virtualCart = false;

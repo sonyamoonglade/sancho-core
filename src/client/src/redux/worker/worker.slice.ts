@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { DatabaseCartProduct, OrderQueue, Product } from "../../common/types";
+import { DatabaseCartProduct, OrderQueue, Product, VerifiedQueueOrder, WaitingQueueOrder } from "../../common/types";
+import { ListResponse } from "../../../../common/types";
 
 interface WorkerInitialState {
    queryResults: Product[];
@@ -11,6 +12,10 @@ interface WorkerInitialState {
       val: string;
    };
    orderQueue: OrderQueue;
+   orderList: {
+      complete: VerifiedQueueOrder[];
+      cancel: VerifiedQueueOrder[];
+   };
 }
 
 const initialState: WorkerInitialState = {
@@ -22,6 +27,10 @@ const initialState: WorkerInitialState = {
    orderQueue: null,
    virtualCart: {
       items: []
+   },
+   orderList: {
+      complete: [],
+      cancel: []
    }
 };
 
@@ -29,7 +38,13 @@ const workerSlice = createSlice({
    initialState,
    name: "worker",
    reducers: {
-      overrideResults: function (s, a: PayloadAction<Product[]>) {
+      setOrderList: function (s, a: PayloadAction<ListResponse>) {
+         s.orderList = a?.payload || {
+            complete: [],
+            cancel: []
+         };
+      },
+      overrideQueryResults: function (s, a: PayloadAction<Product[]>) {
          s.queryResults = a.payload;
       },
 

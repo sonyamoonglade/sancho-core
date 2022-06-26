@@ -18,11 +18,13 @@ const WorkerAppForm = () => {
    }
 
    const isActive = useMemo(() => {
-      const values = Object.values(worker);
-      if (values.some((v: boolean) => v === true)) {
-         document.body.style.overflow = "hidden";
-
-         return true;
+      const keys: string[] = Object.keys(worker).filter((key) => key !== "cancelList" && key !== "completeList");
+      for (const key of keys) {
+         // @ts-ignore
+         if ((worker[key as unknown as string] as unknown as boolean) === true) {
+            document.body.style.overflow = "hidden";
+            return true;
+         }
       }
       document.body.style.overflow = "visible hidden";
       return false;
