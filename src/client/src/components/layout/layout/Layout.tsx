@@ -14,24 +14,23 @@ import CompleteOrderDrag from "../../worker/drag/complete/CompleteOrderDrag";
 import CancelOrderDrag from "../../worker/drag/cancel/CancelOrderDrag";
 import VerifyOrderDrag from "../../worker/drag/verify/VerifyOrderDrag";
 import CompleteOrderModal from "../../worker/modal/completeOrder/CompleteOrderModal";
-import CompleteList from "../../worker/orderList/complete/CompleteList";
 
 interface layoutProps {
    children: any;
 }
 
 const Layout: FC<layoutProps> = ({ children }) => {
-   const { isMasterAuthenticated } = useAppSelector(userSelector);
-   const routes = useRoutes(isMasterAuthenticated);
+   const { isWorkerAuthenticated, isMasterAuthenticated } = useAppSelector(userSelector);
+   const routes = useRoutes(isWorkerAuthenticated);
    return (
-      <div className={isMasterAuthenticated ? "layout --no-overflow" : "layout"}>
+      <div className={isWorkerAuthenticated ? "layout --no-overflow" : "layout"}>
          <Header />
 
-         {isMasterAuthenticated ? null : children}
+         {isWorkerAuthenticated || isMasterAuthenticated ? null : children}
 
          {routes}
 
-         {isMasterAuthenticated && (
+         {isWorkerAuthenticated ? (
             <>
                <>
                   <VerifyOrderModal />
@@ -46,7 +45,9 @@ const Layout: FC<layoutProps> = ({ children }) => {
                   <VerifyOrderDrag />
                </>
             </>
-         )}
+         ) : isMasterAuthenticated ? (
+            <></>
+         ) : null}
       </div>
    );
 };

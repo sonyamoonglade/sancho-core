@@ -7,6 +7,7 @@ import { useAxios } from "../../../hooks/useAxios";
 import { useAuthentication } from "../../../hooks/useAuthentication";
 import { useMasterLoginForm } from "../hooks/useMasterLoginForm";
 import { useNavigate } from "react-router-dom";
+import { AppRoles } from "../../../common/types";
 
 interface masterFormProps {
    appResponsiveState: AppResponsiveState;
@@ -26,9 +27,14 @@ const MasterForm: FC<masterFormProps> = ({ appResponsiveState }) => {
          return;
       }
       const formValues = getFormValues();
-      const res = await loginMaster(formValues);
+      const res: any = await loginMaster(formValues);
+      console.log(res);
       if (res) {
-         return router("/worker/queue", { replace: true });
+         if (res.role === AppRoles.worker) {
+            return router("/worker/queue", { replace: true });
+         } else if (res.role === AppRoles.master) {
+            return router("/admin/dashboard", { replace: true });
+         }
       }
       return router("/", { replace: true });
    }

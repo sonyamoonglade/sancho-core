@@ -17,10 +17,10 @@ export class UserController {
    // @UseGuards(RegisterSpamGuard)
    async loginMaster(@Res() res: Response, @Body() b: LoginMasterUserDto) {
       try {
-         const masterId = await this.userService.loginMaster(b);
-         const SID = await this.sessionService.getSIDByUserId(masterId);
+         const { id, role } = await this.userService.loginMaster(b);
+         const SID = await this.sessionService.getSIDByUserId(id);
          res = this.sessionService.attachCookieToResponse(res, SID);
-         return res.status(200).end();
+         return res.status(200).send({ role });
       } catch (e) {
          // todo:
          console.log(e);
@@ -37,7 +37,7 @@ export class UserController {
          if (user.role === AppRoles.user) {
             return res.status(200).send({ phone_number: user.phone_number });
          }
-         return res.status(200).end();
+         return res.status(200).send({ role: user.role });
       } catch (e) {
          console.log(e);
 

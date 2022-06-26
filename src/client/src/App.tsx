@@ -30,7 +30,7 @@ function App() {
    const dispatch = useAppDispatch();
    const { productList, isCartEmpty } = useAppSelector(productSelector);
    const { cart, appResponsiveState } = useAppSelector(windowSelector);
-   const { isMasterAuthenticated, isAuthenticated } = useAppSelector(userSelector);
+   const { isWorkerAuthenticated, isAuthenticated, isMasterAuthenticated } = useAppSelector(userSelector);
    const router = useNavigate();
    const isNotMobileOrTablet = useMediaQuery({ minWidth: 1440 });
 
@@ -51,10 +51,12 @@ function App() {
    useEffect(() => {
       if (isAuthenticated) {
          router("/", { replace: true });
-      } else if (!isMasterAuthenticated) {
+      } else if (!isWorkerAuthenticated) {
+         router("/", { replace: true });
+      } else if (isMasterAuthenticated) {
          router("/", { replace: true });
       }
-   }, [isAuthenticated, isMasterAuthenticated]);
+   }, [isAuthenticated, isWorkerAuthenticated]);
 
    return (
       <Layout>

@@ -59,15 +59,15 @@ const Header: FC = () => {
    }
 
    const { navigation, appResponsiveState } = useAppSelector(windowSelector);
-   const { isMasterAuthenticated } = useAppSelector(userSelector);
+   const { isWorkerAuthenticated, isMasterAuthenticated } = useAppSelector(userSelector);
    const dispatch = useAppDispatch();
-
+   console.log(isWorkerAuthenticated, isMasterAuthenticated);
    function toggleMenu() {
       dispatch(windowActions.toggleNavigation());
    }
 
    return (
-      <header style={isMasterAuthenticated ? { height: 80 } : { height: 264 }}>
+      <header style={isWorkerAuthenticated || isMasterAuthenticated ? { height: 80 } : { height: 264 }}>
          <div className="header_top">
             <p className="app_title" onClick={nullifyScroll}>
                Жар-Пицца
@@ -81,22 +81,25 @@ const Header: FC = () => {
                )
             ) : null}
 
-            {appResponsiveState === AppResponsiveState.computer && !isMasterAuthenticated ? (
+            {appResponsiveState === AppResponsiveState.computer && !isWorkerAuthenticated && !isMasterAuthenticated ? (
                <>
                   <OtherNavigation />
                   <DesktopHeaderRight />
                </>
+            ) : appResponsiveState === AppResponsiveState.computer && isWorkerAuthenticated ? (
+               <>
+                  <WorkerNavigation />
+                  <WorkerNavigationRight />
+               </>
             ) : appResponsiveState === AppResponsiveState.computer && isMasterAuthenticated ? (
                <>
-                  <>
-                     <WorkerNavigation />
-                     <WorkerNavigationRight />
-                  </>
+                  <p>master here</p>
+                  <WorkerNavigationRight />
                </>
             ) : null}
          </div>
 
-         {isMasterAuthenticated ? (
+         {isWorkerAuthenticated || isMasterAuthenticated ? (
             <></>
          ) : (
             <>

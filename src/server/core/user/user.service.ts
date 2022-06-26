@@ -31,7 +31,7 @@ export class UserService {
       await this.userRepository.update(userId, updated);
    }
 
-   async loginMaster(b: LoginMasterUserDto): Promise<number> {
+   async loginMaster(b: LoginMasterUserDto): Promise<{ id: number; role: AppRoles }> {
       const { login, password } = b;
 
       const u = (await this.userRepository.get({ where: { login } }))[0];
@@ -45,7 +45,10 @@ export class UserService {
          throw new InvalidPasswordException();
       }
 
-      return u.id;
+      return {
+         id: u.id,
+         role: u.role
+      };
    }
 
    async login(body: { phone_number: string }): Promise<Partial<User> | null> {

@@ -1,6 +1,7 @@
 import { AxiosInstance } from "axios";
 import { useAppDispatch, userActions } from "../redux";
 import { MasterFormValues } from "../components/masterLogin/MasterLogin";
+import { AppRoles } from "../common/types";
 
 export function useAuthentication(client: AxiosInstance) {
    const dispatch = useAppDispatch();
@@ -25,10 +26,16 @@ export function useAuthentication(client: AxiosInstance) {
          const body = formValues;
          const r = await client.post("/users/loginMaster", body);
          if (r.status === 200) {
-            dispatch(userActions.loginMaster());
-            return true;
+            switch (r.data.role) {
+               case AppRoles.master:
+                  dispatch(userActions.loginMaster());
+                  return r.data;
+               case AppRoles.worker:
+                  dispatch(userActions.loginWorker());
+                  return r.data;
+            }
          }
-         return false;
+         return null;
       } catch (e) {
          console.log(e);
          dispatch(userActions.logoutMaster());

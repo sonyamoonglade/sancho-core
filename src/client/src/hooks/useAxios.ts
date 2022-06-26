@@ -19,6 +19,7 @@ export function useAxios() {
       const statusCode = error.response.status;
       if (statusCode === 401) {
          dispatch(userActions.logout());
+         dispatch(userActions.logoutWorker());
          dispatch(userActions.logoutMaster());
          return;
       } // unauthorized
