@@ -20,7 +20,7 @@ const CompleteList = () => {
    }
    return (
       <div className={worker.completeList ? "order_list complete --olist-open" : "order_list complete"}>
-         <p className="list_title">Закрытые заказы</p>
+         <p className="list_title">Приготовленные заказы</p>
          <GrFormClose onClick={handleListClose} size={35} className="order_list_back_icon" />
          <ul>
             {orderList.complete?.map((order) => {
@@ -28,7 +28,7 @@ const CompleteList = () => {
                   phoneNumber: order.phone_number,
                   verifiedFullname: order.verified_fullname
                };
-               return <OrderHistoryItem key={order.id} order={order} isFirstOrder={false} extraData={extraData} canDrag={false} />;
+               return <OrderHistoryItem key={order.id + order.status} order={order} isFirstOrder={false} extraData={extraData} canDrag={false} />;
             })}
          </ul>
       </div>

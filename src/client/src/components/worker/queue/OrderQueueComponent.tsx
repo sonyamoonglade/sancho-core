@@ -6,6 +6,7 @@ import { useAppDispatch, useAppSelector, workerSelector } from "../../../redux";
 import { getInitialQueue, startEventSourcingForQueue } from "../../../redux/worker/worker.async-actions";
 import Error from "../error/Error";
 import CompleteList from "../orderList/complete/CompleteList";
+import CancelList from "../orderList/cancel/CancelList";
 
 const OrderQueueComponent = () => {
    const client = useAxios();
@@ -19,7 +20,6 @@ const OrderQueueComponent = () => {
 
    useEffect(() => {
       document.body.style.overflowY = "hidden";
-
       return () => {
          document.body.style.overflowY = "visible";
       };
@@ -43,6 +43,7 @@ const OrderQueueComponent = () => {
          </div>
          <Error />
          <CompleteList />
+         <CancelList />
          <div className="verified queue_col">
             <ul>
                {queue?.verified.map((vo) => (

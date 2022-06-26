@@ -18,7 +18,7 @@ export interface CartInterface {
 export enum OrderStatusTranslate {
    waiting_for_verification = "Ждет подтверждения",
    verified = "Подтвержден",
-   completed = "Закрыт",
+   completed = "Приготовлен",
    cancelled = "Отменен"
 }
 

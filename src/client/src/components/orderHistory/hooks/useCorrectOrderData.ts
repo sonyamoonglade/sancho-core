@@ -17,7 +17,7 @@ export function useCorrectOrderData(order: ResponseUserOrder) {
          : order.status === OrderStatus.cancelled
          ? "--red order_h_item"
          : order.status === OrderStatus.completed
-         ? "--blue order_h_item"
+         ? "--dark-blue order_h_item"
          : "order_h_item";
    }, [order]);
    const monthTranslations = new Map<string, string>();

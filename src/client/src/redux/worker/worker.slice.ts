@@ -39,10 +39,20 @@ const workerSlice = createSlice({
    name: "worker",
    reducers: {
       setOrderList: function (s, a: PayloadAction<ListResponse>) {
-         s.orderList = a?.payload || {
-            complete: [],
-            cancel: []
-         };
+         const { complete, cancel } = a.payload;
+
+         s.orderList.complete =
+            complete.length !== 0 && s.orderList.complete.length === 0
+               ? complete
+               : complete.length === 0 && s.orderList.complete.length !== 0
+               ? s.orderList.complete
+               : complete;
+         s.orderList.cancel =
+            cancel.length !== 0 && s.orderList.cancel.length === 0
+               ? cancel
+               : cancel.length === 0 && s.orderList.cancel.length !== 0
+               ? s.orderList.cancel
+               : cancel;
       },
       overrideQueryResults: function (s, a: PayloadAction<Product[]>) {
          s.queryResults = a.payload;

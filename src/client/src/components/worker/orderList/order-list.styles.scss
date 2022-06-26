@@ -9,7 +9,8 @@
   overflow: hidden;
   transition: all 0.2s ease-in;
   padding: 0;
-  background-color: $yellow-accent;
+  background-color: $light-grey;
+
   border: 0;
   border-radius: 7px 0 0 7px;
   ul{
@@ -26,6 +27,12 @@
   top: calc(calc(((100vh - 80px) - 80vh)/2 + 80px));
 }
 
+.order_list.cancel{
+  transition: all 0.4s ease-in-out;
+  width: 600px;
+  bottom: 0;
+  left: calc((100vw - 600px) / 2);
+}
 
 .list_title{
   font-size: $font-mder;
@@ -42,12 +49,11 @@
   cursor: pointer;
 }
 
-.--olist-open.complete{
-  height: 50vh;
+.--olist-open{
+  height: 52vh;
   width: 600px;
-  max-height: 70vh;
   overflow-y: auto;
   padding: 1rem;
-  border: 1px solid $black-50;
+  box-shadow: 0 2px 20px $black-50;
 
 }
