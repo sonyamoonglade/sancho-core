@@ -1,17 +1,20 @@
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, AxiosInstance } from "axios";
 import { useAppDispatch, userSlice, workerActions } from "../redux";
+import { useMemo } from "react";
 
 let BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 // todo: use nginx
 if (!BACKEND_URL) {
    BACKEND_URL = "https://zharpizza-backend.herokuapp.com/api/v1";
 }
-
+let instance: AxiosInstance;
 export function useAxios() {
    const userActions = userSlice.actions;
 
    const dispatch = useAppDispatch();
-
+   if (instance !== undefined) {
+      return instance;
+   }
    function responseErrorHandler(error: AxiosError) {
       const statusCode = error.response.status;
       if (statusCode === 401) {
@@ -39,10 +42,11 @@ export function useAxios() {
       baseURL: BACKEND_URL,
       withCredentials: true
    });
+
    client.interceptors.response.use(
       (success) => responseSuccessHandler(success),
       (error) => responseErrorHandler(error)
    );
 
-   return { client };
+   return client;
 }

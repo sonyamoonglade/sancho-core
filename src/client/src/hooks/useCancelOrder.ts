@@ -15,7 +15,7 @@ export function useCancelOrder(order: ResponseUserOrder) {
    const cancelIconAnimationRef = useRef<HTMLSpanElement>(null);
    const dispatch = useAppDispatch();
    const { phoneNumber } = useAppSelector(userSelector);
-   const { client } = useAxios();
+   const client = useAxios();
 
    let screenWidthX: number;
    let cancelBreakpoint: number;

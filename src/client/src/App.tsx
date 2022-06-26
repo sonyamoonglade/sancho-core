@@ -26,7 +26,7 @@ import { useNavigate } from "react-router-dom";
 export const baseBackendUrl = "https://pizza-fullstack.herokuapp.com";
 
 function App() {
-   const { client } = useAxios();
+   const client = useAxios();
    const dispatch = useAppDispatch();
    const { productList, isCartEmpty } = useAppSelector(productSelector);
    const { cart, appResponsiveState } = useAppSelector(windowSelector);

@@ -15,7 +15,7 @@ interface masterFormProps {
 const MasterForm: FC<masterFormProps> = ({ appResponsiveState }) => {
    const { minLengthValidation } = useFormValidations();
 
-   const { client } = useAxios();
+   const client = useAxios();
    const { loginMaster } = useAuthentication(client);
    const router = useNavigate();
 

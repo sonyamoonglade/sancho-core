@@ -24,7 +24,7 @@ const LiveSearch: FC<liveSearchProps> = ({ extraClassName, focusRef }) => {
          isValid: false
       }
    });
-   const { client } = useAxios();
+   const client = useAxios();
    const dispatch = useAppDispatch();
    const { minLengthValidation } = useFormValidations();
 

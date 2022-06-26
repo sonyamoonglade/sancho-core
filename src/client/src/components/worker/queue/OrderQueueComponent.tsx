@@ -7,7 +7,7 @@ import { getInitialQueue, startEventSourcingForQueue } from "../../../redux/work
 import Error from "../error/Error";
 
 const OrderQueueComponent = () => {
-   const { client } = useAxios();
+   const client = useAxios();
    const { orderQueue: queue } = useAppSelector(workerSelector);
    const dispatch = useAppDispatch();
 

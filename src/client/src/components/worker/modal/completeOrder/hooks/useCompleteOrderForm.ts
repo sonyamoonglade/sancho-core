@@ -17,6 +17,10 @@ const formDefaults: CompleteOrderFormState = {
    completable: false
 };
 
+export interface CompleteOrderFormValues {
+   order_id: number;
+}
+
 export function useCompleteOrderForm() {
    const [formValues, setFormValues] = useState<CompleteOrderFormState>(formDefaults);
    const { orderQueue } = useAppSelector(workerSelector);
@@ -45,7 +49,7 @@ export function useCompleteOrderForm() {
       setFormValues(formDefaults);
       setCompletable(false);
    }
-   function getFormValues(): { order_id: number; cancel_explanation: string } {
+   function getFormValues(): CompleteOrderFormValues {
       return Object.assign({
          order_id: Number(formValues.orderId.value)
       });

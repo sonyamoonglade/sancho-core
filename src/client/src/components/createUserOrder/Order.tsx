@@ -42,7 +42,7 @@ export interface UserOrderFormState {
 
 const Order = () => {
    const cart = useCart();
-   const { client } = useAxios();
+   const client = useAxios();
    const { createUserOrder } = useCreateOrder(client);
    const { login } = useAuthentication(client);
    const { userOrder } = useAppSelector(windowSelector);

@@ -17,7 +17,7 @@ const VerifyOrderModal = () => {
    const { worker, drag } = useAppSelector(windowSelector);
    const { orderQueue, virtualCart: virtualCartState } = useAppSelector(workerSelector);
    const dispatch = useAppDispatch();
-   const { client } = useAxios();
+   const client = useAxios();
    const virtualCart = useVirtualCart();
 
    const [totalOrderPrice, setTotalOrderPrice] = useState<number>(0);

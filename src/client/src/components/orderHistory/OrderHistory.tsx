@@ -7,7 +7,7 @@ import { ResponseUserOrder } from "../../common/types";
 import { TiArrowBack } from "react-icons/ti";
 
 const OrderHistory = () => {
-   const { client } = useAxios();
+   const client = useAxios();
 
    const dispatch = useAppDispatch();
    const { orderHistory, isFetching } = useAppSelector(orderSelector);

@@ -1,13 +1,15 @@
 import React, { useEffect } from "react";
-import { useAppSelector, windowSelector } from "../../../../redux";
-import { CompleteOrderFormState, useCompleteOrderForm } from "./hooks/useCompleteOrderForm";
+import { useAppDispatch, useAppSelector, windowActions, windowSelector } from "../../../../redux";
+import { CompleteOrderFormState, CompleteOrderFormValues, useCompleteOrderForm } from "./hooks/useCompleteOrderForm";
 import CompleteOrderForm from "./completeForm/CancelOrderForm";
 import "./complete-order.styles.scss";
 import { utils } from "../../../../utils/util.functions";
+import { useCompleteOrder } from "./hooks/useCompleteOrder";
 const CompleteOrderModal = () => {
    const { worker, drag } = useAppSelector(windowSelector);
    const { formValues, setFormDefaults, setFormValues, getFormValues, setCompletable, completable } = useCompleteOrderForm();
-
+   const { completeOrder } = useCompleteOrder();
+   const dispatch = useAppDispatch();
    useEffect(() => {
       if (worker.completeOrder && drag.item && drag.item.id !== 0) {
          setFormValues((state: CompleteOrderFormState) => {
@@ -21,7 +23,17 @@ const CompleteOrderModal = () => {
       }
    }, [worker.completeOrder]);
 
-   async function handleOrderCompletion() {}
+   async function handleOrderCompletion() {
+      if (!completable) {
+         return;
+      }
+
+      try {
+         const body: CompleteOrderFormValues = getFormValues();
+         await completeOrder(body);
+         dispatch(windowActions.toggleCompleteOrder(false));
+      } catch (e) {}
+   }
    return (
       <div className={worker.completeOrder ? "worker_modal complete --w-opened" : "worker_modal"}>
          <div>
