@@ -5,6 +5,7 @@ import ProductHeading from "./ProductHeading";
 import ProductInfo from "./ProductInfo";
 import { Product } from "../../../common/types";
 import { useMediaQuery } from "react-responsive";
+import { productActions, useAppDispatch } from "../../../redux";
 
 interface productCardProps {
    product: Product;
@@ -12,6 +13,8 @@ interface productCardProps {
 
 const ProductCard: FC<productCardProps> = ({ product }) => {
    const isSmallDevice = useMediaQuery({ maxWidth: 767 });
+
+   const dispatch = useAppDispatch();
 
    const forSmallDevices = (
       <div className="product_card">

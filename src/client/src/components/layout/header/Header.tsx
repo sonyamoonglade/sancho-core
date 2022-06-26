@@ -19,6 +19,7 @@ import DesktopHeaderRight from "../desktopHeader/DesktopHeaderRight";
 import MasterLogin from "../../masterLogin/MasterLogin";
 import WorkerNavigation from "../../worker/navigation/WorkerNavigation";
 import WorkerNavigationRight from "../../worker/navigation/WorkerNavigationRight";
+import AdminNavigation from "../../admin/navigation/AdminNavigation";
 
 const mockPromotions: Promotion[] = [
    {
@@ -61,7 +62,6 @@ const Header: FC = () => {
    const { navigation, appResponsiveState } = useAppSelector(windowSelector);
    const { isWorkerAuthenticated, isMasterAuthenticated } = useAppSelector(userSelector);
    const dispatch = useAppDispatch();
-   console.log(isWorkerAuthenticated, isMasterAuthenticated);
    function toggleMenu() {
       dispatch(windowActions.toggleNavigation());
    }
@@ -93,7 +93,7 @@ const Header: FC = () => {
                </>
             ) : appResponsiveState === AppResponsiveState.computer && isMasterAuthenticated ? (
                <>
-                  <p>master here</p>
+                  <AdminNavigation />
                   <WorkerNavigationRight />
                </>
             ) : null}

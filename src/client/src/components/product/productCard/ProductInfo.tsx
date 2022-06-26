@@ -24,7 +24,7 @@ const ProductInfo: FC<productInfoProps> = ({ product, children }) => {
       <div className="product_info">
          <div className="preview">
             <p className="category">{category}</p>
-            <img className="image" src={`${baseUrl}/${product.id}.png`} alt="" />
+            <img onClick={() => startPresentationFn(product)} className="image" src={`${baseUrl}/${product.id}.png`} alt="" />
             <button className="start-presentation_btn" onClick={() => startPresentationFn(product)}>
                <AiOutlinePlus className="add_btn_plus_icon" size={25} />
             </button>
