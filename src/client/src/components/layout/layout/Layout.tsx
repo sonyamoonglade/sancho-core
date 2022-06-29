@@ -56,7 +56,6 @@ const Layout: FC<layoutProps> = ({ children }) => {
                <Route path={"/admin/users"} element={<Users />} />
                <Route path={"/admin/orders"} element={<Orders />} />
                <Route path={"/admin/queue"} element={<AdminQueue />} />
-
                <Route path={"/admin/catalog"} element={<AdminCatalog />} />
                <Route path={"*"} element={<Navigate to="/admin/dashboard" />} />
             </Routes>

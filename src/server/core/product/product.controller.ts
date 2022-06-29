@@ -15,8 +15,8 @@ export class ProductController {
    @Role([AppRoles.master])
    async createProduct(@Body() createProductDto: CreateProductDto, @Res() res: Response) {
       try {
-         const createdProduct = await this.productService.createProduct(createProductDto);
-         return res.status(201).send({ product: createdProduct });
+         const productId = await this.productService.createProduct(createProductDto);
+         return res.status(201).send({ id: productId });
       } catch (e) {
          throw e;
       }
@@ -34,8 +34,8 @@ export class ProductController {
       }
    }
 
-   @Get("/catalogProducts")
-   async getCatalogProducts(@Res() res: Response) {
+   @Get("/catalog")
+   async getCatalogP(@Res() res: Response) {
       try {
          const catalog = await this.productService.getCatalogProducts();
          return res.status(200).send(catalog);
@@ -48,7 +48,7 @@ export class ProductController {
    @Role([AppRoles.master])
    async updateProduct(@Res() res: Response, @Query("id", ParseIntPipe) id: number, @Body() updatedProduct) {
       try {
-         await this.productService.updateProduct(res, updatedProduct, id);
+         await this.productService.updateProduct(updatedProduct, id);
          return res.status(200).end();
       } catch (e) {
          throw e;
@@ -59,8 +59,10 @@ export class ProductController {
    @Role([AppRoles.master])
    async deleteProduct(@Res() res: Response, @Query("id", ParseIntPipe) id: number) {
       try {
-         await this.productService.deleteProduct(res, id);
-         res.status(200).end();
+         const productId = await this.productService.deleteProduct(id);
+         res.status(200).send({
+            id: productId
+         });
       } catch (e) {
          throw e;
       }

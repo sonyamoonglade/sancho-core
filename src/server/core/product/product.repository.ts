@@ -5,6 +5,7 @@ import { Pool } from "pg";
 import { filter, QueryBuilder } from "../../shared/query_builder/QueryBuilder";
 import { pg_conn } from "../../shared/database/db_provider-name";
 import { query_builder } from "../../shared/query_builder/provider-name";
+import { CreateProductDto } from "./dto/create-product.dto";
 
 @Injectable()
 export class ProductRepository implements Repository<Product> {
@@ -58,5 +59,41 @@ export class ProductRepository implements Repository<Product> {
       } catch (e) {
          console.log(e);
       }
+   }
+
+   async searchQuery(words: string[]): Promise<Product[]> {
+      let sql: string;
+      if (words.length > 1) {
+         const joinedWords = words.join(" & ");
+         sql = `
+        select * from products where to_tsvector('russian',translate) @@ to_tsquery('russian','${joinedWords}:*') order by price desc
+       `;
+      } else {
+         sql = `
+        select * from products where to_tsvector('russian',translate) @@ to_tsquery('russian','${words[0]}:*') order by price desc
+      `;
+      }
+      const { rows } = await this.db.query(sql);
+      return rows;
+   }
+
+   async createProduct(dto: CreateProductDto): Promise<number> {
+      const sql = `INSERT INTO ${products} (category,features,name,translate,price,description)
+        VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING RETURNING id`;
+      const values = [dto.category, dto.features, dto.name, dto.translate, dto.price, dto.description];
+      const { rows } = await this.db.query(sql, values);
+      if (rows.length > 0) {
+         return rows[0].id;
+      }
+      return 0;
+   }
+
+   async deleteProduct(id: number): Promise<number> {
+      const sql = `DELETE FROM ${products} WHERE id = ${id} RETURNING id`;
+      const { rows } = await this.db.query(sql);
+      if (rows.length > 0) {
+         return rows[0].id;
+      }
+      return 0;
    }
 }

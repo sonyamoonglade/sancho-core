@@ -5,9 +5,9 @@ import { Product } from "../../common/types";
 
 const productActions = productSlice.actions;
 
-export const getCatalogProducts = (client: AxiosInstance) => async (dispatch: AppDispatch) => {
+export const getCatalog = (client: AxiosInstance) => async (dispatch: AppDispatch) => {
    try {
-      const { data } = await client.get<Product[]>("/product/catalogProducts");
+      const { data } = await client.get<Product[]>("/product/catalog");
       dispatch(productActions.saveList(data));
    } catch (e: any) {
       dispatch(productActions.setErrorMessage(e.message));
