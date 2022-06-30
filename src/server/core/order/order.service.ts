@@ -33,6 +33,7 @@ import { JsonService } from "../../shared/database/json.service";
 import { Events } from "../../shared/event/events";
 import { MiscService } from "../miscellaneous/misc.service";
 import { Miscellaneous } from "../../types/types";
+import { ProductRepositoryInterface } from "../product/product.service";
 
 @Injectable()
 export class OrderService {
@@ -301,29 +302,14 @@ export class OrderService {
    }
 
    public async calculateTotalCartPrice(cart: DatabaseCartProduct[]): Promise<number> {
-      const product_ids = [];
+      const productIds: number[] = [];
 
       for (const product of cart) {
-         product_ids.push(product.id);
-      }
-      const key = "id";
-      const statements = [];
-      let i = 0;
-      for (const p_id of product_ids) {
-         let statement;
-         if (i == product_ids.length - 1) {
-            statement = `${key} = ${p_id}`;
-         } else {
-            statement = `${key} = ${p_id} or`;
-         }
-         i++;
-
-         statements.push(statement);
+         productIds.push(product.id);
       }
 
-      const SQL = `select price,id from ${products} where ${statements.join(" ")}`;
       try {
-         const products: Product[] = await this.productRepository.customQuery(SQL);
+         const products: Product[] = await this.productRepository.getProductsByIds(productIds);
          const total_cart_price = products.reduce((a, c) => {
             const same_product_idx = cart.findIndex((p) => p.id == c.id);
             const product_quantity = cart[same_product_idx].quantity;

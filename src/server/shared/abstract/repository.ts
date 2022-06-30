@@ -1,4 +1,4 @@
-import { filter } from "../query_builder/QueryBuilder";
+import { filter } from "../queryBuilder/QueryBuilder";
 
 export interface Repository<T> {
    save(dto: any): Promise<T>;

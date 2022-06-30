@@ -6,7 +6,7 @@ import { MiscService } from "./misc.service";
 import { AuthorizationModule } from "../authorization/authorization.module";
 import { UserModule } from "../user/user.module";
 import { SessionModule } from "../authentication/session.module";
-import { QueryBuilderModule } from "../../shared/query_builder/qb.module";
+import { QueryBuilderModule } from "../../shared/queryBuilder/qb.module";
 
 @Module({
    controllers: [MiscController],

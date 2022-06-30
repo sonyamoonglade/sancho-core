@@ -2,9 +2,9 @@ import { Pool } from "pg";
 import { Inject } from "@nestjs/common";
 import { Repository } from "../../shared/abstract/repository";
 import { User, users } from "../entities/User";
-import { filter, QueryBuilder } from "../../shared/query_builder/QueryBuilder";
+import { filter, QueryBuilder } from "../../shared/queryBuilder/QueryBuilder";
 import { pg_conn } from "../../shared/database/db_provider-name";
-import { query_builder } from "../../shared/query_builder/provider-name";
+import { query_builder } from "../../shared/queryBuilder/provider-name";
 import { RepositoryException } from "../../shared/exceptions/repository.exceptions";
 
 export class UserRepository implements Repository<User> {

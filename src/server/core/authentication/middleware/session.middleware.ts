@@ -24,7 +24,5 @@ export class SessionMiddleware implements NestMiddleware {
       } catch (e) {
          return res.status(401).end();
       }
-
-      next();
    }
 }

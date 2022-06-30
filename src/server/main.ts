@@ -18,7 +18,7 @@ async function bootstrap() {
 
    app.setGlobalPrefix("/api/v1");
 
-   const origins = ["https://zharpizza-front.herokuapp.com", "http://localhost:3001", "http://localhost:3000", "http://localhost:5000"];
+   const origins = ["https://zharpizza-front.herokuapp.com", "http://localhost:3001", "http://localhost:3000", "http://localhost:5001"];
    app.use(cookieParser());
    app.enableCors({
       origin: origins,

@@ -5,7 +5,7 @@ import { OrderRepository } from "../order.repository";
 import { UserService } from "../../user/user.service";
 import { JsonService } from "../../database/json.service";
 import { DbModule } from "../../database/db.module";
-import { QueryBuilderModule } from "../../query_builder/qb.module";
+import { QueryBuilderModule } from "../../queryBuilder/qb.module";
 import { DatabaseCartProduct } from "../../../../common/types";
 import { SessionService } from "../../authentication/session.service";
 import { UserRepository } from "../../user/user.repository";

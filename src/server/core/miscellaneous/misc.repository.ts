@@ -3,8 +3,8 @@ import { PoolClient } from "pg";
 import { pg_conn } from "../../shared/database/db_provider-name";
 import { Miscellaneous } from "../../types/types";
 import { SetMiscDto } from "./dto/set-misc.dto";
-import { query_builder } from "../../shared/query_builder/provider-name";
-import { QueryBuilder } from "../../shared/query_builder/QueryBuilder";
+import { query_builder } from "../../shared/queryBuilder/provider-name";
+import { QueryBuilder } from "../../shared/queryBuilder/QueryBuilder";
 
 @Injectable()
 export class MiscRepository {

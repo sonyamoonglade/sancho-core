@@ -21,6 +21,9 @@ export class SessionService {
       this.crypt = new scrypto(this.SECRET);
    }
 
+   async isAdminSession(sessionId: string): Promise<boolean> {
+      return this.sessionRepository.isAdminSession(sessionId);
+   }
    async createSession(user_id: number): Promise<string> {
       const currentTime = dayjs();
       const sessionIdBase = currentTime.unix().toString();
@@ -49,10 +52,6 @@ export class SessionService {
          path: "/"
       });
       return res;
-   }
-   async deAttachCookieFromResponse(res: Response, SID: string): Promise<void> {
-      res.clearCookie(CookieNames.SID);
-      await this.destroySession(SID);
    }
    async destroySession(SID: string): Promise<void> {
       await this.sessionRepository.delete(SID);

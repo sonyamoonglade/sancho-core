@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { Request, Response } from "express";
 import { CreateMasterUserDto } from "./dto/create-master-user.dto";
@@ -7,7 +7,7 @@ import { LoginMasterUserDto } from "./dto/login-master-user.dto";
 import { SessionService } from "../authentication/session.service";
 import { AppRoles } from "../../../common/types";
 import { RegisterUserDto } from "./dto/register-user.dto";
-import { extendedRequest } from "../../types/types";
+import { CookieNames, extendedRequest } from "../../types/types";
 
 @Controller("/users")
 export class UserController {
@@ -24,7 +24,6 @@ export class UserController {
       } catch (e) {
          // todo:
          console.log(e);
-
          throw e;
       }
    }
@@ -44,6 +43,21 @@ export class UserController {
          throw e;
       }
    }
+
+   @Get("/service/me")
+   async authenticateService(@Res() res: Response, @Req() req: Request) {
+      try {
+         const sessionId: string = req.headers["x-session-id"] as string;
+         if (!sessionId || sessionId.trim().length == 0) {
+            return res.status(401).end();
+         }
+         const ok = await this.sessionService.isAdminSession(sessionId);
+         return res.status(200).send({ ok });
+      } catch (e) {
+         return res.status(401).end();
+      }
+   }
+
    @Post("/login")
    @UseGuards(PreventAuthedGuard)
    async login(@Res() res: Response, @Req() req: extendedRequest, @Body() b: RegisterUserDto) {

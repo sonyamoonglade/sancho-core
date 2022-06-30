@@ -13,7 +13,7 @@ import { OrderRepository } from "./core/order/order.repository";
 import { AppController } from "./app.controller";
 import { CookieModule } from "./shared/cookie/cookie.module";
 import { SessionModule } from "./core/authentication/session.module";
-import { QueryBuilderModule } from "./shared/query_builder/qb.module";
+import { QueryBuilderModule } from "./shared/queryBuilder/qb.module";
 import { DbModule } from "./shared/database/db.module";
 import { MiscModule } from "./core/miscellaneous/misc.module";
 import { MiscController } from "./core/miscellaneous/misc.controller";
@@ -28,6 +28,10 @@ export class AppModule implements NestModule {
       consumer
          .apply(SessionMiddleware)
          .exclude(
+            {
+               path: "/api/v1/users/service/me",
+               method: RequestMethod.GET
+            },
             {
                path: "/api/v1/users/loginMaster",
                method: RequestMethod.POST

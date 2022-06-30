@@ -2,10 +2,11 @@ import { Inject, Injectable } from "@nestjs/common";
 import { Repository } from "../../shared/abstract/repository";
 import { Session, sessions } from "../entities/Session";
 import { Pool } from "pg";
-import { filter, QueryBuilder } from "../../shared/query_builder/QueryBuilder";
+import { filter, QueryBuilder } from "../../shared/queryBuilder/QueryBuilder";
 import { pg_conn } from "../../shared/database/db_provider-name";
-import { query_builder } from "../../shared/query_builder/provider-name";
+import { query_builder } from "../../shared/queryBuilder/provider-name";
 import { RepositoryException } from "../../shared/exceptions/repository.exceptions";
+import { AppRoles } from "../../../common/types";
 
 @Injectable()
 export class SessionRepository implements Repository<Session> {
@@ -48,7 +49,13 @@ export class SessionRepository implements Repository<Session> {
       }
    }
 
-   public getDb() {
-      return this.db;
+   async isAdminSession(sessionId: string): Promise<boolean> {
+      const sql = `SELECT u.role FROM ${sessions} s JOIN users u ON s.user_id = u.id WHERE s.session_id = '${sessionId}'`;
+      const { rows } = await this.db.query(sql);
+      const role = rows[0].role;
+      if (role === AppRoles.master) {
+         return true;
+      }
+      return false;
    }
 }

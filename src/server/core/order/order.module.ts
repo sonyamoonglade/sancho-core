@@ -6,7 +6,7 @@ import { ProductRepository } from "../product/product.repository";
 import { CookieService } from "../../shared/cookie/cookie.service";
 import { UserModule } from "../user/user.module";
 import { SessionModule } from "../authentication/session.module";
-import { QueryBuilderModule } from "../../shared/query_builder/qb.module";
+import { QueryBuilderModule } from "../../shared/queryBuilder/qb.module";
 import { DbModule } from "../../shared/database/db.module";
 import { OrderAntiSpamMiddleware } from "./middleware/order.anti-spam.middleware";
 import { MiscModule } from "../miscellaneous/misc.module";
