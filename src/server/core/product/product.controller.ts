@@ -8,11 +8,12 @@ import { Role } from "../../shared/decorators/role/Role";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { CookieNames, extendedRequest } from "../../types/types";
 import { PutImageDto } from "./dto/put-image.dto";
+import { FileStorage } from "../../shared/fileStorage/file.storage";
 
 @Controller("/product")
 @UseGuards(AuthorizationGuard)
 export class ProductController {
-   constructor(private productService: ProductService) {}
+   constructor(private productService: ProductService, private fileStorage: FileStorage) {}
 
    @Get("/all")
    @Role([AppRoles.master])
@@ -72,11 +73,9 @@ export class ProductController {
       @Query("productId", ParseIntPipe) productId: number
    ) {
       try {
-         // call microservice
          const dto: PutImageDto = new PutImageDto();
 
-         dto.sessionId = req.cookies[CookieNames.SID];
-         const ok = await this.productService.putImage(dto, f, productId);
+         const ok = await this.fileStorage.putImage(dto, f, productId);
          if (!ok) {
             return res.status(400).end();
          }

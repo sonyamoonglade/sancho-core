@@ -26,11 +26,7 @@ export interface FileStorageInterface {
 
 @Injectable()
 export class ProductService {
-   constructor(private productRepository: ProductRepository, private fileStorage: FileStorage) {}
-
-   async putImage(dto: PutImageDto, f: Express.Multer.File, productId: number): Promise<boolean> {
-      return this.fileStorage.putImage(dto, f, productId);
-   }
+   constructor(private productRepository: ProductRepository) {}
 
    async query(q: string): Promise<Product[]> {
       if (q.trim().length === 0) {

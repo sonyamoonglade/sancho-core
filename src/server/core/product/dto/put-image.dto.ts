@@ -3,7 +3,6 @@ export class PutImageDto {
 
    destination: string;
 
+   ext: string = "png";
    file: Express.Multer.File;
-
-   sessionId: string;
 }
