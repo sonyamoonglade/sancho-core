@@ -44,20 +44,6 @@ export class UserController {
       }
    }
 
-   @Get("/service/me")
-   async authenticateService(@Res() res: Response, @Req() req: Request) {
-      try {
-         const sessionId: string = req.headers["x-session-id"] as string;
-         if (!sessionId || sessionId.trim().length == 0) {
-            return res.status(401).end();
-         }
-         const ok = await this.sessionService.isAdminSession(sessionId);
-         return res.status(200).send({ ok });
-      } catch (e) {
-         return res.status(401).end();
-      }
-   }
-
    @Post("/login")
    @UseGuards(PreventAuthedGuard)
    async login(@Res() res: Response, @Req() req: extendedRequest, @Body() b: RegisterUserDto) {

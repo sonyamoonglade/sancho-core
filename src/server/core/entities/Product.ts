@@ -8,6 +8,7 @@ export type Product = {
    translate: string;
    price: number;
    description?: string;
+   approved?: boolean;
    currency?: string;
    has_image?: boolean;
 };

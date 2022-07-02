@@ -17,6 +17,7 @@ import { QueryBuilderModule } from "./shared/queryBuilder/qb.module";
 import { DbModule } from "./shared/database/db.module";
 import { MiscModule } from "./core/miscellaneous/misc.module";
 import { MiscController } from "./core/miscellaneous/misc.controller";
+import { MarkController } from "./core/mark/mark.controller";
 
 @Module({
    controllers: [AppController],
@@ -57,6 +58,6 @@ export class AppModule implements NestModule {
                method: RequestMethod.GET
             }
          )
-         .forRoutes(UserController, ProductController, OrderController, MiscController);
+         .forRoutes(UserController, ProductController, OrderController, MiscController, MarkController);
    }
 }

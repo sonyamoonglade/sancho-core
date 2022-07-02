@@ -21,9 +21,6 @@ export class SessionService {
       this.crypt = new scrypto(this.SECRET);
    }
 
-   async isAdminSession(sessionId: string): Promise<boolean> {
-      return this.sessionRepository.isAdminSession(sessionId);
-   }
    async createSession(user_id: number): Promise<string> {
       const currentTime = dayjs();
       const sessionIdBase = currentTime.unix().toString();

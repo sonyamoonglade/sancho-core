@@ -12,7 +12,7 @@ import { FileStorageModule } from "../../shared/fileStorage/file-storage.module"
 import { FileStorage } from "../../shared/fileStorage/file.storage";
 
 @Module({
-   providers: [ProductService, ProductRepository, SessionService, UserRepository, SessionRepository, UserService, FileStorage],
+   providers: [ProductRepository, ProductService, SessionService, UserRepository, SessionRepository, UserService, FileStorage],
    controllers: [ProductController],
    exports: [ProductService, ProductRepository],
    imports: [DbModule, QueryBuilderModule, FileStorageModule]

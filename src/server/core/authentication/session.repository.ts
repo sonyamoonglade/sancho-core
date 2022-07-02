@@ -48,14 +48,4 @@ export class SessionRepository implements Repository<Session> {
          throw new RepositoryException("Session repository", e.message);
       }
    }
-
-   async isAdminSession(sessionId: string): Promise<boolean> {
-      const sql = `SELECT u.role FROM ${sessions} s JOIN users u ON s.user_id = u.id WHERE s.session_id = '${sessionId}'`;
-      const { rows } = await this.db.query(sql);
-      const role = rows[0].role;
-      if (role === AppRoles.master) {
-         return true;
-      }
-      return false;
-   }
 }
