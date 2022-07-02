@@ -93,7 +93,7 @@ exports.up = (pgm) => {
 
 exports.down = (pgm) => {
    pgm.dropConstraint("orders", "orders_user_id_fkey");
-   pgm.dropConstraint("orders", "orders_  cancelled_by_fkey");
+   pgm.dropConstraint("orders", "orders_cancelled_by_fkey");
    pgm.dropIndex("orders", "user_id");
    pgm.dropIndex("orders", "status");
    pgm.dropIndex("orders", "is_paid");

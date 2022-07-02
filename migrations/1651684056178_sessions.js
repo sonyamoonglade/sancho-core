@@ -2,26 +2,25 @@
 
 exports.shorthands = undefined;
 
-exports.up = pgm => {
-  pgm.createTable('sessions',{
-    session_id: {
-      type:'varchar(500)',
-      unique: true
-    },
-    user_id: {
-      type: 'int',
-      references: '"users"',
-      notNull: true,
-      onDelete: 'Cascade',
-      unique: true
-    }
-  })
-  pgm.createIndex('sessions','user_id')
+exports.up = (pgm) => {
+   pgm.createTable("sessions", {
+      session_id: {
+         type: "varchar(500)",
+         unique: true
+      },
+      user_id: {
+         type: "int",
+         references: '"users"',
+         notNull: true,
+         onDelete: "Cascade",
+         unique: true
+      }
+   });
+   pgm.createIndex("sessions", "user_id");
 };
 
-exports.down = pgm => {
-  pgm.dropConstraint('sessions','sessions_user_id_fkey')
-  pgm.dropTable('sessions')
-
+exports.down = (pgm) => {
+   pgm.dropConstraint("sessions", "sessions_user_id_fkey");
+   pgm.dropIndex("sessions", "user_id");
+   pgm.dropTable("sessions");
 };
-

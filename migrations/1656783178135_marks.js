@@ -10,7 +10,7 @@ exports.up = (pgm) => {
       },
       user_id: {
          type: "integer",
-         references: "'users'",
+         references: '"users"',
          onDelete: "cascade",
          notNull: true
       },
@@ -25,4 +25,6 @@ exports.up = (pgm) => {
    });
 };
 
-exports.down = (pgm) => {};
+exports.down = (pgm) => {
+   pgm.dropTable("marks");
+};
