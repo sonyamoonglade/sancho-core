@@ -14,7 +14,6 @@
   display: flex;
   align-items: center;
   height: 60px;
-  justify-content: space-between;
   border-bottom: 1px solid $santa-grey;
 
 
@@ -22,6 +21,8 @@
     font-size: $font-lg;
     font-family: "Geometria Bold", serif;
     font-weight: 500;
+    position: absolute;
+    left: calc(50vw - 30px - 25px);
 
   }
 }
@@ -58,18 +59,8 @@
   padding-bottom: 5rem;
 }
 
-.cart_info_container{
-  position: relative;
-}
-.red_dot{
-  position: absolute;
-  width: 6px;
-  height: 6px;
-  background-color: $red;
-  border-radius: 50%;
-  top: 0px;
-  right: 16px + 2px;
-}
+
+
 
 .toast{
   position: absolute;

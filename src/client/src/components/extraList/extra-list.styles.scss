@@ -48,14 +48,18 @@
 .item_other{
   color: $black-50;
   font-weight: 300;
+  font-family: "Geometria";
+
 }
 
 .item_price{
-  font-family: "Geometria Light";
+  font-family: "Geometria";
   font-size: $font-regular;
+  color: $black-50;
 }
 
 .item_name{
   font-family: "Geometria";
   font-style: normal;
+
 }

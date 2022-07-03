@@ -10,7 +10,7 @@ export class AuthorizationGuard implements CanActivate {
    constructor(private userService: UserService, private reflector: Reflector) {}
    async canActivate(context: ExecutionContext): Promise<boolean> {
       const req: extendedRequest = context.switchToHttp().getRequest();
-      if (req.url.endsWith("/catalogProducts")) {
+      if (req.url.endsWith("/catalog")) {
          return true;
       }
 

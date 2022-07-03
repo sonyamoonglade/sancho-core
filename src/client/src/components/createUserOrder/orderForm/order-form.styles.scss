@@ -121,3 +121,16 @@
     font-size: $font-mder
   }
 }
+
+.autocomplete{
+  box-shadow: 0 0 5px $black-50;
+  border-radius: 7px;
+  z-index: 4000;
+  padding: 0.2rem;
+  left: 2rem;
+  position: absolute;
+  background-color: $light-grey;
+  p{
+    font-family: "Geometria",sans-serif;
+  }
+}

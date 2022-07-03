@@ -44,10 +44,10 @@ function App() {
          router("/", { replace: true });
       } else if (!isWorkerAuthenticated) {
          router("/", { replace: true });
-      } else if (isMasterAuthenticated) {
+      } else if (!isMasterAuthenticated) {
          router("/", { replace: true });
       }
-   }, [isAuthenticated, isWorkerAuthenticated]);
+   }, [isAuthenticated, isWorkerAuthenticated, isMasterAuthenticated]);
 
    return (
       <Layout>

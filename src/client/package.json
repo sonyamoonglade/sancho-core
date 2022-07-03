@@ -53,6 +53,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-autosuggest": "^10.1.5",
     "@types/react-router-dom": "^5.3.3"
   }
 }

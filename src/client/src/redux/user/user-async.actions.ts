@@ -15,3 +15,13 @@ export const authMe = (client: AxiosInstance) => async (dispatch: AppDispatch) =
       }
    }
 };
+
+export const logout = (client: AxiosInstance) => async (dispatch: AppDispatch) => {
+   const r = await client.get("/users/logout");
+   if (r.status === 200) {
+      dispatch(userActions.logoutMaster());
+      dispatch(userActions.logoutWorker());
+   } else {
+      return;
+   }
+};

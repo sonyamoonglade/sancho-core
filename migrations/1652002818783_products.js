@@ -46,7 +46,7 @@ exports.up = (pgm) => {
       },
       approved: {
          type: "boolean",
-         notNull: true,
+         notNull: false,
          default: false
       }
    });

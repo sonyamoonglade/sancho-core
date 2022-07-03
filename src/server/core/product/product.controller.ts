@@ -115,6 +115,7 @@ export class ProductController {
    }
 
    @Get("/catalog")
+   @Role([AppRoles.user])
    async getCatalog(@Res() res: Response) {
       try {
          const catalog = await this.productService.getCatalog();

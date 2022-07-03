@@ -6,6 +6,7 @@ import { DatabaseCartProduct } from "../../../common/types";
 import { currency } from "../../../common/constants";
 import { useCart } from "../../../hooks/useCart";
 import { productActions, useAppDispatch } from "../../../redux";
+import ReduceAddButton from "../../worker/virtualCart/ReduceAddButton";
 
 interface cartItemProps {
    product: DatabaseCartProduct;
@@ -19,12 +20,7 @@ const CartItem: FC<cartItemProps> = ({ product, isActive }) => {
       return `${baseUrl}/${product.id}.png    `;
    }, [product]);
 
-   function reduceProductQuantity() {
-      const permission = window.confirm("Подтвердить удаление?");
-      if (!permission) {
-         return;
-      }
-      const { id } = product;
+   function reduceProductQuantity(id: number) {
       cart.removeProduct(id);
       const newCartPrice = cart.calculateCartTotalPrice();
       dispatch(productActions.setTotalCartPrice(newCartPrice));
@@ -32,31 +28,14 @@ const CartItem: FC<cartItemProps> = ({ product, isActive }) => {
          dispatch(productActions.setCartEmpty(true));
       }
    }
-
-   const animationRef = useRef<HTMLLIElement>(null);
-
-   function animateBackground() {
-      animationRef.current.classList.add("--green");
-      setTimeout(() => {
-         animationRef.current.classList.remove("--green");
-      }, 1000);
+   function addProductQuantity(id: number) {
+      cart.addProduct(product);
+      const newCartPrice = cart.calculateCartTotalPrice();
+      dispatch(productActions.setTotalCartPrice(newCartPrice));
    }
 
-   useEffect(() => {
-      let i: any;
-      if (isActive) {
-         i = setInterval(() => {
-            animateBackground();
-         }, 2000);
-      } else {
-         clearInterval(i);
-      }
-
-      return () => clearInterval(i);
-   }, [isActive]);
-
    return (
-      <li ref={animationRef} className="cart_item" onClick={() => reduceProductQuantity()}>
+      <li className="cart_item">
          <div className="leading">
             <img className="cart_item_image" src={productImage} alt="" />
             <div className="info">
@@ -69,8 +48,7 @@ const CartItem: FC<cartItemProps> = ({ product, isActive }) => {
 
          <div className="price_info">
             <p className="cart_item_quantity">
-               {product.quantity}
-               <i> шт</i>
+               <ReduceAddButton add={addProductQuantity} dbProduct={product} reduce={reduceProductQuantity} />
             </p>
             <i className="quantity_price">
                {product.quantity * product.price} {currency}

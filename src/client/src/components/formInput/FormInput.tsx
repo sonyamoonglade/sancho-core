@@ -2,6 +2,7 @@ import React, { FC, HTMLInputTypeAttribute, useEffect, useState } from "react";
 
 import "./form-input.styles.scss";
 import { FormField } from "../../types/types";
+import EventEmitter from "events";
 
 interface formInputProps {
    name: string;
@@ -17,6 +18,7 @@ interface formInputProps {
    isActiveForValidation?: boolean;
    formValue: FormField;
    focusRef?: any;
+   emitter?: EventEmitter;
 }
 
 const FormInput: FC<formInputProps> = (props) => {
@@ -34,6 +36,7 @@ const FormInput: FC<formInputProps> = (props) => {
       extraClassName,
       Regexp,
       minLength,
+      emitter,
       isActiveForValidation,
       focusRef
    } = props;
@@ -57,6 +60,10 @@ const FormInput: FC<formInputProps> = (props) => {
          <input
             ref={focusRef ? focusRef : null}
             onBlur={(e) => {
+               emitter !== undefined &&
+                  setTimeout(() => {
+                     emitter.emit("blur");
+                  }, 20);
                if (v.trim().length < minLength || v.trim().length === 0) {
                   setV((state: any) => {
                      const obj: { value: string; isValid: boolean } = {
@@ -75,6 +82,7 @@ const FormInput: FC<formInputProps> = (props) => {
             maxLength={maxLength || 100}
             name={name}
             value={v}
+            onFocus={() => emitter !== undefined && emitter.emit("autocomplete")}
             onChange={(e) => {
                const inputValue = e.target.value;
                if (Regexp && inputValue.match(Regexp)) {

@@ -1,9 +1,8 @@
 import React, { useEffect } from "react";
-import { orderSelector, productSelector, useAppDispatch, useAppSelector, windowActions, windowSelector } from "../../../../redux";
-import { FaRegUserCircle } from "react-icons/fa";
+import { orderSelector, productSelector, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector } from "../../../../redux";
 import { BsCart4, BsClipboardData } from "react-icons/bs";
-import { MdOutlineReceiptLong } from "react-icons/md";
-import { FcAbout } from "react-icons/fc";
+import { MdOutlineReceiptLong, MdDeliveryDining } from "react-icons/md";
+import { RiQuestionAnswerLine } from "react-icons/ri";
 import "./mob-navigation.styles.scss";
 import "../../layout/layout.styles.scss";
 import { OrderStatus } from "../../../../common/types";
@@ -14,29 +13,16 @@ const MobileNavigation = () => {
    const { orderHistory } = useAppSelector(orderSelector);
    const dispatch = useAppDispatch();
 
-   useEffect(() => {
-      const body = document.querySelector("body");
-      if (navigation) {
-         body.style.overflow = "hidden";
-      } else {
-         body.style.overflow = "visible";
-      }
-   }, [navigation]);
-
    return (
       <div className={navigation ? "modal modal--visible" : "modal"}>
          <ul className="nav_list">
-            <li
-               className="nav_item"
-               onClick={() => {
-                  dispatch(windowActions.toggleMasterLogin());
-               }}>
-               <p>Войти</p>
-               <FaRegUserCircle />
+            <li className="nav_item">
+               <p>Доставка</p>
+               <MdDeliveryDining />
             </li>
             <li className="nav_item">
                <p>О нас</p>
-               <FcAbout />
+               <RiQuestionAnswerLine />
             </li>
             <li className="nav_item">
                <p>Больше информации</p>

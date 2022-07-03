@@ -1,9 +1,10 @@
 import React, { FC, useState } from "react";
 import FormInput from "../../formInput/FormInput";
 import { useFormValidations } from "../../../hooks/useFormValidations";
-
 import "./order-form.styles.scss";
 import { UserOrderFormState } from "../Order";
+import EventEmitter from "events";
+import { useAppSelector, userSelector } from "../../../redux";
 
 interface orderFormProps {
    formValues: UserOrderFormState;
@@ -15,6 +16,10 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
 
    const [opt1, opt2] = ["скажу по телефону", "в ближайшее время"];
    const [selectV, setSelectV] = useState<string>(opt1);
+
+   const { isAuthenticated, phoneNumber } = useAppSelector(userSelector);
+
+   const emitter = new EventEmitter();
 
    function handleSelectChange(event: any) {
       const v = event.target.value;
@@ -36,6 +41,28 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
             setSelectV(opt2);
             break;
       }
+   }
+
+   const [show, setShow] = useState<boolean>(false);
+
+   emitter.on("autocomplete", () => {
+      if (isAuthenticated) {
+         setShow(true);
+      }
+   });
+   emitter.on("blur", () => {
+      if (isAuthenticated) {
+         setShow(false);
+      }
+   });
+
+   function handleAutoCompleteClick() {
+      setFormValues((prev: UserOrderFormState) => {
+         const obj = prev.phone_number;
+         obj.value = phoneNumber.split("").splice(2, phoneNumber.length).join("");
+         obj.isValid = true;
+         return { ...prev, phone_number: obj };
+      });
    }
 
    return (
@@ -134,12 +161,22 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
                formValue={formValues["phone_number"]}
                setV={setFormValues}
                onBlurValue={"+7"}
+               emitter={emitter}
                maxLength={10}
                fieldValidationFn={validatePhoneNumber}
                Regexp={new RegExp("!?[A-Za-z]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
                extraClassName={"phone_number_input"}
                minLength={10}
             />
+            {show ? (
+               <div
+                  onClick={() => {
+                     handleAutoCompleteClick();
+                  }}
+                  className="autocomplete">
+                  <p>{phoneNumber}</p>
+               </div>
+            ) : null}
          </div>
       </div>
    );

@@ -10,7 +10,7 @@
   transition: all 0.2s ease-in;
   padding: 0;
   background-color: $light-grey;
-
+  z-index: 5000;
   border: 0;
   border-radius: 7px 0 0 7px;
   ul{

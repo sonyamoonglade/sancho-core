@@ -116,13 +116,12 @@ const Order = () => {
          return dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."));
       }
    }
-   const { DELIVERY_PUNISHMENT_VALUE: value, DELIVERY_PUNISHMENT_THRESHOLD: threshold } = useAppSelector(miscSelector);
    return (
       <div className={userOrder ? "make_user_order modal modal--visible" : "make_user_order modal"}>
          <div className="user_order_header">
             <TiArrowBack onClick={() => toggleOrder()} className="user_order_back_icon" size={30} />
             <p className="user_order_title">Оформление заказа</p>
-            <GrFormClose onClick={() => closeAllModals()} className="user_order_close_icon" size={30} />
+            <GrFormClose onClick={() => closeAllModals()} className="user_order_close_icon" size={35} />
          </div>
          <div className="make_user_order_form">
             <img className="badge_image" src={`${baseUrl}/non_verified_badge.png`} alt="" />

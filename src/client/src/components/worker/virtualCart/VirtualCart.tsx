@@ -48,7 +48,7 @@ const VirtualCart = () => {
                            {r.price * r.quantity}
                            {currency}
                         </p>
-                        <ReduceAddButton quantity={r.quantity} dbProduct={r} add={addQuantity} reduce={reduceQuantity} />
+                        <ReduceAddButton dbProduct={r} add={addQuantity} reduce={reduceQuantity} />
                      </div>
                   </li>
                ))}

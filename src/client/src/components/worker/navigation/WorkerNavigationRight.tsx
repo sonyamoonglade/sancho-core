@@ -2,13 +2,14 @@ import React from "react";
 import { FaUserCircle } from "react-icons/fa";
 import "./worker-nav.styles.scss";
 import { useAppDispatch, userActions } from "../../../redux";
+import { useAxios } from "../../../hooks/useAxios";
+import { logout } from "../../../redux/user/user-async.actions";
 
 const WorkerNavigationRight = () => {
    const dispatch = useAppDispatch();
-
+   const client = useAxios();
    function handleLogout() {
-      dispatch(userActions.logoutMaster());
-      dispatch(userActions.logoutWorker());
+      dispatch(logout(client));
    }
 
    return (
