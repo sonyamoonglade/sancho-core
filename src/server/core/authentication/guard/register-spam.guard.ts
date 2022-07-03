@@ -8,8 +8,7 @@ export class RegisterSpamGuard implements CanActivate {
       const req: Request = context.switchToHttp().getRequest();
 
       const SID = req.cookies[CookieNames.SID];
-
-      if (SID == undefined) {
+      if (SID == undefined || SID == "") {
          return true;
       }
 

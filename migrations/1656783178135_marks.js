@@ -5,8 +5,8 @@ exports.shorthands = undefined;
 exports.up = (pgm) => {
    pgm.createTable("marks", {
       id: {
-         type: "integer",
-         authIncrement: true
+         type: "id",
+         autoIncrement: true
       },
       user_id: {
          type: "integer",

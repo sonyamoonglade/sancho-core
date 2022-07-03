@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { Request, Response } from "express";
 import { CreateMasterUserDto } from "./dto/create-master-user.dto";
@@ -8,21 +8,23 @@ import { SessionService } from "../authentication/session.service";
 import { AppRoles } from "../../../common/types";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { CookieNames, extendedRequest } from "../../types/types";
+import { Role } from "../../shared/decorators/role/Role";
+import { RegisterSpamGuard } from "../authentication/guard/register-spam.guard";
+import { AuthorizationGuard } from "../authorization/authorization.guard";
 
 @Controller("/users")
 export class UserController {
    constructor(private userService: UserService, private sessionService: SessionService) {}
 
    @Post("/loginMaster")
-   // @UseGuards(RegisterSpamGuard)
+   @UseGuards(RegisterSpamGuard)
    async loginMaster(@Res() res: Response, @Body() b: LoginMasterUserDto) {
       try {
          const { id, role } = await this.userService.loginMaster(b);
-         const SID = await this.sessionService.getSIDByUserId(id);
-         res = this.sessionService.attachCookieToResponse(res, SID);
+         const SID = await this.sessionService.generateMasterSession(id);
+         res = this.sessionService.putMasterSession(res, SID);
          return res.status(200).send({ role });
       } catch (e) {
-         // todo:
          console.log(e);
          throw e;
       }
@@ -51,15 +53,15 @@ export class UserController {
          const oldUser = await this.userService.login(b);
          if (oldUser === null) {
             const newUser = await this.userService.createUser(b);
-            const SID = await this.sessionService.createSession(newUser.id);
-            res = this.sessionService.attachCookieToResponse(res, SID);
+            const SID = await this.sessionService.generateSession(newUser.id);
+            res = this.sessionService.putUserSession(res, SID);
             return res.status(201).end();
          }
          let SID = await this.sessionService.getSIDByUserId(oldUser.id);
          if (SID === undefined) {
-            SID = await this.sessionService.createSession(oldUser.id);
+            SID = await this.sessionService.generateSession(oldUser.id);
          }
-         res = this.sessionService.attachCookieToResponse(res, SID);
+         res = this.sessionService.putUserSession(res, SID);
          return res.status(200).end();
       } catch (e) {
          console.log(e);
@@ -67,15 +69,31 @@ export class UserController {
       }
    }
    @Post("/registerMasterUser")
+   @UseGuards(AuthorizationGuard)
+   @Role([AppRoles.master])
    async registerMasterUser(@Res() res: Response, @Req() req: Request, @Body() b: CreateMasterUserDto) {
       try {
          const masterUser = await this.userService.createMasterUser(b);
-         const MASTER_SID = await this.sessionService.createSession(masterUser.id);
-         res = this.sessionService.attachCookieToResponse(res, MASTER_SID);
-         return res.status(200).end();
+         return res.status(201).send({
+            login: masterUser.login,
+            role: masterUser.role
+         });
       } catch (e) {
          console.log(e);
 
+         throw e;
+      }
+   }
+   @Get("/logout")
+   @Role([AppRoles.worker])
+   async logout(@Res() res: Response, @Req() req: extendedRequest) {
+      try {
+         const SID = req.cookies[CookieNames.SID];
+         await this.sessionService.destroySession(SID);
+         this.sessionService.clearSession(res);
+         return res.status(200).end();
+      } catch (e) {
+         console.log(e);
          throw e;
       }
    }

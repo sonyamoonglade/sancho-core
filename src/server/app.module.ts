@@ -30,19 +30,7 @@ export class AppModule implements NestModule {
          .apply(SessionMiddleware)
          .exclude(
             {
-               path: "/api/v1/users/service/me",
-               method: RequestMethod.GET
-            },
-            {
                path: "/api/v1/users/loginMaster",
-               method: RequestMethod.POST
-            },
-            {
-               path: "/api/v1/users/registerUser",
-               method: RequestMethod.POST
-            },
-            {
-               path: "/api/v1/users/registerMasterUser",
                method: RequestMethod.POST
             },
             {
@@ -50,7 +38,7 @@ export class AppModule implements NestModule {
                method: RequestMethod.POST
             },
             {
-               path: "/api/v1/product/catalogProducts",
+               path: "/api/v1/product/catalog",
                method: RequestMethod.GET
             },
             {

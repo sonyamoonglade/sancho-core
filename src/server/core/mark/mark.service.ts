@@ -2,10 +2,12 @@ import { Inject, Injectable } from "@nestjs/common";
 import { MarkRepository } from "./mark.repository";
 import { CreateMarkDto } from "./dto/create-mark.dto";
 import { MarkDoesNotExist } from "../../shared/exceptions/mark.exceptions";
+import { Mark } from "../entities/Mark";
 
 export interface MarkRepositoryInterface {
    create(dto: CreateMarkDto): Promise<void>;
    delete(userId: number, markId: number): Promise<boolean>;
+   userMarks(userId: number): Promise<Mark[]>;
 }
 
 @Injectable()
@@ -22,5 +24,9 @@ export class MarkService {
          throw new MarkDoesNotExist(markId, userId);
       }
       return;
+   }
+
+   async userMarks(userId: number): Promise<Mark[]> {
+      return this.markRepository.userMarks(userId);
    }
 }

@@ -1,4 +1,19 @@
-import { Body, Controller, Delete, Get, ParseIntPipe, Post, Put, Query, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import {
+   Body,
+   Controller,
+   Delete,
+   Get,
+   ParseBoolPipe,
+   ParseIntPipe,
+   Post,
+   Put,
+   Query,
+   Req,
+   Res,
+   UploadedFile,
+   UseGuards,
+   UseInterceptors
+} from "@nestjs/common";
 import { ProductService } from "./product.service";
 import { Response } from "express";
 import { CreateProductDto } from "./dto/create-product.dto";
@@ -105,6 +120,18 @@ export class ProductController {
          const catalog = await this.productService.getCatalog();
          return res.status(200).send(catalog);
       } catch (e) {
+         throw e;
+      }
+   }
+
+   @Put("/approve")
+   @Role([AppRoles.master])
+   async approveProduct(@Res() res: Response, @Query("productId", ParseIntPipe) productId: number) {
+      try {
+         await this.productService.approveProduct(productId);
+         return res.status(200).end();
+      } catch (e) {
+         console.log(e);
          throw e;
       }
    }

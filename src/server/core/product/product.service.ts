@@ -2,7 +2,12 @@ import { Injectable } from "@nestjs/common";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { Product } from "../entities/Product";
 import { Categories, Features } from "../../../common/types";
-import { InvalidCategoryException, ProductAlreadyExistsException, ProductDoesNotExistException } from "../../shared/exceptions/product.exceptions";
+import {
+   InvalidCategoryException,
+   ProductAlreadyExistsException,
+   ProductCantBeApproved,
+   ProductDoesNotExistException
+} from "../../shared/exceptions/product.exceptions";
 import { ValidationErrorException } from "../../shared/exceptions/validation.exceptions";
 import { ProductRepository } from "./product.repository";
 import { PutImageDto } from "./dto/put-image.dto";
@@ -17,6 +22,7 @@ export interface ProductRepositoryInterface {
    getAll(): Promise<Product[]>;
    getCatalog(): Promise<Product[]>;
    getProductsByIds(productIds: number[]): Promise<Product[]>;
+   approveProduct(productId: number): Promise<boolean>;
 }
 
 export interface FileStorageInterface {
@@ -73,6 +79,13 @@ export class ProductService {
       products = products.map((product) => this.parseJSONProductFeatures(product));
       const sorted = this.sortByCategory(products);
       return sorted;
+   }
+   async approveProduct(productId: number): Promise<void> {
+      const ok = await this.productRepository.approveProduct(productId);
+      if (!ok) {
+         throw new ProductCantBeApproved(productId);
+      }
+      return;
    }
 
    getCategories(): string[] {

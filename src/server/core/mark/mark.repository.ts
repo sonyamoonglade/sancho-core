@@ -5,7 +5,7 @@ import { query_builder } from "../../shared/queryBuilder/provider-name";
 import { QueryBuilder } from "../../shared/queryBuilder/QueryBuilder";
 import { MarkRepositoryInterface } from "./mark.service";
 import { CreateMarkDto } from "./dto/create-mark.dto";
-import { marks } from "../entities/Mark";
+import { Mark, marks } from "../entities/Mark";
 
 @Injectable()
 export class MarkRepository implements MarkRepositoryInterface {
@@ -26,5 +26,11 @@ export class MarkRepository implements MarkRepositoryInterface {
          return true;
       }
       return false;
+   }
+
+   async userMarks(userId: number): Promise<Mark[]> {
+      const sql = `SELECT * FROM ${marks} WHERE user_id = $1 ORDER BY is_important DESC`;
+      const { rows } = await this.db.query(sql);
+      return rows as unknown as Mark[];
    }
 }

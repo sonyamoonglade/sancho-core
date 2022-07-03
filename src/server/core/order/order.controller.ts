@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, ParseIntPipe, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { CreateMasterOrderDto, CreateUserOrderDto } from "./dto/create-order.dto";
 import { OrderService } from "./order.service";
 import { Response } from "express";
@@ -129,6 +129,18 @@ export class OrderController {
       try {
          const lists = await this.orderService.orderList(status as OrderStatus);
          return res.status(200).send(lists);
+      } catch (e) {
+         console.log(e);
+         throw e;
+      }
+   }
+
+   @Put("/pay")
+   @Role([AppRoles.worker])
+   async payForOrder(@Query("orderId", ParseIntPipe) orderId: number, @Res() res: Response) {
+      try {
+         await this.orderService.payForOrder(orderId);
+         return res.status(200).end();
       } catch (e) {
          console.log(e);
          throw e;

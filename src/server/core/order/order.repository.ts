@@ -71,4 +71,13 @@ export class OrderRepository implements Repository<Order> {
       const { rows } = await this.db.query(sql);
       return rows as unknown as VerifiedQueueOrder[];
    }
+
+   async payForOrder(orderId: number): Promise<boolean> {
+      const sql = `UPDATE ${orderId} SET is_paid = CASE WHEN status = '${OrderStatus.completed}' THEN true ELSE is_paid END WHERE id = ${orderId} RETURNING id`;
+      const { rows } = await this.db.query(sql);
+      if (rows.length > 0) {
+         return true;
+      }
+      return false;
+   }
 }

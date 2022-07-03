@@ -42,9 +42,9 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
+   pgm.dropIndex("users", "phone_number");
+   pgm.dropIndex("users", "id");
    pgm.dropTable("users", {
       cascade: true
    });
-   pgm.dropIndex("users", "phone_number");
-   pgm.dropIndex("users", "id");
 };

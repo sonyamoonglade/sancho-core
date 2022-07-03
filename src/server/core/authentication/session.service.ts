@@ -3,55 +3,75 @@ import { Session } from "../entities/Session";
 import * as dayjs from "dayjs";
 import { SessionRepository } from "./session.repository";
 import { Response } from "express";
-import SimpleCrypto from "simple-crypto-js";
 import { CookieNames } from "../../types/types";
 import { UnexpectedServerError } from "../../shared/exceptions/unexpected-errors.exceptions";
-
+import * as crypto from "crypto";
 require("dotenv").config();
-
-const scrypto = require("simple-crypto-js").default;
 
 @Injectable()
 export class SessionService {
    private SECRET = process.env.HASH_SECRET;
 
-   private crypt: SimpleCrypto;
+   constructor(private sessionRepository: SessionRepository) {}
 
-   constructor(private sessionRepository: SessionRepository) {
-      this.crypt = new scrypto(this.SECRET);
-   }
-
-   async createSession(user_id: number): Promise<string> {
+   async generateSession(userId: number): Promise<string> {
       const currentTime = dayjs();
-      const sessionIdBase = currentTime.unix().toString();
-
+      const payload = currentTime.unix().toString() + userId + this.SECRET;
+      const h = crypto.createHash("sha256").update(payload).digest("hex");
       try {
-         const encryptedSID = this.crypt.encrypt(sessionIdBase);
-
          const newSession: Session = {
-            user_id,
-            session_id: encryptedSID
+            user_id: userId,
+            session_id: h
          };
 
          await this.sessionRepository.save(newSession);
 
-         return encryptedSID;
+         return h;
       } catch (e) {
          throw new UnexpectedServerError();
       }
    }
-   attachCookieToResponse(res: Response, SID: string): Response {
+   async generateMasterSession(masterId: number): Promise<string> {
+      const currentTime = dayjs();
+      const payload = currentTime.unix().toString() + masterId + this.SECRET;
+      const h = crypto.createHash("sha256").update(payload).digest("hex");
+
+      await this.sessionRepository.destroyAndGenerate(h, masterId);
+
+      return h;
+   }
+   public clearSession(res: Response): void {
+      res.clearCookie(CookieNames.SID, {
+         httpOnly: true,
+         secure: true,
+         sameSite: "strict",
+         path: "/"
+      });
+   }
+   public putUserSession(res: Response, SID: string): Response {
       res.cookie(CookieNames.SID, SID, {
          httpOnly: true,
          secure: true,
-         sameSite: "none",
-         // signed: true,
+         sameSite: "strict",
          path: "/"
       });
       return res;
    }
+   public putMasterSession(res: Response, SID: string): Response {
+      const now = dayjs();
+      const ttl = now.add(1, "day").toDate(); //24h
+
+      res.cookie(CookieNames.SID, SID, {
+         httpOnly: true,
+         secure: true,
+         sameSite: "strict",
+         path: "/",
+         expires: ttl
+      });
+      return res;
+   }
    async destroySession(SID: string): Promise<void> {
-      await this.sessionRepository.delete(SID);
+      return this.sessionRepository.destroy(SID);
    }
    async getSIDByUserId(user_id: number): Promise<string> {
       try {

@@ -27,6 +27,7 @@ import {
    CancelExplanationHasNotBeenProvided,
    InvalidOrderStatus,
    OrderCannotBeCompleted,
+   OrderCannotBePaid,
    OrderCannotBeVerified
 } from "../../shared/exceptions/order.exceptions";
 import { JsonService } from "../../shared/database/json.service";
@@ -403,6 +404,14 @@ export class OrderService {
       }
 
       return output;
+   }
+
+   async payForOrder(orderId: number): Promise<void> {
+      const ok = await this.orderRepository.payForOrder(orderId);
+      if (!ok) {
+         throw new OrderCannotBePaid(orderId);
+      }
+      return;
    }
 
    mapOrdersToQueueTypes(orders: VerifiedQueueOrder[]): OrderQueue {

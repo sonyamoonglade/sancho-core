@@ -11,6 +11,15 @@ import { ProductRepositoryInterface } from "./product.service";
 export class ProductRepository implements ProductRepositoryInterface {
    constructor(@Inject(query_builder) private qb: QueryBuilder, @Inject(pg_conn) private db: Pool) {}
 
+   async approveProduct(productId: number): Promise<boolean> {
+      const sql = `UPDATE ${products} SET is_approved = CASE WHEN is_approved = false THEN true ELSE false END WHERE product_id = ${productId} RETURNING id`;
+      const { rows } = await this.db.query(sql);
+      if (rows.length > 0) {
+         return true;
+      }
+      return false;
+   }
+
    async getById(id: number): Promise<Product> {
       const sql = `SELECT * FROM ${products} WHERE id=${id}`;
       const { rows } = await this.db.query(sql);

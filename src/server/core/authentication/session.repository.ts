@@ -9,7 +9,7 @@ import { RepositoryException } from "../../shared/exceptions/repository.exceptio
 import { AppRoles } from "../../../common/types";
 
 @Injectable()
-export class SessionRepository implements Repository<Session> {
+export class SessionRepository {
    constructor(@Inject(pg_conn) private db: Pool, @Inject(query_builder) private qb: QueryBuilder) {}
 
    async customQuery(query: string): Promise<Session[] | Session | undefined> {
@@ -17,9 +17,11 @@ export class SessionRepository implements Repository<Session> {
       return rows as Session[];
    }
 
-   async delete(id: number | string): Promise<void> {
-      const deleteSql = this.qb.ofTable(sessions).delete<Session>({ where: { session_id: id as string } });
-      await this.db.query(deleteSql);
+   async destroy(sessId: string): Promise<void> {
+      const sql = `DELETE FROM ${sessions} WHERE session_id=$1`;
+      const values = [sessId];
+      await this.db.query(sql, values);
+      return;
    }
 
    async getById(id: string): Promise<Session | undefined> {
@@ -35,8 +37,15 @@ export class SessionRepository implements Repository<Session> {
       return rows[0] as unknown as Session;
    }
 
-   async update(id: number, updated: Partial<Session>): Promise<void> {
-      return undefined;
+   async destroyAndGenerate(h: string, masterId: number): Promise<void> {
+      const sql2 = `DELETE FROM ${sessions} WHERE user_id = ${masterId}`;
+      await this.db.query(sql2);
+
+      const sql1 = `INSERT INTO ${sessions} (session_id,user_id) VALUES ($1,$2)`;
+      const values = [h, masterId];
+      await this.db.query(sql1, values);
+
+      return;
    }
 
    async get(expression: filter<Session>): Promise<Session[]> {

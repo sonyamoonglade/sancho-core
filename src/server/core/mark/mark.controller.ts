@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, ParseBoolPipe, ParseIntPipe, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseBoolPipe, ParseIntPipe, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { MarkService } from "./mark.service";
 import { extendedRequest } from "../../types/types";
 import { Response } from "express";
@@ -41,6 +41,20 @@ export class MarkController {
       try {
          await this.markService.delete(userId, markId);
          return res.status(200).end();
+      } catch (e) {
+         console.log(e);
+         throw e;
+      }
+   }
+
+   @Get("/")
+   @Role([AppRoles.worker])
+   async userMarks(@Req() req: extendedRequest, @Res() res: Response, @Query("userId", ParseIntPipe) userId: number) {
+      try {
+         const marks = await this.markService.userMarks(userId);
+         return res.status(200).send({
+            marks
+         });
       } catch (e) {
          console.log(e);
          throw e;
