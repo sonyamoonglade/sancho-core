@@ -45,6 +45,18 @@ export class UserController {
          throw e;
       }
    }
+   @Get("/name")
+   async getFullName(@Res() res: Response, @Query("phoneNumber") phoneNumber: string) {
+      try {
+         const name = await this.userService.getUsername(phoneNumber);
+         return res.status(200).send({
+            name
+         });
+      } catch (e) {
+         console.log(e);
+         throw e;
+      }
+   }
 
    @Post("/login")
    @UseGuards(PreventAuthedGuard)

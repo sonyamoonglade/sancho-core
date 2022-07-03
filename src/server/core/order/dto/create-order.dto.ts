@@ -39,5 +39,5 @@ export class CreateMasterOrderDto implements Partial<Order> {
 
    @IsDefined()
    @IsString()
-   verified_fullname: string;
+   username: string;
 }

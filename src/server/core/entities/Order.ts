@@ -13,7 +13,6 @@ export type Order = {
    created_at: Date;
    verified_at?: Date;
    is_paid?: boolean;
-   verified_fullname?: string;
    completed_at?: Date;
    cancelled_at?: Date;
    cancelled_by?: number;

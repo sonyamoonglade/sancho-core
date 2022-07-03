@@ -4,7 +4,7 @@ import { IsBoolean, IsDefined, IsString } from "class-validator";
 export class VerifyOrderDto {
    @IsDefined()
    @IsString()
-   verified_fullname: string;
+   username: string;
 
    @IsDefined()
    @IsString()

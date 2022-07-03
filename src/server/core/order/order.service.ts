@@ -65,7 +65,7 @@ export class OrderService {
 
       if (userOrder.is_delivered === true) {
          const stringDetails: string = JSON.stringify(userOrder.delivery_details);
-         await this.userService.updateUsersRememberedDeliveryAddress(userId, stringDetails);
+         await this.userService.updateUserRememberedDeliveryAddress(userId, stringDetails);
       }
       this.events.emit(Events.ORDER_HAS_CREATED);
       return;
@@ -83,10 +83,9 @@ export class OrderService {
       let total_cart_price = await this.calculateTotalCartPrice(createMasterOrderDto.cart);
       total_cart_price = await this.applyDeliveryPunishment(total_cart_price);
 
-      const { verified_fullname, is_delivered_asap, delivery_details, is_delivered, delivered_at, cart } = createMasterOrderDto;
+      const { username, is_delivered_asap, delivery_details, is_delivered, delivered_at, cart } = createMasterOrderDto;
       const now = new Date(Date.now());
       const masterOrder: Order = {
-         verified_fullname,
          is_delivered,
          cart,
          delivery_details: is_delivered ? delivery_details : null,
@@ -97,10 +96,10 @@ export class OrderService {
          created_at: now,
          verified_at: now
       };
-
+      this.userService.updateUsername(username, userId);
       if (masterOrder.is_delivered === true) {
          const stringDetails: string = JSON.stringify(masterOrder.delivery_details);
-         await this.userService.updateUsersRememberedDeliveryAddress(userId, stringDetails);
+         await this.userService.updateUserRememberedDeliveryAddress(userId, stringDetails);
       }
       if (delivered_at !== null) {
          masterOrder.delivered_at = delivered_at;
@@ -123,15 +122,16 @@ export class OrderService {
          if (!has) {
             throw new Error(`verification ${phone_number}`);
          }
-         const { verified_fullname, delivery_details, is_delivered, cart, delivered_at, is_delivered_asap } = verifyOrderDto;
+         const { username, delivery_details, is_delivered, cart, delivered_at, is_delivered_asap } = verifyOrderDto;
          const now = new Date(Date.now());
          const updated: Partial<Order> = {
-            verified_fullname,
             delivery_details: delivery_details !== undefined ? delivery_details : null,
             status: OrderStatus.verified,
             verified_at: now,
             is_delivered_asap
          };
+         const userId = await this.userService.getUserId(phone_number);
+         this.userService.updateUsername(username, userId);
          if (verifyOrderDto.is_delivered !== undefined) {
             updated.is_delivered = is_delivered;
          }

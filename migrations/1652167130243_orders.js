@@ -53,11 +53,6 @@ exports.up = (pgm) => {
          notNull: false,
          default: null
       },
-      verified_fullname: {
-         type: "varchar(100)",
-         notNull: false,
-         default: null
-      },
       completed_at: {
          type: "timestamp",
          notNull: false,

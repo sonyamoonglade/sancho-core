@@ -15,6 +15,17 @@ export class UserRepository implements Repository<User> {
       await this.db.query(deleteSql);
    }
 
+   async getUsername(phoneNumber: string): Promise<string> {
+      const sql = `SELECT name FROM ${users} WHERE phone_number = '${phoneNumber}'`;
+      const { rows } = await this.db.query(sql);
+      if (rows.length > 0) {
+         return rows[0].name;
+      }
+      return "";
+   }
+   async updateUsername(name: string, userId: number): Promise<void> {
+      const sql = `UPDATE ${users} SET name='${name}' WHERE id = ${userId}`;
+   }
    async getById(id: number | string): Promise<User | undefined> {
       const selectSql = this.qb.ofTable(users).select<User>({ where: { id: id as number } });
       const { rows } = await this.db.query(selectSql);

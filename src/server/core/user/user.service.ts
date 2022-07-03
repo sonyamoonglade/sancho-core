@@ -24,11 +24,15 @@ import { APP_ROLES } from "../../types/contants";
 export class UserService {
    constructor(private sessionService: SessionService, private userRepository: UserRepository) {}
 
-   async updateUsersRememberedDeliveryAddress(userId: number, deliveryDetails: string): Promise<void> {
+   async updateUserRememberedDeliveryAddress(userId: number, deliveryDetails: string): Promise<void> {
       const updated: Partial<User> = {
          remembered_delivery_address: deliveryDetails as unknown as DeliveryDetails
       };
       await this.userRepository.update(userId, updated);
+   }
+
+   async updateUsername(name: string, userId: number): Promise<void> {
+      return this.userRepository.updateUsername(name, userId);
    }
 
    async loginMaster(b: LoginMasterUserDto): Promise<{ id: number; role: AppRoles }> {
@@ -95,7 +99,9 @@ export class UserService {
          throw new UnexpectedServerError();
       }
    }
-
+   async getUsername(phoneNumber: string): Promise<string> {
+      return this.userRepository.getUsername(phoneNumber);
+   }
    async createMasterUser(createMasterUserDto: CreateMasterUserDto): Promise<User> {
       const hashedPass = await bcrypt.hash(createMasterUserDto.password, 10);
       const { role: inputRole } = createMasterUserDto;
