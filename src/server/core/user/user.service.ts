@@ -20,6 +20,7 @@ import {
 import { UnexpectedServerError } from "../../shared/exceptions/unexpected-errors.exceptions";
 import { APP_ROLES } from "../../types/contants";
 
+require("dotenv").config();
 @Injectable()
 export class UserService {
    constructor(private sessionService: SessionService, private userRepository: UserRepository) {}
@@ -33,6 +34,33 @@ export class UserService {
 
    async updateUsername(name: string, userId: number): Promise<void> {
       return this.userRepository.updateUsername(name, userId);
+   }
+
+   async registerSuperAdmin(): Promise<void> {
+      try {
+         const login = process.env.SUPERADMIN_LOGIN;
+         const password = process.env.SUPERADMIN_PASSWORD;
+         const name = process.env.SUPERADMIN_NAME;
+
+         const hash = await bcrypt.hash(password, 10);
+
+         const u: User = {
+            login,
+            password: hash,
+            name,
+            role: AppRoles.master
+         };
+         console.log("Registering Super Admin");
+         const ok = await this.userRepository.registerSuperAdmin(u);
+         if (ok) {
+            console.log("Success");
+         } else {
+            console.log("Fail. Super Admin already exists");
+         }
+      } catch (e) {
+         console.log("Fail");
+         throw e;
+      }
    }
 
    async loginMaster(b: LoginMasterUserDto): Promise<{ id: number; role: AppRoles }> {

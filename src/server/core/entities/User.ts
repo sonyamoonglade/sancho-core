@@ -7,6 +7,7 @@ export type User = {
    remembered_delivery_address?: DeliveryDetails;
    login?: string;
    password?: string;
+   name?: string;
 };
 
 export const users = "users";

@@ -13,4 +13,8 @@ export class CreateMasterUserDto {
    @IsDefined()
    @IsString()
    role: AppRoles;
+
+   @IsDefined()
+   @IsString()
+   name: string;
 }

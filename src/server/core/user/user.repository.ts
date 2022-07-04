@@ -40,6 +40,16 @@ export class UserRepository implements Repository<User> {
       return rows[0] as unknown as User;
    }
 
+   async registerSuperAdmin(dto: User): Promise<boolean> {
+      const sql = `INSERT INTO ${users} (login,password,name,role) VALUES ($1,$2,$3,$4) ON CONFLICT (login) DO NOTHING RETURNING id`;
+      const values = [dto.login, dto.password, dto.name, dto.role];
+      const { rows } = await this.db.query(sql, values);
+      if (rows.length > 0) {
+         return true;
+      }
+      return false;
+   }
+
    async update(id: number, updated: Partial<User | undefined>): Promise<void> {
       const [updateSql, values] = this.qb.ofTable(users).update<User>({ where: { id: id }, set: updated });
       const { rows } = await this.db.query(updateSql, values);
