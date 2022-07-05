@@ -29,9 +29,9 @@
 
 .order_list.cancel{
   transition: all 0.4s ease-in-out;
-  width: 600px;
+  width: 750px;
   bottom: 0;
-  left: calc((100vw - 600px) / 2);
+  left: calc((100vw - 750px) / 2);
 }
 
 .list_title{
@@ -51,7 +51,7 @@
 
 .--olist-open{
   height: 52vh;
-  width: 600px;
+  width: 750px;
   overflow-y: auto;
   padding: 1rem;
   box-shadow: 0 2px 20px $black-50;

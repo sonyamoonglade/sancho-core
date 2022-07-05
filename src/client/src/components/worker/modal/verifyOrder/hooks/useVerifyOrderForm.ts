@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { FormField } from "../../../../../types/types";
-import { OrderQueue } from "../../../../../common/types";
+import { OrderQueue, VerifiedQueueOrder, WaitingQueueOrder } from "../../../../../common/types";
 
 export interface WorkerVerifyOrderFormState {
    verified_fullname_w: FormField;
@@ -129,12 +129,10 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
       });
    }
 
-   function presetDeliveryDetails() {
+   function presetDeliveryDetails(order: WaitingQueueOrder) {
       if (orderQueue.waiting.length === 0) {
          return;
       }
-      const phoneNumber = formValues.phone_number_w.value;
-      const order = orderQueue.waiting.find((o) => o.user.phone_number === `+7${phoneNumber}`);
       if (order?.is_delivered) {
          const { address, flat_call, entrance_number, floor } = order?.delivery_details;
          const { is_delivered_asap } = order;

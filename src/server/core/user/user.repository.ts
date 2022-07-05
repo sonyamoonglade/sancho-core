@@ -6,9 +6,22 @@ import { filter, QueryBuilder } from "../../shared/queryBuilder/QueryBuilder";
 import { pg_conn } from "../../shared/database/db_provider-name";
 import { query_builder } from "../../shared/queryBuilder/provider-name";
 import { RepositoryException } from "../../shared/exceptions/repository.exceptions";
+import { UserCredentialsDto } from "./dto/user-creds.dto";
 
 export class UserRepository implements Repository<User> {
    constructor(@Inject(query_builder) private qb: QueryBuilder, @Inject(pg_conn) private db: Pool) {}
+
+   async getUserCredentials(phoneNumber: string): Promise<UserCredentialsDto | null> {
+      const sql = `SELECT name, remembered_delivery_address FROM ${users} WHERE phone_number = '${phoneNumber}'`;
+      const { rows } = await this.db.query(sql);
+      const dto = new UserCredentialsDto();
+      if (rows.length > 0) {
+         dto.username = rows[0].name;
+         dto.userDeliveryAddress = JSON.parse(rows[0].remembered_delivery_address);
+         return dto;
+      }
+      return null;
+   }
 
    async delete(id: number): Promise<void | undefined> {
       const deleteSql = this.qb.ofTable(users).delete<User>({ where: { id } });

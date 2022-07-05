@@ -53,9 +53,7 @@ const VerifyOrderForm: FC<submitOrderFormProps> = ({
       }
    }, [worker.verifyOrder]);
    useEffect(() => {
-      if (formValues.phone_number_w.isValid) {
-         presetDeliveryDetails();
-      } else {
+      if (!formValues.phone_number_w.isValid) {
          setFormDefaultsExceptPhoneNumberAndFullname();
       }
    }, [formValues.phone_number_w.isValid]);

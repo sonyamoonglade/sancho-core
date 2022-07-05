@@ -325,6 +325,7 @@ export class OrderService {
 
       this.events.on(Events.ORDER_QUEUE_HAS_MODIFIED, async () => {
          const queue = await this.fetchOrderQueue();
+         console.log(queue);
          const chunk = `data: ${JSON.stringify({ queue })}\n\n`;
          return res.write(chunk);
       });
@@ -369,13 +370,13 @@ export class OrderService {
             const mapped: WaitingQueueOrder = {
                status,
                is_delivered,
-               delivery_details,
+               delivery_details: is_delivered ? JSON.parse(delivery_details as unknown as string) : null,
                is_delivered_asap,
                user: {
                   phone_number
                },
                delivered_at,
-               cart,
+               cart: this.parseJsonCart(cart as unknown as string[]),
                created_at,
                total_cart_price,
                id
@@ -386,11 +387,11 @@ export class OrderService {
          const mapped: VerifiedQueueOrder = {
             delivered_at,
             is_delivered_asap,
-            cart,
+            cart: this.parseJsonCart(cart as unknown as string[]),
             created_at,
             status,
             total_cart_price,
-            delivery_details,
+            delivery_details: is_delivered ? JSON.parse(delivery_details as unknown as string) : null,
             is_delivered,
             user: {
                name,

@@ -79,13 +79,14 @@ const VerifyOrderModal = () => {
 
       if (worker.verifyOrder && drag.item && drag.item.id !== 0) {
          const phoneNumber = drag.item.phoneNumber.substring(2, drag.item.phoneNumber.length);
+         const order = findWaitingOrderByPhoneNumber(phoneNumber);
          setFormValues((state: WorkerVerifyOrderFormState) => {
             const obj = state.phone_number_w;
             obj.value = phoneNumber;
             obj.isValid = minLengthValidation(phoneNumber, 10);
             return { ...state, phone_number_w: obj };
          });
-         presetDeliveryDetails();
+         presetDeliveryDetails(order);
       }
    }, [worker.verifyOrder]);
 

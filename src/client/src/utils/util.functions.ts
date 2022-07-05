@@ -31,8 +31,7 @@ export const utils = {
 
    getOrderTotalPriceByCart: function (cart: DatabaseCartProduct[]) {
       if (!cart) return 0;
-      const copy = [...cart].map((item: any) => JSON.parse(item));
-      return copy.reduce((a, c) => {
+      return cart.reduce((a, c) => {
          a += c.price * c.quantity;
          return a;
       }, 0);

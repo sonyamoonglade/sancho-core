@@ -59,6 +59,22 @@ export class UserController {
       }
    }
 
+   @Get("/credentials")
+   async getUserCredentials(@Res() res: Response, @Query("phoneNumber") phoneNumber: string) {
+      try {
+         const credentials = await this.userService.getUserCredentials(phoneNumber);
+         if (credentials !== null) {
+            return res.status(200).send({ credentials });
+         }
+         return res.status(404).send({
+            message: "Данные о пользователе не найдены!"
+         });
+      } catch (e) {
+         console.log(e);
+         throw e;
+      }
+   }
+
    @Post("/login")
    @UseGuards(PreventAuthedGuard)
    async login(@Res() res: Response, @Req() req: extendedRequest, @Body() b: RegisterUserDto) {

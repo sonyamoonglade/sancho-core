@@ -19,11 +19,17 @@ import {
 } from "../../shared/exceptions/user.exceptions";
 import { UnexpectedServerError } from "../../shared/exceptions/unexpected-errors.exceptions";
 import { APP_ROLES } from "../../types/contants";
+import { UserCredentialsDto } from "./dto/user-creds.dto";
 
 require("dotenv").config();
 @Injectable()
 export class UserService {
    constructor(private sessionService: SessionService, private userRepository: UserRepository) {}
+
+   async getUserCredentials(phoneNumber: string): Promise<UserCredentialsDto | null> {
+      const phoneNumberWithPlus = "+" + phoneNumber;
+      return this.userRepository.getUserCredentials(phoneNumberWithPlus);
+   }
 
    async updateUserRememberedDeliveryAddress(userId: number, deliveryDetails: string): Promise<void> {
       const updated: Partial<User> = {

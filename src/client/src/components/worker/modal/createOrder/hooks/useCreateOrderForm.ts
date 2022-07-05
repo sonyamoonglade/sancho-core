@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { FormField } from "../../../../../types/types";
 import { useVirtualCart } from "../../../hooks/useVirtualCart";
+import { UserCredentials } from "./useCreateMasterOrder";
 
 export interface WorkerCreateOrderFormState {
    verified_fullname_c: FormField;
@@ -73,6 +74,23 @@ export function useCreateOrderForm() {
       virtualCart.clearVirtualCart();
    }
 
+   function setUserCredentials(creds: UserCredentials): void {
+      setFormValues((state: WorkerCreateOrderFormState) => {
+         const { address, entrance_number, flat_call, floor } = creds.userDeliveryAddress;
+         state.floor_c.value = floor.toString();
+         state.floor_c.isValid = true;
+         state.address_c.value = address.toString();
+         state.address_c.isValid = true;
+         state.entrance_number_c.value = entrance_number.toString();
+         state.entrance_number_c.isValid = true;
+         state.flat_call_c.value = flat_call.toString();
+         state.flat_call_c.isValid = true;
+         state.verified_fullname_c.value = creds.username;
+         state.verified_fullname_c.isValid = true;
+         return { ...state };
+      });
+   }
+
    const isSubmitButtonActive = useMemo(() => {
       const values = Object.values(formValues);
       const withAddressAndAllValid = values.every((v) => v.isValid);
@@ -105,6 +123,7 @@ export function useCreateOrderForm() {
       setFormValues,
       formValues,
       getFormValues,
-      isSubmitButtonActive
+      isSubmitButtonActive,
+      setUserCredentials
    };
 }

@@ -21,8 +21,8 @@ const CreateOrderModal = () => {
       dispatch(windowActions.toggleVirtualCart());
    }
 
-   const { formValues, setFormDefaults, setFormValues, getFormValues, isSubmitButtonActive } = useCreateOrderForm();
-   const { createMasterOrder } = useCreateMasterOrder();
+   const { formValues, setFormDefaults, setFormValues, getFormValues, setUserCredentials, isSubmitButtonActive } = useCreateOrderForm();
+   const { createMasterOrder, fetchUserCredentials } = useCreateMasterOrder();
 
    const virtualCart = useVirtualCart();
 
@@ -48,6 +48,20 @@ const CreateOrderModal = () => {
       dispatch(workerActions.setVirtualCart([]));
       virtualCart.clearVirtualCart();
    }
+   async function fetchAndSetUserCredentialsAsync(phoneNumber: string) {
+      const credentials = await fetchUserCredentials(phoneNumber);
+      if (credentials !== null) {
+         setUserCredentials(credentials);
+         return;
+      }
+      return;
+   }
+   useEffect(() => {
+      const { isValid, value: phoneNumber } = formValues.phone_number_c;
+      if (createMasterOrder && isValid) {
+         fetchAndSetUserCredentialsAsync(phoneNumber);
+      }
+   }, [formValues.phone_number_c.isValid]);
 
    useEffect(() => {
       const totalVcPrice = utils.getOrderTotalPrice(virtualCartState.items);
