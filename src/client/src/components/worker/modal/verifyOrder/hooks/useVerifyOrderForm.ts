@@ -69,7 +69,7 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
       return {
          phone_number: `+7${formValues.phone_number_w.value}`,
          is_delivered: formValues.is_delivered_w.value,
-         verified_fullname: formValues.verified_fullname_w.value,
+         username: formValues.verified_fullname_w.value,
          delivery_details: {
             address: formValues.address_w.value,
             flat_call: Number(formValues.flat_call_w.value),
@@ -79,6 +79,15 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
          delivered_at: new Date(formValues.delivered_at.value),
          is_delivered_asap: formValues.is_delivered_asap.value
       };
+   }
+
+   function setUsername(username: string): void {
+      setFormValues((state: WorkerVerifyOrderFormState) => {
+         const vf = state.verified_fullname_w;
+         vf.value = username;
+         vf.isValid = true;
+         return { ...state, verified_fullname_w: vf };
+      });
    }
 
    function setFormDefaults() {
@@ -125,7 +134,7 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
          return;
       }
       const phoneNumber = formValues.phone_number_w.value;
-      const order = orderQueue.waiting.find((o) => o.phone_number === `+7${phoneNumber}`);
+      const order = orderQueue.waiting.find((o) => o.user.phone_number === `+7${phoneNumber}`);
       if (order?.is_delivered) {
          const { address, flat_call, entrance_number, floor } = order?.delivery_details;
          const { is_delivered_asap } = order;
@@ -182,6 +191,7 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
       formDefaults,
       setFormValues,
       isSubmitButtonActive,
-      setFormDefaultsExceptPhoneNumberAndFullname
+      setFormDefaultsExceptPhoneNumberAndFullname,
+      setUsername
    };
 }

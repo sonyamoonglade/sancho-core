@@ -29,10 +29,11 @@ const VerifyOrderModal = () => {
       setFormValues,
       setFormDefaults,
       isSubmitButtonActive,
-      setFormDefaultsExceptPhoneNumberAndFullname
+      setFormDefaultsExceptPhoneNumberAndFullname,
+      setUsername
    } = useVerifyOrderForm(orderQueue);
 
-   const { verifyOrder, findWaitingOrderByPhoneNumber } = useVerifyOrder(client, orderQueue, totalOrderPrice, virtualCartState.items);
+   const { verifyOrder, findWaitingOrderByPhoneNumber, fetchUsername } = useVerifyOrder(client, orderQueue, totalOrderPrice, virtualCartState.items);
 
    const { minLengthValidation } = useFormValidations();
 
@@ -87,12 +88,21 @@ const VerifyOrderModal = () => {
          presetDeliveryDetails();
       }
    }, [worker.verifyOrder]);
+
+   async function fetchUsernameAsync(phoneNumber: string) {
+      const username = await fetchUsername(phoneNumber);
+      setUsername(username);
+      return;
+   }
+
    useEffect(() => {
-      if (formValues.phone_number_w.isValid === false) {
+      const { isValid, value: phoneNumber } = formValues.phone_number_w;
+
+      if (isValid === false) {
          setTotalOrderPrice(0);
          return;
       }
-      if (formValues.phone_number_w.isValid && worker.virtualCart) {
+      if (isValid && worker.virtualCart) {
          let price = utils.getOrderTotalPrice(virtualCartState.items);
          const isPunished = checkIsPunished(price);
          if (isPunished) {
@@ -100,7 +110,12 @@ const VerifyOrderModal = () => {
          }
          setTotalOrderPrice(price);
       } else {
-         const o = findWaitingOrderByPhoneNumber(formValues.phone_number_w.value);
+         //fetching userName goes here!
+         if (worker.verifyOrder) {
+            fetchUsernameAsync(phoneNumber);
+         }
+
+         const o = findWaitingOrderByPhoneNumber(phoneNumber);
          let price = utils.getOrderTotalPriceByCart(o?.cart);
          const isPunished = checkIsPunished(price);
          if (isPunished) {

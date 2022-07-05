@@ -71,8 +71,11 @@ const Order = () => {
    async function handleOrderCreation() {
       const formValues = getFormValues();
       const usrCart = cart.getCart();
+      const price = cart.calculateCartTotalPrice();
+      if (price === 0) {
+         return;
+      }
       const { phone_number: formPhoneNumber } = formValues;
-
       try {
          if (!isAuthenticated) {
             await login(formPhoneNumber);
@@ -88,8 +91,7 @@ const Order = () => {
             s.phone_number.isValid = false;
             return s;
          });
-         dispatch(windowActions.toggleLoading(false));
-         return dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."));
+         dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."));
       }
 
       try {
@@ -106,7 +108,6 @@ const Order = () => {
          dispatch(productActions.setTotalCartPrice(0));
       } catch (e: any) {
          const message = e?.response?.data?.message;
-         dispatch(windowActions.toggleLoading(false));
          setFormValues((p: UserOrderFormState) => {
             const s = { ...p };
             s.phone_number.value = "";

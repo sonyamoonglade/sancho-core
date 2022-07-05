@@ -74,11 +74,15 @@ export type ResponseUserOrder = {
 };
 
 export interface VerifiedQueueOrder extends ResponseUserOrder {
-   phone_number: string;
-   verified_fullname: string;
+   user: {
+      phone_number: string;
+      name: string;
+   };
 }
 export interface WaitingQueueOrder extends ResponseUserOrder {
-   phone_number: string;
+   user: {
+      phone_number: string;
+   };
 }
 
 export type OrderQueue = {

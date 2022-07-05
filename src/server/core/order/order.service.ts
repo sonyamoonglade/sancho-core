@@ -7,7 +7,7 @@ import { Order, orders } from "../entities/Order";
 import { User, users } from "../entities/User";
 import { VerifyOrderDto } from "./dto/verify-order.dto";
 import { CancelOrderDto } from "./dto/cancel-order.dto";
-import { Product, products } from "../entities/Product";
+import { Product } from "../entities/Product";
 import { ProductRepository } from "../product/product.repository";
 import {
    AppRoles,
@@ -34,7 +34,8 @@ import { JsonService } from "../../shared/database/json.service";
 import { Events } from "../../shared/event/events";
 import { MiscService } from "../miscellaneous/misc.service";
 import { Miscellaneous } from "../../types/types";
-import { ProductRepositoryInterface } from "../product/product.service";
+import { QueueOrderDto } from "./dto/queue-order.dto";
+import { LastVerifiedOrderDto } from "./dto/order.dto";
 
 @Injectable()
 export class OrderService {
@@ -227,12 +228,8 @@ export class OrderService {
       return OrderStatus.completed;
    }
 
-   public async userOrderHistory(userId: number): Promise<ResponseUserOrder[]> {
-      const sql = `SELECT * FROM ${orders} o WHERE user_id=${userId} ORDER BY o.created_at DESC LIMIT 15`;
-
-      const userOrders: Order[] = await this.orderRepository.customQuery(sql);
-      let mappedToResponse: ResponseUserOrder[];
-      mappedToResponse = userOrders.map((o: Order) => {
+   public mapRawHistory(raw: Order[]): ResponseUserOrder[] {
+      return raw.map((o: Order) => {
          const { total_cart_price, id, created_at, status, is_delivered, delivery_details, cart, is_delivered_asap, delivered_at } = o;
          const rso: ResponseUserOrder = {
             total_cart_price,
@@ -247,19 +244,15 @@ export class OrderService {
          };
          return rso;
       });
-      return mappedToResponse;
    }
 
-   public async getLastVerifiedOrder(phoneNumber: string): Promise<Partial<Order> | undefined> {
-      const sql = `
+   public async userOrderHistory(userId: number): Promise<ResponseUserOrder[]> {
+      const rawHistory: Order[] = await this.orderRepository.getUserOrderHistory(userId);
+      return this.mapRawHistory(rawHistory);
+   }
 
-      SELECT o.created_at,o.id,o.status FROM ${orders} o JOIN users u ON o.user_id = u.id
-      WHERE u.phone_number = '${phoneNumber}' AND o.status = '${OrderStatus.verified}'
-      ORDER BY o.created_at DESC LIMIT 1    
-    `;
-      const ord = (await this.orderRepository.customQuery(sql))[0];
-
-      return ord;
+   public async getLastVerifiedOrder(phoneNumber: string): Promise<LastVerifiedOrderDto> {
+      return this.orderRepository.getLastVerifiedOrder(phoneNumber);
    }
 
    public async hasWaitingOrder(user_id: number, phone_number: string): Promise<{ id: number | null; has: boolean }> {
@@ -345,22 +338,74 @@ export class OrderService {
 
    private async fetchOrderQueue(): Promise<OrderQueue> {
       try {
-         const sql = `
-        select o.id,o.cart,o.total_cart_price,o.status,o.is_delivered,o.delivery_details,o.created_at,
-        o.verified_fullname,u.phone_number,o.delivered_at,o.is_delivered_asap from ${orders} o join ${users} u on o.user_id= 
-        u.id where o.status = '${OrderStatus.waiting_for_verification}' or o.status = '${OrderStatus.verified}' order by o.created_at desc
-      `;
-         const result: VerifiedQueueOrder[] = await this.orderRepository.customQuery(sql);
-
-         const queue = this.mapOrdersToQueueTypes(result);
-         return queue;
+         const rawQueue = await this.orderRepository.getOrderQueue();
+         return this.mapRawQueue(rawQueue);
       } catch (e) {
-         throw new UnexpectedServerError("error occured fetching queue");
+         console.log(e);
+         throw new UnexpectedServerError("error occurred fetching queue");
       }
+   }
+
+   public mapRawQueue(raw: QueueOrderDto[]): OrderQueue {
+      const queue: OrderQueue = {
+         waiting: [],
+         verified: []
+      };
+      for (const rawOrder of raw) {
+         const {
+            status,
+            is_delivered_asap,
+            delivered_at,
+            cart,
+            delivery_details,
+            created_at,
+            total_cart_price,
+            name,
+            phone_number,
+            is_delivered,
+            id
+         } = rawOrder;
+         if (rawOrder.status === OrderStatus.waiting_for_verification) {
+            const mapped: WaitingQueueOrder = {
+               status,
+               is_delivered,
+               delivery_details,
+               is_delivered_asap,
+               user: {
+                  phone_number
+               },
+               delivered_at,
+               cart,
+               created_at,
+               total_cart_price,
+               id
+            };
+            queue.waiting.push(mapped);
+            continue;
+         }
+         const mapped: VerifiedQueueOrder = {
+            delivered_at,
+            is_delivered_asap,
+            cart,
+            created_at,
+            status,
+            total_cart_price,
+            delivery_details,
+            is_delivered,
+            user: {
+               name,
+               phone_number
+            },
+            id
+         };
+         queue.verified.push(mapped);
+      }
+      return queue;
    }
 
    public async initialQueue() {
       const queue = await this.fetchOrderQueue();
+      console.log(queue);
       return queue;
    }
 
@@ -414,40 +459,6 @@ export class OrderService {
       return;
    }
 
-   mapOrdersToQueueTypes(orders: VerifiedQueueOrder[]): OrderQueue {
-      //map waitings
-      const w = orders
-         .filter((o) => o.status === OrderStatus.waiting_for_verification)
-         .map((o) => {
-            const f: WaitingQueueOrder = {
-               cart: o.cart,
-               created_at: o.created_at,
-               total_cart_price: o.total_cart_price,
-               status: o.status,
-               is_delivered: o.is_delivered,
-               delivery_details: o.is_delivered ? JSON.parse(o.delivery_details as unknown as string) : null,
-               id: o.id,
-               phone_number: o.phone_number,
-               is_delivered_asap: o.is_delivered_asap,
-               delivered_at: o.delivered_at
-            };
-            return f;
-         });
-      // map verified
-      const v = orders
-         .filter((o) => o.status === OrderStatus.verified)
-         .map((o) => {
-            return {
-               ...o,
-               delivery_details: o.is_delivered ? JSON.parse(o.delivery_details as unknown as string) : null
-            };
-         });
-
-      return {
-         waiting: w,
-         verified: v
-      };
-   }
    async applyDeliveryPunishment(p: number) {
       const v: Miscellaneous = await this.miscService.getAllValues();
       if (p <= v.delivery_punishment_threshold) {

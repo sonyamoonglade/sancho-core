@@ -128,7 +128,8 @@ export class UserService {
       }
    }
    async getUsername(phoneNumber: string): Promise<string> {
-      return this.userRepository.getUsername(phoneNumber);
+      const phoneNumberWithPlus = "+" + phoneNumber;
+      return this.userRepository.getUsername(phoneNumberWithPlus);
    }
    async createMasterUser(createMasterUserDto: CreateMasterUserDto): Promise<User> {
       const hashedPass = await bcrypt.hash(createMasterUserDto.password, 10);

@@ -35,6 +35,7 @@ export class UserController {
       try {
          const userId = req.user_id;
          const user = await this.userService.authMe(userId);
+         console.log(user);
          if (user.role === AppRoles.user) {
             return res.status(200).send({ phone_number: user.phone_number });
          }
@@ -45,12 +46,12 @@ export class UserController {
          throw e;
       }
    }
-   @Get("/name")
+   @Get("/username")
    async getFullName(@Res() res: Response, @Query("phoneNumber") phoneNumber: string) {
       try {
-         const name = await this.userService.getUsername(phoneNumber);
+         const username = await this.userService.getUsername(phoneNumber);
          return res.status(200).send({
-            name
+            username
          });
       } catch (e) {
          console.log(e);

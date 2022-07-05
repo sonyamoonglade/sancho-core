@@ -38,7 +38,8 @@ exports.up = (pgm) => {
       },
       name: {
          type: "varchar(255)",
-         notNull: true
+         notNull: false,
+         default: null
       }
    });
    pgm.createIndex("users", "phone_number");

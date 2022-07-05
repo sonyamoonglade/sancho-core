@@ -25,6 +25,8 @@ export class UserRepository implements Repository<User> {
    }
    async updateUsername(name: string, userId: number): Promise<void> {
       const sql = `UPDATE ${users} SET name='${name}' WHERE id = ${userId}`;
+      await this.db.query(sql);
+      return;
    }
    async getById(id: number | string): Promise<User | undefined> {
       const selectSql = this.qb.ofTable(users).select<User>({ where: { id: id as number } });

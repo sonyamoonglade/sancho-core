@@ -25,8 +25,8 @@ const CancelList = () => {
          <ul>
             {orderList.cancel?.map((order) => {
                const extraData: ExtraData = {
-                  phoneNumber: order.phone_number,
-                  verifiedFullname: order.verified_fullname
+                  phoneNumber: order.user.phone_number,
+                  username: order.user.name
                };
                return <OrderHistoryItem key={order.id + order.status} order={order} isFirstOrder={false} extraData={extraData} canDrag={false} />;
             })}

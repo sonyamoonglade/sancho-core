@@ -7,6 +7,7 @@ import { AppRoles } from "../../../../common/types";
 import { UserService } from "../../user/user.service";
 import { LastOrderIsNotYetVerified, OrderCreationLimitExceeded } from "../../../shared/exceptions/order.exceptions";
 import { CreateMasterOrderDto } from "../dto/create-order.dto";
+import { LastVerifiedOrderDto } from "../dto/order.dto";
 
 @Injectable()
 export class OrderAntiSpamMiddleware implements NestMiddleware {
@@ -23,7 +24,7 @@ export class OrderAntiSpamMiddleware implements NestMiddleware {
          // get the last verfified order and check if verif date is 5min away from current!
          const dto: CreateMasterOrderDto = req.body;
          const phoneNumber: string = dto.phone_number;
-         const lw: Partial<Order> = await this.orderService.getLastVerifiedOrder(phoneNumber);
+         const lw: LastVerifiedOrderDto = await this.orderService.getLastVerifiedOrder(phoneNumber);
          if (lw === undefined) {
             return next();
          }

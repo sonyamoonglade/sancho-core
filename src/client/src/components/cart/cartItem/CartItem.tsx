@@ -47,9 +47,9 @@ const CartItem: FC<cartItemProps> = ({ product, isActive }) => {
          </div>
 
          <div className="price_info">
-            <p className="cart_item_quantity">
+            <div className="cart_item_quantity">
                <ReduceAddButton add={addProductQuantity} dbProduct={product} reduce={reduceProductQuantity} />
-            </p>
+            </div>
             <i className="quantity_price">
                {product.quantity * product.price} {currency}
             </i>

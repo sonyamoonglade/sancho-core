@@ -18,10 +18,11 @@ export function useAuthentication(client: AxiosInstance) {
          return dispatch(userActions.logout());
       } catch (e) {
          dispatch(userActions.logout());
+         throw e;
       }
    }
 
-   async function loginMaster(formValues: MasterFormValues): Promise<boolean> {
+   async function loginMaster(formValues: MasterFormValues): Promise<string> {
       try {
          const body = formValues;
          const r = await client.post("/users/loginMaster", body);
@@ -29,17 +30,17 @@ export function useAuthentication(client: AxiosInstance) {
             switch (r.data.role) {
                case AppRoles.master:
                   dispatch(userActions.loginMaster());
-                  return r.data;
+                  return r.data.role;
                case AppRoles.worker:
                   dispatch(userActions.loginWorker());
-                  return r.data;
+                  return r.data.role;
             }
          }
          return null;
       } catch (e) {
          console.log(e);
          dispatch(userActions.logoutMaster());
-         return null;
+         throw e;
       }
    }
 

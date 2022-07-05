@@ -29,13 +29,13 @@ const OrderQueueComponent = () => {
       <div className="queue_container">
          <div className="waiting queue_col">
             <ul>
-               {queue?.waiting.map((wo) => (
+               {queue?.waiting.map((qitem) => (
                   <OrderHistoryItem
                      extraData={{
-                        phoneNumber: wo.phone_number
+                        phoneNumber: qitem.user.phone_number
                      }}
-                     key={wo.id}
-                     order={wo}
+                     key={qitem.id}
+                     order={qitem}
                      isFirstOrder={false}
                   />
                ))}
@@ -46,14 +46,14 @@ const OrderQueueComponent = () => {
          <CancelList />
          <div className="verified queue_col">
             <ul>
-               {queue?.verified.map((vo) => (
+               {queue?.verified.map((qitem) => (
                   <OrderHistoryItem
                      extraData={{
-                        verifiedFullname: vo.verified_fullname,
-                        phoneNumber: vo.phone_number
+                        username: qitem.user.name,
+                        phoneNumber: qitem.user.phone_number
                      }}
-                     key={vo.id}
-                     order={vo}
+                     key={qitem.id}
+                     order={qitem}
                      isFirstOrder={false}
                   />
                ))}

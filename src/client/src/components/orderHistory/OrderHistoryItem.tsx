@@ -11,7 +11,7 @@ import { useDrag } from "react-dnd";
 
 export interface ExtraData {
    phoneNumber?: string;
-   verifiedFullname?: string;
+   username?: string;
 }
 
 interface orderHistoryItemProps {
@@ -58,7 +58,7 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
       type: "ORDER",
       item: {
          id: order.id,
-         phoneNumber: (order as WaitingQueueOrder).phone_number,
+         phoneNumber: extraData?.phoneNumber || "", // there
          status: order.status
       },
       collect: (monitor) => ({
@@ -125,10 +125,10 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
                         <p className="phone_number">+{extraData.phoneNumber.substring(2, extraData.phoneNumber.length)}</p>
                      </>
                   )}
-                  {extraData?.verifiedFullname !== undefined && (
+                  {extraData?.username !== undefined && (
                      <>
                         <p>&nbsp;|&nbsp;</p>
-                        <p className="order_status">{extraData.verifiedFullname}</p>
+                        <p className="order_status username">{extraData.username}</p>
                      </>
                   )}
                </div>
