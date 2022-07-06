@@ -69,25 +69,64 @@ export function useCreateOrderForm() {
    const virtualCart = useVirtualCart();
 
    function setFormDefaults() {
-      setFormValues({ ...formDefaults });
-      formValues.is_delivered_c.value = false;
+      setFormValues((state) => {
+         const copy: WorkerCreateOrderFormState = Object.assign({}, state);
+         copy.verified_fullname_c = {
+            value: "",
+            isValid: false
+         };
+         copy.floor_c = {
+            value: "",
+            isValid: false
+         };
+         copy.address_c = {
+            value: "",
+            isValid: false
+         };
+         copy.entrance_number_c = {
+            value: "",
+            isValid: false
+         };
+         copy.phone_number_c = {
+            value: "",
+            isValid: false
+         };
+         copy.flat_call_c = {
+            value: "",
+            isValid: false
+         };
+         copy.is_delivered_asap = {
+            value: false,
+            isValid: true
+         };
+         copy.is_delivered_c = {
+            value: false,
+            isValid: true
+         };
+         copy.delivered_at = {
+            value: "",
+            isValid: false
+         };
+         return { ...copy };
+      });
       virtualCart.clearVirtualCart();
    }
 
    function setUserCredentials(creds: UserCredentials): void {
       setFormValues((state: WorkerCreateOrderFormState) => {
          const { address, entrance_number, flat_call, floor } = creds.userDeliveryAddress;
-         state.floor_c.value = floor.toString();
-         state.floor_c.isValid = true;
-         state.address_c.value = address.toString();
-         state.address_c.isValid = true;
-         state.entrance_number_c.value = entrance_number.toString();
-         state.entrance_number_c.isValid = true;
-         state.flat_call_c.value = flat_call.toString();
-         state.flat_call_c.isValid = true;
-         state.verified_fullname_c.value = creds.username;
-         state.verified_fullname_c.isValid = true;
-         return { ...state };
+         const copy: WorkerCreateOrderFormState = Object.assign({}, state);
+         copy.floor_c.value = floor.toString();
+         copy.floor_c.isValid = true;
+         copy.address_c.value = address.toString();
+         copy.address_c.isValid = true;
+         copy.entrance_number_c.value = entrance_number.toString();
+         copy.entrance_number_c.isValid = true;
+         copy.flat_call_c.value = flat_call.toString();
+         copy.flat_call_c.isValid = true;
+         copy.verified_fullname_c.value = creds.username;
+         copy.verified_fullname_c.isValid = true;
+         return { ...copy };
       });
    }
 
