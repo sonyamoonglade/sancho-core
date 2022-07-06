@@ -1,4 +1,5 @@
 import { IsDefined, IsNumber, IsString } from "class-validator";
+import { AppRoles } from "../../../../common/types";
 
 export class CancelOrderDto {
    @IsDefined()
@@ -8,4 +9,6 @@ export class CancelOrderDto {
    @IsDefined()
    @IsString()
    cancel_explanation: string;
+
+   role: AppRoles;
 }

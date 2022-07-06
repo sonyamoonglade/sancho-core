@@ -114,16 +114,18 @@ export function useCreateOrderForm() {
 
    function setUserCredentials(creds: UserCredentials): void {
       setFormValues((state: WorkerCreateOrderFormState) => {
-         const { address, entrance_number, flat_call, floor } = creds.userDeliveryAddress;
          const copy: WorkerCreateOrderFormState = Object.assign({}, state);
-         copy.floor_c.value = floor.toString();
-         copy.floor_c.isValid = true;
-         copy.address_c.value = address.toString();
-         copy.address_c.isValid = true;
-         copy.entrance_number_c.value = entrance_number.toString();
-         copy.entrance_number_c.isValid = true;
-         copy.flat_call_c.value = flat_call.toString();
-         copy.flat_call_c.isValid = true;
+         if (creds.userDeliveryAddress !== null) {
+            const { address, entrance_number, flat_call, floor } = creds.userDeliveryAddress;
+            copy.floor_c.value = floor.toString();
+            copy.floor_c.isValid = true;
+            copy.address_c.value = address.toString();
+            copy.address_c.isValid = true;
+            copy.entrance_number_c.value = entrance_number.toString();
+            copy.entrance_number_c.isValid = true;
+            copy.flat_call_c.value = flat_call.toString();
+            copy.flat_call_c.isValid = true;
+         }
          copy.verified_fullname_c.value = creds.username;
          copy.verified_fullname_c.isValid = true;
          return { ...copy };

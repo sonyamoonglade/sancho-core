@@ -20,4 +20,8 @@ export class InitMiscDto {
    @IsDefined()
    @IsNumber()
    reg_cust_duration: number;
+
+   @IsDefined()
+   @IsNumber()
+   cancel_ban_duration: number;
 }

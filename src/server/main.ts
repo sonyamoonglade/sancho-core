@@ -13,9 +13,10 @@ require("dotenv").config({
 async function bootstrap() {
    const config = getConfig(process.env.NODE_ENV);
    console.log("config has initialized");
-   const app = await NestFactory.create(AppModule, {
-      logger: ["error"]
-   });
+   const app = await NestFactory.create(AppModule);
+   // {
+   //    logger: ["error"]
+   // }
    const userService: UserService = app.get<UserService>(UserService);
    app.setGlobalPrefix("/api/v1");
 

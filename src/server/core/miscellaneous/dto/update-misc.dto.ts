@@ -6,4 +6,5 @@ export class UpdateMiscDto {
    delivery_punishment_value: number;
    reg_cust_threshold: number;
    reg_cust_duration: number;
+   cancel_ban_duration: number;
 }

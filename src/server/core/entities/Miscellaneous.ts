@@ -5,4 +5,5 @@ export type Miscellaneous = {
    order_creation_delay: number;
    reg_cust_threshold: number;
    reg_cust_duration: number;
+   cancel_ban_duration: number;
 };

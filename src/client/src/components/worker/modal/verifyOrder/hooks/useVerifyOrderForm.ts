@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { FormField } from "../../../../../types/types";
 import { OrderQueue, VerifiedQueueOrder, WaitingQueueOrder } from "../../../../../common/types";
 import { useFormValidations } from "../../../../../hooks/useFormValidations";
+import { UserCredentials } from "../../createOrder/hooks/useCreateMasterOrder";
 
 export interface WorkerVerifyOrderFormState {
    verified_fullname_w: FormField;
@@ -68,17 +69,17 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
    //apply types
    function getFormValues() {
       return {
-         phone_number: `+7${formValues.phone_number_w.value}`,
-         is_delivered: formValues.is_delivered_w.value,
+         phoneNumber: `+7${formValues.phone_number_w.value}`,
+         isDelivered: formValues.is_delivered_w.value,
          username: formValues.verified_fullname_w.value,
-         delivery_details: {
+         deliveryDetails: {
             address: formValues.address_w.value,
             flat_call: Number(formValues.flat_call_w.value),
             entrance_number: Number(formValues.entrance_number_w.value),
             floor: Number(formValues.floor_w.value)
          },
-         delivered_at: new Date(formValues.delivered_at.value),
-         is_delivered_asap: formValues.is_delivered_asap.value
+         deliveredAt: new Date(formValues.delivered_at.value),
+         isDeliveredAsap: formValues.is_delivered_asap.value
       };
    }
 
@@ -88,6 +89,29 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
          vf.value = username;
          vf.isValid = true;
          return { ...state, verified_fullname_w: vf };
+      });
+   }
+
+   function setCredentials(creds: UserCredentials): void {
+      //todo: marks
+      setFormValues((state: WorkerVerifyOrderFormState) => {
+         const copy = Object.assign({}, state);
+         if (creds.username !== null) {
+            copy.verified_fullname_w.value = creds.username;
+            copy.verified_fullname_w.isValid = true;
+         }
+         if (creds.userDeliveryAddress !== null) {
+            copy.flat_call_w.value = creds.userDeliveryAddress.flat_call.toString();
+            copy.flat_call_w.isValid = true;
+            copy.address_w.value = creds.userDeliveryAddress.address.toString();
+            copy.address_w.isValid = true;
+            copy.entrance_number_w.value = creds.userDeliveryAddress.entrance_number.toString();
+            copy.entrance_number_w.isValid = true;
+
+            copy.floor_w.value = creds.userDeliveryAddress.floor.toString();
+            copy.floor_w.isValid = true;
+         }
+         return { ...copy };
       });
    }
 
@@ -201,6 +225,7 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
       setFormValues,
       isSubmitButtonActive,
       setFormDefaultsExceptPhoneNumberAndFullname,
-      setUsername
+      setUsername,
+      setCredentials
    };
 }

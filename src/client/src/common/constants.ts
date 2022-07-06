@@ -4,3 +4,4 @@ export const x_hmac_signature = "x-hmac-signature";
 export const x_file_name = "x-file-name";
 export const x_destination = "x-destination";
 export const x_file_ext = "x-file-ext";
+export const REGULAR_CUSTOMER_CONTENT = "Постоянный клиент";

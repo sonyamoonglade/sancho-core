@@ -13,6 +13,7 @@ import { QueryBuilderModule } from "../../shared/queryBuilder/qb.module";
 import { DbModule } from "../../shared/database/db.module";
 import { MiscRepository } from "../miscellaneous/misc.repository";
 import { MiscService } from "../miscellaneous/misc.service";
+import { MarkRepository } from "../mark/mark.repository";
 
 @Module({
    providers: [
@@ -21,15 +22,15 @@ import { MiscService } from "../miscellaneous/misc.service";
       SessionService,
       SessionRepository,
       RegisterSpamGuard,
-      OrderService,
-      OrderRepository,
       ProductRepository,
       CookieService,
       MiscRepository,
-      MiscService
+      MiscService,
+      MarkRepository,
+      OrderService
    ],
    controllers: [UserController],
-   imports: [DbModule, QueryBuilderModule],
+   imports: [DbModule, QueryBuilderModule, MiscService],
    exports: [UserService]
 })
 export class UserModule {}

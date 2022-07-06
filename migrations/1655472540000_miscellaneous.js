@@ -28,6 +28,10 @@ exports.up = (pgm) => {
       reg_cust_duration: {
          type: "integer",
          notNull: true
+      },
+      cancel_ban_duration: {
+         type: "integer",
+         notNull: true
       }
    });
 };

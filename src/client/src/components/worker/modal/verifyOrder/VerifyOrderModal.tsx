@@ -12,6 +12,7 @@ import { currency } from "../../../../common/constants";
 import { useVerifyOrder } from "./hooks/useVerifyOrder";
 import { utils } from "../../../../utils/util.functions";
 import { useFormValidations } from "../../../../hooks/useFormValidations";
+import { useCreateMasterOrder, UserCredentials } from "../createOrder/hooks/useCreateMasterOrder";
 
 const VerifyOrderModal = () => {
    const { worker, drag } = useAppSelector(windowSelector);
@@ -31,11 +32,12 @@ const VerifyOrderModal = () => {
       isSubmitButtonActive,
       setFormDefaultsExceptPhoneNumberAndFullname,
       setUsername,
-      setPhoneNumber
+      setPhoneNumber,
+      setCredentials
    } = useVerifyOrderForm(orderQueue);
 
    const { verifyOrder, findWaitingOrderByPhoneNumber, fetchUsername } = useVerifyOrder(client, orderQueue, totalOrderPrice, virtualCartState.items);
-
+   const { fetchUserCredentials } = useCreateMasterOrder();
    const { DELIVERY_PUNISHMENT_THRESHOLD, DELIVERY_PUNISHMENT_VALUE } = useAppSelector(miscSelector);
 
    async function handleOrderVerification() {
@@ -59,6 +61,12 @@ const VerifyOrderModal = () => {
          dispatch(workerActions.setVirtualCart(parsedCart));
          virtualCart.setVirtualCart(parsedCart);
       }
+   }
+
+   async function fetchUserCredentialsAsync(phoneNumber: string): Promise<void> {
+      const creds: UserCredentials = await fetchUserCredentials(phoneNumber);
+      setCredentials(creds);
+      return;
    }
 
    useEffect(() => {
@@ -102,9 +110,9 @@ const VerifyOrderModal = () => {
          }
          setTotalOrderPrice(price);
       } else {
-         //fetching userName goes here!
+         //fetching creds goes here!
          if (worker.verifyOrder) {
-            fetchUsernameAsync(phoneNumber);
+            fetchUserCredentialsAsync(phoneNumber);
          }
 
          const o = findWaitingOrderByPhoneNumber(phoneNumber);

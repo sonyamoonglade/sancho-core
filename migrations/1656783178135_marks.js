@@ -15,9 +15,8 @@ exports.up = (pgm) => {
          notNull: true
       },
       content: {
-         type: "varchar(512)",
-         notNull: true,
-         unique: true
+         type: "varchar(255)",
+         notNull: true
       },
       is_important: {
          type: "boolean",
@@ -28,6 +27,7 @@ exports.up = (pgm) => {
          notNull: true
       }
    });
+   pgm.sql(`ALTER TABLE "marks" ADD CONSTRAINT "id_content_unique" UNIQUE(content,id)`);
 };
 
 exports.down = (pgm) => {

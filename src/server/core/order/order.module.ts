@@ -12,11 +12,12 @@ import { OrderAntiSpamMiddleware } from "./middleware/order.anti-spam.middleware
 import { MiscModule } from "../miscellaneous/misc.module";
 import { MiscService } from "../miscellaneous/misc.service";
 import { MiscRepository } from "../miscellaneous/misc.repository";
+import { UserService } from "../user/user.service";
 
 @Module({
-   providers: [OrderService, OrderRepository, OrderAntiSpamMiddleware, ProductRepository, CookieService, MiscService, MiscRepository],
+   providers: [OrderService, OrderRepository, OrderAntiSpamMiddleware, ProductRepository, CookieService, MiscService, MiscRepository, UserService],
    controllers: [OrderController],
-   imports: [DbModule, QueryBuilderModule, UserModule, SessionModule]
+   imports: [DbModule, QueryBuilderModule, SessionModule]
 })
 export class OrderModule implements NestModule {
    configure(consumer: MiddlewareConsumer): any {

@@ -10,6 +10,7 @@ import { OrderStatus, ResponseUserOrder, VerifiedQueueOrder, WaitingQueueOrder }
 import { users } from "../entities/User";
 import { QueueOrderDto } from "./dto/queue-order.dto";
 import { LastVerifiedOrderDto } from "./dto/order.dto";
+import { CreateMasterOrderDto } from "./dto/create-order.dto";
 
 @Injectable()
 export class OrderRepository implements Repository<Order> {
@@ -20,6 +21,15 @@ export class OrderRepository implements Repository<Order> {
       await this.db.query(deleteSql);
    }
 
+   async getOrderSumInTerms(termsInDays: number, userId: number): Promise<Partial<Order>[]> {
+      const sql = `
+        SELECT total_cart_price FROM ${orders} WHERE is_paid = true AND status = '${OrderStatus.completed}' AND user_id = ${userId}
+        AND created_at > ((NOW() + INTERVAL '+4HOUR')- INTERVAL '30DAYS') AND created_at < (NOW() + INTERVAL '+4HOUR')
+      `;
+      const { rows } = await this.db.query(sql);
+      return rows;
+   }
+
    async getUserOrderHistory(userId: number): Promise<Order[]> {
       const sql = `SELECT * FROM ${orders} o WHERE user_id=${userId} ORDER BY o.created_at DESC LIMIT 15`;
       const { rows } = await this.db.query(sql);
@@ -28,7 +38,6 @@ export class OrderRepository implements Repository<Order> {
 
    async getLastVerifiedOrder(phoneNumber: string): Promise<LastVerifiedOrderDto> {
       const sql = `
-
       SELECT o.created_at,o.id,o.status FROM ${orders} o JOIN users u ON o.user_id = u.id
       WHERE u.phone_number = '${phoneNumber}' AND o.status = '${OrderStatus.verified}'
       ORDER BY o.created_at DESC LIMIT 1    
@@ -56,8 +65,25 @@ export class OrderRepository implements Repository<Order> {
    async save(dto: any): Promise<Order> {
       const [insertSql, insertValues] = this.qb.ofTable(orders).insert<Order>(dto);
       const { rows } = await this.db.query(insertSql, insertValues);
-
       return rows[0] as unknown as Order;
+   }
+
+   async createMasterOrder(dto: any): Promise<void> {
+      const sql = `
+         INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,created_at,verified_at)
+          VALUES($1,$2,$3,$4,$5,$6,$7, NOW()+INTERVAL '+4HOUR',NOW()+INTERVAL '+4HOUR') 
+      `;
+      const values = [
+         dto.is_delivered,
+         dto.cart,
+         dto.delivery_details,
+         dto.total_cart_price,
+         dto.is_delivered_asap,
+         dto.user_id,
+         OrderStatus.verified
+      ];
+      await this.db.query(sql, values);
+      return;
    }
 
    async update(id: number, updated: Partial<Order | undefined>): Promise<void> {

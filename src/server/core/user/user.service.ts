@@ -26,11 +26,36 @@ import { MarkDoesNotExist } from "../../shared/exceptions/mark.exceptions";
 import { Mark } from "../entities/Mark";
 import * as dayjs from "dayjs";
 import { MiscService } from "../miscellaneous/misc.service";
+import { MarkRepository } from "../mark/mark.repository";
+import { OrderService } from "../order/order.service";
+import { REGULAR_CUSTOMER_CONTENT } from "../../../common/constants";
 
 require("dotenv").config();
+
+export interface MarkRepositoryInterface {
+   create(dto: CreateMarkDto): Promise<Mark>;
+   delete(userId: number, markId: number): Promise<boolean>;
+   getUserMarks(userId: number): Promise<Mark[]>;
+}
+
 @Injectable()
 export class UserService {
-   constructor(private sessionService: SessionService, private userRepository: UserRepository) {}
+   constructor(
+      private sessionService: SessionService,
+      private userRepository: UserRepository,
+      private miscService: MiscService,
+      private markRepository: MarkRepository,
+      private orderService: OrderService
+   ) {}
+
+   generateRegularCustomerMark(userId: number, phoneNumber: string): CreateMarkDto {
+      const dto: CreateMarkDto = new CreateMarkDto();
+      dto.userId = userId;
+      dto.content = REGULAR_CUSTOMER_CONTENT;
+      dto.phoneNumber = phoneNumber;
+      dto.isImportant = true;
+      return dto;
+   }
 
    async getUserCredentials(phoneNumber: string): Promise<UserCredentialsDto> {
       const phoneNumberWithPlus = "+" + phoneNumber;
@@ -38,17 +63,58 @@ export class UserService {
       if (!credentialsWithoutMarks) {
          throw new UserCredentialsNotFound(phoneNumberWithPlus);
       }
-      const userId = await this.getUserId(phoneNumberWithPlus);
-      const userMarks: Mark[] = await this.userRepository.getUserMarks(userId);
-      const createdAt = this.hasRegularCustomerMark(userMarks); // When regular customer mark has applied at.
 
-      const nowx = dayjs().unix(); // Current time in seconds
-      const createdAtx = dayjs(createdAt).unix(); // Creation time in seconds
-      if (createdAt !== null && nowx - createdAtx) {
-         // replace with cache value
-         // const misc = await this.miscService.getAllValues();
+      const userId = await this.getUserId(phoneNumberWithPlus);
+      const userMarks: Mark[] = await this.markRepository.getUserMarks(userId);
+      console.log(userMarks, userId);
+      // Get Regular Customer Mark duration in days.
+      // todo: replace with cache value
+      const { reg_cust_duration, reg_cust_threshold } = await this.miscService.getAllValues();
+      // Check if user has Regular Customer Mark
+      const regCustMark = this.hasRegularCustomerMark(userMarks);
+      if (!regCustMark) {
+         // Get paid and completed order sum in terms of [now-duration,now] period.
+         const sum = await this.orderService.calculateOrderSumInTerms(reg_cust_duration, userId);
+         if (sum >= reg_cust_threshold) {
+            const regCustMarkDto = this.generateRegularCustomerMark(userId, phoneNumberWithPlus);
+            const mark: Mark = await this.createMark(regCustMarkDto);
+            //Updating initial marks with newly created Regular Customer mark.
+            userMarks.push(mark);
+            return {
+               marks: userMarks,
+               username: credentialsWithoutMarks.username,
+               userDeliveryAddress: credentialsWithoutMarks.userDeliveryAddress
+            };
+         }
+         // Return without Regular Customer mark.
+         return {
+            marks: userMarks,
+            username: credentialsWithoutMarks.username,
+            userDeliveryAddress: credentialsWithoutMarks.userDeliveryAddress
+         };
       }
-      return null;
+
+      const isStillRegCust = await this.userRepository.isStillRegularCustomer(reg_cust_duration, regCustMark.id);
+      console.log(isStillRegCust, "still");
+      if (isStillRegCust) {
+         // Keep marks the same
+         const credentials: UserCredentialsDto = {
+            userDeliveryAddress: credentialsWithoutMarks?.userDeliveryAddress,
+            username: credentialsWithoutMarks?.username,
+            marks: userMarks
+         };
+         return credentials;
+      }
+      // Delete Regular Customer mark and filter initial mark array.
+      else {
+         await this.deleteMark(regCustMark.id);
+         const credentials: UserCredentialsDto = {
+            userDeliveryAddress: credentialsWithoutMarks?.userDeliveryAddress,
+            username: credentialsWithoutMarks?.username,
+            marks: userMarks.filter((mark) => mark.id !== regCustMark.id)
+         };
+         return credentials;
+      }
    }
 
    async updateUserRememberedDeliveryAddress(userId: number, deliveryDetails: string): Promise<void> {
@@ -62,11 +128,10 @@ export class UserService {
       return this.userRepository.updateUsername(name, userId);
    }
 
-   hasRegularCustomerMark(marks: Mark[]): Date {
-      const regularCustomerContent = "Постоянный клиент";
+   hasRegularCustomerMark(marks: Mark[]): Mark | null {
       for (const mark of marks) {
-         if (mark.content === regularCustomerContent) {
-            return mark.created_at;
+         if (mark.content === REGULAR_CUSTOMER_CONTENT) {
+            return mark;
          }
       }
       return null;
@@ -214,18 +279,19 @@ export class UserService {
       return user.role;
    }
 
-   async deleteMark(userId: number, markId: number): Promise<void> {
-      const ok = await this.userRepository.deleteMark(userId, markId);
+   async deleteMark(markId: number): Promise<void> {
+      const ok = await this.markRepository.delete(markId);
       if (!ok) {
-         throw new MarkDoesNotExist(markId, userId);
+         throw new MarkDoesNotExist(markId);
       }
       return;
    }
 
-   async createMark(dto: CreateMarkDto): Promise<void> {
-      const ok = this.userRepository.createMark(dto);
-      if (!ok) {
+   async createMark(dto: CreateMarkDto): Promise<Mark> {
+      const mark = this.markRepository.create(dto);
+      if (!mark) {
          throw new UserCredentialsNotFound(dto.phoneNumber);
       }
+      return mark;
    }
 }

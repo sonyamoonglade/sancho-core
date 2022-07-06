@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { CreateMasterOrderDto, CreateUserOrderDto } from "./dto/create-order.dto";
-import { UserService } from "../user/user.service";
 import { OrderRepository } from "./order.repository";
 import { Response } from "express";
 import { Order, orders } from "../entities/Order";
@@ -43,7 +42,6 @@ export class OrderService {
 
    constructor(
       private orderRepository: OrderRepository,
-      private userService: UserService,
       private jsonService: JsonService,
       private productRepository: ProductRepository,
       private miscService: MiscService
@@ -51,7 +49,7 @@ export class OrderService {
       this.events = new EventEmitter();
    }
 
-   public async createUserOrder(createUserOrderDto: CreateUserOrderDto, userId: number): Promise<void> {
+   public async createUserOrder(createUserOrderDto: CreateUserOrderDto, userId: number): Promise<Order> {
       let total_cart_price = await this.calculateTotalCartPrice(createUserOrderDto.cart);
       total_cart_price = await this.applyDeliveryPunishment(total_cart_price);
 
@@ -64,27 +62,15 @@ export class OrderService {
       };
       await this.orderRepository.save(userOrder);
 
-      if (userOrder.is_delivered === true) {
-         const stringDetails: string = JSON.stringify(userOrder.delivery_details);
-         await this.userService.updateUserRememberedDeliveryAddress(userId, stringDetails);
-      }
       this.events.emit(Events.ORDER_HAS_CREATED);
       return;
    }
 
    public async createMasterOrder(createMasterOrderDto: CreateMasterOrderDto): Promise<void> {
-      let userId = await this.userService.getUserId(createMasterOrderDto.phone_number);
-      if (userId === undefined) {
-         const registeredUser: User = (await this.userService.createUser({
-            phone_number: createMasterOrderDto.phone_number
-         })) as User;
-         userId = registeredUser.id;
-      }
-
       let total_cart_price = await this.calculateTotalCartPrice(createMasterOrderDto.cart);
       total_cart_price = await this.applyDeliveryPunishment(total_cart_price);
 
-      const { username, is_delivered_asap, delivery_details, is_delivered, delivered_at, cart } = createMasterOrderDto;
+      const { is_delivered_asap, delivery_details, is_delivered, delivered_at, cart, userId } = createMasterOrderDto;
       const now = new Date(Date.now());
       const masterOrder: Order = {
          is_delivered,
@@ -97,18 +83,14 @@ export class OrderService {
          created_at: now,
          verified_at: now
       };
-      this.userService.updateUsername(username, userId);
-      if (masterOrder.is_delivered === true) {
-         const stringDetails: string = JSON.stringify(masterOrder.delivery_details);
-         await this.userService.updateUserRememberedDeliveryAddress(userId, stringDetails);
-      }
+
       if (delivered_at !== null) {
          masterOrder.delivered_at = delivered_at;
       }
       //todo: get rid of this ( make array of jsons )
       this.jsonService.stringifyNestedObjects(masterOrder);
 
-      await this.orderRepository.save(masterOrder);
+      await this.orderRepository.createMasterOrder(masterOrder);
 
       this.events.emit(Events.ORDER_HAS_CREATED);
       return;
@@ -116,25 +98,24 @@ export class OrderService {
 
    public async verifyOrder(verifyOrderDto: VerifyOrderDto): Promise<OrderStatus> {
       try {
-         const { phone_number } = verifyOrderDto;
-         const hw = await this.hasWaitingOrder(null, phone_number);
+         const { phoneNumber } = verifyOrderDto;
+         const hasOrd = await this.hasWaitingOrder(null, phoneNumber);
 
-         const { id: orderId, has } = hw;
+         const { id: orderId, has } = hasOrd;
          if (!has) {
-            throw new Error(`verification ${phone_number}`);
+            throw new Error(`verification ${phoneNumber}`);
          }
-         const { username, delivery_details, is_delivered, cart, delivered_at, is_delivered_asap } = verifyOrderDto;
+         const { deliveryDetails, isDelivered, cart, deliveredAt, isDeliveredAsap } = verifyOrderDto;
          const now = new Date(Date.now());
          const updated: Partial<Order> = {
-            delivery_details: delivery_details !== undefined ? delivery_details : null,
+            delivery_details: deliveryDetails !== undefined || null ? deliveryDetails : null,
             status: OrderStatus.verified,
             verified_at: now,
-            is_delivered_asap
+            is_delivered_asap: isDeliveredAsap
          };
-         const userId = await this.userService.getUserId(phone_number);
-         this.userService.updateUsername(username, userId);
-         if (verifyOrderDto.is_delivered !== undefined) {
-            updated.is_delivered = is_delivered;
+
+         if (verifyOrderDto.isDelivered !== undefined) {
+            updated.is_delivered = isDelivered;
          }
          if (verifyOrderDto.cart !== undefined) {
             const recalculatedTotalCartPrice = await this.calculateTotalCartPrice(cart);
@@ -142,8 +123,8 @@ export class OrderService {
             updated.total_cart_price = recalculatedTotalCartPrice;
             this.jsonService.stringifyNestedObjects(updated);
          }
-         if (delivered_at !== null) {
-            updated.delivered_at = delivered_at;
+         if (deliveredAt !== null) {
+            updated.delivered_at = deliveredAt;
          }
 
          await this.orderRepository.update(orderId, updated);
@@ -161,8 +142,7 @@ export class OrderService {
    }
 
    public async cancelOrder(userId: number, cancelOrderDto: CancelOrderDto): Promise<boolean | string> {
-      const role = await this.userService.getUserRole(userId);
-
+      const { role } = cancelOrderDto;
       // user cancels
       if (!(role == AppRoles.worker || role == AppRoles.master)) {
          const { order_id } = cancelOrderDto;
@@ -325,7 +305,6 @@ export class OrderService {
 
       this.events.on(Events.ORDER_QUEUE_HAS_MODIFIED, async () => {
          const queue = await this.fetchOrderQueue();
-         console.log(queue);
          const chunk = `data: ${JSON.stringify({ queue })}\n\n`;
          return res.write(chunk);
       });
@@ -406,7 +385,6 @@ export class OrderService {
 
    public async initialQueue() {
       const queue = await this.fetchOrderQueue();
-      console.log(queue);
       return queue;
    }
 
@@ -467,6 +445,16 @@ export class OrderService {
       }
 
       return p;
+   }
+
+   async calculateOrderSumInTerms(termsInDays: number, userId: number): Promise<number> {
+      const raw: Partial<Order>[] = await this.orderRepository.getOrderSumInTerms(termsInDays, userId);
+      return (
+         raw.reduce((acc, curr) => {
+            acc += curr.total_cart_price;
+            return acc;
+         }, 0) || 0
+      );
    }
 
    parseJsonCart(currentCart: string[]): DatabaseCartProduct[] {

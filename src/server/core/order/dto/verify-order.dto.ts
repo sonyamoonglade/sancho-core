@@ -8,14 +8,15 @@ export class VerifyOrderDto {
 
    @IsDefined()
    @IsString()
-   phone_number: string;
+   phoneNumber: string;
 
    @IsDefined()
    @IsBoolean()
-   is_delivered_asap: boolean;
+   isDeliveredAsap: boolean;
 
-   delivered_at?: Date;
-   delivery_details?: DeliveryDetails;
-   is_delivered?: boolean;
+   deliveredAt?: Date;
+   deliveryDetails?: DeliveryDetails;
+   isDelivered?: boolean;
    cart?: DatabaseCartProduct[];
+   userId: number;
 }

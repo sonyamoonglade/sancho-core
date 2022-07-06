@@ -75,7 +75,6 @@ export class UserRepository implements Repository<User> {
    async update(id: number, updated: Partial<User>): Promise<void> {
       const [updateSql, values] = this.qb.ofTable(users).update<User>({ where: { id: id }, set: updated });
       const { rows } = await this.db.query(updateSql, values);
-      console.log(rows);
       return;
    }
 
@@ -99,33 +98,9 @@ export class UserRepository implements Repository<User> {
       return Promise.resolve(undefined);
    }
 
-   async createMark(dto: CreateMarkDto): Promise<boolean> {
-      const idSql = `SELECT id FROM ${users} WHERE phone_number = '${dto.phoneNumber}'`;
-      const { rows } = await this.db.query(idSql);
-      if (rows.length < 0) {
-         return false;
-      }
-      const userId = rows[0].id;
-      dto.userId = userId;
-      const sql = `INSERT INTO ${marks} (user_id,content,is_important) values ($1,$2,$3)`;
-      const values = [dto.userId, dto.content, dto.isImportant];
-      await this.db.query(sql, values);
-      return true;
-   }
-
-   async deleteMark(userId: number, markId: number): Promise<boolean> {
-      const sql = `DELETE FROM ${marks} WHERE user_id=$1 AND id = $2 returning id`;
-      const values = [userId, markId];
-      const { rows } = await this.db.query(sql, values);
-      if (rows.length > 0) {
-         return true;
-      }
-      return false;
-   }
-
-   async getUserMarks(userId: number): Promise<Mark[]> {
-      const sql = `SELECT * FROM ${marks} WHERE user_id = ${userId} ORDER BY is_important DESC`;
+   async isStillRegularCustomer(durationInDays: number, markId: number): Promise<boolean> {
+      const sql = `SELECT (SELECT extract(epoch FROM NOW()+INTERVAL '+4HOUR')) >= (SELECT extract(epoch FROM (SELECT (SELECT created_at FROM ${marks} WHERE id = ${markId}) + INTERVAL '+${durationInDays}DAYS'))::integer) as still`;
       const { rows } = await this.db.query(sql);
-      return rows as unknown as Mark[];
+      return !rows[0].still;
    }
 }

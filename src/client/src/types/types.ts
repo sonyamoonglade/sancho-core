@@ -50,3 +50,11 @@ export enum CancelExplanationPresets {
    ORDER_ERROR = "Произошла ошибка в заказе.",
    CUSTOM = "Своя"
 }
+
+export type Mark = {
+   id?: number;
+   user_id: number;
+   content: string;
+   is_important: boolean;
+   created_at: Date;
+};

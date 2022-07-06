@@ -25,9 +25,16 @@ export class MiscRepository {
    async init(dto: InitMiscDto): Promise<void> {
       try {
          const sql = `
-                INSERT INTO misc (delivery_punishment_value, delivery_punishment_threshold,order_creation_delay) VALUES ($1,$2,$3) ON CONFLICT DO NOTHING
+                INSERT INTO misc (delivery_punishment_value, delivery_punishment_threshold,order_creation_delay,reg_cust_duration,reg_cust_threshold,cancel_ban_duration) VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING
             `;
-         const values = [dto.delivery_punishment_value, dto.delivery_punishment_threshold, dto.order_creation_delay];
+         const values = [
+            dto.delivery_punishment_value,
+            dto.delivery_punishment_threshold,
+            dto.order_creation_delay,
+            dto.reg_cust_duration,
+            dto.reg_cust_threshold,
+            dto.cancel_ban_duration
+         ];
          await this.db.query(sql, values);
          return;
       } catch (e) {
