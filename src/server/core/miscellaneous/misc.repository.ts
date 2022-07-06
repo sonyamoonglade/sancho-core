@@ -1,10 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { PoolClient } from "pg";
 import { pg_conn } from "../../shared/database/db_provider-name";
-import { Miscellaneous } from "../../types/types";
-import { SetMiscDto } from "./dto/set-misc.dto";
+import { InitMiscDto } from "./dto/init-misc.dto";
 import { query_builder } from "../../shared/queryBuilder/provider-name";
 import { QueryBuilder } from "../../shared/queryBuilder/QueryBuilder";
+import { Miscellaneous } from "../entities/Miscellaneous";
 
 @Injectable()
 export class MiscRepository {
@@ -22,7 +22,7 @@ export class MiscRepository {
       }
    }
 
-   async init(dto: SetMiscDto): Promise<void> {
+   async init(dto: InitMiscDto): Promise<void> {
       try {
          const sql = `
                 INSERT INTO misc (delivery_punishment_value, delivery_punishment_threshold,order_creation_delay) VALUES ($1,$2,$3) ON CONFLICT DO NOTHING
@@ -35,7 +35,7 @@ export class MiscRepository {
       }
    }
 
-   async update(dto: SetMiscDto): Promise<void> {
+   async update(dto: InitMiscDto): Promise<void> {
       try {
          const constantMiscId = 1;
          const [sql, values] = this.qb.ofTable("misc").update<Miscellaneous>({ where: { id: constantMiscId }, set: dto });

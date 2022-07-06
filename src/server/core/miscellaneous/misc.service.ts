@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { MiscRepository } from "./misc.repository";
-import { Miscellaneous } from "../../types/types";
-import { SetMiscDto } from "./dto/set-misc.dto";
+import { InitMiscDto } from "./dto/init-misc.dto";
+import { Miscellaneous } from "../entities/Miscellaneous";
 
 @Injectable()
 export class MiscService {
@@ -12,12 +12,12 @@ export class MiscService {
       return misc;
    }
 
-   public async init(dto: SetMiscDto): Promise<void> {
+   public async init(dto: InitMiscDto): Promise<void> {
       await this.miscRepository.init(dto);
       return;
    }
 
-   public async update(dto: SetMiscDto): Promise<void> {
+   public async update(dto: InitMiscDto): Promise<void> {
       await this.miscRepository.update(dto);
       return;
    }

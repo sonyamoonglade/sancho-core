@@ -9,6 +9,12 @@ export class UserDoesNotExistException extends HttpException {
    }
 }
 
+export class UserCredentialsNotFound extends HttpException {
+   constructor(phoneNumber: string) {
+      super(`Данные о пользователе с номером ${phoneNumber} не найдены`, HttpStatus.NOT_FOUND);
+   }
+}
+
 export class InvalidPasswordException extends HttpException {
    constructor() {
       super("invalid password", HttpStatus.BAD_REQUEST);

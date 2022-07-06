@@ -25,6 +25,7 @@ interface WindowState {
       completeOrder: boolean;
       completeList: boolean;
       cancelList: boolean;
+      mark: boolean;
    };
 
    drag: {
@@ -55,7 +56,8 @@ const initialState: WindowState = {
       virtualCart: false,
       completeOrder: false,
       cancelList: false,
-      completeList: false
+      completeList: false,
+      mark: false
    },
    drag: {
       dropzone: "",
@@ -78,6 +80,7 @@ export const windowSlice = createSlice({
          s.worker.cancelOrder = false;
          s.worker.verifyOrder = false;
          s.worker.completeOrder = false;
+         s.worker.mark = false;
       },
       toggleCancelList: function (s, a: PayloadAction<boolean>) {
          s.worker.cancelList = a?.payload || !s.worker.cancelList;
@@ -86,6 +89,7 @@ export const windowSlice = createSlice({
          s.worker.cancelOrder = false;
          s.worker.verifyOrder = false;
          s.worker.completeOrder = false;
+         s.worker.mark = false;
       },
       toggleCompleteOrder: function (s, a: PayloadAction<boolean>) {
          s.worker.completeOrder = a.payload || !s.worker.completeOrder;
@@ -93,6 +97,7 @@ export const windowSlice = createSlice({
          s.worker.createOrder = false;
          s.worker.cancelOrder = false;
          s.worker.verifyOrder = false;
+         s.worker.mark = false;
       },
       setDropItem: function (s, a: PayloadAction<Droppable>) {
          s.drag.item = a.payload;
@@ -168,6 +173,7 @@ export const windowSlice = createSlice({
          s.worker.virtualCart = false;
          s.worker.createOrder = false;
          s.worker.cancelOrder = false;
+         s.worker.mark = false;
       },
 
       toggleCreateOrder: (s) => {
@@ -176,6 +182,7 @@ export const windowSlice = createSlice({
          s.worker.virtualCart = false;
          s.worker.verifyOrder = false;
          s.worker.cancelOrder = false;
+         s.worker.mark = false;
       },
 
       toggleWorkersOff: (s) => {
@@ -184,6 +191,7 @@ export const windowSlice = createSlice({
          s.worker.createOrder = false;
          s.worker.cancelOrder = false;
          s.worker.completeOrder = false;
+         s.worker.mark = false;
       },
 
       toggleVirtualCart: function (s) {
@@ -194,8 +202,18 @@ export const windowSlice = createSlice({
          s.worker.completeOrder = false;
          s.worker.virtualCart = false;
          s.worker.verifyOrder = false;
+         s.worker.mark = false;
          s.worker.createOrder = false;
          s.worker.cancelOrder = !s.worker.cancelOrder;
+      },
+
+      toggleMark: function (s) {
+         s.worker.completeOrder = false;
+         s.worker.virtualCart = false;
+         s.worker.verifyOrder = false;
+         s.worker.createOrder = false;
+         s.worker.cancelOrder = false;
+         s.worker.mark = !s.worker.mark;
       }
    }
 });

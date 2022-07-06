@@ -39,7 +39,8 @@ export const defaultItem: Droppable = {
 export enum DropZones {
    COMPLETE = "complete",
    VERIFY = "verify",
-   CANCEL = "cancel"
+   CANCEL = "cancel",
+   MARK = "mark"
 }
 
 const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extraData, canDrag = true }) => {

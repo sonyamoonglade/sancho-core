@@ -6,12 +6,12 @@ import { VerifyOrderDto } from "./dto/verify-order.dto";
 import { CancelOrderDto } from "./dto/cancel-order.dto";
 import { AppRoles, OrderStatus } from "../../../common/types";
 import { CanCancelGuard } from "./guard/can-cancel.guard";
-import { AuthorizationGuard } from "../authorization/authorization.guard";
 import { CompleteOrderDto } from "./dto/complete-order.dto";
 import { CookieService } from "../../shared/cookie/cookie.service";
 import { Role } from "../../shared/decorators/role/Role";
 import { extendedRequest } from "../../types/types";
 import { InvalidOrderStatus } from "../../shared/exceptions/order.exceptions";
+import { AuthorizationGuard } from "../authorization/authorization.guard";
 
 @Controller("/order")
 @UseGuards(AuthorizationGuard)

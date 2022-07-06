@@ -33,9 +33,9 @@ import {
 import { JsonService } from "../../shared/database/json.service";
 import { Events } from "../../shared/event/events";
 import { MiscService } from "../miscellaneous/misc.service";
-import { Miscellaneous } from "../../types/types";
 import { QueueOrderDto } from "./dto/queue-order.dto";
 import { LastVerifiedOrderDto } from "./dto/order.dto";
+import { Miscellaneous } from "../entities/Miscellaneous";
 
 @Injectable()
 export class OrderService {

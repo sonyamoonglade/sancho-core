@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, ParseIntPipe, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { Request, Response } from "express";
 import { CreateMasterUserDto } from "./dto/create-master-user.dto";
@@ -10,6 +10,7 @@ import { RegisterUserDto } from "./dto/register-user.dto";
 import { CookieNames, extendedRequest } from "../../types/types";
 import { Role } from "../../shared/decorators/role/Role";
 import { RegisterSpamGuard } from "../authentication/guard/register-spam.guard";
+import { CreateMarkDto } from "../mark/dto/create-mark.dto";
 import { AuthorizationGuard } from "../authorization/authorization.guard";
 
 @Controller("/users")
@@ -63,12 +64,7 @@ export class UserController {
    async getUserCredentials(@Res() res: Response, @Query("phoneNumber") phoneNumber: string) {
       try {
          const credentials = await this.userService.getUserCredentials(phoneNumber);
-         if (credentials !== null) {
-            return res.status(200).send({ credentials });
-         }
-         return res.status(404).send({
-            message: "Данные о пользователе не найдены!"
-         });
+         return res.status(200).send({ credentials });
       } catch (e) {
          console.log(e);
          throw e;
@@ -120,6 +116,34 @@ export class UserController {
          const SID = req.cookies[CookieNames.SID];
          await this.sessionService.destroySession(SID);
          this.sessionService.clearSession(res);
+         return res.status(200).end();
+      } catch (e) {
+         console.log(e);
+         throw e;
+      }
+   }
+
+   @Post("/mark/create")
+   @Role([AppRoles.worker])
+   async createMark(@Req() req: extendedRequest, @Res() res: Response, @Body() dto: CreateMarkDto) {
+      try {
+         await this.userService.createMark(dto);
+         return res.status(201).end();
+      } catch (e) {
+         console.log(e);
+         throw e;
+      }
+   }
+   @Delete("/mark/delete")
+   @Role([AppRoles.worker])
+   async deleteMark(
+      @Req() req: extendedRequest,
+      @Res() res: Response,
+      @Query("userId", ParseIntPipe) userId: number,
+      @Query("markId", ParseIntPipe) markId: number
+   ) {
+      try {
+         await this.userService.deleteMark(userId, markId);
          return res.status(200).end();
       } catch (e) {
          console.log(e);

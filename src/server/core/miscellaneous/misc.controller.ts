@@ -2,11 +2,11 @@ import { Body, Controller, Get, Post, Put, Res, UseGuards } from "@nestjs/common
 
 import { MiscService } from "./misc.service";
 import { Response } from "express";
-import { AuthorizationGuard } from "../authorization/authorization.guard";
 import { Role } from "../../shared/decorators/role/Role";
 import { AppRoles } from "../../../common/types";
-import { SetMiscDto } from "./dto/set-misc.dto";
+import { InitMiscDto } from "./dto/init-misc.dto";
 import { UpdateMiscDto } from "./dto/update-misc.dto";
+import { AuthorizationGuard } from "../authorization/authorization.guard";
 
 @Controller("/misc")
 export class MiscController {
@@ -29,7 +29,7 @@ export class MiscController {
    @Post("/init")
    @UseGuards(AuthorizationGuard)
    @Role([AppRoles.master])
-   async initMiscellaneous(@Res() res: Response, @Body() b: SetMiscDto) {
+   async initMiscellaneous(@Res() res: Response, @Body() b: InitMiscDto) {
       try {
          await this.miscService.init(b);
          return res.status(201).end();

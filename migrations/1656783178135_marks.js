@@ -16,10 +16,15 @@ exports.up = (pgm) => {
       },
       content: {
          type: "varchar(512)",
-         notNull: true
+         notNull: true,
+         unique: true
       },
       is_important: {
          type: "boolean",
+         notNull: true
+      },
+      created_at: {
+         type: "timestamp",
          notNull: true
       }
    });

@@ -17,13 +17,11 @@ import { QueryBuilderModule } from "./shared/queryBuilder/qb.module";
 import { DbModule } from "./shared/database/db.module";
 import { MiscModule } from "./core/miscellaneous/misc.module";
 import { MiscController } from "./core/miscellaneous/misc.controller";
-import { MarkController } from "./core/mark/mark.controller";
-import { MarkModule } from "./core/mark/mark.module";
 
 @Module({
    controllers: [AppController],
    providers: [SessionMiddleware, SessionService, SessionRepository, OrderService, OrderRepository],
-   imports: [UserModule, DbModule, QueryBuilderModule, ProductModule, OrderModule, CookieModule, SessionModule, MiscModule, MarkModule]
+   imports: [UserModule, DbModule, QueryBuilderModule, ProductModule, OrderModule, CookieModule, SessionModule, MiscModule]
 })
 export class AppModule implements NestModule {
    configure(consumer: MiddlewareConsumer): any {
@@ -47,6 +45,6 @@ export class AppModule implements NestModule {
                method: RequestMethod.GET
             }
          )
-         .forRoutes(UserController, ProductController, OrderController, MiscController, MarkController);
+         .forRoutes(UserController, ProductController, OrderController, MiscController);
    }
 }

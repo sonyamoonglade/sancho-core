@@ -18,12 +18,12 @@ import { ProductService } from "./product.service";
 import { Response } from "express";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { AppRoles } from "../../../common/types";
-import { AuthorizationGuard } from "../authorization/authorization.guard";
 import { Role } from "../../shared/decorators/role/Role";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { CookieNames, extendedRequest } from "../../types/types";
 import { PutImageDto } from "./dto/put-image.dto";
 import { FileStorage } from "../../shared/fileStorage/file.storage";
+import { AuthorizationGuard } from "../authorization/authorization.guard";
 
 @Controller("/product")
 @UseGuards(AuthorizationGuard)

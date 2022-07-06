@@ -20,6 +20,14 @@ exports.up = (pgm) => {
       order_creation_delay: {
          type: "integer",
          notNull: true
+      },
+      reg_cust_threshold: {
+         type: "integer",
+         notNull: true
+      },
+      reg_cust_duration: {
+         type: "integer",
+         notNull: true
       }
    });
 };

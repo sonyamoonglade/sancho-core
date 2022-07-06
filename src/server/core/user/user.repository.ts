@@ -7,11 +7,14 @@ import { pg_conn } from "../../shared/database/db_provider-name";
 import { query_builder } from "../../shared/queryBuilder/provider-name";
 import { RepositoryException } from "../../shared/exceptions/repository.exceptions";
 import { UserCredentialsDto } from "./dto/user-creds.dto";
+import { AppRoles } from "../../../common/types";
+import { CreateMarkDto } from "../mark/dto/create-mark.dto";
+import { Mark, marks } from "../entities/Mark";
 
 export class UserRepository implements Repository<User> {
    constructor(@Inject(query_builder) private qb: QueryBuilder, @Inject(pg_conn) private db: Pool) {}
 
-   async getUserCredentials(phoneNumber: string): Promise<UserCredentialsDto | null> {
+   async getUserCredentials(phoneNumber: string): Promise<Partial<UserCredentialsDto>> {
       const sql = `SELECT name, remembered_delivery_address FROM ${users} WHERE phone_number = '${phoneNumber}'`;
       const { rows } = await this.db.query(sql);
       const dto = new UserCredentialsDto();
@@ -22,7 +25,11 @@ export class UserRepository implements Repository<User> {
       }
       return null;
    }
-
+   async getUserRole(userId: number): Promise<AppRoles> {
+      const sql = `SELECT role FROM ${users} WHERE id = ${userId}`;
+      const { rows } = await this.db.query(sql);
+      return rows[0].role;
+   }
    async delete(id: number): Promise<void | undefined> {
       const deleteSql = this.qb.ofTable(users).delete<User>({ where: { id } });
       await this.db.query(deleteSql);
@@ -92,7 +99,33 @@ export class UserRepository implements Repository<User> {
       return Promise.resolve(undefined);
    }
 
-   public getDb() {
-      return this.db;
+   async createMark(dto: CreateMarkDto): Promise<boolean> {
+      const idSql = `SELECT id FROM ${users} WHERE phone_number = '${dto.phoneNumber}'`;
+      const { rows } = await this.db.query(idSql);
+      if (rows.length < 0) {
+         return false;
+      }
+      const userId = rows[0].id;
+      dto.userId = userId;
+      const sql = `INSERT INTO ${marks} (user_id,content,is_important) values ($1,$2,$3)`;
+      const values = [dto.userId, dto.content, dto.isImportant];
+      await this.db.query(sql, values);
+      return true;
+   }
+
+   async deleteMark(userId: number, markId: number): Promise<boolean> {
+      const sql = `DELETE FROM ${marks} WHERE user_id=$1 AND id = $2 returning id`;
+      const values = [userId, markId];
+      const { rows } = await this.db.query(sql, values);
+      if (rows.length > 0) {
+         return true;
+      }
+      return false;
+   }
+
+   async getUserMarks(userId: number): Promise<Mark[]> {
+      const sql = `SELECT * FROM ${marks} WHERE user_id = ${userId} ORDER BY is_important DESC`;
+      const { rows } = await this.db.query(sql);
+      return rows as unknown as Mark[];
    }
 }

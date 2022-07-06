@@ -1,9 +1,9 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
-import { AppRoles } from "../../../common/types";
 import { UserService } from "../user/user.service";
 import { extendedRequest } from "../../types/types";
 import { ROLES_META_KEY } from "../../shared/decorators/metadata.keys";
+import { AppRoles } from "../../../common/types";
 
 @Injectable()
 export class AuthorizationGuard implements CanActivate {

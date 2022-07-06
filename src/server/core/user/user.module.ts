@@ -11,7 +11,6 @@ import { CookieService } from "../../shared/cookie/cookie.service";
 import { RegisterSpamGuard } from "../authentication/guard/register-spam.guard";
 import { QueryBuilderModule } from "../../shared/queryBuilder/qb.module";
 import { DbModule } from "../../shared/database/db.module";
-import { MiscModule } from "../miscellaneous/misc.module";
 import { MiscRepository } from "../miscellaneous/misc.repository";
 import { MiscService } from "../miscellaneous/misc.service";
 

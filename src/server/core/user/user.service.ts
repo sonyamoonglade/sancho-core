@@ -15,20 +15,40 @@ import {
    MasterLoginHasAlreadyBeenTaken,
    PasswordIsTooShortException,
    PhoneIsAlreadyTakenException,
+   UserCredentialsNotFound,
    UserDoesNotExistException
 } from "../../shared/exceptions/user.exceptions";
 import { UnexpectedServerError } from "../../shared/exceptions/unexpected-errors.exceptions";
 import { APP_ROLES } from "../../types/contants";
 import { UserCredentialsDto } from "./dto/user-creds.dto";
+import { CreateMarkDto } from "../mark/dto/create-mark.dto";
+import { MarkDoesNotExist } from "../../shared/exceptions/mark.exceptions";
+import { Mark } from "../entities/Mark";
+import * as dayjs from "dayjs";
+import { MiscService } from "../miscellaneous/misc.service";
 
 require("dotenv").config();
 @Injectable()
 export class UserService {
    constructor(private sessionService: SessionService, private userRepository: UserRepository) {}
 
-   async getUserCredentials(phoneNumber: string): Promise<UserCredentialsDto | null> {
+   async getUserCredentials(phoneNumber: string): Promise<UserCredentialsDto> {
       const phoneNumberWithPlus = "+" + phoneNumber;
-      return this.userRepository.getUserCredentials(phoneNumberWithPlus);
+      const credentialsWithoutMarks: Partial<UserCredentialsDto> = await this.userRepository.getUserCredentials(phoneNumberWithPlus);
+      if (!credentialsWithoutMarks) {
+         throw new UserCredentialsNotFound(phoneNumberWithPlus);
+      }
+      const userId = await this.getUserId(phoneNumberWithPlus);
+      const userMarks: Mark[] = await this.userRepository.getUserMarks(userId);
+      const createdAt = this.hasRegularCustomerMark(userMarks); // When regular customer mark has applied at.
+
+      const nowx = dayjs().unix(); // Current time in seconds
+      const createdAtx = dayjs(createdAt).unix(); // Creation time in seconds
+      if (createdAt !== null && nowx - createdAtx) {
+         // replace with cache value
+         // const misc = await this.miscService.getAllValues();
+      }
+      return null;
    }
 
    async updateUserRememberedDeliveryAddress(userId: number, deliveryDetails: string): Promise<void> {
@@ -40,6 +60,16 @@ export class UserService {
 
    async updateUsername(name: string, userId: number): Promise<void> {
       return this.userRepository.updateUsername(name, userId);
+   }
+
+   hasRegularCustomerMark(marks: Mark[]): Date {
+      const regularCustomerContent = "Постоянный клиент";
+      for (const mark of marks) {
+         if (mark.content === regularCustomerContent) {
+            return mark.created_at;
+         }
+      }
+      return null;
    }
 
    async registerSuperAdmin(): Promise<void> {
@@ -184,21 +214,18 @@ export class UserService {
       return user.role;
    }
 
-   async getUserPhone(user_id: number): Promise<string> {
-      const user = (
-         await this.userRepository.get({
-            where: { id: user_id },
-            returning: ["phone_number"]
-         })
-      )[0];
-
-      if (!user) throw new UserDoesNotExistException(user_id);
-
-      return user.phone_number;
+   async deleteMark(userId: number, markId: number): Promise<void> {
+      const ok = await this.userRepository.deleteMark(userId, markId);
+      if (!ok) {
+         throw new MarkDoesNotExist(markId, userId);
+      }
+      return;
    }
 
-   async getMasterLogin(user_id: number): Promise<string> {
-      const user = await this.userRepository.getById(user_id);
-      return user?.login;
+   async createMark(dto: CreateMarkDto): Promise<void> {
+      const ok = this.userRepository.createMark(dto);
+      if (!ok) {
+         throw new UserCredentialsNotFound(dto.phoneNumber);
+      }
    }
 }
