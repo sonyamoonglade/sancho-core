@@ -52,6 +52,7 @@ const CreateOrderModal = () => {
       const credentials = await fetchUserCredentials(phoneNumber);
       if (credentials !== null) {
          setUserCredentials(credentials);
+         dispatch(workerActions.setMarks(credentials.marks));
          return;
       }
       return;
@@ -60,6 +61,8 @@ const CreateOrderModal = () => {
       const { isValid, value: phoneNumber } = formValues.phone_number_c;
       if (createMasterOrder && isValid) {
          fetchAndSetUserCredentialsAsync(phoneNumber);
+      } else {
+         dispatch(workerActions.setMarks([]));
       }
    }, [formValues.phone_number_c.isValid]);
 

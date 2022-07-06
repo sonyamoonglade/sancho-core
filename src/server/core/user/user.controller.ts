@@ -127,8 +127,10 @@ export class UserController {
    @Role([AppRoles.worker])
    async createMark(@Req() req: extendedRequest, @Res() res: Response, @Body() dto: CreateMarkDto) {
       try {
-         await this.userService.createMark(dto);
-         return res.status(201).end();
+         const userId = await this.userService.getUserId(dto.phoneNumber);
+         dto.userId = userId;
+         const mark = await this.userService.createMark(dto);
+         return res.status(201).send({ mark });
       } catch (e) {
          console.log(e);
          throw e;

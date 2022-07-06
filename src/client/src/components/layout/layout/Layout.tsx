@@ -21,6 +21,7 @@ import Users from "../../admin/users/Users";
 import Orders from "../../admin/orders/Orders";
 import AdminQueue from "../../admin/queue/AdminQueue";
 import MarkDrag from "../../worker/drag/mark/MarkDrag";
+import MarkList from "../../worker/mark/MarkList";
 interface layoutProps {
    children: any;
 }
@@ -44,6 +45,7 @@ const Layout: FC<layoutProps> = ({ children }) => {
                   <CancelOrderModal />
                   <CompleteOrderModal />
                   <WorkerAppForm />
+                  <MarkList />
                </>
                <>
                   <CompleteOrderDrag />

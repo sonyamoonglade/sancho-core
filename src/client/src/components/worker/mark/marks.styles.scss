@@ -1,0 +1,40 @@
+@import "src/./variables.scss";
+
+.marks{
+  position: absolute;
+  z-index: 1500;
+  left: calc((100vw - 500px) / 2 - 300px);
+  top: calc((100vh - 400px) / 2);
+  width: 300px;
+  opacity: 0;
+  max-height: 400px;
+  transition: opacity 0.2s ease-in-out;
+}
+
+.--marks-active{
+  opacity: 1;
+  padding: 0.2rem 1rem 1rem;
+
+}
+
+.mark_item{
+  border-radius: 10px;
+  width: 100%;
+  justify-content: space-between;
+  display: flex;
+  box-shadow: 1px 2px 15px $dark-grey;
+
+  margin-bottom: 1rem;
+  padding: .5rem .5rem .5rem 1rem;
+  align-items: center;
+  p{
+    user-select: none;
+    font-family: "Geometria Bold",sans-serif;
+    font-size: $font-mder;
+  }
+
+  background-color: $light-grey;
+}
+.mark_close_icon{
+  cursor: pointer;
+}
