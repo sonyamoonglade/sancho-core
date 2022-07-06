@@ -18,11 +18,12 @@ import { DbModule } from "./shared/database/db.module";
 import { MiscModule } from "./core/miscellaneous/misc.module";
 import { MiscController } from "./core/miscellaneous/misc.controller";
 import { MarkController } from "./core/mark/mark.controller";
+import { MarkModule } from "./core/mark/mark.module";
 
 @Module({
    controllers: [AppController],
    providers: [SessionMiddleware, SessionService, SessionRepository, OrderService, OrderRepository],
-   imports: [UserModule, DbModule, QueryBuilderModule, ProductModule, OrderModule, CookieModule, SessionModule, MiscModule]
+   imports: [UserModule, DbModule, QueryBuilderModule, ProductModule, OrderModule, CookieModule, SessionModule, MiscModule, MarkModule]
 })
 export class AppModule implements NestModule {
    configure(consumer: MiddlewareConsumer): any {

@@ -45,6 +45,15 @@ export function useCompleteOrderForm() {
       });
       return;
    }
+   function setCorrectOrderId(orderId: number): void {
+      setFormValues((state: CompleteOrderFormState) => {
+         const obj = state.orderId;
+         const correctIdFormat = utils.sixifyOrderId(orderId);
+         obj.value = correctIdFormat;
+         obj.isValid = true;
+         return { ...state, orderId: obj };
+      });
+   }
    function setFormDefaults() {
       setFormValues(formDefaults);
       setCompletable(false);
@@ -61,6 +70,7 @@ export function useCompleteOrderForm() {
       setFormDefaults,
       getFormValues,
       setCompletable,
-      completable
+      completable,
+      setCorrectOrderId
    };
 }

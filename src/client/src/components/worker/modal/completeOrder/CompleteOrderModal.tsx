@@ -7,18 +7,12 @@ import { utils } from "../../../../utils/util.functions";
 import { useCompleteOrder } from "./hooks/useCompleteOrder";
 const CompleteOrderModal = () => {
    const { worker, drag } = useAppSelector(windowSelector);
-   const { formValues, setFormDefaults, setFormValues, getFormValues, setCompletable, completable } = useCompleteOrderForm();
+   const { formValues, setCorrectOrderId, setFormDefaults, setFormValues, getFormValues, setCompletable, completable } = useCompleteOrderForm();
    const { completeOrder } = useCompleteOrder();
    const dispatch = useAppDispatch();
    useEffect(() => {
       if (worker.completeOrder && drag.item && drag.item.id !== 0) {
-         setFormValues((state: CompleteOrderFormState) => {
-            const obj = state.orderId;
-            const correctIdFormat = utils.sixifyOrderId(drag.item);
-            obj.value = correctIdFormat;
-            obj.isValid = true;
-            return { ...state, orderId: obj };
-         });
+         setCorrectOrderId(drag.item.id);
          setCompletable(true);
       }
    }, [worker.completeOrder]);

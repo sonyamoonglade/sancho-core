@@ -69,7 +69,7 @@ export function useCreateOrderForm() {
    const virtualCart = useVirtualCart();
 
    function setFormDefaults() {
-      setFormValues(formDefaults);
+      setFormValues({ ...formDefaults });
       formValues.is_delivered_c.value = false;
       virtualCart.clearVirtualCart();
    }

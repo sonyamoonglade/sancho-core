@@ -32,7 +32,7 @@ const CancelOrderModal = () => {
       if (worker.cancelOrder && drag.item && drag.item.id !== 0) {
          setFormValues((state: CancelOrderFormState) => {
             const obj = state.orderId;
-            const correctIdFormat = utils.sixifyOrderId(drag.item);
+            const correctIdFormat = utils.sixifyOrderId(drag.item.id);
             obj.value = correctIdFormat;
             obj.isValid = true;
             return { ...state, orderId: obj };

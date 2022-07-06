@@ -14,14 +14,8 @@ export class MarkController {
 
    @Post("/create")
    @Role([AppRoles.worker])
-   async createMark(
-      @Req() req: extendedRequest,
-      @Res() res: Response,
-      @Query("important", ParseBoolPipe) important: boolean,
-      @Body() dto: CreateMarkDto
-   ) {
+   async createMark(@Req() req: extendedRequest, @Res() res: Response, @Body() dto: CreateMarkDto) {
       try {
-         dto.isImportant = important;
          await this.markService.create(dto);
          return res.status(201).end();
       } catch (e) {
@@ -49,9 +43,9 @@ export class MarkController {
 
    @Get("/")
    @Role([AppRoles.worker])
-   async userMarks(@Req() req: extendedRequest, @Res() res: Response, @Query("userId", ParseIntPipe) userId: number) {
+   async userMarks(@Req() req: extendedRequest, @Res() res: Response, @Query("phoneNumber") phoneNumber: string) {
       try {
-         const marks = await this.markService.userMarks(userId);
+         const marks = await this.markService.userMarks(phoneNumber);
          return res.status(200).send({
             marks
          });

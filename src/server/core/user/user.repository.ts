@@ -65,9 +65,10 @@ export class UserRepository implements Repository<User> {
       return false;
    }
 
-   async update(id: number, updated: Partial<User | undefined>): Promise<void> {
+   async update(id: number, updated: Partial<User>): Promise<void> {
       const [updateSql, values] = this.qb.ofTable(users).update<User>({ where: { id: id }, set: updated });
       const { rows } = await this.db.query(updateSql, values);
+      console.log(rows);
       return;
    }
 

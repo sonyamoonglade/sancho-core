@@ -30,12 +30,11 @@ const VerifyOrderModal = () => {
       setFormDefaults,
       isSubmitButtonActive,
       setFormDefaultsExceptPhoneNumberAndFullname,
-      setUsername
+      setUsername,
+      setPhoneNumber
    } = useVerifyOrderForm(orderQueue);
 
    const { verifyOrder, findWaitingOrderByPhoneNumber, fetchUsername } = useVerifyOrder(client, orderQueue, totalOrderPrice, virtualCartState.items);
-
-   const { minLengthValidation } = useFormValidations();
 
    const { DELIVERY_PUNISHMENT_THRESHOLD, DELIVERY_PUNISHMENT_VALUE } = useAppSelector(miscSelector);
 
@@ -56,10 +55,7 @@ const VerifyOrderModal = () => {
    function presetVirtualCartItems(phoneNumber: string) {
       if (formValues.phone_number_w.isValid) {
          const order = findWaitingOrderByPhoneNumber(phoneNumber);
-         const parsedCart =
-            order?.cart.map((item: any) => {
-               return JSON.parse(item as unknown as string);
-            }) || [];
+         const parsedCart = order?.cart || [];
          dispatch(workerActions.setVirtualCart(parsedCart));
          virtualCart.setVirtualCart(parsedCart);
       }
@@ -80,12 +76,7 @@ const VerifyOrderModal = () => {
       if (worker.verifyOrder && drag.item && drag.item.id !== 0) {
          const phoneNumber = drag.item.phoneNumber.substring(2, drag.item.phoneNumber.length);
          const order = findWaitingOrderByPhoneNumber(phoneNumber);
-         setFormValues((state: WorkerVerifyOrderFormState) => {
-            const obj = state.phone_number_w;
-            obj.value = phoneNumber;
-            obj.isValid = minLengthValidation(phoneNumber, 10);
-            return { ...state, phone_number_w: obj };
-         });
+         setPhoneNumber(phoneNumber);
          presetDeliveryDetails(order);
       }
    }, [worker.verifyOrder]);

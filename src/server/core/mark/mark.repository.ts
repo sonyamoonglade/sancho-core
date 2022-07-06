@@ -29,7 +29,7 @@ export class MarkRepository implements MarkRepositoryInterface {
    }
 
    async userMarks(userId: number): Promise<Mark[]> {
-      const sql = `SELECT * FROM ${marks} WHERE user_id = $1 ORDER BY is_important DESC`;
+      const sql = `SELECT * FROM ${marks} WHERE user_id = ${userId} ORDER BY is_important DESC`;
       const { rows } = await this.db.query(sql);
       return rows as unknown as Mark[];
    }

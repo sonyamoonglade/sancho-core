@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { FormField } from "../../../../../types/types";
 import { OrderQueue, VerifiedQueueOrder, WaitingQueueOrder } from "../../../../../common/types";
+import { useFormValidations } from "../../../../../hooks/useFormValidations";
 
 export interface WorkerVerifyOrderFormState {
    verified_fullname_w: FormField;
@@ -63,7 +64,7 @@ const formDefaults: WorkerVerifyOrderFormState = {
 
 export function useVerifyOrderForm(orderQueue: OrderQueue) {
    const [formValues, setFormValues] = useState<WorkerVerifyOrderFormState>(formDefaults);
-
+   const { minLengthValidation } = useFormValidations();
    //apply types
    function getFormValues() {
       return {
@@ -129,6 +130,15 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
       });
    }
 
+   function setPhoneNumber(phoneNumber: string): void {
+      setFormValues((state: WorkerVerifyOrderFormState) => {
+         const obj = state.phone_number_w;
+         obj.value = phoneNumber;
+         obj.isValid = minLengthValidation(phoneNumber, 10);
+         return { ...state, phone_number_w: obj };
+      });
+   }
+
    function presetDeliveryDetails(order: WaitingQueueOrder) {
       if (orderQueue.waiting.length === 0) {
          return;
@@ -186,6 +196,7 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
       setFormDefaults,
       presetDeliveryDetails,
       formValues,
+      setPhoneNumber,
       formDefaults,
       setFormValues,
       isSubmitButtonActive,
