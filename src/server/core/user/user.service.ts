@@ -66,7 +66,6 @@ export class UserService {
 
       const userId = await this.getUserId(phoneNumberWithPlus);
       const userMarks: Mark[] = await this.markRepository.getUserMarks(userId);
-      console.log(userMarks, userId);
       // Get Regular Customer Mark duration in days.
       // todo: replace with cache value
       const { reg_cust_duration, reg_cust_threshold } = await this.miscService.getAllValues();
@@ -95,7 +94,6 @@ export class UserService {
       }
 
       const isStillRegCust = await this.userRepository.isStillRegularCustomer(reg_cust_duration, regCustMark.id);
-      console.log(isStillRegCust, "still");
       if (isStillRegCust) {
          // Keep marks the same
          const credentials: UserCredentialsDto = {

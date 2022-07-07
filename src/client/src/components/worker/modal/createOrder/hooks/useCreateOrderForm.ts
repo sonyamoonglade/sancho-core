@@ -126,8 +126,10 @@ export function useCreateOrderForm() {
             copy.flat_call_c.value = flat_call.toString();
             copy.flat_call_c.isValid = true;
          }
-         copy.verified_fullname_c.value = creds.username;
-         copy.verified_fullname_c.isValid = true;
+         if (creds.username !== null) {
+            copy.verified_fullname_c.value = creds.username;
+            copy.verified_fullname_c.isValid = true;
+         }
          return { ...copy };
       });
    }

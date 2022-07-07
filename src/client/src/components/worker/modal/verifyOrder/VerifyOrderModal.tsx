@@ -88,15 +88,10 @@ const VerifyOrderModal = () => {
          presetDeliveryDetails(order);
       }
    }, [worker.verifyOrder]);
-
-   async function fetchUsernameAsync(phoneNumber: string) {
-      const username = await fetchUsername(phoneNumber);
-      setUsername(username);
-      return;
-   }
-
+   console.log(formValues);
    useEffect(() => {
       const { isValid, value: phoneNumber } = formValues.phone_number_w;
+      const o = findWaitingOrderByPhoneNumber(phoneNumber);
 
       if (isValid === false) {
          setTotalOrderPrice(0);
@@ -104,9 +99,11 @@ const VerifyOrderModal = () => {
       }
       if (isValid && worker.virtualCart) {
          let price = utils.getOrderTotalPrice(virtualCartState.items);
-         const isPunished = checkIsPunished(price);
-         if (isPunished) {
-            price = applyPunishment(price);
+         if (o?.is_delivered || formValues.is_delivered_w.value) {
+            const isPunished = checkIsPunished(price);
+            if (isPunished) {
+               price = applyPunishment(price);
+            }
          }
          setTotalOrderPrice(price);
       } else {
@@ -115,15 +112,16 @@ const VerifyOrderModal = () => {
             fetchUserCredentialsAsync(phoneNumber);
          }
 
-         const o = findWaitingOrderByPhoneNumber(phoneNumber);
          let price = utils.getOrderTotalPriceByCart(o?.cart);
-         const isPunished = checkIsPunished(price);
-         if (isPunished) {
-            price = applyPunishment(price);
+         if (o?.is_delivered || formValues.is_delivered_w.value) {
+            const isPunished = checkIsPunished(price);
+            if (isPunished) {
+               price = applyPunishment(price);
+            }
          }
          setTotalOrderPrice(price);
       }
-   }, [formValues.phone_number_w.isValid, virtualCartState.items]);
+   }, [formValues.phone_number_w.isValid, virtualCartState.items, formValues.is_delivered_w.value]);
 
    function checkIsPunished(v: number): boolean {
       return v < DELIVERY_PUNISHMENT_THRESHOLD;

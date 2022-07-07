@@ -51,8 +51,9 @@ export class OrderService {
 
    public async createUserOrder(createUserOrderDto: CreateUserOrderDto, userId: number): Promise<Order> {
       let total_cart_price = await this.calculateTotalCartPrice(createUserOrderDto.cart);
-      total_cart_price = await this.applyDeliveryPunishment(total_cart_price);
-
+      if (createUserOrderDto.is_delivered) {
+         total_cart_price = await this.applyDeliveryPunishment(total_cart_price);
+      }
       const userOrder: Order = {
          total_cart_price,
          ...createUserOrderDto,
@@ -68,7 +69,9 @@ export class OrderService {
 
    public async createMasterOrder(createMasterOrderDto: CreateMasterOrderDto): Promise<void> {
       let total_cart_price = await this.calculateTotalCartPrice(createMasterOrderDto.cart);
-      total_cart_price = await this.applyDeliveryPunishment(total_cart_price);
+      if (createMasterOrderDto.is_delivered) {
+         total_cart_price = await this.applyDeliveryPunishment(total_cart_price);
+      }
 
       const { is_delivered_asap, delivery_details, is_delivered, delivered_at, cart, userId } = createMasterOrderDto;
       const now = new Date(Date.now());
@@ -440,6 +443,7 @@ export class OrderService {
 
    async applyDeliveryPunishment(p: number) {
       const v: Miscellaneous = await this.miscService.getAllValues();
+      console.log(v);
       if (p <= v.delivery_punishment_threshold) {
          return p + v.delivery_punishment_value;
       }

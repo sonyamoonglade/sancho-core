@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useAppDispatch, useAppSelector, windowActions, windowSelector, workerActions, workerSelector } from "../../../../redux";
+import { miscSelector, useAppDispatch, useAppSelector, windowActions, windowSelector, workerActions, workerSelector } from "../../../../redux";
 import "./create-order.styles.scss";
 import CreateOrderForm from "./createForm/CreateOrderForm";
 import { RiSettings4Line } from "react-icons/ri";
@@ -14,6 +14,7 @@ const CreateOrderModal = () => {
    const { worker } = useAppSelector(windowSelector);
    const { virtualCart: virtualCartState } = useAppSelector(workerSelector);
    const [totalOrderPrice, setTotalOrderPrice] = useState<number>(0);
+   const { DELIVERY_PUNISHMENT_THRESHOLD, DELIVERY_PUNISHMENT_VALUE } = useAppSelector(miscSelector);
 
    const dispatch = useAppDispatch();
 
@@ -57,19 +58,31 @@ const CreateOrderModal = () => {
       }
       return;
    }
+   function checkIsPunished(v: number): boolean {
+      return v < DELIVERY_PUNISHMENT_THRESHOLD;
+   }
+
+   function applyPunishment(v: number): number {
+      return v + DELIVERY_PUNISHMENT_VALUE;
+   }
+
    useEffect(() => {
       const { isValid, value: phoneNumber } = formValues.phone_number_c;
+
       if (createMasterOrder && isValid) {
          fetchAndSetUserCredentialsAsync(phoneNumber);
       } else {
          dispatch(workerActions.setMarks([]));
       }
-   }, [formValues.phone_number_c.isValid]);
-
-   useEffect(() => {
-      const totalVcPrice = utils.getOrderTotalPrice(virtualCartState.items);
-      setTotalOrderPrice(totalVcPrice);
-   }, [virtualCartState.items]);
+      let price = utils.getOrderTotalPrice(virtualCartState.items);
+      if (formValues.is_delivered_c.value) {
+         const isPunished = checkIsPunished(price);
+         if (isPunished) {
+            price = applyPunishment(price);
+         }
+      }
+      setTotalOrderPrice(price);
+   }, [virtualCartState.items, formValues.phone_number_c.isValid, formValues.is_delivered_c.value]);
 
    return (
       <div className={worker.createOrder ? "worker_modal create --w-opened" : "worker_modal create"}>

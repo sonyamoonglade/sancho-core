@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { FormField } from "../../../../../types/types";
-import { OrderQueue, VerifiedQueueOrder, WaitingQueueOrder } from "../../../../../common/types";
+import { OrderQueue, WaitingQueueOrder } from "../../../../../common/types";
 import { useFormValidations } from "../../../../../hooks/useFormValidations";
 import { UserCredentials } from "../../createOrder/hooks/useCreateMasterOrder";
 
@@ -116,13 +116,45 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
    }
 
    function setFormDefaults() {
-      setFormValues(formDefaults);
-      formValues.is_delivered_w.value = false;
-      setFormValues((state: WorkerVerifyOrderFormState) => {
-         const obj = state.phone_number_w;
-         obj.value = "";
-         obj.isValid = false;
-         return { ...state, phone_number_w: obj };
+      setFormValues((state) => {
+         const copy: WorkerVerifyOrderFormState = Object.assign({}, state);
+         copy.verified_fullname_w = {
+            value: "",
+            isValid: false
+         };
+         copy.floor_w = {
+            value: "",
+            isValid: false
+         };
+         copy.address_w = {
+            value: "",
+            isValid: false
+         };
+         copy.entrance_number_w = {
+            value: "",
+            isValid: false
+         };
+         copy.phone_number_w = {
+            value: "",
+            isValid: false
+         };
+         copy.flat_call_w = {
+            value: "",
+            isValid: false
+         };
+         copy.is_delivered_asap = {
+            value: false,
+            isValid: true
+         };
+         copy.is_delivered_w = {
+            value: false,
+            isValid: true
+         };
+         copy.delivered_at = {
+            value: "",
+            isValid: false
+         };
+         return { ...copy };
       });
    }
 
