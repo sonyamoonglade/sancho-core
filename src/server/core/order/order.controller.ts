@@ -10,10 +10,11 @@ import { CompleteOrderDto } from "./dto/complete-order.dto";
 import { CookieService } from "../../shared/cookie/cookie.service";
 import { Role } from "../../shared/decorators/role/Role";
 import { extendedRequest } from "../../types/types";
-import { InvalidOrderStatus } from "../../shared/exceptions/order.exceptions";
 import { AuthorizationGuard } from "../authorization/authorization.guard";
 import { UserService } from "../user/user.service";
 import { User } from "../entities/User";
+import { MultiWaitingOrderGuard } from "./guard/order.multi-waiting.guard";
+import { CreationLimitGuard } from "./guard/order.creation-limit.guard";
 
 @Controller("/order")
 @UseGuards(AuthorizationGuard)
@@ -21,6 +22,7 @@ export class OrderController {
    constructor(private orderService: OrderService, private cookieService: CookieService, private userService: UserService) {}
 
    @Post("/createUserOrder")
+   @UseGuards(MultiWaitingOrderGuard)
    @Role([AppRoles.user])
    async createUserOrder(@Res() res: Response, @Req() req: extendedRequest, @Body() dto: CreateUserOrderDto) {
       try {
@@ -37,6 +39,7 @@ export class OrderController {
    }
 
    @Post("/createMasterOrder")
+   @UseGuards(CreationLimitGuard)
    @Role([AppRoles.worker])
    async createMasterOrder(@Res() res: Response, @Body() dto: CreateMasterOrderDto) {
       try {

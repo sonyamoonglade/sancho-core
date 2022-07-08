@@ -67,13 +67,6 @@ const CreateOrderModal = () => {
    }
 
    useEffect(() => {
-      const { isValid, value: phoneNumber } = formValues.phone_number_c;
-
-      if (createMasterOrder && isValid) {
-         fetchAndSetUserCredentialsAsync(phoneNumber);
-      } else {
-         dispatch(workerActions.setMarks([]));
-      }
       let price = utils.getOrderTotalPrice(virtualCartState.items);
       if (formValues.is_delivered_c.value) {
          const isPunished = checkIsPunished(price);
@@ -82,8 +75,15 @@ const CreateOrderModal = () => {
          }
       }
       setTotalOrderPrice(price);
-   }, [virtualCartState.items, formValues.phone_number_c.isValid, formValues.is_delivered_c.value]);
-
+   }, [virtualCartState.items, formValues.is_delivered_c.value]);
+   useEffect(() => {
+      const { isValid, value: phoneNumber } = formValues.phone_number_c;
+      if (createMasterOrder && isValid) {
+         fetchAndSetUserCredentialsAsync(phoneNumber);
+      } else {
+         dispatch(workerActions.setMarks([]));
+      }
+   }, [formValues.phone_number_c.isValid]);
    return (
       <div className={worker.createOrder ? "worker_modal create --w-opened" : "worker_modal create"}>
          <p className="modal_title">Создать заказ</p>
