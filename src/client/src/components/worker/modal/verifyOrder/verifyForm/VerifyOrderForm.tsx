@@ -4,28 +4,20 @@ import { useAppSelector, windowSelector } from "../../../../../redux";
 import { useFormValidations } from "../../../../../hooks/useFormValidations";
 import { WorkerVerifyOrderFormState } from "../hooks/useVerifyOrderForm";
 import DeliveryTimeSelect from "../../deliveryTimeSelect/DeliveryTimeSelect";
-
+import { AiOutlineCloudDownload } from "react-icons/ai";
 interface submitOrderFormProps {
    formValues: WorkerVerifyOrderFormState;
    setFormValues: Function;
-   setFormDefaults: Function;
-   presetDeliveryDetails: Function;
-   setFormDefaultsExceptPhoneNumberAndFullname: Function;
+   fetchCredentialsManually: Function;
 }
 
-const VerifyOrderForm: FC<submitOrderFormProps> = ({
-   formValues,
-   setFormDefaults,
-   setFormValues,
-   presetDeliveryDetails,
-   setFormDefaultsExceptPhoneNumberAndFullname
-}) => {
+const VerifyOrderForm: FC<submitOrderFormProps> = ({ formValues, setFormValues, fetchCredentialsManually }) => {
    const { worker } = useAppSelector(windowSelector);
 
    const { validatePhoneNumber, minLengthValidation } = useFormValidations();
 
    const isDeliveryFormDisabledExpr = useMemo(() => {
-      return formValues["is_delivered_w"].value ? "delivery_text_w " : "--disabled w ";
+      return formValues["is_delivered_w"].value ? "delivery_text_w " : "delivery_text_w --disabled w ";
    }, [formValues]);
 
    const [opt1, opt2] = ["выбрать точное время", "в ближайшее время"];
@@ -46,17 +38,6 @@ const VerifyOrderForm: FC<submitOrderFormProps> = ({
          });
       }
    }, [formValues.is_delivered_asap.value]);
-
-   useEffect(() => {
-      if (!worker.verifyOrder) {
-         setFormDefaults();
-      }
-   }, [worker.verifyOrder]);
-   useEffect(() => {
-      if (!formValues.phone_number_w.isValid) {
-         setFormDefaultsExceptPhoneNumberAndFullname();
-      }
-   }, [formValues.phone_number_w.isValid]);
 
    return (
       <>
@@ -89,10 +70,21 @@ const VerifyOrderForm: FC<submitOrderFormProps> = ({
 
          <div className="delivery_input w">
             <div className="is_delivered_checkbox w">
-               <p className={isDeliveryFormDisabledExpr}>Нужна доставка?</p>
+               <p className={isDeliveryFormDisabledExpr}>
+                  Нужна доставка?
+                  <AiOutlineCloudDownload
+                     onClick={() => {
+                        if (formValues.phone_number_w.isValid) {
+                           fetchCredentialsManually(formValues.phone_number_w.value);
+                        }
+                     }}
+                     className="load_creds_icon"
+                     size={25}
+                  />
+               </p>
                <input
                   checked={formValues.is_delivered_w.value}
-                  name={"is_delivered_ц"}
+                  name={"is_delivered_w"}
                   onChange={() => {
                      setFormValues((state: any) => {
                         const obj = state.is_delivered_w;

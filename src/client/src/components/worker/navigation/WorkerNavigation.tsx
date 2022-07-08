@@ -8,8 +8,15 @@ const WorkerNavigation = () => {
       dispatch(windowActions.toggleCreateOrder());
    }
 
+   function toggleMarkAdd() {
+      dispatch(windowActions.toggleMark());
+   }
+
    return (
       <ul className="desktop_nav">
+         <li className="d_nav_item" onClick={toggleMarkAdd}>
+            Добавить метку
+         </li>
          <li className="d_nav_item" onClick={toggleOrderCreation}>
             Создать заказ
          </li>

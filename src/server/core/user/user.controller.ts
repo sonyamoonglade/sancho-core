@@ -123,14 +123,14 @@ export class UserController {
       }
    }
 
-   @Post("/mark/create")
+   @Post("/mark")
    @Role([AppRoles.worker])
    async createMark(@Req() req: extendedRequest, @Res() res: Response, @Body() dto: CreateMarkDto) {
       try {
          const userId = await this.userService.getUserId(dto.phoneNumber);
          dto.userId = userId;
-         const mark = await this.userService.createMark(dto);
-         return res.status(201).send({ mark });
+         await this.userService.createMark(dto);
+         return res.status(201).end();
       } catch (e) {
          console.log(e);
          throw e;
@@ -142,6 +142,17 @@ export class UserController {
       try {
          await this.userService.deleteMark(markId);
          return res.status(200).end();
+      } catch (e) {
+         console.log(e);
+         throw e;
+      }
+   }
+
+   @Get("/find")
+   async findByNumber(@Res() res: Response, @Query("v") query: string) {
+      try {
+         const result = await this.userService.findByNumberQuery(query);
+         return res.status(200).send({ result });
       } catch (e) {
          console.log(e);
          throw e;

@@ -70,7 +70,7 @@ const Header: FC = () => {
       <header style={isWorkerAuthenticated || isMasterAuthenticated ? { height: 80 } : { height: 264 }}>
          <div className="header_top">
             <p className="app_title" onClick={nullifyScroll}>
-               Жар-Пицца
+               Сан-чо
             </p>
 
             {appResponsiveState === AppResponsiveState.mobileOrTablet ? (

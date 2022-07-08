@@ -3,6 +3,7 @@ import { FormField } from "../../../../../types/types";
 import { OrderQueue, WaitingQueueOrder } from "../../../../../common/types";
 import { useFormValidations } from "../../../../../hooks/useFormValidations";
 import { UserCredentials } from "../../createOrder/hooks/useCreateMasterOrder";
+import { WorkerCreateOrderFormState } from "../../createOrder/hooks/useCreateOrderForm";
 
 export interface WorkerVerifyOrderFormState {
    verified_fullname_w: FormField;
@@ -83,15 +84,6 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
       };
    }
 
-   function setUsername(username: string): void {
-      setFormValues((state: WorkerVerifyOrderFormState) => {
-         const vf = state.verified_fullname_w;
-         vf.value = username;
-         vf.isValid = true;
-         return { ...state, verified_fullname_w: vf };
-      });
-   }
-
    function setCredentials(creds: UserCredentials): void {
       //todo: marks
       setFormValues((state: WorkerVerifyOrderFormState) => {
@@ -100,16 +92,27 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
             copy.verified_fullname_w.value = creds.username;
             copy.verified_fullname_w.isValid = true;
          }
-         if (creds.userDeliveryAddress !== null) {
-            copy.flat_call_w.value = creds.userDeliveryAddress.flat_call.toString();
-            copy.flat_call_w.isValid = true;
-            copy.address_w.value = creds.userDeliveryAddress.address.toString();
-            copy.address_w.isValid = true;
-            copy.entrance_number_w.value = creds.userDeliveryAddress.entrance_number.toString();
-            copy.entrance_number_w.isValid = true;
+         return { ...copy };
+      });
+   }
 
-            copy.floor_w.value = creds.userDeliveryAddress.floor.toString();
+   function setCredentialsHard(creds: UserCredentials) {
+      setFormValues((state: WorkerVerifyOrderFormState) => {
+         const copy: WorkerVerifyOrderFormState = Object.assign({}, state);
+         if (creds.userDeliveryAddress !== null) {
+            const { address, entrance_number, flat_call, floor } = creds.userDeliveryAddress;
+            copy.floor_w.value = floor.toString();
             copy.floor_w.isValid = true;
+            copy.address_w.value = address.toString();
+            copy.address_w.isValid = true;
+            copy.entrance_number_w.value = entrance_number.toString();
+            copy.entrance_number_w.isValid = true;
+            copy.flat_call_w.value = flat_call.toString();
+            copy.flat_call_w.isValid = true;
+         }
+         if (creds.username !== null) {
+            copy.verified_fullname_w.value = creds.username;
+            copy.verified_fullname_w.isValid = true;
          }
          return { ...copy };
       });
@@ -196,43 +199,36 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
    }
 
    function presetDeliveryDetails(order: WaitingQueueOrder) {
-      if (orderQueue.waiting.length === 0) {
+      if (!order) {
          return;
       }
-      if (order?.is_delivered) {
-         const { address, flat_call, entrance_number, floor } = order?.delivery_details;
-         const { is_delivered_asap } = order;
-         setFormValues((formState: WorkerVerifyOrderFormState) => {
-            return {
-               ...formState,
-               address_w: {
-                  value: address,
-                  isValid: true
-               },
-               floor_w: {
-                  value: floor.toString(),
-                  isValid: true
-               },
-               entrance_number_w: {
-                  value: entrance_number.toString(),
-                  isValid: true
-               },
-               flat_call_w: {
-                  value: flat_call.toString(),
-                  isValid: true
-               },
-               is_delivered_w: {
-                  value: true,
-                  isValid: true
-               },
-               is_delivered_asap: {
-                  value: is_delivered_asap,
-                  isValid: true
-               }
-            };
-         });
-         return;
-      }
+
+      const { address, flat_call, entrance_number, floor } = order?.delivery_details;
+      const { is_delivered_asap } = order;
+      setFormValues((state: WorkerVerifyOrderFormState) => {
+         const copy = Object.assign({}, state);
+         copy.floor_w = {
+            value: floor.toString(),
+            isValid: true
+         };
+         copy.entrance_number_w = {
+            value: entrance_number.toString(),
+            isValid: true
+         };
+         copy.address_w = {
+            value: address.toString(),
+            isValid: true
+         };
+         copy.flat_call_w = {
+            value: flat_call.toString(),
+            isValid: true
+         };
+         copy.is_delivered_asap = {
+            value: is_delivered_asap,
+            isValid: true
+         };
+         return { ...copy };
+      });
 
       return;
    }
@@ -257,7 +253,7 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
       setFormValues,
       isSubmitButtonActive,
       setFormDefaultsExceptPhoneNumberAndFullname,
-      setUsername,
-      setCredentials
+      setCredentials,
+      setCredentialsHard
    };
 }

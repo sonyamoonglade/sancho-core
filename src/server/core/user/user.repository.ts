@@ -10,6 +10,7 @@ import { UserCredentialsDto } from "./dto/user-creds.dto";
 import { AppRoles } from "../../../common/types";
 import { CreateMarkDto } from "../mark/dto/create-mark.dto";
 import { Mark, marks } from "../entities/Mark";
+import { FoundUserDto } from "./dto/found-user.dto";
 
 export class UserRepository implements Repository<User> {
    constructor(@Inject(query_builder) private qb: QueryBuilder, @Inject(pg_conn) private db: Pool) {}
@@ -102,5 +103,11 @@ export class UserRepository implements Repository<User> {
       const sql = `SELECT (SELECT extract(epoch FROM NOW()+INTERVAL '+4HOUR')) >= (SELECT extract(epoch FROM (SELECT (SELECT created_at FROM ${marks} WHERE id = ${markId}) + INTERVAL '+${durationInDays}DAYS'))::integer) as still`;
       const { rows } = await this.db.query(sql);
       return !rows[0].still;
+   }
+
+   async findByNumberQuery(phoneNumber: string): Promise<FoundUserDto[]> {
+      const sql = `SELECT name as username,phone_number FROM ${users} where phone_number @@ to_tsquery('${phoneNumber}:*') ORDER BY name ASC`;
+      const { rows } = await this.db.query(sql);
+      return rows as unknown as FoundUserDto[];
    }
 }

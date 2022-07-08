@@ -98,13 +98,6 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
       }
    }
 
-   useEffect(() => {
-      if (isDragging) {
-         dispatch(windowActions.setDropItem(item));
-      }
-      dispatch(windowActions.setDropItem(null));
-   }, [isDragging]);
-
    return (
       <div ref={dragPreview}>
          <li

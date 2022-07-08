@@ -1,0 +1,93 @@
+@import "src/variables.scss";
+
+
+.mark{
+
+}
+
+.livesearch_result_container.user {
+  position: absolute;
+  top: 24%;
+  width: 450px;
+  overflow-y: auto;
+  background-color: transparent;
+  padding: 1rem 0.5rem;
+  border-radius: 7px;
+  max-height: 165px;
+}
+.--ls-res-active{
+  background-color: $yellow-accent !important;
+}
+.livesearch_result_container.user::-webkit-scrollbar{
+  display: none;
+}
+.ls_user_result_item{
+  border-radius: 7px;
+  background-color: $light-grey;
+  box-shadow: 0 0px 5px $dark-grey;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  display: flex;
+  cursor: pointer;;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  p{
+    font-family: "Geometria Medium",sans-serif;
+
+  }
+}
+
+.user_info{
+  margin-top: 1rem;
+  margin-bottom: .5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  padding: 1rem;
+  width: 100%;
+  p{
+    font-family: "Geometria Medium",sans-serif;
+    font-size: $font-mder;
+  }
+  border: 1px solid $dark-grey;
+}
+.info_row{
+  margin-bottom: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+.info_row:last-of-type{
+  margin-bottom: 0;
+}
+.mark_title{
+  align-self: start;
+  font-size: $font-mder;
+  margin-bottom: 0.5rem;
+  font-family: "Geometria Medium",sans-serif;
+}
+.importance_check{
+  margin-top: 1rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  .mark_title{
+    margin-bottom: 0;
+  }
+  width: 100%;
+  span{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    p{
+      font-family: "Geometria",sans-serif;
+      font-size: $font-regular;
+    }
+  }
+  input{
+    font-size: $font-mder;
+  }
+}

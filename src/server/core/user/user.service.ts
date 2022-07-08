@@ -29,6 +29,8 @@ import { MiscService } from "../miscellaneous/misc.service";
 import { MarkRepository } from "../mark/mark.repository";
 import { OrderService } from "../order/order.service";
 import { REGULAR_CUSTOMER_CONTENT } from "../../../common/constants";
+import { ValidationErrorException } from "../../shared/exceptions/validation.exceptions";
+import { FoundUserDto } from "./dto/found-user.dto";
 
 require("dotenv").config();
 
@@ -286,10 +288,23 @@ export class UserService {
    }
 
    async createMark(dto: CreateMarkDto): Promise<Mark> {
-      const mark = this.markRepository.create(dto);
-      if (!mark) {
+      const ok = this.markRepository.create(dto);
+      if (!ok) {
          throw new UserCredentialsNotFound(dto.phoneNumber);
       }
-      return mark;
+      return ok;
+   }
+
+   async findByNumberQuery(v: string): Promise<FoundUserDto[]> {
+      if (v.trim().length === 0) {
+         throw new ValidationErrorException();
+      }
+      const phoneNumberWithPlus = "+" + v;
+      const raw = await this.userRepository.findByNumberQuery(phoneNumberWithPlus);
+      return raw.map((u) => {
+         //@ts-ignore for mapping purposes
+         u.phoneNumber = u.phone_number;
+         return u;
+      });
    }
 }

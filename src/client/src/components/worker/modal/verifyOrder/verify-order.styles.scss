@@ -79,8 +79,15 @@
 
 .delivery_text_w{
   font-size: $font-prelg;
-}
+  display: flex;
+  align-items: center;
 
+}
+.load_creds_icon{
+  transform: translateY(2px);
+  margin-left: 1rem;
+  cursor: pointer;
+}
 .verify_sum{
   width: 100%;
   display: flex;

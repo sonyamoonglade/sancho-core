@@ -1,10 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { DatabaseCartProduct, OrderQueue, Product, VerifiedQueueOrder, WaitingQueueOrder } from "../../common/types";
 import { ListResponse } from "../../../../common/types";
-import { Mark } from "../../types/types";
+import { FoundUser, Mark } from "../../types/types";
 
 interface WorkerInitialState {
-   queryResults: Product[];
+   productQueryResults: Product[];
+   findUserQueryResults: FoundUser[];
    virtualCart: {
       items: DatabaseCartProduct[];
    };
@@ -23,7 +24,8 @@ interface WorkerInitialState {
 }
 
 const initialState: WorkerInitialState = {
-   queryResults: null,
+   productQueryResults: [],
+   findUserQueryResults: [],
    error: {
       val: "",
       modal: false
@@ -64,10 +66,12 @@ const workerSlice = createSlice({
                ? s.orderList.cancel
                : cancel;
       },
-      overrideQueryResults: function (s, a: PayloadAction<Product[]>) {
-         s.queryResults = a.payload;
+      overrideProductQueryResults: function (s, a: PayloadAction<Product[]>) {
+         s.productQueryResults = a.payload;
       },
-
+      overrideUserQueryResults: function (s, a: PayloadAction<FoundUser[]>) {
+         s.findUserQueryResults = a.payload;
+      },
       setError: function (s, a: PayloadAction<string>) {
          s.error.val = a.payload;
       },

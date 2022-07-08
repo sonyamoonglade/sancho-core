@@ -58,3 +58,8 @@ export type Mark = {
    is_important: boolean;
    created_at: Date;
 };
+
+export type FoundUser = {
+   phoneNumber: string;
+   username: string;
+};

@@ -7,10 +7,8 @@ const MarkList = () => {
 
    const { worker } = useAppSelector(windowSelector);
    const isActive = useMemo(() => {
-      console.log(user);
       return user.marks.length > 0;
    }, [worker, user]);
-   console.log(isActive);
    return (
       <div className={isActive ? "marks --marks-active" : "marks"}>
          {user?.marks?.map((mark) => (
@@ -20,4 +18,4 @@ const MarkList = () => {
    );
 };
 
-export default MarkList;
+export default React.memo(MarkList);

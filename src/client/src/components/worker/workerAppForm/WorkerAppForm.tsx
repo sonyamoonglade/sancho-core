@@ -11,8 +11,8 @@ const WorkerAppForm = () => {
    function disableAllWorker() {
       if (isActive) {
          dispatch(windowActions.toggleWorkersOff());
-         dispatch(workerActions.setVirtualCart([]));
-         dispatch(windowActions.setDropItem(defaultItem));
+         // dispatch(workerActions.setVirtualCart([]));
+         // dispatch(windowActions.setDropItem(defaultItem));
          setVirtualCart([]);
       }
    }

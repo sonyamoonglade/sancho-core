@@ -104,7 +104,7 @@ export class ProductController {
 
    @Get("/")
    @Role([AppRoles.worker])
-   async query(@Query("query") q: string, @Res() res: Response) {
+   async query(@Query("v") q: string, @Res() res: Response) {
       try {
          q = decodeURI(q);
          const resultQuery = await this.productService.query(q);

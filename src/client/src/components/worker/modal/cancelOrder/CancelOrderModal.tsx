@@ -6,7 +6,6 @@ import "../../../createUserOrder/orderForm/order-form.styles.scss";
 import "./cancel-order.styles.scss";
 import { CancelExplanationPresets } from "../../../../types/types";
 import { useCancelMasterOrder } from "./hooks/useCancelMasterOrder";
-import { Droppable } from "../../../orderHistory/OrderHistoryItem";
 import { utils } from "../../../../utils/util.functions";
 
 const CancelOrderModal = () => {

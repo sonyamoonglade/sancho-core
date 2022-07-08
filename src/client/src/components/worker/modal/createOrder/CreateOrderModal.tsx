@@ -50,10 +50,10 @@ const CreateOrderModal = () => {
       virtualCart.clearVirtualCart();
    }
    async function fetchAndSetUserCredentialsAsync(phoneNumber: string) {
-      const credentials = await fetchUserCredentials(phoneNumber);
-      if (credentials !== null) {
-         setUserCredentials(credentials);
-         dispatch(workerActions.setMarks(credentials.marks));
+      const creds = await fetchUserCredentials(phoneNumber);
+      if (creds !== null) {
+         setUserCredentials(creds);
+         dispatch(workerActions.setMarks(creds.marks));
          return;
       }
       return;

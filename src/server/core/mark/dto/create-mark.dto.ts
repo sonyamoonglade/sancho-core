@@ -1,4 +1,4 @@
-import { IsBoolean, IsDefined, IsNumber, IsPhoneNumber, IsString } from "class-validator";
+import { IsBoolean, IsDefined, IsNumber, IsPhoneNumber, IsString, Length } from "class-validator";
 
 export class CreateMarkDto {
    @IsDefined()

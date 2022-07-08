@@ -31,8 +31,13 @@ export const startEventSourcingForQueue = () => async (dispatch: AppDispatch) =>
 };
 
 export const fetchQueryLiveSearchResults = (query: string, client: AxiosInstance) => async (dispatch: AppDispatch) => {
-   const { data } = await client.get(`/product/?query=${query}`);
-   dispatch(workerActions.overrideQueryResults(data.result));
+   const { data } = await client.get(`/product/?v=${query}`);
+   dispatch(workerActions.overrideProductQueryResults(data.result));
+};
+
+export const fetchUserLiveSearchResults = (query: string, client: AxiosInstance) => async (dispatch: AppDispatch) => {
+   const { data } = await client.get(`/users/find?v=7${query}`);
+   dispatch(workerActions.overrideUserQueryResults(data.result));
 };
 
 export const getOrderList = (status: OrderStatus, client: AxiosInstance) => async (dispatch: AppDispatch) => {

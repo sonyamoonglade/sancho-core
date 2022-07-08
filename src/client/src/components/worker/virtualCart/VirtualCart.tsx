@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useMemo, useRef } from "react";
 import { DatabaseCartProduct } from "../../../common/types";
 import "./virtual-cart.styles.scss";
 import "../worker-globals.scss";
@@ -6,12 +6,12 @@ import { currency } from "../../../common/constants";
 import ReduceAddButton from "./ReduceAddButton";
 import { useVirtualCart } from "../hooks/useVirtualCart";
 import { useAppDispatch, useAppSelector, windowSelector, workerActions, workerSelector } from "../../../redux";
-import LifeSearch from "../liveSearch/LiveSearch";
+import LifeSearch, { Livesearch } from "../liveSearch/LiveSearch";
 import LiveSearchResultContainer from "../liveSearch/LiveSearchResultContainer";
 
 const VirtualCart = () => {
    const virtualCart = useVirtualCart();
-   const { queryResults, virtualCart: virtualCartState } = useAppSelector(workerSelector);
+   const { productQueryResults, virtualCart: virtualCartState } = useAppSelector(workerSelector);
    const { worker } = useAppSelector(windowSelector);
    const focusRef = useRef<HTMLInputElement>(null);
    const dispatch = useAppDispatch();
@@ -27,11 +27,14 @@ const VirtualCart = () => {
       const cc = virtualCart.getCurrentCart();
       dispatch(workerActions.setVirtualCart(cc));
    }
+   const onlyRussianLettersRegexp = useMemo(() => {
+      return new RegExp("!?[0-9]+|!?[A-Za-z]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+");
+   }, []);
    return (
       <>
          <div className={worker.virtualCart ? "livesearch_container --ls-active " : "livesearch_container"}>
-            <LifeSearch focusRef={focusRef} extraClassName={"verify"} />
-            <LiveSearchResultContainer virtualCart={virtualCart} focusRef={focusRef} result={queryResults} />
+            <LifeSearch regexp={onlyRussianLettersRegexp} type={Livesearch.VIRTUAL_CART} focusRef={focusRef} extraClassName={"virtual_search"} />
+            <LiveSearchResultContainer virtualCart={virtualCart} focusRef={focusRef} result={productQueryResults} />
          </div>
          <div className={worker.virtualCart ? "virtual_cart --virtual-active" : "virtual_cart"}>
             <ul className="virtual_list">

@@ -162,4 +162,4 @@ const CreateOrderForm: FC<createMasterOrderFormProps> = ({ formValues, setFormDe
    );
 };
 
-export default CreateOrderForm;
+export default React.memo(CreateOrderForm);
