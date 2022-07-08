@@ -211,6 +211,10 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
             value: floor.toString(),
             isValid: true
          };
+         copy.is_delivered_w = {
+            value: true,
+            isValid: true
+         };
          copy.entrance_number_w = {
             value: entrance_number.toString(),
             isValid: true

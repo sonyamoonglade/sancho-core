@@ -49,7 +49,7 @@ export class OrderRepository implements Repository<Order> {
    async getOrderQueue(): Promise<QueueOrderDto[]> {
       const sql = `
         select o.id,o.cart,o.total_cart_price,o.status,o.is_delivered,o.delivery_details,o.created_at,
-        u.name,u.phone_number,o.delivered_at,o.is_delivered_asap from ${orders} o join ${users} u on o.user_id= 
+        u.name,u.phone_number,o.delivered_at,o.is_delivered_asap,o.is_paid from ${orders} o join ${users} u on o.user_id= 
         u.id where o.status = '${OrderStatus.waiting_for_verification}' or o.status = '${OrderStatus.verified}' order by o.created_at desc
       `;
       const { rows } = await this.db.query(sql);
@@ -121,7 +121,7 @@ export class OrderRepository implements Repository<Order> {
    async getOrderList(status: OrderStatus): Promise<VerifiedQueueOrder[]> {
       const sql = `
         SELECT o.id,o.cart,o.total_cart_price,o.status,o.is_delivered,o.delivery_details,o.created_at,
-        u.name,u.phone_number,o.delivered_at,o.is_delivered_asap FROM ${orders} o JOIN ${users} u ON o.user_id= 
+        u.name,u.phone_number,o.delivered_at,o.is_delivered_asap,o.is_paid FROM ${orders} o JOIN ${users} u ON o.user_id= 
         u.id WHERE o.status = '${status}' ORDER BY o.created_at DESC LIMIT 15`;
       const { rows } = await this.db.query(sql);
       return rows.map((res: any) => {
@@ -138,13 +138,14 @@ export class OrderRepository implements Repository<Order> {
                phone_number: res.phone_number
             },
             is_delivered: res.is_delivered,
-            id: res.id
+            id: res.id,
+            is_paid: res.is_paid
          };
       });
    }
 
    async payForOrder(orderId: number): Promise<boolean> {
-      const sql = `UPDATE ${orderId} SET is_paid = CASE WHEN status = '${OrderStatus.completed}' THEN true ELSE is_paid END WHERE id = ${orderId} RETURNING id`;
+      const sql = `UPDATE ${orders} SET is_paid = CASE WHEN is_paid = false THEN true ELSE false END WHERE id = ${orderId} AND status = '${OrderStatus.completed}'  RETURNING id`;
       const { rows } = await this.db.query(sql);
       if (rows.length > 0) {
          return true;

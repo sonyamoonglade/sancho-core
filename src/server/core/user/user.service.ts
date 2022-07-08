@@ -22,7 +22,7 @@ import { UnexpectedServerError } from "../../shared/exceptions/unexpected-errors
 import { APP_ROLES } from "../../types/contants";
 import { UserCredentialsDto } from "./dto/user-creds.dto";
 import { CreateMarkDto } from "../mark/dto/create-mark.dto";
-import { MarkDoesNotExist } from "../../shared/exceptions/mark.exceptions";
+import { MarkCannotBeDeleted, MarkDoesNotExist } from "../../shared/exceptions/mark.exceptions";
 import { Mark } from "../entities/Mark";
 import * as dayjs from "dayjs";
 import { MiscService } from "../miscellaneous/misc.service";
@@ -38,6 +38,7 @@ export interface MarkRepositoryInterface {
    create(dto: CreateMarkDto): Promise<Mark>;
    delete(userId: number, markId: number): Promise<boolean>;
    getUserMarks(userId: number): Promise<Mark[]>;
+   isRegularMark(markId: number): Promise<boolean>;
 }
 
 @Injectable()
@@ -50,7 +51,15 @@ export class UserService {
       private orderService: OrderService
    ) {}
 
-   generateRegularCustomerMark(userId: number, phoneNumber: string): CreateMarkDto {
+   async isRegularMark(markId: number): Promise<boolean> {
+      const ok = await this.markRepository.isRegularMark(markId);
+      if (ok) {
+         throw new MarkCannotBeDeleted();
+      }
+      return false;
+   }
+
+   public generateRegularCustomerMark(userId: number, phoneNumber: string): CreateMarkDto {
       const dto: CreateMarkDto = new CreateMarkDto();
       dto.userId = userId;
       dto.content = REGULAR_CUSTOMER_CONTENT;

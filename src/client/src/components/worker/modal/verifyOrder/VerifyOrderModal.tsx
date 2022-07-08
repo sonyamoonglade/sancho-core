@@ -52,7 +52,7 @@ const VerifyOrderModal = () => {
       }
    }
    function checkIsPunished(v: number): boolean {
-      return v < DELIVERY_PUNISHMENT_THRESHOLD;
+      return v <= DELIVERY_PUNISHMENT_THRESHOLD;
    }
    function applyPunishment(v: number): number {
       return v + DELIVERY_PUNISHMENT_VALUE;
@@ -129,9 +129,8 @@ const VerifyOrderModal = () => {
 
       if (worker.virtualCart) {
          let price = utils.getOrderTotalPrice(virtualCartState.items);
-         if (o?.is_delivered || formValues.is_delivered_w.value) {
-            const isPunished = checkIsPunished(price);
-            if (isPunished) {
+         if (formValues.is_delivered_w.value) {
+            if (checkIsPunished(price)) {
                price = applyPunishment(price);
             }
          }
@@ -139,10 +138,8 @@ const VerifyOrderModal = () => {
          return;
       }
 
-      //fetching creds goes here!
-
       let price = utils.getOrderTotalPriceByCart(o?.cart);
-      if (o?.is_delivered || formValues.is_delivered_w.value) {
+      if (formValues.is_delivered_w.value) {
          //check and apply punishment
          if (checkIsPunished(price)) {
             price = applyPunishment(price);

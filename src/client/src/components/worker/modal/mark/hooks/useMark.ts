@@ -13,5 +13,13 @@ export function useMark() {
       return false;
    }, []);
 
-   return { createMark };
+   const deleteMark = useCallback(async function (markId: number) {
+      const r = await client.delete(`users/mark?v=${markId}`);
+      if (r.status === 200) {
+         return r;
+      }
+      return null;
+   }, []);
+
+   return { createMark, deleteMark };
 }

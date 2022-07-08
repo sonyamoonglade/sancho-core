@@ -6,6 +6,7 @@ import { CreateMarkDto } from "./dto/create-mark.dto";
 import { Mark, marks } from "../entities/Mark";
 import { Inject, Injectable } from "@nestjs/common";
 import { MarkRepositoryInterface } from "../user/user.service";
+import { REGULAR_CUSTOMER_CONTENT } from "../../../common/constants";
 
 @Injectable()
 export class MarkRepository implements MarkRepositoryInterface {
@@ -18,6 +19,14 @@ export class MarkRepository implements MarkRepositoryInterface {
       return rows[0] as unknown as Mark;
    }
 
+   async isRegularMark(markId: number): Promise<boolean> {
+      const sql = `SELECT content FROM ${marks} WHERE id = ${markId}`;
+      const { rows } = await this.db.query(sql);
+      if (rows.length > 0) {
+         return rows[0].content === REGULAR_CUSTOMER_CONTENT;
+      }
+      return false;
+   }
    async delete(markId: number): Promise<boolean> {
       const sql = `DELETE FROM ${marks} WHERE id = $1 returning id`;
       const values = [markId];

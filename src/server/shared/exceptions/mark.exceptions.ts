@@ -5,3 +5,8 @@ export class MarkDoesNotExist extends HttpException {
       super(`Метка с номером ${markId} не существует`, HttpStatus.BAD_REQUEST);
    }
 }
+export class MarkCannotBeDeleted extends HttpException {
+   constructor() {
+      super(`Метка постоянного клиента не может быть удалена до окончания срока действия`, HttpStatus.BAD_REQUEST);
+   }
+}

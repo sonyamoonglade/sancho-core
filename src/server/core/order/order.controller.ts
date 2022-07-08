@@ -171,7 +171,7 @@ export class OrderController {
 
    @Put("/pay")
    @Role([AppRoles.worker])
-   async payForOrder(@Query("orderId", ParseIntPipe) orderId: number, @Res() res: Response) {
+   async payForOrder(@Query("v", ParseIntPipe) orderId: number, @Res() res: Response) {
       try {
          await this.orderService.payForOrder(orderId);
          return res.status(200).end();

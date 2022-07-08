@@ -1,13 +1,25 @@
 import React, { FC, useEffect } from "react";
-import { OrderStatus, ResponseUserOrder, WaitingQueueOrder } from "../../common/types";
+import { OrderStatus, ResponseUserOrder } from "../../common/types";
 import { currency } from "../../common/constants";
 import { BiShoppingBag } from "react-icons/bi";
 import { useCorrectOrderData } from "./hooks/useCorrectOrderData";
 import { CgCloseO } from "react-icons/cg";
 import { useCancelOrder } from "../../hooks/useCancelOrder";
-import { orderSelector, useAppDispatch, useAppSelector, windowActions, windowSelector } from "../../redux";
+import {
+   orderSelector,
+   useAppDispatch,
+   useAppSelector,
+   userSelector,
+   windowActions,
+   windowSelector,
+   workerActions,
+   workerSelector
+} from "../../redux";
 import { AppResponsiveState } from "../../types/types";
 import { useDrag } from "react-dnd";
+import { usePay } from "./hooks/usePay";
+import { getOrderList } from "../../redux/worker/worker.async-actions";
+import { useAxios } from "../../hooks/useAxios";
 
 export interface ExtraData {
    phoneNumber?: string;
@@ -39,23 +51,24 @@ export const defaultItem: Droppable = {
 export enum DropZones {
    COMPLETE = "complete",
    VERIFY = "verify",
-   CANCEL = "cancel",
-   MARK = "mark"
+   CANCEL = "cancel"
 }
 
 const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extraData, canDrag = true }) => {
    const { orderHistory } = useAppSelector(orderSelector);
    const { cid, cstatus, cdate, cddate, correctData, orderItemCorrespondingClassName } = useCorrectOrderData(order);
-
+   const { isWorkerAuthenticated } = useAppSelector(userSelector);
    const { onEnd, onMove, cancelIconAnimationRef, animationRef, x } = useCancelOrder(order);
-
+   const { pay } = usePay();
+   const client = useAxios();
    const { appResponsiveState } = useAppSelector(windowSelector);
+   const { orderList } = useAppSelector(workerSelector);
 
    useEffect(() => {
       correctData();
    }, [orderHistory]);
 
-   const [{ isDragging, item }, drag, dragPreview] = useDrag(() => ({
+   const [{ isDragging }, drag, dragPreview] = useDrag(() => ({
       type: "ORDER",
       item: {
          id: order.id,
@@ -63,8 +76,7 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
          status: order.status
       },
       collect: (monitor) => ({
-         isDragging: monitor.isDragging(),
-         item: monitor.getItem()
+         isDragging: monitor.isDragging()
       }),
       end: (item, monitor) => {
          const dropResult: DropResult = monitor.getDropResult();
@@ -74,6 +86,38 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
       }
    }));
    const dispatch = useAppDispatch();
+   async function handleOrderPay(order: ResponseUserOrder, v: boolean) {
+      if (v === order.is_paid) {
+         return;
+      }
+      if (!v) {
+         const ans = window.confirm("Вы уверены?\n\rПодозрительные действия отслеживаются.");
+         if (!ans) {
+            return;
+         }
+      }
+      const res = await pay(order.id);
+      if (!res) {
+         return;
+      }
+      const currCompList = orderList.complete;
+      const afterPayCompList = currCompList.map((ord) => {
+         if (ord.id === order.id) {
+            return {
+               ...ord,
+               is_paid: !ord.is_paid
+            };
+         }
+         return ord;
+      });
+      dispatch(
+         workerActions.setOrderList({
+            complete: afterPayCompList,
+            cancel: orderList.cancel
+         })
+      );
+      return;
+   }
 
    function handleDrop(dropzone: string, item: Droppable) {
       dispatch(windowActions.setDropItem(item));
@@ -152,6 +196,18 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
                            : "самовывоз"}
                      </p>
                   </div>
+                  {order.status === OrderStatus.completed && isWorkerAuthenticated && (
+                     <div className="second_row_right">
+                        <span>
+                           <button onClick={() => handleOrderPay(order, false)} className={!order.is_paid ? "pay_btn --green" : "pay_btn"}>
+                              <p>Не оплачен</p>
+                           </button>
+                           <button onClick={() => handleOrderPay(order, true)} className={order.is_paid ? "pay_btn --green" : "pay_btn"}>
+                              <p>Оплачен</p>
+                           </button>
+                        </span>
+                     </div>
+                  )}
                   {order.status !== OrderStatus.cancelled && order.status !== OrderStatus.completed && <div className="green_dot">&nbsp;</div>}
                   <BiShoppingBag size={25} />
                </div>

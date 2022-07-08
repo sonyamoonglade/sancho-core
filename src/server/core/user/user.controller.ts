@@ -136,11 +136,14 @@ export class UserController {
          throw e;
       }
    }
-   @Delete("/mark/delete")
+   @Delete("/mark")
    @Role([AppRoles.worker])
-   async deleteMark(@Req() req: extendedRequest, @Res() res: Response, @Query("markId", ParseIntPipe) markId: number) {
+   async deleteMark(@Req() req: extendedRequest, @Res() res: Response, @Query("v", ParseIntPipe) markId: number) {
       try {
-         await this.userService.deleteMark(markId);
+         const ok = await this.userService.isRegularMark(markId);
+         if (!ok) {
+            await this.userService.deleteMark(markId);
+         }
          return res.status(200).end();
       } catch (e) {
          console.log(e);

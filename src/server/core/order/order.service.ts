@@ -213,9 +213,10 @@ export class OrderService {
 
    public mapRawHistory(raw: Order[]): ResponseUserOrder[] {
       return raw.map((o: Order) => {
-         const { total_cart_price, id, created_at, status, is_delivered, delivery_details, cart, is_delivered_asap, delivered_at } = o;
+         const { total_cart_price, id, created_at, status, is_delivered, delivery_details, cart, is_delivered_asap, delivered_at, is_paid } = o;
          const rso: ResponseUserOrder = {
             total_cart_price,
+            is_paid,
             id,
             created_at,
             status,
@@ -346,11 +347,13 @@ export class OrderService {
             name,
             phone_number,
             is_delivered,
-            id
+            id,
+            is_paid
          } = rawOrder;
          if (rawOrder.status === OrderStatus.waiting_for_verification) {
             const mapped: WaitingQueueOrder = {
                status,
+               is_paid,
                is_delivered,
                delivery_details: is_delivered ? JSON.parse(delivery_details as unknown as string) : null,
                is_delivered_asap,
@@ -368,6 +371,7 @@ export class OrderService {
          }
          const mapped: VerifiedQueueOrder = {
             delivered_at,
+            is_paid,
             is_delivered_asap,
             cart: this.parseJsonCart(cart as unknown as string[]),
             created_at,

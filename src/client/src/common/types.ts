@@ -71,6 +71,7 @@ export type ResponseUserOrder = {
    total_cart_price: number;
    is_delivered_asap: boolean;
    delivered_at: Date;
+   is_paid: boolean;
 };
 
 export interface VerifiedQueueOrder extends ResponseUserOrder {

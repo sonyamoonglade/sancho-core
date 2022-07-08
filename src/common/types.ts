@@ -63,6 +63,7 @@ export type Promotion = {
 
 export type ResponseUserOrder = {
    id: number;
+   is_paid: boolean;
    cart: DatabaseCartProduct[];
    created_at: Date;
    status: OrderStatus;

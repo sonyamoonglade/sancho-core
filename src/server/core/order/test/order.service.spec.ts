@@ -9,6 +9,7 @@ import { SessionService } from "../../authentication/session.service";
 import { SessionRepository } from "../../authentication/session.repository";
 import { UserRepository } from "../../user/user.repository";
 import { OrderCannotBePaid } from "../../../shared/exceptions/order.exceptions";
+import { MarkRepository } from "../../mark/mark.repository";
 
 describe("OrderService", () => {
    let orderRepository: OrderRepository;
@@ -16,6 +17,7 @@ describe("OrderService", () => {
    let sessionRepository: SessionRepository;
    let userRepository: UserRepository;
    let productRepository: ProductRepository;
+   let markRepository: MarkRepository;
    let miscRepository: MiscRepository;
    let sessionService: SessionService;
    let userService: UserService;
@@ -30,13 +32,13 @@ describe("OrderService", () => {
       userRepository = new UserRepository(qb, db);
       productRepository = new ProductRepository(qb, db);
       miscRepository = new MiscRepository(qb, db);
+      markRepository = new MarkRepository(qb, db);
 
-      sessionService = new SessionService(sessionRepository);
-      userService = new UserService(sessionService, userRepository);
-      jsonService = new JsonService();
       miscService = new MiscService(miscRepository);
-
-      orderService = new OrderService(orderRepository, userService, jsonService, productRepository, miscService);
+      sessionService = new SessionService(sessionRepository);
+      jsonService = new JsonService();
+      orderService = new OrderService(orderRepository, jsonService, productRepository, miscService);
+      userService = new UserService(sessionService, userRepository, miscService, markRepository, orderService);
    });
 
    it("should throw OrderCannotBePaid (because status != completed)", async () => {

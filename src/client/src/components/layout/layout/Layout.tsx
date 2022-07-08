@@ -20,7 +20,6 @@ import Dashboard from "../../admin/dashboard/Dashboard";
 import Users from "../../admin/users/Users";
 import Orders from "../../admin/orders/Orders";
 import AdminQueue from "../../admin/queue/AdminQueue";
-import MarkDrag from "../../worker/drag/mark/MarkDrag";
 import MarkList from "../../worker/mark/MarkList";
 import MarkModal from "../../worker/modal/mark/MarkModal";
 interface layoutProps {
@@ -53,7 +52,6 @@ const Layout: FC<layoutProps> = ({ children }) => {
                   <CompleteOrderDrag />
                   <CancelOrderDrag />
                   <VerifyOrderDrag />
-                  <MarkDrag />
                </>
             </>
          ) : isMasterAuthenticated ? (

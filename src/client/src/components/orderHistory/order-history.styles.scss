@@ -26,6 +26,17 @@
 
   }
 }
+.second_row_right{
+  span{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    p{
+      font-family: "Geometria",sans-serif;
+      font-size: $font-md;
+    }
+  }
+}
 
 .order_h_item{
   position: relative;
@@ -85,6 +96,7 @@
   position: relative;
   justify-content: space-between;
   .second_row_left{
+    width: 300px;
     display: flex;
     align-items: center;
   }
@@ -180,4 +192,21 @@
   @media (min-width: 1440px) {
     font-size: $font-regular;
   }
+}
+
+.pay_btn{
+  border: 0;
+  background-color: $light-grey;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  border-radius: 7px;
+  margin-right: 1rem;
+  box-shadow: 0 1px 3px $dark-grey;
+  transition: all 0.05s ease-in;
+}
+.pay_btn:hover{
+  transform: translateY(-.8px);
+}
+.pay_btn:active{
+  transform: translateY(-.8px) scale(.995);
 }

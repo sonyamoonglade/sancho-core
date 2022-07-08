@@ -11,5 +11,6 @@ export class QueueOrderDto {
    is_delivered_asap: boolean;
    delivered_at: Date;
    name: string;
+   is_paid: boolean;
    phone_number: string;
 }

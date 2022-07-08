@@ -38,6 +38,6 @@ export class InvalidOrderStatus extends HttpException {
 }
 export class OrderCannotBePaid extends HttpException {
    constructor(orderId: number) {
-      super(`Заказ ${orderId} не может быть оплачен. Не корректный статус заказа`, HttpStatus.BAD_REQUEST);
+      super(`Заказ ${orderId} не может быть оплачен. Не корректный статус заказа или другая причина`, HttpStatus.BAD_REQUEST);
    }
 }
