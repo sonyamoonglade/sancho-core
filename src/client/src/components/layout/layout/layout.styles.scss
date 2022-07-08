@@ -117,10 +117,19 @@ button{
 .--green{
   background-color: $green-lighter !important
 }
+.--green-darker{
+  background-color: $green-second !important;
+}
+.--green-normal{
+  background-color: $green !important;
+}
 .--red{
   background-color: $red !important
 }
-
+s
+.--blue-darker{
+  background-color: #61AEC0FF !important;
+}
 .--blue{
   background-color: $blue !important
 }
