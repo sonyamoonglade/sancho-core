@@ -94,7 +94,8 @@ export type OrderQueue = {
 export enum Categories {
    PIZZA = "Пицца",
    DRINKS = "Напитки",
-   DESSERT = "Дессерты"
+   DESSERT = "Дессерты",
+   SUSHI = "Суши"
 }
 
 export interface ListResponse {

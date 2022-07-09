@@ -97,6 +97,7 @@ export class ProductService {
       const pizza = unsorted.filter((p) => p.category === Categories.PIZZA);
       const drinks = unsorted.filter((p) => p.category === Categories.DRINKS);
       const desserts = unsorted.filter((p) => p.category === Categories.DESSERT);
-      return [...pizza, ...drinks, ...desserts];
+      const sushi = unsorted.filter((p) => p.category === Categories.SUSHI);
+      return [...pizza, ...drinks, ...desserts, ...sushi];
    }
 }

@@ -28,6 +28,7 @@ const Catalog: FC<catalogProps> = ({ productList }) => {
       <div ref={catalogRef} className="catalog">
          {productList.map((p, i) => {
             const category = attachCategoryId(p, i);
+
             if (category) {
                return <ProductCard id={category} product={p} key={p.id} />;
             }

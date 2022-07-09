@@ -23,7 +23,7 @@ const ProductCard: FC<productCardProps> = ({ product, id }) => {
    );
 
    const forLargerDevices = (
-      <div className="product_card">
+      <div className="product_card" id={id}>
          <ProductInfo product={product}>
             <ProductHeading name={product.translate} translate={product.name} price={product.price} isTranslateShown={isSmallDevice} />
          </ProductInfo>
