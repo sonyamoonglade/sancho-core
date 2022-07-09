@@ -11,7 +11,6 @@ import {
 import { ValidationErrorException } from "../../shared/exceptions/validation.exceptions";
 import { ProductRepository } from "./product.repository";
 import { PutImageDto } from "./dto/put-image.dto";
-import { FileStorage } from "../../shared/fileStorage/file.storage";
 
 export interface ProductRepositoryInterface {
    searchQuery(words: string[]): Promise<Product[]>;
@@ -97,6 +96,7 @@ export class ProductService {
    sortByCategory(unsorted: Product[]): Product[] {
       const pizza = unsorted.filter((p) => p.category === Categories.PIZZA);
       const drinks = unsorted.filter((p) => p.category === Categories.DRINKS);
-      return [...pizza, ...drinks];
+      const desserts = unsorted.filter((p) => p.category === Categories.DESSERT);
+      return [...pizza, ...drinks, ...desserts];
    }
 }

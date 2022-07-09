@@ -20,6 +20,7 @@ import MasterLogin from "../../masterLogin/MasterLogin";
 import WorkerNavigation from "../../worker/navigation/WorkerNavigation";
 import WorkerNavigationRight from "../../worker/navigation/WorkerNavigationRight";
 import AdminNavigation from "../../admin/navigation/AdminNavigation";
+import Categories from "../categories/Categories";
 
 const mockPromotions: Promotion[] = [
    {
@@ -46,7 +47,6 @@ const windowActions = windowSlice.actions;
 const Header: FC = () => {
    function nullifyScroll() {
       const steps = 50;
-      let i = 0;
       let interval = setInterval(() => {
          const currentScroll = window.scrollY;
          const perStep = currentScroll / steps;
@@ -55,7 +55,6 @@ const Header: FC = () => {
             clearInterval(interval);
          }
          window.scroll({ top: currentScroll - perStep });
-         i++;
       }, 5);
    }
 
@@ -99,9 +98,7 @@ const Header: FC = () => {
             ) : null}
          </div>
 
-         {isWorkerAuthenticated || isMasterAuthenticated ? (
-            <></>
-         ) : (
+         {isWorkerAuthenticated || isMasterAuthenticated ? null : (
             <>
                <PromotionList promotions={mockPromotions} />
                <Order />

@@ -10,10 +10,17 @@ interface ProductState {
    totalCartPrice: number;
    isPresentingNow: boolean;
    isCartEmpty: boolean;
+   categories: {
+      value: string;
+      active: boolean;
+   }[];
+   categoriesScrollAdj: any;
 }
 
 const initialState: ProductState = {
    productList: [],
+   categoriesScrollAdj: null,
+   categories: [],
    onLoadErrorMessage: null,
    presentedProduct: null,
    isProductListLoading: false,
@@ -27,10 +34,39 @@ export const productSlice = createSlice({
    name: "product",
    initialState,
    reducers: {
+      setCategoriesAdj: function (s, a: PayloadAction<string>) {
+         if (s.categoriesScrollAdj == null) {
+            const mapLikeObj = JSON.parse(a.payload);
+            s.categoriesScrollAdj = mapLikeObj;
+         }
+      },
+      activateCategory: function (s, a: PayloadAction<string>) {
+         s.categories = s.categories
+            .map((c) => {
+               return { ...c, active: false };
+            })
+            .map((c) => {
+               if (c.value === a.payload) {
+                  return {
+                     ...c,
+                     active: true
+                  };
+               }
+               return c;
+            });
+      },
+      setCategories: function (s, a: PayloadAction<string[]>) {
+         s.categories = a.payload.map((categ, i) => {
+            return {
+               value: categ,
+               active: i === 0
+            };
+         });
+      },
       listLoading: (s) => {
          s.isProductListLoading = true;
       },
-      saveList: (s, a: PayloadAction<Product[]>) => {
+      setCatalog: (s, a: PayloadAction<Product[]>) => {
          s.productList = a.payload;
          s.isProductListLoading = false;
       },

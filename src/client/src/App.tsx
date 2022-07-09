@@ -1,9 +1,9 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { useAxios } from "./hooks/useAxios";
 import Layout from "./components/layout/layout/Layout";
 import AppForm from "./components/appForm/AppForm";
-
+import { CatalogContext } from "./components/layout/context";
 import { fetchMiscData, getCatalog, productSelector, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector } from "./redux";
 import CartLink from "./components/cart/cartLink/CartLink";
 import OrderLink from "./components/createUserOrder/orderLink/OrderLink";
@@ -13,6 +13,7 @@ import { authMe } from "./redux/user/user-async.actions";
 import { useMediaQuery } from "react-responsive";
 import { AppResponsiveState } from "./types/types";
 import { useNavigate } from "react-router-dom";
+import Categories from "./components/layout/categories/Categories";
 
 export const baseBackendUrl = "https://pizza-fullstack.herokuapp.com";
 
@@ -24,6 +25,7 @@ function App() {
    const { isWorkerAuthenticated, isAuthenticated, isMasterAuthenticated } = useAppSelector(userSelector);
    const router = useNavigate();
    const isNotMobileOrTablet = useMediaQuery({ minWidth: 1440 });
+   const catalogRef = useRef<HTMLDivElement>(null);
 
    useEffect(() => {
       if (isNotMobileOrTablet && appResponsiveState !== AppResponsiveState.computer) {
@@ -50,13 +52,19 @@ function App() {
    }, [isAuthenticated, isWorkerAuthenticated, isMasterAuthenticated]);
 
    return (
-      <Layout>
-         {productList.length !== 0 && <Catalog productList={productList} />}
-         {!isNotMobileOrTablet ? cart && <OrderLink /> : null}
-         {!isNotMobileOrTablet ? !isCartEmpty && <CartLink /> : null}
-         <AppForm />
-         <ProductPresentation />
-      </Layout>
+      <CatalogContext.Provider
+         value={{
+            catalogRef
+         }}>
+         <Layout>
+            <Categories />
+            {productList.length !== 0 && <Catalog productList={productList} />}
+            {!isNotMobileOrTablet ? cart && <OrderLink /> : null}
+            {!isNotMobileOrTablet ? !isCartEmpty && <CartLink /> : null}
+            <AppForm />
+            <ProductPresentation />
+         </Layout>
+      </CatalogContext.Provider>
    );
 }
 

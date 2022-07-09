@@ -94,6 +94,7 @@ export class ProductController {
          if (!ok) {
             return res.status(400).end();
          }
+         await this.productService.updateProduct({ has_image: true, approved: false }, productId);
          return res.status(201).send({
             file: dto.productId + ".png"
          });
@@ -119,7 +120,11 @@ export class ProductController {
    async getCatalog(@Res() res: Response) {
       try {
          const catalog = await this.productService.getCatalog();
-         return res.status(200).send(catalog);
+         const categories = this.productService.getCategories();
+         return res.status(200).send({
+            catalog,
+            categories
+         });
       } catch (e) {
          throw e;
       }
@@ -127,7 +132,7 @@ export class ProductController {
 
    @Put("/approve")
    @Role([AppRoles.master])
-   async approveProduct(@Res() res: Response, @Query("productId", ParseIntPipe) productId: number) {
+   async approveProduct(@Res() res: Response, @Query("v", ParseIntPipe) productId: number) {
       try {
          await this.productService.approveProduct(productId);
          return res.status(200).end();

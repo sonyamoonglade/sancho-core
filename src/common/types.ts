@@ -93,7 +93,8 @@ export type OrderQueue = {
 
 export enum Categories {
    PIZZA = "Пицца",
-   DRINKS = "Напитки"
+   DRINKS = "Напитки",
+   DESSERT = "Дессерты"
 }
 
 export interface ListResponse {

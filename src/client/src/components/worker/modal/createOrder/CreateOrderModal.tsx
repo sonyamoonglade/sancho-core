@@ -78,12 +78,20 @@ const CreateOrderModal = () => {
    }, [virtualCartState.items, formValues.is_delivered_c.value]);
    useEffect(() => {
       const { isValid, value: phoneNumber } = formValues.phone_number_c;
-      if (createMasterOrder && isValid) {
+      if (worker.createOrder && isValid) {
          fetchAndSetUserCredentialsAsync(phoneNumber);
       } else {
          dispatch(workerActions.setMarks([]));
       }
    }, [formValues.phone_number_c.isValid]);
+
+   useEffect(() => {
+      if (!worker.createOrder) {
+         dispatch(workerActions.setVirtualCart([]));
+         virtualCart.clearVirtualCart();
+      }
+   }, [worker.createOrder]);
+
    return (
       <div className={worker.createOrder ? "worker_modal create --w-opened" : "worker_modal create"}>
          <p className="modal_title">Создать заказ</p>

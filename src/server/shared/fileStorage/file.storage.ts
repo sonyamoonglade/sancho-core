@@ -37,14 +37,15 @@ export class FileStorage implements FileStorageInterface {
          "content-type": imagePNG
       };
 
-      const endPoint = "/service/put";
+      const endPoint = "/api/v1/service/put";
       try {
          const { data } = await axios.post(this.url + endPoint, dto.file.buffer, {
             headers: {
                ...x_headers
             }
          });
-         const ok = data?.ok || false;
+         const ok = data.ok;
+
          return ok;
       } catch (e: any) {
          return false;

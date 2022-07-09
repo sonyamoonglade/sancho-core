@@ -1,0 +1,40 @@
+@import "src/./variables.scss";
+
+
+.categories{
+  position: sticky;
+  width: 100%;
+  white-space: nowrap;
+  overflow-x: auto;
+  display: flex;
+  align-items: center;
+  z-index: 2000;
+  top: 68px;
+  margin-left: 1rem;
+  margin-top: 1.5rem;
+}
+
+.category_item{
+  margin-right: 0.3rem;
+  background-color: $light-grey;
+  padding: 0.5rem;
+  transition: all 0.15s ease-in-out ;
+  border-radius: 2px;
+  border: 1px dashed $black-18;
+  //box-shadow: 0 0 2px $black-50;
+  p{
+    font-family: "Geometria",sans-serif;
+    font-size: $font-regular;
+  }
+}
+.--category-active{
+  background-color: $black;
+  p{
+    color: white;
+    font-family: "Geometria Medium",sans-serif;
+  }
+}
+.category_item:last-of-type{
+  margin-right: 0;
+
+}

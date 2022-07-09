@@ -1,11 +1,11 @@
-import React, { FC } from "react";
+import React, { FC, useContext, useEffect, useRef, useState } from "react";
 
 import "./layout.styles.scss";
 import "../../worker/worker-globals.scss";
 
 import Header from "../header/Header";
 import { useRoutes } from "../../../hooks/useRoutes";
-import { useAppSelector, userSelector } from "../../../redux";
+import { productActions, productSelector, useAppDispatch, useAppSelector, userSelector } from "../../../redux";
 import WorkerAppForm from "../../worker/workerAppForm/WorkerAppForm";
 import CreateOrderModal from "../../worker/modal/createOrder/CreateOrderModal";
 import VerifyOrderModal from "../../worker/modal/verifyOrder/VerifyOrderModal";
@@ -22,6 +22,9 @@ import Orders from "../../admin/orders/Orders";
 import AdminQueue from "../../admin/queue/AdminQueue";
 import MarkList from "../../worker/mark/MarkList";
 import MarkModal from "../../worker/modal/mark/MarkModal";
+import { CatalogContext, LayoutContext } from "../context";
+import catalog from "../../catalog/Catalog";
+
 interface layoutProps {
    children: any;
 }
@@ -29,12 +32,76 @@ interface layoutProps {
 const Layout: FC<layoutProps> = ({ children }) => {
    const { isWorkerAuthenticated, isMasterAuthenticated } = useAppSelector(userSelector);
    const routes = useRoutes(isWorkerAuthenticated);
+   const { categories, categoriesScrollAdj: mapLikeObj } = useAppSelector(productSelector);
+   const { catalogRef } = useContext(CatalogContext);
+   const layoutRef = useRef<HTMLDivElement>(null);
+   const isCategSet = useRef(false);
+   const dispatch = useAppDispatch();
+   const adjm = useRef<Map<string, number>>(null);
+   function fillUpAdj(): Map<string, number> {
+      if (catalogRef.current !== null) {
+         const m = new Map<string, number>();
+         for (const cat of categories) {
+            for (const child of catalogRef?.current.children) {
+               if (cat.value === child.id) {
+                  const bounds = (child as HTMLElement).getBoundingClientRect();
+                  m.set(cat.value, Math.round(bounds.top));
+               }
+            }
+         }
+         adjm.current = m;
+         const mapLikeObj = mapToObj(m);
+         dispatch(productActions.setCategoriesAdj(JSON.stringify(mapLikeObj)));
+         return m;
+      }
+      return null;
+   }
+   function mapToObj(m: Map<string, any>): object {
+      return Array.from(m).reduce((out, [k, v]) => {
+         out[k] = v;
+         return out;
+      }, {} as any);
+   }
+
+   function findClosest(v: number): string {
+      for (const [k, mv] of adjm.current.entries()) {
+         if (v * 0.95 < mv && v * 1.05 > mv) {
+            dispatch(productActions.activateCategory(k));
+            break;
+         }
+      }
+
+      return "";
+   }
+   function objToMap(v: object): Map<string, any> {
+      return Object.entries(v).reduce((map, [k, v]) => {
+         map.set(k, v);
+         return map;
+      }, new Map<string, any>());
+   }
+
    return (
-      <div className={isWorkerAuthenticated ? "layout --no-overflow" : "layout"}>
+      <div
+         ref={layoutRef}
+         onScroll={(e) => {
+            if (!isCategSet.current) {
+               if (catalogRef.current !== null) {
+                  fillUpAdj();
+                  isCategSet.current = true;
+               }
+            }
+            const currScroll = layoutRef.current.scrollTop;
+            findClosest(currScroll + 136);
+         }}
+         className={isWorkerAuthenticated ? "layout --no-overflow" : "layout"}>
          <Header />
 
-         {isWorkerAuthenticated || isMasterAuthenticated ? null : children}
-
+         <LayoutContext.Provider
+            value={{
+               layoutRef
+            }}>
+            {isWorkerAuthenticated || isMasterAuthenticated ? null : children}
+         </LayoutContext.Provider>
          {routes}
 
          {isWorkerAuthenticated ? (

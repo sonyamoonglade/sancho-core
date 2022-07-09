@@ -9,15 +9,14 @@ import { productActions, useAppDispatch } from "../../../redux";
 
 interface productCardProps {
    product: Product;
+   id?: string;
 }
 
-const ProductCard: FC<productCardProps> = ({ product }) => {
+const ProductCard: FC<productCardProps> = ({ product, id }) => {
    const isSmallDevice = useMediaQuery({ maxWidth: 767 });
 
-   const dispatch = useAppDispatch();
-
    const forSmallDevices = (
-      <div className="product_card">
+      <div className="product_card" id={id}>
          <ProductHeading name={product.translate} translate={product.name} price={product.price} isTranslateShown={isSmallDevice} />
          <ProductInfo product={product} />
       </div>

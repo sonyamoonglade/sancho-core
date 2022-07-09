@@ -12,7 +12,7 @@ export class ProductRepository implements ProductRepositoryInterface {
    constructor(@Inject(query_builder) private qb: QueryBuilder, @Inject(pg_conn) private db: Pool) {}
 
    async approveProduct(productId: number): Promise<boolean> {
-      const sql = `UPDATE ${products} SET is_approved = CASE WHEN is_approved = false THEN true ELSE false END WHERE product_id = ${productId} RETURNING id`;
+      const sql = `UPDATE ${products} SET approved = CASE WHEN approved = false THEN true ELSE false END WHERE id = ${productId} RETURNING id`;
       const { rows } = await this.db.query(sql);
       if (rows.length > 0) {
          return true;
@@ -29,12 +29,9 @@ export class ProductRepository implements ProductRepositoryInterface {
       return undefined;
    }
    async update(id: number, updated: Partial<Product>): Promise<number> {
-      const [updateSql, values] = this.qb.ofTable(products).update<Product>({ where: { id }, set: updated, returning: ["id"] });
-      const { rows }: any = await this.db.query(updateSql, values);
-      if (rows.length > 0) {
-         return rows[0].id;
-      }
-      return 0;
+      const [updateSql, values] = this.qb.ofTable(products).update<Product>({ where: { id }, set: updated });
+      const { rowCount }: any = await this.db.query(updateSql, values);
+      return rowCount;
    }
    async getAll(): Promise<Product[]> {
       const selectSql = this.qb.ofTable(products).select<Product>();
