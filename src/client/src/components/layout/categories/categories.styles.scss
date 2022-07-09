@@ -8,7 +8,7 @@
   overflow-x: auto;
   display: flex;
   align-items: center;
-  z-index: 2000;
+  z-index: 50;
   top: 68px;
   margin-left: 1rem;
   margin-top: 1.5rem;
@@ -19,8 +19,7 @@
   background-color: $light-grey;
   padding: 0.5rem;
   transition: all 0.15s ease-in-out ;
-  border-radius: 2px;
-  border: 1px dashed $black-18;
+  border-radius: 1px;
   //box-shadow: 0 0 2px $black-50;
   p{
     font-family: "Geometria",sans-serif;

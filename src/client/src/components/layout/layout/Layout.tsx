@@ -32,12 +32,13 @@ interface layoutProps {
 const Layout: FC<layoutProps> = ({ children }) => {
    const { isWorkerAuthenticated, isMasterAuthenticated } = useAppSelector(userSelector);
    const routes = useRoutes(isWorkerAuthenticated);
-   const { categories, categoriesScrollAdj: mapLikeObj } = useAppSelector(productSelector);
+   const { categories } = useAppSelector(productSelector);
    const { catalogRef } = useContext(CatalogContext);
    const layoutRef = useRef<HTMLDivElement>(null);
    const isCategSet = useRef(false);
    const dispatch = useAppDispatch();
    const adjm = useRef<Map<string, number>>(null);
+
    function fillUpAdj(): Map<string, number> {
       if (catalogRef.current !== null) {
          const m = new Map<string, number>();
@@ -65,19 +66,20 @@ const Layout: FC<layoutProps> = ({ children }) => {
 
    function findClosest(v: number): string {
       for (const [k, mv] of adjm.current.entries()) {
+         const currCateg = categories.find((c) => c.active);
          if (v * 0.95 < mv && v * 1.05 > mv) {
             dispatch(productActions.activateCategory(k));
             break;
+         } else if (v < adjm.current.get(currCateg.value)) {
+            const currIdx = categories.findIndex((c) => c.active);
+            if (currIdx > 0) {
+               const next = categories[currIdx - 1];
+               dispatch(productActions.activateCategory(next.value));
+            }
          }
       }
 
       return "";
-   }
-   function objToMap(v: object): Map<string, any> {
-      return Object.entries(v).reduce((map, [k, v]) => {
-         map.set(k, v);
-         return map;
-      }, new Map<string, any>());
    }
 
    return (

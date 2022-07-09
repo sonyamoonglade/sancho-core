@@ -5,7 +5,6 @@ import { LayoutContext } from "../context";
 
 const Categories = () => {
    const { categories: list, categoriesScrollAdj: mapLikeObj } = useAppSelector(productSelector);
-   const dispatch = useAppDispatch();
    const { layoutRef } = useContext(LayoutContext);
    const [isScrolling, setIsScrolling] = useState(false);
 
