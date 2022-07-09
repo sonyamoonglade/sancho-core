@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { productSelector, useAppSelector } from "../../../redux";
+import { productActions, productSelector, useAppDispatch, useAppSelector } from "../../../redux";
 import "../productCard/product-card.styles.scss";
 import "./product-present.styles.scss";
 import { useCart } from "../../../hooks/useCart";
@@ -19,7 +19,7 @@ const ProductPresentation = () => {
       isPresentingNow,
       presentedProduct
    );
-
+   const dispatch = useAppDispatch();
    const [isNotified, setIsNotified] = useState<boolean>(false);
 
    useEffect(() => {
@@ -36,6 +36,10 @@ const ProductPresentation = () => {
       }
    }, [presentedProductCartQuantity, totalCartPrice]);
 
+   function hide() {
+      dispatch(productActions.stopPresentation());
+   }
+
    return (
       <div className={isPresentingNow ? "product_presentation" : "product_presentation hidden"}>
          {presentedProduct !== null && (
@@ -50,7 +54,7 @@ const ProductPresentation = () => {
                         {presentedProduct.price} {currency}
                      </p>
                   </div>
-                  <img className="image presentation" src={productImage} alt="Изображение" />
+                  <img className="image presentation" src={productImage} alt="Изображение" onTouchEnd={() => hide()} />
                   <div className="miscellaneous">
                      <div>
                         <p className="description">{presentedProduct.description}</p>

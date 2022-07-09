@@ -29,9 +29,10 @@ const Cart = React.memo(() => {
       const body = document.body;
       if (cartModal) {
          body.style.overflow = "hidden";
-      } else {
-         body.style.overflow = "visible";
       }
+      // else {
+      //    body.style.overflow = "visible";
+      // }
    }, [cartModal]);
 
    function toggleCart() {
