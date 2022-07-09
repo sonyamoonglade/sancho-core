@@ -27,9 +27,10 @@ exports.up = (pgm) => {
          notNull: true
       }
    });
-   pgm.sql(`ALTER TABLE "marks" ADD CONSTRAINT "id_content_unique" UNIQUE(content,id)`);
+   pgm.sql(`ALTER TABLE "marks" ADD CONSTRAINT "user_id_content_unique" UNIQUE(content,user_id)`);
 };
 
 exports.down = (pgm) => {
    pgm.dropTable("marks");
+   pgm.sql(`ALTER TABLE "marks" DROP CONSTRAINT "user_id_content_unique"'`);
 };

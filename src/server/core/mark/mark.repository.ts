@@ -13,10 +13,14 @@ export class MarkRepository implements MarkRepositoryInterface {
    constructor(@Inject(pg_conn) private db: PoolClient, @Inject(query_builder) private qb: QueryBuilder) {}
 
    async create(dto: CreateMarkDto): Promise<Mark> {
-      const sql = `INSERT INTO ${marks} (user_id,content,is_important,created_at) VALUES ($1,$2,$3,NOW()) RETURNING *`;
+      const sql = `INSERT INTO ${marks} (user_id,content,is_important,created_at) VALUES ($1,$2,$3,NOW()) ON CONFLICT DO NOTHING RETURNING *`;
       const values = [dto.userId, dto.content, dto.isImportant];
       const { rows } = await this.db.query(sql, values);
-      return rows[0] as unknown as Mark;
+      console.log(rows);
+      if (rows.length > 0) {
+         return rows[0];
+      }
+      return null;
    }
 
    async isRegularMark(markId: number): Promise<boolean> {

@@ -22,7 +22,7 @@ import { UnexpectedServerError } from "../../shared/exceptions/unexpected-errors
 import { APP_ROLES } from "../../types/contants";
 import { UserCredentialsDto } from "./dto/user-creds.dto";
 import { CreateMarkDto } from "../mark/dto/create-mark.dto";
-import { MarkCannotBeDeleted, MarkDoesNotExist } from "../../shared/exceptions/mark.exceptions";
+import { DuplicateMark, MarkCannotBeDeleted, MarkDoesNotExist } from "../../shared/exceptions/mark.exceptions";
 import { Mark } from "../entities/Mark";
 import * as dayjs from "dayjs";
 import { MiscService } from "../miscellaneous/misc.service";
@@ -297,9 +297,10 @@ export class UserService {
    }
 
    async createMark(dto: CreateMarkDto): Promise<Mark> {
-      const ok = this.markRepository.create(dto);
+      const ok = await this.markRepository.create(dto);
+      console.log(ok);
       if (!ok) {
-         throw new UserCredentialsNotFound(dto.phoneNumber);
+         throw new DuplicateMark(dto.content);
       }
       return ok;
    }
