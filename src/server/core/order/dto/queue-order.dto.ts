@@ -1,4 +1,4 @@
-import { DatabaseCartProduct, DeliveryDetails, OrderStatus } from "../../../../client/src/common/types";
+import { DatabaseCartProduct, DeliveryDetails, OrderStatus } from "../../../../common/types";
 
 export class QueueOrderDto {
    id: number;

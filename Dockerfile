@@ -4,6 +4,8 @@ WORKDIR /app
 COPY package.json .
 RUN npm install
 COPY . .
-RUN npm run build:prod
+ENV NODE_ENV="development"
 
+RUN npm run build:prod
+EXPOSE 5000
 CMD ["npm","run","start"]

@@ -52,7 +52,7 @@ export class SessionService {
       res.cookie(CookieNames.SID, SID, {
          httpOnly: true,
          secure: true,
-         sameSite: "strict",
+         sameSite: "none",
          path: "/"
       });
       return res;
@@ -64,7 +64,7 @@ export class SessionService {
       res.cookie(CookieNames.SID, SID, {
          httpOnly: true,
          secure: true,
-         sameSite: "strict",
+         sameSite: "none",
          path: "/",
          expires: ttl
       });

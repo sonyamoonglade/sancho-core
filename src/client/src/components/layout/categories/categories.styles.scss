@@ -23,6 +23,8 @@
   p{
     font-family: "Geometria",sans-serif;
     font-size: $font-regular;
+    user-select: none;
+
   }
 }
 .--category-active{
