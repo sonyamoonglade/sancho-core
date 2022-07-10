@@ -72,28 +72,11 @@ export class OrderService {
       if (createMasterOrderDto.is_delivered) {
          total_cart_price = await this.applyDeliveryPunishment(total_cart_price);
       }
-
-      const { is_delivered_asap, delivery_details, is_delivered, delivered_at, cart, userId } = createMasterOrderDto;
-      const now = new Date(Date.now());
-      const masterOrder: Order = {
-         is_delivered,
-         cart,
-         delivery_details: is_delivered ? delivery_details : null,
-         total_cart_price,
-         is_delivered_asap,
-         user_id: userId,
-         status: OrderStatus.verified,
-         created_at: now,
-         verified_at: now
-      };
-
-      if (delivered_at !== null) {
-         masterOrder.delivered_at = delivered_at;
-      }
+      // Make sure total cart price is correct and punishment for delivery is applied.
+      createMasterOrderDto.total_cart_price = total_cart_price;
       //todo: get rid of this ( make array of jsons )
-      this.jsonService.stringifyNestedObjects(masterOrder);
-
-      await this.orderRepository.createMasterOrder(masterOrder);
+      this.jsonService.stringifyNestedObjects(createMasterOrderDto);
+      await this.orderRepository.createMasterOrder(createMasterOrderDto);
 
       this.events.emit(Events.ORDER_HAS_CREATED);
       return;
@@ -447,7 +430,6 @@ export class OrderService {
 
    async applyDeliveryPunishment(p: number) {
       const v: Miscellaneous = await this.miscService.getAllValues();
-      console.log(v);
       if (p <= v.delivery_punishment_threshold) {
          return p + v.delivery_punishment_value;
       }

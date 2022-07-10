@@ -68,7 +68,8 @@ export class OrderRepository implements Repository<Order> {
       return rows[0] as unknown as Order;
    }
 
-   async createMasterOrder(dto: any): Promise<void> {
+   async createMasterOrder(dto: CreateMasterOrderDto): Promise<void> {
+      //Adding time zone ( later fix to automatic )
       const sql = `
          INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,created_at,verified_at)
           VALUES($1,$2,$3,$4,$5,$6,$7, NOW()+INTERVAL '+4HOUR',NOW()+INTERVAL '+4HOUR') 
@@ -79,7 +80,7 @@ export class OrderRepository implements Repository<Order> {
          dto.delivery_details,
          dto.total_cart_price,
          dto.is_delivered_asap,
-         dto.user_id,
+         dto.userId,
          OrderStatus.verified
       ];
       await this.db.query(sql, values);

@@ -33,8 +33,8 @@ export class CreateMasterOrderDto implements Partial<Order> {
    @IsBoolean()
    is_delivered_asap: boolean;
 
-   delivered_at: Date | null;
-   delivery_details?: DeliveryDetails;
+   delivered_at: Date | null = null;
+   delivery_details?: DeliveryDetails | null = null;
    userId: number;
    total_cart_price: number;
 

@@ -298,7 +298,6 @@ export class UserService {
 
    async createMark(dto: CreateMarkDto): Promise<Mark> {
       const ok = await this.markRepository.create(dto);
-      console.log(ok);
       if (!ok) {
          throw new DuplicateMark(dto.content);
       }

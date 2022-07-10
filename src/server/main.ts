@@ -12,7 +12,7 @@ require("dotenv").config({
 
 async function bootstrap() {
    const config = getConfig(process.env.NODE_ENV);
-   console.log("config has initialized", config);
+   console.log("config has initialized");
    const app = await NestFactory.create(AppModule);
    // {
    //    logger: ["error"]
@@ -28,7 +28,6 @@ async function bootstrap() {
       allowedHeaders: ["Set-Cookie", "Content-type", "accept"]
    });
    app.useGlobalPipes(new ValidationPipe());
-   console.log(process.env.PORT);
    const APP_PORT = Number(process.env.PORT) || Number(config.app.port);
    userService.registerSuperAdmin();
    await app.listen(APP_PORT, () => {
