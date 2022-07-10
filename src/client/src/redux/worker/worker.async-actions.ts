@@ -1,7 +1,7 @@
 import { AppDispatch } from "../store";
 import { AxiosInstance } from "axios";
 import { workerActions } from "./worker.slice";
-import { ListResponse, OrderStatus, WaitingQueueOrder } from "../../common/types";
+import { ListResponse, OrderStatus } from "../../common/types";
 
 export const getInitialQueue = (client: AxiosInstance) => async (dispatch: AppDispatch) => {
    try {
@@ -14,7 +14,8 @@ export const getInitialQueue = (client: AxiosInstance) => async (dispatch: AppDi
 
 export const startEventSourcingForQueue = () => async (dispatch: AppDispatch) => {
    try {
-      const s: EventSource = new EventSource(`${process.env.REACT_APP_BACKEND_URL}/order/queue`, {
+      const url = process.env.REACT_APP_BACKEND_URL || "https://zharpizza-backend.herokuapp.com/api/v1";
+      const s: EventSource = new EventSource(`${url}/order/queue`, {
          withCredentials: true
       });
       s.onmessage = function (event) {
@@ -22,10 +23,16 @@ export const startEventSourcingForQueue = () => async (dispatch: AppDispatch) =>
          dispatch(workerActions.setOrderQueue(data?.queue));
       };
       s.onerror = function () {
-         s.close();
+         setTimeout(() => {
+            dispatch(startEventSourcingForQueue());
+         }, 1000);
       };
+
       return s;
    } catch (e) {
+      setTimeout(() => {
+         dispatch(startEventSourcingForQueue());
+      }, 1000);
       alert(e);
    }
 };

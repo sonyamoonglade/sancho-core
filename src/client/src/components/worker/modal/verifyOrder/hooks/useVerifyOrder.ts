@@ -4,11 +4,7 @@ import { useCallback } from "react";
 
 export function useVerifyOrder(client: AxiosInstance, orderQueue: OrderQueue, totalOrderPrice: number, vcart: DatabaseCartProduct[]) {
    const verifyOrder = useCallback(
-      async function (body: any, phoneNumber: string) {
-         const order = findWaitingOrderByPhoneNumber(phoneNumber);
-         if (order?.total_cart_price !== totalOrderPrice && totalOrderPrice !== 0) {
-            body.cart = vcart;
-         }
+      async function (body: any) {
          await client.put("order/verify", body);
       },
       [vcart, totalOrderPrice, orderQueue]

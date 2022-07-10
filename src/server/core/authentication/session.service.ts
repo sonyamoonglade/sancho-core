@@ -44,7 +44,7 @@ export class SessionService {
       res.clearCookie(CookieNames.SID, {
          httpOnly: true,
          secure: true,
-         sameSite: "strict",
+         sameSite: "none",
          path: "/"
       });
    }

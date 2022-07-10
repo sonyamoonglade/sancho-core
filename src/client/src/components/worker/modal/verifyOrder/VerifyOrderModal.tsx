@@ -76,7 +76,12 @@ const VerifyOrderModal = () => {
       }
       const phoneNumber = formValues.phone_number_w.value;
       const body: any = getFormValues();
-      await verifyOrder(body, phoneNumber);
+      const order = findWaitingOrderByPhoneNumber(phoneNumber);
+      // Make sure price has changed, cart is not empty ( first condition fails if worker toggles delivery ). Virtual cart stays empty so check it.
+      if (order.total_cart_price !== totalOrderPrice && totalOrderPrice !== 0 && virtualCartState.items.length) {
+         body.cart = virtualCartState.items;
+      }
+      await verifyOrder(body);
       dispatch(windowActions.toggleVerifyOrder());
    }
    async function fetchCredentialsManually(phoneNumber: string): Promise<void> {
