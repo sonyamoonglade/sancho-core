@@ -34,4 +34,21 @@ async function bootstrap() {
       console.log(`application is listening :${APP_PORT}`);
    });
 }
+
+type pay = "Cash" | "WithCard" | "Paid";
+
+enum Pay {
+   CASH = "Cash",
+   WITH_CARD = "WithCard",
+   PAID = "Paid"
+}
+
+interface DeliveryInterface {
+   pay: Pay;
+}
+
+const Delivery: DeliveryInterface = {
+   pay: Pay.PAID
+};
+
 bootstrap();

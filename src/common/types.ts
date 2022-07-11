@@ -13,6 +13,7 @@ export interface DeliveryDetails {
    address: string;
    entrance_number: number;
    floor: number;
+   // comment?: string;
    flat_call?: number;
 }
 

@@ -60,7 +60,6 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
    const { isWorkerAuthenticated } = useAppSelector(userSelector);
    const { onEnd, onMove, cancelIconAnimationRef, animationRef, x } = useCancelOrder(order);
    const { pay } = usePay();
-   const client = useAxios();
    const { appResponsiveState } = useAppSelector(windowSelector);
    const { orderList } = useAppSelector(workerSelector);
 
