@@ -40,9 +40,9 @@ exports.up = (pgm) => {
          notNull: true
       },
       delivery_details: {
-         type: "varchar(1500)",
+         type: "json",
          notNull: false,
-         default: null
+         default: "'{}::json'"
       },
       created_at: {
          type: "timestamp",

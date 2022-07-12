@@ -74,8 +74,7 @@ export class OrderService {
       }
       // Make sure total cart price is correct and punishment for delivery is applied.
       createMasterOrderDto.total_cart_price = total_cart_price;
-      //todo: get rid of this ( make array of jsons )
-      this.jsonService.stringifyNestedObjects(createMasterOrderDto);
+      console.log(createMasterOrderDto);
       await this.orderRepository.createMasterOrder(createMasterOrderDto);
 
       this.events.emit(Events.ORDER_HAS_CREATED);
@@ -94,7 +93,7 @@ export class OrderService {
          const { deliveryDetails, isDelivered, cart, deliveredAt, isDeliveredAsap } = verifyOrderDto;
          const now = new Date(Date.now());
          const updated: Partial<Order> = {
-            delivery_details: deliveryDetails !== undefined || null ? deliveryDetails : null,
+            delivery_details: deliveryDetails !== null ? deliveryDetails : null,
             status: OrderStatus.verified,
             verified_at: now,
             is_delivered_asap: isDeliveredAsap
@@ -107,7 +106,6 @@ export class OrderService {
             const recalculatedTotalCartPrice = await this.calculateTotalCartPrice(cart);
             updated.cart = cart;
             updated.total_cart_price = recalculatedTotalCartPrice;
-            this.jsonService.stringifyNestedObjects(updated);
          }
          if (deliveredAt !== null) {
             updated.delivered_at = deliveredAt;
@@ -338,7 +336,7 @@ export class OrderService {
                status,
                is_paid,
                is_delivered,
-               delivery_details: is_delivered ? JSON.parse(delivery_details as unknown as string) : null,
+               delivery_details: is_delivered ? delivery_details : null,
                is_delivered_asap,
                user: {
                   phone_number
@@ -360,7 +358,7 @@ export class OrderService {
             created_at,
             status,
             total_cart_price,
-            delivery_details: is_delivered ? JSON.parse(delivery_details as unknown as string) : null,
+            delivery_details: is_delivered ? delivery_details : null,
             is_delivered,
             user: {
                name,
@@ -393,7 +391,6 @@ export class OrderService {
             list = await this.orderRepository.getOrderList(status);
             list = list.map((o) => {
                o.cart = this.parseJsonCart(o.cart as unknown as string[]);
-               o.delivery_details = this.parseJsonDeliveryDetails(o.delivery_details as unknown as string);
                return o;
             });
             output = {
@@ -405,7 +402,6 @@ export class OrderService {
             list = await this.orderRepository.getOrderList(status);
             list = list.map((o) => {
                o.cart = this.parseJsonCart(o.cart as unknown as string[]);
-               o.delivery_details = this.parseJsonDeliveryDetails(o.delivery_details as unknown as string);
                return o;
             });
             output = {
@@ -449,8 +445,5 @@ export class OrderService {
 
    parseJsonCart(currentCart: string[]): DatabaseCartProduct[] {
       return currentCart.map((item) => JSON.parse(item as unknown as string));
-   }
-   parseJsonDeliveryDetails(currentDetails: string): DeliveryDetails {
-      return JSON.parse(currentDetails);
    }
 }

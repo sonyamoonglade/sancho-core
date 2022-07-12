@@ -4,18 +4,18 @@ import { Injectable } from "@nestjs/common";
 export class JsonService {
    constructor() {}
 
-   public stringifyNestedObjects(parent: any) {
-      for (const key of Object.keys(parent)) {
-         const type = typeof parent[key];
-
-         const notArray = !Array.isArray(parent[key]);
-         const notDate = !(parent[key] instanceof Date);
-         const isObject = type == "object";
-
-         if (isObject && notArray && notDate) {
-            parent[key] = JSON.stringify(parent[key]);
-         }
-      }
-      return;
-   }
+   // public stringifyNestedObjects(parent: any) {
+   //    for (const key of Object.keys(parent)) {
+   //       const type = typeof parent[key];
+   //
+   //       const notArray = !Array.isArray(parent[key]);
+   //       const notDate = !(parent[key] instanceof Date);
+   //       const isObject = type == "object";
+   //
+   //       if (isObject && notArray && notDate) {
+   //          parent[key] = JSON.stringify(parent[key]);
+   //       }
+   //    }
+   //    return;
+   // }
 }

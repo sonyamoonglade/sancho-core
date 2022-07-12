@@ -13,9 +13,10 @@ export const getInitialQueue = (client: AxiosInstance) => async (dispatch: AppDi
 };
 
 export const startEventSourcingForQueue = () => async (dispatch: AppDispatch) => {
+   let s: EventSource;
    try {
       const url = process.env.REACT_APP_BACKEND_URL || "https://zharpizza-backend.herokuapp.com/api/v1";
-      const s: EventSource = new EventSource(`${url}/order/queue`, {
+      s = new EventSource(`${url}/order/queue`, {
          withCredentials: true
       });
       s.onmessage = function (event) {
@@ -24,13 +25,17 @@ export const startEventSourcingForQueue = () => async (dispatch: AppDispatch) =>
       };
       s.onerror = function () {
          setTimeout(() => {
+            s.close();
             dispatch(startEventSourcingForQueue());
          }, 1000);
       };
 
       return s;
    } catch (e) {
+      console.log("here");
+
       setTimeout(() => {
+         s.close();
          dispatch(startEventSourcingForQueue());
       }, 1000);
       alert(e);

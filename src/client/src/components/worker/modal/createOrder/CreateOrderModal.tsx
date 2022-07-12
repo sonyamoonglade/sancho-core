@@ -37,6 +37,7 @@ const CreateOrderModal = () => {
       if (virtualCartState.items.length === 0) {
          return;
       }
+
       // todo: apply typing!
       const body: any = getFormValues();
       if (virtualCartState.items.length === 0) {

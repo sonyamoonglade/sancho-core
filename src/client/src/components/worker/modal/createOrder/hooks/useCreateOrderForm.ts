@@ -130,6 +130,7 @@ export function useCreateOrderForm() {
             copy.verified_fullname_c.value = creds.username;
             copy.verified_fullname_c.isValid = true;
          }
+
          return { ...copy };
       });
    }
@@ -140,7 +141,6 @@ export function useCreateOrderForm() {
       const withoutAddressAndRestValid =
          formValues.phone_number_c.isValid && !formValues.is_delivered_c.value && formValues.verified_fullname_c.isValid;
       const formValidity = withAddressAndAllValid || withoutAddressAndRestValid;
-
       return formValidity;
    }, [formValues]);
 
