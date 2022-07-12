@@ -29,7 +29,6 @@ import {
    OrderCannotBePaid,
    OrderCannotBeVerified
 } from "../../shared/exceptions/order.exceptions";
-import { JsonService } from "../../shared/database/json.service";
 import { Events } from "../../shared/event/events";
 import { MiscService } from "../miscellaneous/misc.service";
 import { QueueOrderDto } from "./dto/queue-order.dto";
@@ -40,12 +39,7 @@ import { Miscellaneous } from "../entities/Miscellaneous";
 export class OrderService {
    private events: EventEmitter;
 
-   constructor(
-      private orderRepository: OrderRepository,
-      private jsonService: JsonService,
-      private productRepository: ProductRepository,
-      private miscService: MiscService
-   ) {
+   constructor(private orderRepository: OrderRepository, private productRepository: ProductRepository, private miscService: MiscService) {
       this.events = new EventEmitter();
    }
 
@@ -74,7 +68,6 @@ export class OrderService {
       }
       // Make sure total cart price is correct and punishment for delivery is applied.
       createMasterOrderDto.total_cart_price = total_cart_price;
-      console.log(createMasterOrderDto);
       await this.orderRepository.createMasterOrder(createMasterOrderDto);
 
       this.events.emit(Events.ORDER_HAS_CREATED);

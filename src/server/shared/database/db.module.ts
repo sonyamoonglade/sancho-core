@@ -1,7 +1,6 @@
 import { Inject, Module } from "@nestjs/common";
 import { Pool, PoolClient } from "pg";
 import { pg_conn } from "./db_provider-name";
-import { JsonService } from "./json.service";
 import { getConfig } from "../../config/config";
 import { DbInstanceProvider } from "./db-instance.provider";
 
@@ -17,8 +16,8 @@ const dbProvider = {
 };
 
 @Module({
-   providers: [dbProvider, JsonService],
-   exports: [dbProvider, JsonService],
+   providers: [dbProvider],
+   exports: [dbProvider],
    imports: []
 })
 export class DbModule {}
