@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { FormField } from "../../../../../types/types";
-import { OrderQueue, WaitingQueueOrder } from "../../../../../common/types";
+import { DeliveryDetails, OrderQueue, WaitingQueueOrder } from "../../../../../common/types";
 import { useFormValidations } from "../../../../../hooks/useFormValidations";
 import { UserCredentials } from "../../createOrder/hooks/useCreateMasterOrder";
 import { WorkerCreateOrderFormState } from "../../createOrder/hooks/useCreateOrderForm";
@@ -24,6 +24,13 @@ export interface WorkerVerifyOrderFormState {
       value: boolean;
       isValid: boolean;
    };
+}
+export interface WorkerVerifyOrderFormValues {
+   phoneNumber: string;
+   username: string;
+   deliveryDetails: DeliveryDetails;
+   isDeliveredAsap: boolean;
+   isDelivered: boolean;
 }
 const formDefaults: WorkerVerifyOrderFormState = {
    verified_fullname_w: {
@@ -68,20 +75,25 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
    const [formValues, setFormValues] = useState<WorkerVerifyOrderFormState>(formDefaults);
    const { minLengthValidation } = useFormValidations();
    //apply types
-   function getFormValues() {
-      return {
+   function getFormValues(): WorkerVerifyOrderFormValues {
+      const out: WorkerVerifyOrderFormValues = {
          phoneNumber: `+7${formValues.phone_number_w.value}`,
          isDelivered: formValues.is_delivered_w.value,
          username: formValues.verified_fullname_w.value,
-         deliveryDetails: {
+         isDeliveredAsap: formValues.is_delivered_asap.value,
+         deliveryDetails: null
+      };
+
+      if (formValues.is_delivered_w.value) {
+         out.deliveryDetails = {
             address: formValues.address_w.value,
             flat_call: Number(formValues.flat_call_w.value),
             entrance_number: Number(formValues.entrance_number_w.value),
-            floor: Number(formValues.floor_w.value)
-         },
-         deliveredAt: new Date(formValues.delivered_at.value),
-         isDeliveredAsap: formValues.is_delivered_asap.value
-      };
+            floor: Number(formValues.floor_w.value),
+            delivered_at: new Date(formValues.delivered_at.value)
+         };
+      }
+      return out;
    }
 
    function setCredentials(creds: UserCredentials): void {
