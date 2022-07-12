@@ -13,8 +13,9 @@ export interface DeliveryDetails {
    address: string;
    entrance_number: number;
    floor: number;
-   // comment?: string;
-   flat_call?: number;
+   flat_call: number;
+   delivered_at: Date | null;
+   comment?: string;
 }
 
 export interface Features {
@@ -72,7 +73,6 @@ export type ResponseUserOrder = {
    delivery_details: null | DeliveryDetails;
    total_cart_price: number;
    is_delivered_asap: boolean;
-   delivered_at: Date;
 };
 
 export interface VerifiedQueueOrder extends ResponseUserOrder {

@@ -30,11 +30,7 @@ exports.up = (pgm) => {
          type: "boolean",
          notNull: true
       },
-      delivered_at: {
-         type: "timestamp",
-         notNull: false,
-         default: null
-      },
+
       is_delivered_asap: {
          type: "boolean",
          notNull: true

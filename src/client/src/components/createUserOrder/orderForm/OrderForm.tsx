@@ -5,19 +5,11 @@ import "./order-form.styles.scss";
 import { UserOrderFormState } from "../Order";
 import EventEmitter from "events";
 import { useAppSelector, userSelector } from "../../../redux";
-import { FormField } from "../../../types/types";
 
 interface orderFormProps {
    formValues: UserOrderFormState;
    setFormValues: Function;
 }
-
-const commState = {
-   comment: {
-      value: "",
-      isValid: true
-   }
-};
 
 const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
    const isDeliveryFormDisabledExpr = formValues["is_delivered"].value ? "" : "--disabled ";
@@ -25,7 +17,6 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
 
    const [opt1, opt2] = ["скажу по телефону", "в ближайшее время"];
    const [selectV, setSelectV] = useState<string>(opt1);
-   const [comm, setComm] = useState(commState);
    const { isAuthenticated, phoneNumber } = useAppSelector(userSelector);
 
    const emitter = new EventEmitter();
@@ -153,8 +144,8 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
             name={"comment"}
             type={"text"}
             placeholder={"Комментарий курьеру"}
-            formValue={comm["comment"]}
-            setV={setComm}
+            formValue={formValues["comment"]}
+            setV={setFormValues}
             onBlurValue={""}
             maxLength={30}
             minLength={3}

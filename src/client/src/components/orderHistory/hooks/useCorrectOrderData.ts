@@ -48,7 +48,7 @@ export function useCorrectOrderData(order: ResponseUserOrder) {
    }
    function parseCreationTime() {
       const createdAt = dayjs(order.created_at);
-      const deliveredAt = dayjs(order.delivered_at);
+      const deliveredAt = dayjs(order?.delivery_details?.delivered_at);
 
       const formattedc = createdAt.format(DATE_FORMAT_TEMPLATE).split(" ");
       const formattedd = deliveredAt.format(DATE_FORMAT_TEMPLATE).split(" ");

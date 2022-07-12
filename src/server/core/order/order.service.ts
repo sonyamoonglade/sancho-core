@@ -100,9 +100,6 @@ export class OrderService {
             updated.cart = cart;
             updated.total_cart_price = recalculatedTotalCartPrice;
          }
-         if (deliveredAt !== null) {
-            updated.delivered_at = deliveredAt;
-         }
 
          await this.orderRepository.update(orderId, updated);
 
@@ -187,7 +184,7 @@ export class OrderService {
 
    public mapRawHistory(raw: Order[]): ResponseUserOrder[] {
       return raw.map((o: Order) => {
-         const { total_cart_price, id, created_at, status, is_delivered, delivery_details, cart, is_delivered_asap, delivered_at, is_paid } = o;
+         const { total_cart_price, id, created_at, status, is_delivered, delivery_details, cart, is_delivered_asap, is_paid } = o;
          const rso: ResponseUserOrder = {
             total_cart_price,
             is_paid,
@@ -197,8 +194,7 @@ export class OrderService {
             is_delivered,
             delivery_details,
             cart,
-            is_delivered_asap,
-            delivered_at
+            is_delivered_asap
          };
          return rso;
       });
@@ -313,7 +309,7 @@ export class OrderService {
          const {
             status,
             is_delivered_asap,
-            delivered_at,
+
             cart,
             delivery_details,
             created_at,
@@ -334,7 +330,6 @@ export class OrderService {
                user: {
                   phone_number
                },
-               delivered_at,
                cart: this.parseJsonCart(cart as unknown as string[]),
                created_at,
                total_cart_price,
@@ -344,7 +339,6 @@ export class OrderService {
             continue;
          }
          const mapped: VerifiedQueueOrder = {
-            delivered_at,
             is_paid,
             is_delivered_asap,
             cart: this.parseJsonCart(cart as unknown as string[]),

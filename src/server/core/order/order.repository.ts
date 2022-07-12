@@ -49,7 +49,7 @@ export class OrderRepository implements Repository<Order> {
    async getOrderQueue(): Promise<QueueOrderDto[]> {
       const sql = `
         select o.id,o.cart,o.total_cart_price,o.status,o.is_delivered,o.delivery_details,o.created_at,
-        u.name,u.phone_number,o.delivered_at,o.is_delivered_asap,o.is_paid from ${orders} o join ${users} u on o.user_id= 
+        u.name,u.phone_number,o.is_delivered_asap,o.is_paid from ${orders} o join ${users} u on o.user_id= 
         u.id where o.status = '${OrderStatus.waiting_for_verification}' or o.status = '${OrderStatus.verified}' order by o.created_at desc
       `;
       const { rows } = await this.db.query(sql);
@@ -115,7 +115,7 @@ export class OrderRepository implements Repository<Order> {
    async getOrderList(status: OrderStatus): Promise<VerifiedQueueOrder[]> {
       const sql = `
         SELECT o.id,o.cart,o.total_cart_price,o.status,o.is_delivered,o.delivery_details,o.created_at,
-        u.name,u.phone_number,o.delivered_at,o.is_delivered_asap,o.is_paid FROM ${orders} o JOIN ${users} u ON o.user_id= 
+        u.name,u.phone_number,o.is_delivered_asap,o.is_paid FROM ${orders} o JOIN ${users} u ON o.user_id= 
         u.id WHERE o.status = '${status}' ORDER BY o.created_at DESC LIMIT 15`;
       const { rows } = await this.db.query(sql);
       return rows.map((res: any) => {
@@ -123,7 +123,6 @@ export class OrderRepository implements Repository<Order> {
             is_delivered_asap: res.is_delivered_asap,
             delivery_details: res.delivery_details,
             cart: res.cart,
-            delivered_at: res.delivered_at,
             status: res.status,
             total_cart_price: res.total_cart_price,
             created_at: res.created_at,

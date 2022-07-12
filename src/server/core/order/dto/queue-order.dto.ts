@@ -9,7 +9,7 @@ export class QueueOrderDto {
    delivery_details: null | DeliveryDetails;
    total_cart_price: number;
    is_delivered_asap: boolean;
-   delivered_at: Date;
+
    name: string;
    is_paid: boolean;
    phone_number: string;

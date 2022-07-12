@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { FormField } from "../../../../../types/types";
 import { useVirtualCart } from "../../../hooks/useVirtualCart";
 import { UserCredentials } from "./useCreateMasterOrder";
+import { DeliveryDetails } from "../../../../../common/types";
 
 export interface WorkerCreateOrderFormState {
    verified_fullname_c: FormField;
@@ -22,6 +23,14 @@ export interface WorkerCreateOrderFormState {
       value: boolean;
       isValid: boolean;
    };
+}
+
+export interface WorkerCreateOrderFormValues {
+   is_delivered: boolean;
+   phone_number: string;
+   username: string;
+   is_delivered_asap: boolean;
+   delivery_details?: DeliveryDetails;
 }
 
 const formDefaults: WorkerCreateOrderFormState = {
@@ -144,20 +153,23 @@ export function useCreateOrderForm() {
       return formValidity;
    }, [formValues]);
 
-   function getFormValues() {
-      const result = {
-         delivery_details: {
+   function getFormValues(): WorkerCreateOrderFormValues {
+      const result: WorkerCreateOrderFormValues = {
+         is_delivered: formValues.is_delivered_c.value,
+         phone_number: `+7${formValues.phone_number_c.value}`,
+         username: formValues.verified_fullname_c.value,
+         is_delivered_asap: formValues.is_delivered_asap.value,
+         delivery_details: null
+      };
+      if (formValues.is_delivered_c.value) {
+         result.delivery_details = {
+            delivered_at: new Date(formValues.delivered_at.value),
             address: formValues.address_c.value,
             floor: Number(formValues.floor_c.value),
             entrance_number: Number(formValues.entrance_number_c.value),
             flat_call: Number(formValues.flat_call_c.value)
-         },
-         is_delivered: formValues.is_delivered_c.value,
-         phone_number: `+7${formValues.phone_number_c.value}`,
-         username: formValues.verified_fullname_c.value,
-         delivered_at: new Date(formValues.delivered_at.value),
-         is_delivered_asap: formValues.is_delivered_asap.value
-      };
+         };
+      }
       return result;
    }
 

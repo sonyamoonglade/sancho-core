@@ -15,7 +15,6 @@ import { useAxios } from "../../hooks/useAxios";
 import { useAuthentication } from "../../hooks/useAuthentication";
 import { FormField } from "../../types/types";
 import { DeliveryDetails } from "../../common/types";
-import { currency } from "../../common/constants";
 
 export interface UserOrderFormValuesInterface {
    is_delivered: boolean;
@@ -34,10 +33,11 @@ export interface UserOrderFormState {
       value: boolean;
       isValid: boolean;
    };
-   entrance_number?: FormField;
-   floor?: FormField;
-   flat_call?: FormField;
+   entrance_number: FormField;
+   floor: FormField;
+   flat_call: FormField;
    address: FormField;
+   comment: FormField;
 }
 
 const Order = () => {
