@@ -1,9 +1,10 @@
 import { DatabaseCartProduct, DeliveryDetails } from "../../../../common/types";
-import { IsBoolean, IsDefined, IsString } from "class-validator";
+import { IsBoolean, IsDefined, IsString, MaxLength } from "class-validator";
 
 export class VerifyOrderDto {
    @IsDefined()
    @IsString()
+   @MaxLength(30)
    username: string;
 
    @IsDefined()

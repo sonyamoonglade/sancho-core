@@ -57,7 +57,7 @@ export enum DropZones {
 const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extraData, canDrag = true }) => {
    const { orderHistory } = useAppSelector(orderSelector);
    const { cid, cstatus, cdate, cddate, correctData, orderItemCorrespondingClassName } = useCorrectOrderData(order);
-   const { isWorkerAuthenticated } = useAppSelector(userSelector);
+   const { isWorkerAuthenticated, isAuthenticated } = useAppSelector(userSelector);
    const { onEnd, onMove, cancelIconAnimationRef, animationRef, x } = useCancelOrder(order);
    const { pay } = usePay();
    const { appResponsiveState } = useAppSelector(windowSelector);
@@ -195,18 +195,26 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
                            : "самовывоз"}
                      </p>
                   </div>
-                  {order.status === OrderStatus.completed && isWorkerAuthenticated && (
+                  {(isWorkerAuthenticated || isAuthenticated) && (
                      <div className="second_row_right">
                         <span>
-                           <button onClick={() => handleOrderPay(order, false)} className={!order.is_paid ? "pay_btn --green" : "pay_btn"}>
-                              <p>Не оплачен</p>
+                           <button className="pay_btn details">
+                              <p>Детали</p>
                            </button>
-                           <button onClick={() => handleOrderPay(order, true)} className={order.is_paid ? "pay_btn --green" : "pay_btn"}>
-                              <p>Оплачен</p>
-                           </button>
+                           {order.status === OrderStatus.completed && isWorkerAuthenticated && (
+                              <>
+                                 <button onClick={() => handleOrderPay(order, false)} className={!order.is_paid ? "pay_btn --green" : "pay_btn"}>
+                                    <p>Не оплачен</p>
+                                 </button>
+                                 <button onClick={() => handleOrderPay(order, true)} className={order.is_paid ? "pay_btn --green" : "pay_btn"}>
+                                    <p>Оплачен</p>
+                                 </button>
+                              </>
+                           )}
                         </span>
                      </div>
                   )}
+
                   {order.status !== OrderStatus.cancelled && order.status !== OrderStatus.completed && <div className="green_dot">&nbsp;</div>}
                   <BiShoppingBag size={25} />
                </div>
