@@ -103,3 +103,5 @@ export interface ListResponse {
    cancel: VerifiedQueueOrder[];
    complete: VerifiedQueueOrder[];
 }
+
+export type Pay = "cash" | "withCard" | "paid";

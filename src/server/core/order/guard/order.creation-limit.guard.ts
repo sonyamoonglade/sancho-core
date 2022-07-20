@@ -1,10 +1,9 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { AppRoles } from "../../../../common/types";
 import { CreateMasterOrderDto } from "../dto/create-order.dto";
-import { LastVerifiedOrderDto } from "../dto/order.dto";
 import { OrderCreationLimitExceeded } from "../../../shared/exceptions/order.exceptions";
 import { OrderService } from "../order.service";
-import { Order } from "../../entities/Order";
+import { LastVerifiedOrder, Order } from "../../entities/Order";
 import * as dayjs from "dayjs";
 import * as relativeTime from "dayjs/plugin/relativeTime";
 
@@ -21,7 +20,7 @@ export class CreationLimitGuard implements CanActivate {
       // get the last verfified order and check if verif date is 5min away from current!
       const dto: CreateMasterOrderDto = req.body;
       const phoneNumber: string = dto.phone_number;
-      const lw: LastVerifiedOrderDto = await this.orderService.getLastVerifiedOrder(phoneNumber);
+      const lw: LastVerifiedOrder = await this.orderService.getLastVerifiedOrder(phoneNumber);
       if (lw === undefined) {
          return true;
       }

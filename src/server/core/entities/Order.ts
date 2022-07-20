@@ -1,4 +1,5 @@
-import { DatabaseCartProduct, DeliveryDetails, OrderStatus } from "../../../common/types";
+import { DatabaseCartProduct, DeliveryDetails, OrderStatus, Pay } from "../../../common/types";
+import { IsDefined, IsNumber, IsString } from "class-validator";
 
 export type Order = {
    id?: number;
@@ -17,5 +18,28 @@ export type Order = {
    cancelled_by?: number;
    cancel_explanation?: string;
 };
+
+export class DeliveryOrder {
+   @IsDefined()
+   @IsNumber()
+   order_id: number;
+
+   @IsDefined()
+   delivery_details: DeliveryDetails;
+
+   @IsDefined()
+   @IsNumber()
+   total_cart_price: number;
+
+   @IsDefined()
+   @IsString()
+   pay: Pay;
+}
+
+export class LastVerifiedOrder {
+   created_at: Date;
+   id: number;
+   status: OrderStatus;
+}
 
 export const orders = "orders";

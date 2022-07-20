@@ -22,7 +22,7 @@ import { Role } from "../../shared/decorators/role/Role";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { CookieNames, extendedRequest } from "../../types/types";
 import { PutImageDto } from "./dto/put-image.dto";
-import { FileStorage } from "../../shared/fileStorage/file.storage";
+import { FileStorage } from "../../shared/storage/file.storage";
 import { AuthorizationGuard } from "../authorization/authorization.guard";
 
 @Controller("/product")

@@ -3,6 +3,7 @@
 exports.shorthands = undefined;
 
 exports.up = (pgm) => {
+   pgm.sql(`CREATE TYPE "pay" AS ENUM('cash','withCard','paid')`);
    pgm.createTable("orders", {
       id: {
          type: "id",
@@ -75,6 +76,10 @@ exports.up = (pgm) => {
          type: "boolean",
          notNull: true,
          default: false
+      },
+      pay: {
+         type: "pay",
+         notNull: true
       }
    });
    pgm.createIndex("orders", "user_id");
@@ -89,4 +94,5 @@ exports.down = (pgm) => {
    pgm.dropIndex("orders", "status");
    pgm.dropIndex("orders", "is_paid");
    pgm.dropTable("orders");
+   pgm.dropType("pay");
 };

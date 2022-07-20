@@ -9,10 +9,15 @@ require("dotenv").config();
 
 @Injectable()
 export class FileStorage implements FileStorageInterface {
-   private url: string = process.env.FILE_STORAGE_URL;
+   private readonly url: string;
+   private readonly HASHING_ALGORITHM: string;
+   private readonly ENCODING: BinaryToTextEncoding;
 
-   private HASHING_ALGORITHM: string = "sha256";
-   private ENCODING: BinaryToTextEncoding = "hex";
+   constructor() {
+      this.url = process.env.FILE_SERVICE_URL;
+      this.HASHING_ALGORITHM = "sha256";
+      this.ENCODING = "hex";
+   }
 
    async deleteImage(id: number): Promise<boolean> {
       return Promise.resolve(false);
@@ -48,6 +53,7 @@ export class FileStorage implements FileStorageInterface {
 
          return ok;
       } catch (e: any) {
+         console.log(e);
          return false;
       }
    }

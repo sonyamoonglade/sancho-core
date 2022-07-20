@@ -36,8 +36,21 @@ export class InvalidOrderStatus extends HttpException {
       super(`Тип ${type} не существует`, HttpStatus.BAD_REQUEST);
    }
 }
+
+export class CouldNotGetUserDeliveryData extends HttpException {
+   constructor() {
+      super("Ошибка получения данных о пользователе для доставки.", HttpStatus.BAD_REQUEST);
+   }
+}
+
 export class OrderCannotBePaid extends HttpException {
    constructor(orderId: number) {
       super(`Заказ ${orderId} не может быть оплачен. Не корректный статус заказа или другая причина`, HttpStatus.BAD_REQUEST);
+   }
+}
+
+export class OrderDoesNotExist extends HttpException {
+   constructor(orderId: number) {
+      super(`Заказ ${orderId} не существует.`, HttpStatus.NOT_FOUND);
    }
 }

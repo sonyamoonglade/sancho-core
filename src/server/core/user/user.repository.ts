@@ -1,19 +1,43 @@
 import { Pool } from "pg";
 import { Inject } from "@nestjs/common";
 import { Repository } from "../../shared/abstract/repository";
-import { User, users } from "../entities/User";
+import { DeliveryUser, User, users } from "../entities/User";
 import { filter, QueryBuilder } from "../../shared/queryBuilder/QueryBuilder";
 import { pg_conn } from "../../shared/database/db_provider-name";
 import { query_builder } from "../../shared/queryBuilder/provider-name";
 import { RepositoryException } from "../../shared/exceptions/repository.exceptions";
 import { UserCredentialsDto } from "./dto/user-creds.dto";
-import { AppRoles } from "../../../common/types";
+import { AppRoles, OrderStatus } from "../../../common/types";
 import { CreateMarkDto } from "../mark/dto/create-mark.dto";
 import { Mark, marks } from "../entities/Mark";
 import { FoundUserDto } from "./dto/found-user.dto";
+import { orders } from "../entities/Order";
+import { OrderService } from "../order/order.service";
 
 export class UserRepository implements Repository<User> {
    constructor(@Inject(query_builder) private qb: QueryBuilder, @Inject(pg_conn) private db: Pool) {}
+
+   async prepareDataForDelivery(orderId: number): Promise<DeliveryUser | null> {
+      const sql = `
+        SELECT u.id,u.name as username,phone_number FROM ${users} u
+        JOIN ${orders} o ON o.user_id = u.id WHERE o.id = ${orderId}
+        AND o.status = ${OrderStatus.completed} OR o.status = ${OrderStatus.verified}`;
+
+      const { rows } = await this.db.query(sql);
+      if (rows.length === 0) {
+         return null;
+      }
+
+      const result: DeliveryUser = rows[0];
+      const sql2 = `
+        SELECT m.id,m.user_id,m.content,m.is_important,m.created_at FROM
+        ${marks} m JOIN ${users} u ON m.user_id = u.id WHERE m.user_id = ${result.user_id}`;
+
+      const { rows: rows2 } = await this.db.query(sql2);
+      result.marks = rows2;
+
+      return result;
+   }
 
    async getUserCredentials(phoneNumber: string): Promise<Partial<UserCredentialsDto>> {
       const sql = `SELECT name, remembered_delivery_address FROM ${users} WHERE phone_number = '${phoneNumber}'`;
@@ -100,7 +124,10 @@ export class UserRepository implements Repository<User> {
    }
 
    async isStillRegularCustomer(durationInDays: number, markId: number): Promise<boolean> {
-      const sql = `SELECT (SELECT extract(epoch FROM NOW()+INTERVAL '+4HOUR')) >= (SELECT extract(epoch FROM (SELECT (SELECT created_at FROM ${marks} WHERE id = ${markId}) + INTERVAL '+${durationInDays}DAYS'))::integer) as still`;
+      const sql = `SELECT (SELECT extract(epoch FROM NOW()+INTERVAL '+4HOUR'))
+                   >= (SELECT extract(epoch FROM (SELECT (SELECT created_at FROM ${marks}
+                    WHERE id = ${markId}) + INTERVAL '+${durationInDays}DAYS'))::integer) as still
+     `;
       const { rows } = await this.db.query(sql);
       return !rows[0].still;
    }

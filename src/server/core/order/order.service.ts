@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { CreateMasterOrderDto, CreateUserOrderDto } from "./dto/create-order.dto";
 import { OrderRepository } from "./order.repository";
 import { Response } from "express";
-import { Order, orders } from "../entities/Order";
+import { DeliveryOrder, LastVerifiedOrder, Order, orders } from "../entities/Order";
 import { User, users } from "../entities/User";
 import { VerifyOrderDto } from "./dto/verify-order.dto";
 import { CancelOrderDto } from "./dto/cancel-order.dto";
@@ -27,12 +27,12 @@ import {
    InvalidOrderStatus,
    OrderCannotBeCompleted,
    OrderCannotBePaid,
-   OrderCannotBeVerified
+   OrderCannotBeVerified,
+   OrderDoesNotExist
 } from "../../shared/exceptions/order.exceptions";
 import { Events } from "../../shared/event/events";
 import { MiscService } from "../miscellaneous/misc.service";
 import { QueueOrderDto } from "./dto/queue-order.dto";
-import { LastVerifiedOrderDto } from "./dto/order.dto";
 import { Miscellaneous } from "../entities/Miscellaneous";
 
 @Injectable()
@@ -205,7 +205,7 @@ export class OrderService {
       return this.mapRawHistory(rawHistory);
    }
 
-   public async getLastVerifiedOrder(phoneNumber: string): Promise<LastVerifiedOrderDto> {
+   public async getLastVerifiedOrder(phoneNumber: string): Promise<LastVerifiedOrder> {
       return this.orderRepository.getLastVerifiedOrder(phoneNumber);
    }
 
@@ -409,6 +409,15 @@ export class OrderService {
          throw new OrderCannotBePaid(orderId);
       }
       return;
+   }
+
+   async prepareDataForDelivery(orderId: number): Promise<DeliveryOrder> {
+      const data = await this.orderRepository.prepareDataForDelivery(orderId);
+      if (!data) {
+         // throw an error
+         throw new OrderDoesNotExist(orderId);
+      }
+      return data;
    }
 
    async applyDeliveryPunishment(p: number) {

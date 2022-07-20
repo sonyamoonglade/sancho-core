@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { UserRepository } from "./user.repository";
 import { SessionService } from "../authentication/session.service";
-import { User } from "../entities/User";
+import { DeliveryUser, User } from "../entities/User";
 import { CreateMasterUserDto } from "./dto/create-master-user.dto";
 
 import * as bcrypt from "bcrypt";
@@ -31,6 +31,7 @@ import { OrderService } from "../order/order.service";
 import { REGULAR_CUSTOMER_CONTENT } from "../../../common/constants";
 import { ValidationErrorException } from "../../shared/exceptions/validation.exceptions";
 import { FoundUserDto } from "./dto/found-user.dto";
+import { CouldNotGetUserDeliveryData, InvalidOrderStatus } from "../../shared/exceptions/order.exceptions";
 
 require("dotenv").config();
 
@@ -50,6 +51,14 @@ export class UserService {
       private markRepository: MarkRepository,
       private orderService: OrderService
    ) {}
+
+   async prepareDataForDelivery(orderId: number): Promise<DeliveryUser> {
+      const data = await this.userRepository.prepareDataForDelivery(orderId);
+      if (!data) {
+         throw new CouldNotGetUserDeliveryData();
+      }
+      return data;
+   }
 
    async isRegularMark(markId: number): Promise<boolean> {
       const ok = await this.markRepository.isRegularMark(markId);

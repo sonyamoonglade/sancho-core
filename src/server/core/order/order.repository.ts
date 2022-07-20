@@ -1,6 +1,6 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Repository } from "../../shared/abstract/repository";
-import { Order, orders } from "../entities/Order";
+import { DeliveryOrder, LastVerifiedOrder, Order, orders } from "../entities/Order";
 import { Pool } from "pg";
 import { filter, QueryBuilder } from "../../shared/queryBuilder/QueryBuilder";
 import { pg_conn } from "../../shared/database/db_provider-name";
@@ -9,7 +9,6 @@ import { RepositoryException } from "../../shared/exceptions/repository.exceptio
 import { OrderStatus, ResponseUserOrder, VerifiedQueueOrder, WaitingQueueOrder } from "../../../common/types";
 import { users } from "../entities/User";
 import { QueueOrderDto } from "./dto/queue-order.dto";
-import { LastVerifiedOrderDto } from "./dto/order.dto";
 import { CreateMasterOrderDto } from "./dto/create-order.dto";
 
 @Injectable()
@@ -19,6 +18,15 @@ export class OrderRepository implements Repository<Order> {
    async delete(id: number): Promise<void | undefined> {
       const deleteSql = this.qb.ofTable(orders).delete<Order>({ where: { id } });
       await this.db.query(deleteSql);
+   }
+
+   async prepareDataForDelivery(orderId: number): Promise<DeliveryOrder | null> {
+      const sql = `SELECT id,delivery_details,total_cart_price, pay FROM ${orders} WHERE id = ${orderId}`;
+      const { rows } = await this.db.query(sql);
+      if (rows.length === 0) {
+         return null;
+      }
+      return rows[0];
    }
 
    async getOrderSumInTerms(termsInDays: number, userId: number): Promise<Partial<Order>[]> {
@@ -36,14 +44,14 @@ export class OrderRepository implements Repository<Order> {
       return rows;
    }
 
-   async getLastVerifiedOrder(phoneNumber: string): Promise<LastVerifiedOrderDto> {
+   async getLastVerifiedOrder(phoneNumber: string): Promise<LastVerifiedOrder> {
       const sql = `
       SELECT o.created_at,o.id,o.status FROM ${orders} o JOIN users u ON o.user_id = u.id
       WHERE u.phone_number = '${phoneNumber}' AND o.status = '${OrderStatus.verified}'
       ORDER BY o.created_at DESC LIMIT 1    
     `;
       const { rows } = await this.db.query(sql);
-      return rows[0] as unknown as LastVerifiedOrderDto;
+      return rows[0] as unknown as LastVerifiedOrder;
    }
 
    async getOrderQueue(): Promise<QueueOrderDto[]> {

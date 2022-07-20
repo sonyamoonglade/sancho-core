@@ -24,11 +24,13 @@ import { UserRepository } from "./core/user/user.repository";
 import { MiscRepository } from "./core/miscellaneous/misc.repository";
 import { CookieService } from "./shared/cookie/cookie.service";
 import { ProductService } from "./core/product/product.service";
-import { FileStorage } from "./shared/fileStorage/file.storage";
+import { FileStorage } from "./shared/storage/file.storage";
 import { MarkRepository } from "./core/mark/mark.repository";
+import { DeliveryController } from "./core/delivery/delivery.controller";
+import { DeliveryService } from "./core/delivery/delivery.service";
 
 @Module({
-   controllers: [AppController, UserController, OrderController, ProductController, MiscController],
+   controllers: [AppController, UserController, OrderController, ProductController, MiscController, DeliveryController],
    providers: [
       SessionMiddleware,
       SessionService,
@@ -43,7 +45,8 @@ import { MarkRepository } from "./core/mark/mark.repository";
       ProductService,
       FileStorage,
       UserRepository,
-      MarkRepository
+      MarkRepository,
+      DeliveryService
    ],
    imports: [DbModule, QueryBuilderModule]
 })
@@ -69,6 +72,6 @@ export class AppModule implements NestModule {
                method: RequestMethod.GET
             }
          )
-         .forRoutes(UserController, ProductController, OrderController, MiscController);
+         .forRoutes(UserController, ProductController, OrderController, MiscController, DeliveryController);
    }
 }
