@@ -14,7 +14,7 @@ const MobileNavigation = () => {
    const dispatch = useAppDispatch();
 
    return (
-      <div className={navigation ? "modal modal--visible" : "modal"}>
+      <div className={navigation ? "nav modal modal--visible" : "nav modal"}>
          <ul className="nav_list">
             <li className="nav_item">
                <p>Доставка</p>

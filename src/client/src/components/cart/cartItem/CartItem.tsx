@@ -1,12 +1,12 @@
 import React, { FC, useEffect, useMemo, useRef } from "react";
 
 import "./cart-item.styles.scss";
-import { baseUrl } from "../../product/productPresentation/ProductPresentation";
 import { DatabaseCartProduct } from "../../../common/types";
 import { currency } from "../../../common/constants";
 import { useCart } from "../../../hooks/useCart";
 import { productActions, useAppDispatch } from "../../../redux";
 import ReduceAddButton from "../../worker/virtualCart/ReduceAddButton";
+import { baseUrl } from "../../../App";
 
 interface cartItemProps {
    product: DatabaseCartProduct;

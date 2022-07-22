@@ -14,14 +14,16 @@ import { useMediaQuery } from "react-responsive";
 import { AppResponsiveState } from "./types/types";
 import { useNavigate } from "react-router-dom";
 import Categories from "./components/layout/categories/Categories";
+import PayLink from "./components/ui/payLink/PayLink";
 
 export const baseBackendUrl = "https://pizza-fullstack.herokuapp.com";
+export const baseUrl = `https://storage.yandexcloud.net/zharpizza-bucket/static/images`;
 
 function App() {
    const client = useAxios();
    const dispatch = useAppDispatch();
    const { productList, isCartEmpty } = useAppSelector(productSelector);
-   const { cart, appResponsiveState } = useAppSelector(windowSelector);
+   const { cart, appResponsiveState, pay, userOrder } = useAppSelector(windowSelector);
    const { isWorkerAuthenticated, isAuthenticated, isMasterAuthenticated } = useAppSelector(userSelector);
    const router = useNavigate();
    const isNotMobileOrTablet = useMediaQuery({ minWidth: 1440 });
@@ -61,6 +63,7 @@ function App() {
             {productList.length !== 0 && <Catalog productList={productList} />}
             {!isNotMobileOrTablet ? cart && <OrderLink /> : null}
             {!isNotMobileOrTablet ? !isCartEmpty && <CartLink /> : null}
+            {!isNotMobileOrTablet ? userOrder && <PayLink /> : null}
             <AppForm />
             <ProductPresentation />
          </Layout>

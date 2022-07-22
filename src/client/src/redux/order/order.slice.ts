@@ -5,19 +5,29 @@ interface InitialOrderStateInterface {
    orderHistory: ResponseUserOrder[];
    hasMore: boolean;
    isFetching: boolean;
+   canPay: boolean;
+   isUsrOrderDelivered: boolean;
 }
 
 const initialState: InitialOrderStateInterface = {
    orderHistory: [],
    hasMore: true,
-   isFetching: false
+   canPay: false,
+   isFetching: false,
+   isUsrOrderDelivered: false
 };
 
 export const orderSlice = createSlice({
    name: "order",
    initialState,
    reducers: {
-      //todo: add infinite scroll from async action.. smth like that
+      setIsUsrOrderDelivered: function (s, a: PayloadAction<boolean>) {
+         s.isUsrOrderDelivered = a.payload;
+      },
+      setCanPay: function (s, a: PayloadAction<boolean>) {
+         s.canPay = a.payload;
+      },
+
       addOne: (s, a: PayloadAction<ResponseUserOrder>) => {
          const o = a.payload;
          s.orderHistory = s.orderHistory.concat(o);

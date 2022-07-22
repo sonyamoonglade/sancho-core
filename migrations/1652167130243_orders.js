@@ -39,7 +39,7 @@ exports.up = (pgm) => {
       delivery_details: {
          type: "json",
          notNull: false,
-         default: "'{}::json'"
+         default: "{}"
       },
       created_at: {
          type: "timestamp",

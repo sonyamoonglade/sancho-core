@@ -32,5 +32,4 @@ exports.up = (pgm) => {
 
 exports.down = (pgm) => {
    pgm.dropTable("marks");
-   pgm.sql(`ALTER TABLE "marks" DROP CONSTRAINT "user_id_content_unique"'`);
 };

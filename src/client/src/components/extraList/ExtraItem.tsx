@@ -3,9 +3,9 @@ import React, { FC, useMemo } from "react";
 import "./extra-list.styles.scss";
 import { useCart } from "../../hooks/useCart";
 import { productActions, useAppDispatch } from "../../redux";
-import { baseUrl } from "../product/productPresentation/ProductPresentation";
 import { DatabaseCartProduct, Product } from "../../common/types";
 import { currency } from "../../common/constants";
+import { baseUrl } from "../../App";
 
 interface extraItemProps {
    product: Product;

@@ -21,6 +21,7 @@ import WorkerNavigation from "../../worker/navigation/WorkerNavigation";
 import WorkerNavigationRight from "../../worker/navigation/WorkerNavigationRight";
 import AdminNavigation from "../../admin/navigation/AdminNavigation";
 import Categories from "../categories/Categories";
+import Pay from "../../pay/Pay";
 
 const mockPromotions: Promotion[] = [
    {
@@ -102,6 +103,7 @@ const Header: FC = () => {
             <>
                <PromotionList promotions={mockPromotions} />
                <Order />
+               <Pay />
                <Cart />
                <OrderHistory />
                <MasterLogin />

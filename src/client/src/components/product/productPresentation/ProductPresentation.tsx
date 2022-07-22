@@ -7,9 +7,7 @@ import "../../layout/layout/layout.styles.scss";
 import AddToCartOnPresentation from "../../cart/addToCartButton/AddToCartBtn";
 import NutrientList from "../nutrient/NutrientList";
 import { usePresentation } from "./hooks/usePresentation";
-
-const currency = "₽";
-export const baseUrl = `https://storage.yandexcloud.net/zharpizza-bucket/static/images`;
+import { currency } from "../../../common/constants";
 
 const ProductPresentation = () => {
    const cart = useCart();

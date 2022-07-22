@@ -1,8 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { DatabaseCartProduct, Product } from "../../../../common/types";
-import { baseUrl } from "../ProductPresentation";
 import { useCart } from "../../../../hooks/useCart";
 import { productActions, useAppDispatch } from "../../../../redux";
+import { baseUrl } from "../../../../App";
 
 export function usePresentation(isPresentingNow: boolean, presentedProduct: Product) {
    const cart = useCart();

@@ -8,6 +8,7 @@ interface WindowState {
    navigation: boolean;
    cart: boolean;
    userOrder: boolean;
+   pay: boolean;
    loading: boolean;
    loadingSuccess: boolean | null;
    error: boolean;
@@ -36,6 +37,7 @@ interface WindowState {
 
 const initialState: WindowState = {
    masterLogin: false,
+   pay: false,
    appResponsiveState: null,
    navigation: false,
    cart: false,
@@ -73,6 +75,9 @@ export const windowSlice = createSlice({
    initialState,
    name: "window",
    reducers: {
+      togglePay: function (s, a?: PayloadAction<boolean>) {
+         s.pay = a?.payload || !s.pay;
+      },
       toggleCompleteList: function (s, a: PayloadAction<boolean>) {
          s.worker.completeList = a?.payload || !s.worker.completeList;
          s.worker.virtualCart = false;

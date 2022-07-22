@@ -1,0 +1,28 @@
+@import "src/./variables.scss";
+
+.pay_selector{
+  background-color: transparent;
+  width: 21px;
+  height: 21px;
+  border-radius: 50%;
+  transform: translateY(3px);
+  transition: all 50ms ease-in-out;
+  display: flex;
+  border: 2px solid $black;
+  align-items: center;
+  outline: none;
+  justify-content: center;
+
+}
+.pay_selector:active{
+  transform: translateY(3px) scale(.95);
+}
+
+.selector{
+  width: 7px;
+  height: 7px;
+  background-color: $black;
+  border-radius: 50%;
+  box-shadow: 0 0 2px $black;
+
+}

@@ -1,9 +1,9 @@
 import React, { FC } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { productSlice, useAppDispatch } from "../../../redux";
-import { baseUrl } from "../productPresentation/ProductPresentation";
 import { Product } from "../../../common/types";
 import NutrientList from "../nutrient/NutrientList";
+import { baseUrl } from "../../../App";
 
 interface productInfoProps {
    product: Product;

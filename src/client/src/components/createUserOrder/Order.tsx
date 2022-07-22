@@ -5,16 +5,16 @@ import { TiArrowBack } from "react-icons/ti";
 import { GrFormClose } from "react-icons/gr";
 import { useCreateOrder } from "./hooks/useCreateOrder";
 import { useCart } from "../../hooks/useCart";
-import { miscSelector, productActions, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector } from "../../redux";
+import { miscSelector, orderActions, productActions, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector } from "../../redux";
 import OrderForm from "./orderForm/OrderForm";
 import SubmitOrderButton from "./submitOrderButton/SubmitOrderButton";
 import Check from "./check/Check";
 import { useUserOrderForm } from "./hooks/useUserOrderForm";
-import { baseUrl } from "../product/productPresentation/ProductPresentation";
 import { useAxios } from "../../hooks/useAxios";
 import { useAuthentication } from "../../hooks/useAuthentication";
 import { FormField } from "../../types/types";
 import { DeliveryDetails } from "../../common/types";
+import { baseUrl } from "../../App";
 
 export interface UserOrderFormValuesInterface {
    is_delivered: boolean;
@@ -50,6 +50,14 @@ const Order = () => {
    const dispatch = useAppDispatch();
 
    const { formValues, isSubmitButtonActive, setFormValues, setFormDefaults, getFormValues } = useUserOrderForm();
+
+   useEffect(() => {
+      dispatch(orderActions.setCanPay(isSubmitButtonActive));
+   }, [isSubmitButtonActive]);
+
+   useEffect(() => {
+      dispatch(orderActions.setIsUsrOrderDelivered(formValues.is_delivered.value));
+   }, [formValues.is_delivered.value]);
 
    useEffect(() => {
       if (userOrder) {
@@ -117,6 +125,7 @@ const Order = () => {
          return dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."));
       }
    }
+
    return (
       <div className={userOrder ? "make_user_order modal modal--visible" : "make_user_order modal"}>
          <div className="user_order_header">
@@ -133,8 +142,6 @@ const Order = () => {
             </div>
 
             <OrderForm formValues={formValues} setFormValues={setFormValues} />
-
-            {userOrder && <SubmitOrderButton handler={handleOrderCreation} isActive={isSubmitButtonActive} />}
          </div>
       </div>
    );

@@ -63,3 +63,5 @@ export type FoundUser = {
    phoneNumber: string;
    username: string;
 };
+
+export type UserOrder = {};

@@ -86,7 +86,7 @@ const Loading: FC<loadingProps> = ({ duration }) => {
       return t;
    }
    return (
-      <div className={loading && !error ? "modal loading modal--visible" : "modal loading"}>
+      <div className={loading && !error ? "loading modal modal--visible" : "loading modal"}>
          <div className="loading_content">
             {loadingStep !== LoadingSteps.afterFinish && loading ? (
                <SpinnerCircular size={150} secondaryColor={"#ffc535"} color={"#3cb46e"} enabled={loading} />
