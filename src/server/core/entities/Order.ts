@@ -11,6 +11,7 @@ export type Order = {
    is_delivered_asap: boolean;
    delivery_details?: DeliveryDetails;
    created_at: Date;
+   pay: Pay;
    verified_at?: Date;
    is_paid?: boolean;
    completed_at?: Date;

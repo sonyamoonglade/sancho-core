@@ -93,11 +93,23 @@ export function useUserOrderForm() {
       return finalValues;
    }
 
+   function clearPhone(): void {
+      setFormValues((state: UserOrderFormState) => {
+         const copy = Object.assign({}, formValues);
+         copy.phone_number = {
+            value: "",
+            isValid: false
+         };
+         return { ...copy };
+      });
+   }
+
    return {
       setFormDefaults,
       isSubmitButtonActive,
       formValues,
       setFormValues,
-      getFormValues
+      getFormValues,
+      clearPhone
    };
 }

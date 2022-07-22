@@ -5,16 +5,28 @@ import { TiArrowBack } from "react-icons/ti";
 import { GrFormClose } from "react-icons/gr";
 import { useCreateOrder } from "./hooks/useCreateOrder";
 import { useCart } from "../../hooks/useCart";
-import { miscSelector, orderActions, productActions, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector } from "../../redux";
+import {
+   miscSelector,
+   orderActions,
+   orderSelector,
+   productActions,
+   useAppDispatch,
+   useAppSelector,
+   userSelector,
+   windowActions,
+   windowSelector
+} from "../../redux";
 import OrderForm from "./orderForm/OrderForm";
 import SubmitOrderButton from "./submitOrderButton/SubmitOrderButton";
 import Check from "./check/Check";
 import { useUserOrderForm } from "./hooks/useUserOrderForm";
 import { useAxios } from "../../hooks/useAxios";
 import { useAuthentication } from "../../hooks/useAuthentication";
-import { FormField } from "../../types/types";
+import { CLEAR_ORDER_FORM, CLEAR_ORDER_FORM_ONLY_PHONE, FormField } from "../../types/types";
 import { DeliveryDetails } from "../../common/types";
 import { baseUrl } from "../../App";
+import { CreateUserOrderDto } from "../../../../common/types";
+import { useEvent } from "../../hooks/useEvent";
 
 export interface UserOrderFormValuesInterface {
    is_delivered: boolean;
@@ -42,24 +54,34 @@ export interface UserOrderFormState {
 
 const Order = () => {
    const cart = useCart();
-   const client = useAxios();
-   const { createUserOrder } = useCreateOrder(client);
-   const { login } = useAuthentication(client);
-   const { userOrder } = useAppSelector(windowSelector);
-   const { isAuthenticated, phoneNumber: userPhoneNumber } = useAppSelector(userSelector);
-   const dispatch = useAppDispatch();
 
-   const { formValues, isSubmitButtonActive, setFormValues, setFormDefaults, getFormValues } = useUserOrderForm();
+   const { userOrder, pay } = useAppSelector(windowSelector);
+   const dispatch = useAppDispatch();
+   const { formValues, isSubmitButtonActive, setFormValues, setFormDefaults, getFormValues, clearPhone } = useUserOrderForm();
 
    useEffect(() => {
       dispatch(orderActions.setCanPay(isSubmitButtonActive));
-   }, [isSubmitButtonActive]);
+      const dto = newCreateUserOrderDto();
+      if (!dto) {
+         return;
+      }
+      dispatch(orderActions.setUserOrder(dto));
+   }, [isSubmitButtonActive, formValues]);
 
    useEffect(() => {
-      dispatch(orderActions.setIsUsrOrderDelivered(formValues.is_delivered.value));
-   }, [formValues.is_delivered.value]);
+      // if (events.listeners(CLEAR_ORDER_FORM).length === 0) {
+      //    events.addListener(CLEAR_ORDER_FORM, () => {
+      //       console.log("im here");
+      //       setFormDefaults();
+      //    });
+      // }
+      // if (events.listeners(CLEAR_ORDER_FORM_ONLY_PHONE).length === 0) {
+      //    events.addListener(CLEAR_ORDER_FORM_ONLY_PHONE, () => {
+      //       console.log("im here");
+      //       clearPhone();
+      //    });
+      // }
 
-   useEffect(() => {
       if (userOrder) {
          document.querySelector(".phone_number_input").classList.remove("--valid");
 
@@ -69,61 +91,32 @@ const Order = () => {
       }
    }, [userOrder]);
 
+   useEffect(() => {
+      if (!pay) {
+         setFormDefaults();
+      }
+   }, [pay]);
+
+   function newCreateUserOrderDto(): CreateUserOrderDto {
+      const formValues = getFormValues();
+      const usrCart = cart.getCart();
+      const price = cart.calculateCartTotalPrice();
+      if (price === 0) {
+         return null;
+      }
+      const dto: CreateUserOrderDto = {
+         ...formValues,
+         cart: usrCart,
+         pay: null
+      };
+      return dto;
+   }
+
    function toggleOrder() {
       dispatch(windowActions.toggleUserOrder());
    }
    function closeAllModals() {
       dispatch(windowActions.closeAll());
-   }
-
-   async function handleOrderCreation() {
-      const formValues = getFormValues();
-      const usrCart = cart.getCart();
-      const price = cart.calculateCartTotalPrice();
-      if (price === 0) {
-         return;
-      }
-      const { phone_number: formPhoneNumber } = formValues;
-      try {
-         if (!isAuthenticated) {
-            await login(formPhoneNumber);
-         } else if (formPhoneNumber !== userPhoneNumber) {
-            await login(formPhoneNumber);
-         }
-      } catch (e: any) {
-         console.log(e);
-         const message = e?.response?.data?.message;
-         setFormValues((p: UserOrderFormState) => {
-            const s = { ...p };
-            s.phone_number.value = "";
-            s.phone_number.isValid = false;
-            return s;
-         });
-         dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."));
-      }
-
-      try {
-         await createUserOrder(formValues, usrCart);
-         cart.clearCart();
-         setFormDefaults();
-         dispatch(productActions.setCartEmpty(true));
-         setFormValues((p: UserOrderFormState) => {
-            const s = { ...p };
-            s.phone_number.value = "";
-            s.phone_number.isValid = false;
-            return s;
-         });
-         dispatch(productActions.setTotalCartPrice(0));
-      } catch (e: any) {
-         const message = e?.response?.data?.message;
-         setFormValues((p: UserOrderFormState) => {
-            const s = { ...p };
-            s.phone_number.value = "";
-            s.phone_number.isValid = false;
-            return s;
-         });
-         return dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."));
-      }
    }
 
    return (

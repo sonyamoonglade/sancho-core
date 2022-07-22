@@ -29,7 +29,9 @@
 
 .pay_container{
   position: relative;
+  padding: 1rem;
   top: 60px;
+  height: calc(100% - 60px)
 }
 
 .card_payment_icon{
@@ -42,7 +44,12 @@
 }
 .pay_way{
   list-style: none;
-  padding-left: 2rem;
+  padding-left: 1rem;
+}
+.payway--disabled{
+  opacity: 0.5;
+  pointer-events: none;
+  cursor: wait;
 }
 .payway_item{
   display: flex;
@@ -65,3 +72,26 @@
 }
 
 
+.pay_title{
+
+  font-size: $font-lg;
+  font-family: "Geometria Bold",sans-serif;
+}
+.check_warn{
+  margin-top: 0.2rem;
+  margin-bottom: 1rem;
+  font-family: "Geometria",sans-serif;
+  font-size: $font-regular;
+  font-style: italic;
+}
+.field_title{
+  font-family: "Geometria Medium",sans-serif;
+  font-size: $font-regular;
+  small{
+    font-family: "Geometria",sans-serif;
+  }
+}
+
+.email_inp{
+  margin-bottom: 1rem;
+}

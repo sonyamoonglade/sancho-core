@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import { orderSelector, useAppDispatch, useAppSelector, windowActions } from "../../../redux";
-import { BsCreditCard } from "react-icons/bs";
 import "./pay-link.styles.scss";
 const PayLink = () => {
    const dispatch = useAppDispatch();
@@ -27,9 +26,7 @@ const PayLink = () => {
 
    return (
       <button ref={animationRef} onClick={() => togglePay()} className="pay_link">
-         <span className="xhlp18z">&nbsp;</span>
-         <span className="cart_link_title">Перейти к оплате</span>
-         <BsCreditCard className="pay_icon" size={25} />
+         <span className="cart_link_title">К оплате</span>
       </button>
    );
 };
