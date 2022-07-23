@@ -125,6 +125,7 @@ export const windowSlice = createSlice({
          s.cart = false;
          s.navigation = false;
          s.userOrder = false;
+         s.pay = false;
       },
       toggleLoading: (s, a: PayloadAction<boolean>) => {
          s.loading = a.payload;
@@ -141,6 +142,7 @@ export const windowSlice = createSlice({
          s.loading = false;
          s.loadingSuccess = false;
          s.error = true;
+         s.pay = false;
          s.errorMessage = a.payload;
       },
       stopErrorScreen: (s) => {

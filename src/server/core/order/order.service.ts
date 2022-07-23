@@ -43,19 +43,15 @@ export class OrderService {
       this.events = new EventEmitter();
    }
 
-   public async createUserOrder(createUserOrderDto: CreateUserOrderDto, userId: number): Promise<Order> {
-      let total_cart_price = await this.calculateTotalCartPrice(createUserOrderDto.cart);
-      if (createUserOrderDto.is_delivered) {
+   public async createUserOrder(dto: CreateUserOrderDto): Promise<Order> {
+      let total_cart_price = await this.calculateTotalCartPrice(dto.cart);
+      if (dto.is_delivered) {
          total_cart_price = await this.applyDeliveryPunishment(total_cart_price);
       }
-      const userOrder: Order = {
-         total_cart_price,
-         ...createUserOrderDto,
-         user_id: userId,
-         status: OrderStatus.waiting_for_verification,
-         created_at: new Date(Date.now())
-      };
-      await this.orderRepository.save(userOrder);
+      dto.total_cart_price = total_cart_price;
+
+      //todo: switch to utc time now() pg
+      await this.orderRepository.createUserOrder(dto);
 
       this.events.emit(Events.ORDER_HAS_CREATED);
       return;

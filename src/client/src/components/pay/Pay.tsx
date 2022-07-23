@@ -16,7 +16,7 @@ import { useCreateOrder } from "../createUserOrder/hooks/useCreateOrder";
 import { useAuthentication } from "../../hooks/useAuthentication";
 import { useCart } from "../../hooks/useCart";
 import { useEvent } from "../../hooks/useEvent";
-import { CreateUserOrderDto } from "../../../../common/types";
+import { CreateUserOrderDto } from "../../common/types";
 
 const Pay = () => {
    const { pay } = useAppSelector(windowSelector);
@@ -30,9 +30,9 @@ const Pay = () => {
    const { minLengthValidation } = useFormValidations();
 
    const { setFormValues, setPayWay, handlePaywaySwitch, formValues, payWay, getFormValues, setFormDefaults } = usePayForm();
-   const { userOrder } = useAppSelector(orderSelector);
+   const { userOrder: orderData } = useAppSelector(orderSelector);
    const events = useEvent();
-   const is_delivered = userOrder?.is_delivered || false;
+   const is_delivered = orderData?.is_delivered || false;
    const cart = useCart();
 
    const client = useAxios();
@@ -51,7 +51,7 @@ const Pay = () => {
    }, [formValues]);
 
    async function handleOrderCreation() {
-      const { phone_number: phoneNumber } = userOrder;
+      const { phone_number: phoneNumber } = orderData;
       try {
          if (!isAuthenticated) {
             await login(phoneNumber);
@@ -60,7 +60,6 @@ const Pay = () => {
          }
       } catch (e: any) {
          console.log(e);
-         console.log("emitting");
          events.emit(CLEAR_ORDER_FORM_ONLY_PHONE);
          const message = e?.response?.data?.message;
          dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."));
@@ -68,17 +67,27 @@ const Pay = () => {
 
       try {
          const data = getFormValues();
+         const { cart: usrCart, is_delivered_asap, delivery_details, is_delivered } = orderData;
          const createOrderDto: CreateUserOrderDto = {
-            ...userOrder,
-            email: data.email,
-            promo: data.promo,
-            pay: payWay,
-            username: data.username
+            cart: usrCart,
+            delivery_details,
+            is_delivered,
+            is_delivered_asap,
+            pay: payWay
          };
+         //Only if user selects withCard we need it's personal data (email, username)
+         if (payWay === "withCard") {
+            createOrderDto.email = data.email;
+            createOrderDto.username = data.username;
+         }
+         //validate promo here
+         if (data.promo) {
+            createOrderDto.promo = data.promo;
+         }
 
-         const usrCart = cart.getCart();
+         console.log(createOrderDto);
 
-         await createUserOrder(createOrderDto, usrCart);
+         await createUserOrder(createOrderDto);
          cart.clearCart();
          events.emit(CLEAR_ORDER_FORM);
          dispatch(productActions.setCartEmpty(true));
@@ -86,7 +95,7 @@ const Pay = () => {
       } catch (e: any) {
          const message = e?.response?.data?.message;
          events.emit(CLEAR_ORDER_FORM_ONLY_PHONE);
-         return dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."));
+         dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."));
       }
    }
 
@@ -116,9 +125,9 @@ const Pay = () => {
                </li>
                <li className={is_delivered ? "payway_item" : "payway_item payway--disabled"}>
                   <PaySelector
-                     opt={"withCardCourier"}
+                     opt={"withCardRunner"}
                      onClick={handlePaywaySwitch}
-                     selected={payWay === "withCardCourier"}
+                     selected={payWay === "withCardRunner"}
                      disabled={is_delivered === false}
                   />
                   <div className="payway_content">

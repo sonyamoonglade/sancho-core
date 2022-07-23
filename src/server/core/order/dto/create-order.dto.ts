@@ -1,8 +1,8 @@
 import { Order } from "../../entities/Order";
-import { DatabaseCartProduct, DeliveryDetails, Pay } from "../../../../common/types";
+import { DatabaseCartProduct, DeliveryDetails, OrderStatus, Pay } from "../../../../common/types";
 import { IsBoolean, IsDate, IsDateString, IsDefined, IsString, MaxLength } from "class-validator";
 
-export class CreateUserOrderDto implements Partial<Order> {
+export class CreateUserOrderInput {
    @IsDefined()
    cart: DatabaseCartProduct[];
 
@@ -18,10 +18,23 @@ export class CreateUserOrderDto implements Partial<Order> {
    @IsString()
    pay: Pay;
 
+   email?: string;
+   username?: string;
+   promo?: string;
    delivery_details?: DeliveryDetails;
 }
+export class CreateUserOrderDto {
+   pay: Pay;
+   is_delivered: boolean;
+   delivery_details?: DeliveryDetails;
+   is_delivered_asap: boolean;
+   cart: DatabaseCartProduct[];
+   status: OrderStatus.waiting_for_verification;
+   user_id: number;
 
-export class CreateMasterOrderDto implements Partial<Order> {
+   total_cart_price?: number;
+}
+export class CreateMasterOrderDto {
    @IsDefined()
    @IsString()
    phone_number: string;

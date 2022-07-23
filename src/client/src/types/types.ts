@@ -1,4 +1,5 @@
 import { DatabaseCartProduct } from "../common/types";
+import { DeliveryDetails } from "../../../common/types";
 
 export enum CategoryColor {
    "Напитки" = "#6fbecf",
@@ -64,7 +65,13 @@ export type FoundUser = {
    username: string;
 };
 
-export type UserOrder = {};
-
 export const CLEAR_ORDER_FORM = "clear_order_form";
 export const CLEAR_ORDER_FORM_ONLY_PHONE = "clear_order_form_only_phone";
+
+export type UserOrderFormData = {
+   cart: DatabaseCartProduct[];
+   delivery_details?: DeliveryDetails;
+   phone_number: string;
+   is_delivered_asap: boolean;
+   is_delivered: boolean;
+};

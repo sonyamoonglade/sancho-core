@@ -1,13 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { OrderStatus, ResponseUserOrder } from "../../common/types";
 import { CreateUserOrderDto } from "../../../../common/types";
+import { UserOrderFormData } from "../../types/types";
 
 interface InitialOrderStateInterface {
    orderHistory: ResponseUserOrder[];
    hasMore: boolean;
    isFetching: boolean;
    canPay: boolean;
-   userOrder: CreateUserOrderDto;
+   userOrder: UserOrderFormData;
 }
 
 const initialState: InitialOrderStateInterface = {
@@ -22,14 +23,8 @@ export const orderSlice = createSlice({
    name: "order",
    initialState,
    reducers: {
-      setUserOrder: function (s, a: PayloadAction<CreateUserOrderDto>) {
-         s.userOrder = {
-            ...a.payload,
-            pay: null,
-            email: "",
-            username: "",
-            promo: ""
-         };
+      setUserOrder: function (s, a: PayloadAction<UserOrderFormData>) {
+         s.userOrder = a.payload;
       },
       setCanPay: function (s, a: PayloadAction<boolean>) {
          s.canPay = a.payload;

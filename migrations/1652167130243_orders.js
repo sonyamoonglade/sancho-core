@@ -3,7 +3,7 @@
 exports.shorthands = undefined;
 
 exports.up = (pgm) => {
-   pgm.sql(`CREATE TYPE "pay" AS ENUM('cash','withCard','paid')`);
+   pgm.sql(`CREATE TYPE "pay" AS ENUM('cash','withCard','withCardRunner')`);
    pgm.createTable("orders", {
       id: {
          type: "id",

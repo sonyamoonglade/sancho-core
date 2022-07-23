@@ -1,5 +1,5 @@
 import { Body, Controller, Get, ParseIntPipe, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
-import { CreateMasterOrderDto, CreateUserOrderDto } from "./dto/create-order.dto";
+import { CreateMasterOrderDto, CreateUserOrderDto, CreateUserOrderInput } from "./dto/create-order.dto";
 import { OrderService } from "./order.service";
 import { Response } from "express";
 import { VerifyOrderDto } from "./dto/verify-order.dto";
@@ -24,14 +24,25 @@ export class OrderController {
    @Post("/createUserOrder")
    @UseGuards(MultiWaitingOrderGuard)
    @Role([AppRoles.user])
-   async createUserOrder(@Res() res: Response, @Req() req: extendedRequest, @Body() dto: CreateUserOrderDto) {
+   async createUserOrder(@Res() res: Response, @Req() req: extendedRequest, @Body() inp: CreateUserOrderInput) {
       try {
          const userId = req.user_id;
-         await this.orderService.createUserOrder(dto, userId);
+
+         const dto: CreateUserOrderDto = {
+            cart: inp.cart,
+            delivery_details: inp.delivery_details,
+            is_delivered: inp.is_delivered,
+            is_delivered_asap: inp.is_delivered_asap,
+            pay: inp.pay,
+            status: OrderStatus.waiting_for_verification,
+            user_id: userId
+         };
+         await this.orderService.createUserOrder(dto);
          if (dto.is_delivered === true) {
             const stringDetails: string = JSON.stringify(dto.delivery_details);
             await this.userService.updateUserRememberedDeliveryAddress(userId, stringDetails);
          }
+         //todo: implement different strategies pay (withCard or smth else)
          return res.status(201).end();
       } catch (e) {
          throw e;

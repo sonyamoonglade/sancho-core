@@ -103,4 +103,16 @@ export interface ListResponse {
    cancel: VerifiedQueueOrder[];
    complete: VerifiedQueueOrder[];
 }
-export type Pay = "cash" | "withCard" | "withCardCourier";
+
+export type Pay = "cash" | "withCard" | "withCardRunner";
+
+export type CreateUserOrderDto = {
+   cart: DatabaseCartProduct[];
+   delivery_details?: DeliveryDetails;
+   is_delivered_asap: boolean;
+   is_delivered: boolean;
+   pay: Pay;
+   email?: string;
+   username?: string;
+   promo?: string;
+};

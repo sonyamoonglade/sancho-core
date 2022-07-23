@@ -22,7 +22,7 @@ import Check from "./check/Check";
 import { useUserOrderForm } from "./hooks/useUserOrderForm";
 import { useAxios } from "../../hooks/useAxios";
 import { useAuthentication } from "../../hooks/useAuthentication";
-import { CLEAR_ORDER_FORM, CLEAR_ORDER_FORM_ONLY_PHONE, FormField } from "../../types/types";
+import { CLEAR_ORDER_FORM, CLEAR_ORDER_FORM_ONLY_PHONE, FormField, UserOrderFormData } from "../../types/types";
 import { DeliveryDetails } from "../../common/types";
 import { baseUrl } from "../../App";
 import { CreateUserOrderDto } from "../../../../common/types";
@@ -61,11 +61,11 @@ const Order = () => {
 
    useEffect(() => {
       dispatch(orderActions.setCanPay(isSubmitButtonActive));
-      const dto = newCreateUserOrderDto();
-      if (!dto) {
+      const data = getOrderData();
+      if (!data) {
          return;
       }
-      dispatch(orderActions.setUserOrder(dto));
+      dispatch(orderActions.setUserOrder(data));
    }, [isSubmitButtonActive, formValues]);
 
    useEffect(() => {
@@ -97,19 +97,18 @@ const Order = () => {
       }
    }, [pay]);
 
-   function newCreateUserOrderDto(): CreateUserOrderDto {
+   function getOrderData(): UserOrderFormData {
       const formValues = getFormValues();
       const usrCart = cart.getCart();
       const price = cart.calculateCartTotalPrice();
       if (price === 0) {
          return null;
       }
-      const dto: CreateUserOrderDto = {
+      const orderData: UserOrderFormData = {
          ...formValues,
-         cart: usrCart,
-         pay: null
+         cart: usrCart
       };
-      return dto;
+      return orderData;
    }
 
    function toggleOrder() {

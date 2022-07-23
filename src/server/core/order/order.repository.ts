@@ -1,5 +1,4 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { Repository } from "../../shared/abstract/repository";
 import { DeliveryOrder, LastVerifiedOrder, Order, orders } from "../entities/Order";
 import { Pool } from "pg";
 import { filter, QueryBuilder } from "../../shared/queryBuilder/QueryBuilder";
@@ -9,10 +8,10 @@ import { RepositoryException } from "../../shared/exceptions/repository.exceptio
 import { OrderStatus, ResponseUserOrder, VerifiedQueueOrder, WaitingQueueOrder } from "../../../common/types";
 import { users } from "../entities/User";
 import { QueueOrderDto } from "./dto/queue-order.dto";
-import { CreateMasterOrderDto } from "./dto/create-order.dto";
+import { CreateMasterOrderDto, CreateUserOrderDto } from "./dto/create-order.dto";
 
 @Injectable()
-export class OrderRepository implements Repository<Order> {
+export class OrderRepository {
    constructor(@Inject(query_builder) private qb: QueryBuilder, @Inject(pg_conn) private db: Pool) {}
 
    async delete(id: number): Promise<void | undefined> {
@@ -70,15 +69,20 @@ export class OrderRepository implements Repository<Order> {
       return rows[0] ? (rows[0] as Order) : undefined;
    }
 
-   async save(dto: any): Promise<Order> {
-      const [insertSql, insertValues] = this.qb.ofTable(orders).insert<Order>(dto);
-      const { rows } = await this.db.query(insertSql, insertValues);
-      return rows[0] as unknown as Order;
+   async createUserOrder(dto: CreateUserOrderDto): Promise<void> {
+      const strDetails = JSON.stringify(dto?.delivery_details || {});
+      const sql = `
+         INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,pay,created_at)
+         VALUES($1,$2,$3,$4,$5,$6,$7,$8,NOW()+INTERVAL '+4HOUR')
+      `;
+      const values = [dto.is_delivered, dto.cart, strDetails, dto.total_cart_price, dto.is_delivered_asap, dto.user_id, dto.status, dto.pay];
+      await this.db.query(sql, values);
+      return;
    }
 
    async createMasterOrder(dto: CreateMasterOrderDto): Promise<void> {
       //Todo: Adding time zone ( later fix to automatic )
-      const strDelDetails = JSON.stringify(dto.delivery_details);
+      const strDelDetails = JSON.stringify(dto?.delivery_details || {});
       const sql = `
          INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,created_at,verified_at)
           VALUES($1,$2,$3,$4,$5,$6,$7, NOW()+INTERVAL '+4HOUR',NOW()+INTERVAL '+4HOUR') 
