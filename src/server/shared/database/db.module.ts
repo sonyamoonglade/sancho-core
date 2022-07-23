@@ -1,5 +1,4 @@
-import { Inject, Module } from "@nestjs/common";
-import { Pool, PoolClient } from "pg";
+import { Module } from "@nestjs/common";
 import { pg_conn } from "./db_provider-name";
 import { getConfig } from "../../config/config";
 import { DbInstanceProvider } from "./db-instance.provider";

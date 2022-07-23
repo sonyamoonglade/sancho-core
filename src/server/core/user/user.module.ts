@@ -5,7 +5,6 @@ import { UserRepository } from "./user.repository";
 import { SessionRepository } from "../authentication/session.repository";
 import { SessionService } from "../authentication/session.service";
 import { OrderService } from "../order/order.service";
-import { OrderRepository } from "../order/order.repository";
 import { ProductRepository } from "../product/product.repository";
 import { CookieService } from "../../shared/cookie/cookie.service";
 import { RegisterSpamGuard } from "../authentication/guard/register-spam.guard";

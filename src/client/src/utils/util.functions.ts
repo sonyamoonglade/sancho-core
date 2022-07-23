@@ -1,5 +1,4 @@
 import { DatabaseCartProduct, OrderQueue, VerifiedQueueOrder, WaitingQueueOrder } from "../common/types";
-import { Droppable } from "../components/orderHistory/OrderHistoryItem";
 
 export const utils = {
    sixifyOrderId: function (orderId: number) {

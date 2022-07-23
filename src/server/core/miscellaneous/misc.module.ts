@@ -7,8 +7,6 @@ import { AuthorizationModule } from "../authorization/authorization.module";
 import { UserModule } from "../user/user.module";
 import { SessionModule } from "../authentication/session.module";
 import { QueryBuilderModule } from "../../shared/queryBuilder/qb.module";
-import { UserService } from "../user/user.service";
-import { SessionService } from "../authentication/session.service";
 
 @Module({
    controllers: [MiscController],

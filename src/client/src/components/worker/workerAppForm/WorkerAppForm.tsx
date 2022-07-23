@@ -1,7 +1,5 @@
-import { defaultItem } from "../../orderHistory/OrderHistoryItem";
-
 import React, { useMemo } from "react";
-import { useAppDispatch, useAppSelector, windowActions, windowSelector, workerActions } from "../../../redux";
+import { useAppDispatch, useAppSelector, windowActions, windowSelector } from "../../../redux";
 import { useVirtualCart } from "../hooks/useVirtualCart";
 
 const WorkerAppForm = () => {

@@ -20,7 +20,6 @@ import MasterLogin from "../../masterLogin/MasterLogin";
 import WorkerNavigation from "../../worker/navigation/WorkerNavigation";
 import WorkerNavigationRight from "../../worker/navigation/WorkerNavigationRight";
 import AdminNavigation from "../../admin/navigation/AdminNavigation";
-import Categories from "../categories/Categories";
 import Pay from "../../pay/Pay";
 
 const mockPromotions: Promotion[] = [

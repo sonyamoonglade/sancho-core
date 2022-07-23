@@ -5,7 +5,7 @@ import * as path from "path";
 import { ValidationPipe } from "@nestjs/common";
 import { getConfig } from "./config/config";
 import { UserService } from "./core/user/user.service";
-import { Logger, PinoLogger } from "nestjs-pino";
+import { Logger } from "nestjs-pino";
 
 require("dotenv").config({
    path: path.resolve(__dirname, ".env")
@@ -33,21 +33,5 @@ async function bootstrap() {
       console.log(`application is listening :${APP_PORT}`);
    });
 }
-
-type pay = "Cash" | "WithCard" | "Paid";
-
-enum Pay {
-   CASH = "Cash",
-   WITH_CARD = "WithCard",
-   PAID = "Paid"
-}
-
-interface DeliveryInterface {
-   pay: Pay;
-}
-
-const Delivery: DeliveryInterface = {
-   pay: Pay.PAID
-};
 
 bootstrap();

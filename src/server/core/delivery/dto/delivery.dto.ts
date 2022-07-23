@@ -1,5 +1,4 @@
-import { Pay } from "../../../../common/types";
-import { IsDefined, IsInstance, IsNumber, IsString } from "class-validator";
+import { IsDefined, IsNumber, IsString } from "class-validator";
 import { DeliveryOrder } from "../../entities/Order";
 import { DeliveryUser } from "../../entities/User";
 

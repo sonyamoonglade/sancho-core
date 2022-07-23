@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, ParseIntPipe, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, ParseIntPipe, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { Request, Response } from "express";
 import { CreateMasterUserDto } from "./dto/create-master-user.dto";

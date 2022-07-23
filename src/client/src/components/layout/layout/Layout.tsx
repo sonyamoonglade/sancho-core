@@ -1,4 +1,4 @@
-import React, { FC, useContext, useEffect, useRef, useState } from "react";
+import React, { FC, useContext, useRef } from "react";
 
 import "./layout.styles.scss";
 import "../../worker/worker-globals.scss";
@@ -14,7 +14,7 @@ import CompleteOrderDrag from "../../worker/drag/complete/CompleteOrderDrag";
 import CancelOrderDrag from "../../worker/drag/cancel/CancelOrderDrag";
 import VerifyOrderDrag from "../../worker/drag/verify/VerifyOrderDrag";
 import CompleteOrderModal from "../../worker/modal/completeOrder/CompleteOrderModal";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import AdminCatalog from "../../admin/catalog/AdminCatalog";
 import Dashboard from "../../admin/dashboard/Dashboard";
 import Users from "../../admin/users/Users";
@@ -23,7 +23,6 @@ import AdminQueue from "../../admin/queue/AdminQueue";
 import MarkList from "../../worker/mark/MarkList";
 import MarkModal from "../../worker/modal/mark/MarkModal";
 import { CatalogContext, LayoutContext } from "../context";
-import catalog from "../../catalog/Catalog";
 
 interface layoutProps {
    children: any;

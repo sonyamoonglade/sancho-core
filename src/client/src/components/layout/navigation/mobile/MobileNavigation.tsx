@@ -1,7 +1,14 @@
-import React, { useEffect } from "react";
-import { orderSelector, productSelector, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector } from "../../../../redux";
+import React from "react";
+import {
+  orderSelector,
+  productSelector,
+  useAppDispatch,
+  useAppSelector,
+  windowActions,
+  windowSelector,
+} from "../../../../redux";
 import { BsCart4, BsClipboardData } from "react-icons/bs";
-import { MdOutlineReceiptLong, MdDeliveryDining } from "react-icons/md";
+import { MdDeliveryDining, MdOutlineReceiptLong } from "react-icons/md";
 import { RiQuestionAnswerLine } from "react-icons/ri";
 import "./mob-navigation.styles.scss";
 import "../../layout/layout.styles.scss";

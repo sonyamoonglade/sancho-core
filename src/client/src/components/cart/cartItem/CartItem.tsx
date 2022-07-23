@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useMemo, useRef } from "react";
+import React, { FC, useMemo } from "react";
 
 import "./cart-item.styles.scss";
 import { DatabaseCartProduct } from "../../../common/types";

@@ -1,5 +1,4 @@
 import { DatabaseCartProduct, DeliveryDetails, OrderStatus, Pay } from "../../../common/types";
-import { IsDefined, IsNumber, IsString } from "class-validator";
 
 export type Order = {
    id?: number;

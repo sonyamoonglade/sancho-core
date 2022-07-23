@@ -1,5 +1,12 @@
 import React from "react";
-import { productActions, productSelector, useAppDispatch, useAppSelector, windowActions, windowSelector } from "../../redux";
+import {
+  productActions,
+  productSelector,
+  useAppDispatch,
+  useAppSelector,
+  windowActions,
+  windowSelector,
+} from "../../redux";
 
 const AppForm = () => {
    const dispatch = useAppDispatch();

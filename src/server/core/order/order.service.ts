@@ -1,9 +1,9 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { CreateMasterOrderDto, CreateUserOrderDto } from "./dto/create-order.dto";
 import { OrderRepository } from "./order.repository";
 import { Response } from "express";
 import { DeliveryOrder, LastVerifiedOrder, Order, orders } from "../entities/Order";
-import { User, users } from "../entities/User";
+import { users } from "../entities/User";
 import { VerifyOrderDto } from "./dto/verify-order.dto";
 import { CancelOrderDto } from "./dto/cancel-order.dto";
 import { Product } from "../entities/Product";
@@ -11,7 +11,6 @@ import { ProductRepository } from "../product/product.repository";
 import {
    AppRoles,
    DatabaseCartProduct,
-   DeliveryDetails,
    ListResponse,
    OrderQueue,
    OrderStatus,

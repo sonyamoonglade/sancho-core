@@ -4,7 +4,16 @@ import { useAxios } from "./hooks/useAxios";
 import Layout from "./components/layout/layout/Layout";
 import AppForm from "./components/appForm/AppForm";
 import { CatalogContext } from "./components/layout/context";
-import { fetchMiscData, getCatalog, productSelector, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector } from "./redux";
+import {
+  fetchMiscData,
+  getCatalog,
+  productSelector,
+  useAppDispatch,
+  useAppSelector,
+  userSelector,
+  windowActions,
+  windowSelector,
+} from "./redux";
 import CartLink from "./components/cart/cartLink/CartLink";
 import OrderLink from "./components/createUserOrder/orderLink/OrderLink";
 import ProductPresentation from "./components/product/productPresentation/ProductPresentation";

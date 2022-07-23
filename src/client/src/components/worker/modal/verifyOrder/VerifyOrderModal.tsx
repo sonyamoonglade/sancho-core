@@ -1,17 +1,24 @@
 import React, { useEffect, useState } from "react";
-import { miscSelector, useAppDispatch, useAppSelector, windowActions, windowSelector, workerActions, workerSelector } from "../../../../redux";
+import {
+  miscSelector,
+  useAppDispatch,
+  useAppSelector,
+  windowActions,
+  windowSelector,
+  workerActions,
+  workerSelector,
+} from "../../../../redux";
 import "./verify-order.styles.scss";
 import "../../../createUserOrder/orderForm/order-form.styles.scss";
 import { RiSettings4Line } from "react-icons/ri";
 import { useAxios } from "../../../../hooks/useAxios";
-import { useVerifyOrderForm, WorkerVerifyOrderFormState } from "./hooks/useVerifyOrderForm";
+import { useVerifyOrderForm } from "./hooks/useVerifyOrderForm";
 import VerifyOrderForm from "./verifyForm/VerifyOrderForm";
 import VirtualCart from "../../virtualCart/VirtualCart";
 import { useVirtualCart } from "../../hooks/useVirtualCart";
 import { currency } from "../../../../common/constants";
 import { useVerifyOrder } from "./hooks/useVerifyOrder";
 import { utils } from "../../../../utils/util.functions";
-import { useFormValidations } from "../../../../hooks/useFormValidations";
 import { useCreateMasterOrder, UserCredentials } from "../createOrder/hooks/useCreateMasterOrder";
 
 const VerifyOrderModal = () => {

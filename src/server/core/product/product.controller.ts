@@ -1,26 +1,11 @@
-import {
-   Body,
-   Controller,
-   Delete,
-   Get,
-   ParseBoolPipe,
-   ParseIntPipe,
-   Post,
-   Put,
-   Query,
-   Req,
-   Res,
-   UploadedFile,
-   UseGuards,
-   UseInterceptors
-} from "@nestjs/common";
+import { Body, Controller, Delete, Get, ParseIntPipe, Post, Put, Query, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { ProductService } from "./product.service";
 import { Response } from "express";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { AppRoles } from "../../../common/types";
 import { Role } from "../../shared/decorators/role/Role";
 import { FileInterceptor } from "@nestjs/platform-express";
-import { CookieNames, extendedRequest } from "../../types/types";
+import { extendedRequest } from "../../types/types";
 import { PutImageDto } from "./dto/put-image.dto";
 import { FileStorage } from "../../shared/storage/file.storage";
 import { AuthorizationGuard } from "../authorization/authorization.guard";

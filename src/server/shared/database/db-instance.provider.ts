@@ -1,4 +1,5 @@
 import { Pool, PoolClient } from "pg";
+
 require("dotenv").config();
 
 export class DbInstanceProvider {

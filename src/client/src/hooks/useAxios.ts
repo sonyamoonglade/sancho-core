@@ -1,6 +1,5 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 import { useAppDispatch, userSlice, workerActions } from "../redux";
-import { useMemo } from "react";
 
 let BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 // todo: use nginx

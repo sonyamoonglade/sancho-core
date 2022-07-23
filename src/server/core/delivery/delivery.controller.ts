@@ -1,10 +1,10 @@
-import { Body, Controller, InternalServerErrorException, Post, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Post, Res, UseGuards } from "@nestjs/common";
 import { DeliveryService } from "./delivery.service";
 import { Response } from "express";
 import { AuthorizationGuard } from "../authorization/authorization.guard";
 import { Role } from "../../shared/decorators/role/Role";
 import { AppRoles } from "../../../common/types";
-import { CreateDeliveryDto, CreateDeliveryDtoFrontend } from "./dto/delivery.dto";
+import { CreateDeliveryDto, CreateDeliveryDtoFrontend, RegisterRunnerDto } from "./dto/delivery.dto";
 import { OrderService } from "../order/order.service";
 import { UserService } from "../user/user.service";
 import { PinoLogger } from "nestjs-pino";
@@ -44,6 +44,22 @@ export class DeliveryController {
          return res.status(201).end();
       } catch (e) {
          console.log(e);
+         throw e;
+      }
+   }
+
+   @Post("/runner")
+   @Role([AppRoles.master])
+   async registerRunner(@Res() res: Response, @Body() b: RegisterRunnerDto) {
+      try {
+         this.logger.info("register runner");
+         const ok = await this.deliveryService.registerRunner(b);
+         if (!ok) {
+            this.logger.error("internal error occurred calling delivery microservice");
+            throw new UnexpectedServerError();
+         }
+         return res.status(201).end();
+      } catch (e) {
          throw e;
       }
    }

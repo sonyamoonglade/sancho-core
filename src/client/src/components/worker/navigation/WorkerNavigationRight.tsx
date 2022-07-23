@@ -1,7 +1,7 @@
 import React from "react";
 import { FaUserCircle } from "react-icons/fa";
 import "./worker-nav.styles.scss";
-import { useAppDispatch, userActions } from "../../../redux";
+import { useAppDispatch } from "../../../redux";
 import { useAxios } from "../../../hooks/useAxios";
 import { logout } from "../../../redux/user/user-async.actions";
 

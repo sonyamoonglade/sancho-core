@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Req, Res, UploadedFile, UseInterceptors } from "@nestjs/common";
+import { Controller, Get, Res } from "@nestjs/common";
 
-import { Request, Response } from "express";
+import { Response } from "express";
 
 @Controller()
 export class AppController {

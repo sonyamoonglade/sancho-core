@@ -1,7 +1,6 @@
 import { AppDispatch } from "../store";
 import { productSlice } from "./product.slice";
 import { AxiosInstance } from "axios";
-import { Product } from "../../common/types";
 
 const productActions = productSlice.actions;
 

@@ -1,4 +1,4 @@
-import React, { FC, useContext, useState } from "react";
+import React, { FC, useContext } from "react";
 
 import "./catalog.styles.scss";
 import ProductCard from "../product/productCard/ProductCard";

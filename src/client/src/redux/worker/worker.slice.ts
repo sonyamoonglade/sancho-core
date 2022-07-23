@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { DatabaseCartProduct, ListResponse, OrderQueue, Product, VerifiedQueueOrder, WaitingQueueOrder } from "../../common/types";
+import { DatabaseCartProduct, ListResponse, OrderQueue, Product, VerifiedQueueOrder } from "../../common/types";
 import { FoundUser, Mark } from "../../types/types";
 
 interface WorkerInitialState {

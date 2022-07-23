@@ -1,22 +1,28 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { orderSelector, productActions, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector } from "../../redux";
+import React, { useEffect, useMemo } from "react";
+import {
+  orderSelector,
+  productActions,
+  useAppDispatch,
+  useAppSelector,
+  userSelector,
+  windowActions,
+  windowSelector,
+} from "../../redux";
 import "./pay.styles.scss";
 import { TiArrowBack } from "react-icons/ti";
 import { baseUrl } from "../../App";
 import PaySelector from "../ui/paySelector/PaySelector";
-import * as types from "../../common/types";
+import { CreateUserOrderDto } from "../../common/types";
 import FormInput from "../formInput/FormInput";
-import { CLEAR_ORDER_FORM, CLEAR_ORDER_FORM_ONLY_PHONE, FormField } from "../../types/types";
+import { CLEAR_ORDER_FORM, CLEAR_ORDER_FORM_ONLY_PHONE } from "../../types/types";
 import { useFormValidations } from "../../hooks/useFormValidations";
 import SubmitOrderButton from "../createUserOrder/submitOrderButton/SubmitOrderButton";
 import { usePayForm } from "./hooks/usePayForm";
-import { useUserOrderForm } from "../createUserOrder/hooks/useUserOrderForm";
 import { useAxios } from "../../hooks/useAxios";
 import { useCreateOrder } from "../createUserOrder/hooks/useCreateOrder";
 import { useAuthentication } from "../../hooks/useAuthentication";
 import { useCart } from "../../hooks/useCart";
 import { useEvent } from "../../hooks/useEvent";
-import { CreateUserOrderDto } from "../../common/types";
 
 const Pay = () => {
    const { pay } = useAppSelector(windowSelector);

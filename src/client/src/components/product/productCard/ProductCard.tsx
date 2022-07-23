@@ -5,7 +5,6 @@ import ProductHeading from "./ProductHeading";
 import ProductInfo from "./ProductInfo";
 import { Product } from "../../../common/types";
 import { useMediaQuery } from "react-responsive";
-import { productActions, useAppDispatch } from "../../../redux";
 
 interface productCardProps {
    product: Product;

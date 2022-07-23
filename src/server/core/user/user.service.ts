@@ -24,14 +24,13 @@ import { UserCredentialsDto } from "./dto/user-creds.dto";
 import { CreateMarkDto } from "../mark/dto/create-mark.dto";
 import { DuplicateMark, MarkCannotBeDeleted, MarkDoesNotExist } from "../../shared/exceptions/mark.exceptions";
 import { Mark } from "../entities/Mark";
-import * as dayjs from "dayjs";
 import { MiscService } from "../miscellaneous/misc.service";
 import { MarkRepository } from "../mark/mark.repository";
 import { OrderService } from "../order/order.service";
 import { REGULAR_CUSTOMER_CONTENT } from "../../../common/constants";
 import { ValidationErrorException } from "../../shared/exceptions/validation.exceptions";
 import { FoundUserDto } from "./dto/found-user.dto";
-import { CouldNotGetUserDeliveryData, InvalidOrderStatus } from "../../shared/exceptions/order.exceptions";
+import { CouldNotGetUserDeliveryData } from "../../shared/exceptions/order.exceptions";
 import { PinoLogger } from "nestjs-pino";
 
 require("dotenv").config();

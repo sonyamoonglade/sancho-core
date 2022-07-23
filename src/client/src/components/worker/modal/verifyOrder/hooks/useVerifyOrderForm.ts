@@ -3,7 +3,6 @@ import { FormField } from "../../../../../types/types";
 import { DeliveryDetails, OrderQueue, WaitingQueueOrder } from "../../../../../common/types";
 import { useFormValidations } from "../../../../../hooks/useFormValidations";
 import { UserCredentials } from "../../createOrder/hooks/useCreateMasterOrder";
-import { WorkerCreateOrderFormState } from "../../createOrder/hooks/useCreateOrderForm";
 
 export interface WorkerVerifyOrderFormState {
    verified_fullname_w: FormField;

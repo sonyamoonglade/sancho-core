@@ -3,30 +3,14 @@ import React, { useEffect } from "react";
 import "./order.styles.scss";
 import { TiArrowBack } from "react-icons/ti";
 import { GrFormClose } from "react-icons/gr";
-import { useCreateOrder } from "./hooks/useCreateOrder";
 import { useCart } from "../../hooks/useCart";
-import {
-   miscSelector,
-   orderActions,
-   orderSelector,
-   productActions,
-   useAppDispatch,
-   useAppSelector,
-   userSelector,
-   windowActions,
-   windowSelector
-} from "../../redux";
+import { orderActions, useAppDispatch, useAppSelector, windowActions, windowSelector } from "../../redux";
 import OrderForm from "./orderForm/OrderForm";
-import SubmitOrderButton from "./submitOrderButton/SubmitOrderButton";
 import Check from "./check/Check";
 import { useUserOrderForm } from "./hooks/useUserOrderForm";
-import { useAxios } from "../../hooks/useAxios";
-import { useAuthentication } from "../../hooks/useAuthentication";
-import { CLEAR_ORDER_FORM, CLEAR_ORDER_FORM_ONLY_PHONE, FormField, UserOrderFormData } from "../../types/types";
+import { FormField, UserOrderFormData } from "../../types/types";
 import { DeliveryDetails } from "../../common/types";
 import { baseUrl } from "../../App";
-import { CreateUserOrderDto } from "../../../../common/types";
-import { useEvent } from "../../hooks/useEvent";
 
 export interface UserOrderFormValuesInterface {
    is_delivered: boolean;

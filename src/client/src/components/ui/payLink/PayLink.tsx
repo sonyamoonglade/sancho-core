@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { orderSelector, useAppDispatch, useAppSelector, windowActions } from "../../../redux";
 import "./pay-link.styles.scss";
+
 const PayLink = () => {
    const dispatch = useAppDispatch();
    const animationRef = useRef<HTMLButtonElement>(null);

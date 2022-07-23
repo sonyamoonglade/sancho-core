@@ -8,11 +8,9 @@ import { query_builder } from "../../shared/queryBuilder/provider-name";
 import { RepositoryException } from "../../shared/exceptions/repository.exceptions";
 import { UserCredentialsDto } from "./dto/user-creds.dto";
 import { AppRoles, OrderStatus } from "../../../common/types";
-import { CreateMarkDto } from "../mark/dto/create-mark.dto";
-import { Mark, marks } from "../entities/Mark";
+import { marks } from "../entities/Mark";
 import { FoundUserDto } from "./dto/found-user.dto";
 import { orders } from "../entities/Order";
-import { OrderService } from "../order/order.service";
 
 export class UserRepository implements Repository<User> {
    constructor(@Inject(query_builder) private qb: QueryBuilder, @Inject(pg_conn) private db: Pool) {}

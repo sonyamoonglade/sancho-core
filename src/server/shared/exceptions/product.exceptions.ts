@@ -1,5 +1,4 @@
 import { HttpException, HttpStatus } from "@nestjs/common";
-import * as https from "https";
 
 export class ProductAlreadyExistsException extends HttpException {
    constructor(name: string) {

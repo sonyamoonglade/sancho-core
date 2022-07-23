@@ -3,8 +3,7 @@ import React, { FC } from "react";
 import "./marks.styles.scss";
 import { Mark } from "../../../types/types";
 import { GrFormClose } from "react-icons/gr";
-import { useMark } from "../modal/mark/hooks/useMark";
-import { useAppDispatch, workerActions } from "../../../redux";
+
 interface markProps {
    onDelete: (markId: number) => Promise<void>;
    mark: Mark;

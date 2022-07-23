@@ -2,7 +2,6 @@ import React from "react";
 import "../drag.styles.scss";
 import { useDrop } from "react-dnd";
 import { DropZones } from "../../../orderHistory/OrderHistoryItem";
-import CompleteList from "../../orderList/complete/CompleteList";
 import { useAppDispatch, windowActions } from "../../../../redux";
 
 const CompleteOrderDrag = () => {

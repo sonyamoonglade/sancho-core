@@ -18,8 +18,6 @@ import {
 import { AppResponsiveState } from "../../types/types";
 import { useDrag } from "react-dnd";
 import { usePay } from "./hooks/usePay";
-import { getOrderList } from "../../redux/worker/worker.async-actions";
-import { useAxios } from "../../hooks/useAxios";
 
 export interface ExtraData {
    phoneNumber?: string;

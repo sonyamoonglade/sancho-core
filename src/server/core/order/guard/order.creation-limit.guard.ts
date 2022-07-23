@@ -1,5 +1,4 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
-import { AppRoles } from "../../../../common/types";
 import { CreateMasterOrderDto } from "../dto/create-order.dto";
 import { OrderCreationLimitExceeded } from "../../../shared/exceptions/order.exceptions";
 import { OrderService } from "../order.service";

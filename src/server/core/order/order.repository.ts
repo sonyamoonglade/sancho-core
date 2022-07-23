@@ -5,7 +5,7 @@ import { filter, QueryBuilder } from "../../shared/queryBuilder/QueryBuilder";
 import { pg_conn } from "../../shared/database/db_provider-name";
 import { query_builder } from "../../shared/queryBuilder/provider-name";
 import { RepositoryException } from "../../shared/exceptions/repository.exceptions";
-import { OrderStatus, ResponseUserOrder, VerifiedQueueOrder, WaitingQueueOrder } from "../../../common/types";
+import { OrderStatus, VerifiedQueueOrder } from "../../../common/types";
 import { users } from "../entities/User";
 import { QueueOrderDto } from "./dto/queue-order.dto";
 import { CreateMasterOrderDto, CreateUserOrderDto } from "./dto/create-order.dto";

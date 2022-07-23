@@ -1,6 +1,5 @@
-import { Order } from "../../entities/Order";
 import { DatabaseCartProduct, DeliveryDetails, OrderStatus, Pay } from "../../../../common/types";
-import { IsBoolean, IsDate, IsDateString, IsDefined, IsString, MaxLength } from "class-validator";
+import { IsBoolean, IsDefined, IsString, MaxLength } from "class-validator";
 
 export class CreateUserOrderInput {
    @IsDefined()

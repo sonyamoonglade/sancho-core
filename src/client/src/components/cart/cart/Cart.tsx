@@ -5,7 +5,6 @@ import { productSelector, useAppDispatch, useAppSelector, windowActions, windowS
 import { useCart } from "../../../hooks/useCart";
 import CartItem from "../cartItem/CartItem";
 import ExtraList from "../../extraList/ExtraList";
-import { AiOutlineDelete } from "react-icons/ai";
 import "../../worker/worker-globals.scss";
 import { DatabaseCartProduct } from "../../../common/types";
 

@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector, windowActions, windowSelector } from "../../../../redux";
-import { CompleteOrderFormState, CompleteOrderFormValues, useCompleteOrderForm } from "./hooks/useCompleteOrderForm";
+import { CompleteOrderFormValues, useCompleteOrderForm } from "./hooks/useCompleteOrderForm";
 import CompleteOrderForm from "./completeForm/CancelOrderForm";
 import "./complete-order.styles.scss";
-import { utils } from "../../../../utils/util.functions";
 import { useCompleteOrder } from "./hooks/useCompleteOrder";
+
 const CompleteOrderModal = () => {
    const { worker, drag } = useAppSelector(windowSelector);
    const { formValues, setCorrectOrderId, setFormDefaults, setFormValues, getFormValues, setCompletable, completable } = useCompleteOrderForm();

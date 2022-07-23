@@ -11,3 +11,9 @@ export class TelegramInternalError extends HttpException {
       super("Внутренняя ошибка сервиса Telegram. Сервис временно недоступен. Повторите попытку позже", HttpStatus.EXPECTATION_FAILED);
    }
 }
+
+export class RunnerAlreadyExists extends HttpException {
+   constructor(phoneNumber: string) {
+      super(`Курьер с телефоном ${phoneNumber} уже существует!`, HttpStatus.CONFLICT);
+   }
+}
