@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { CreateMasterOrderDto, CreateUserOrderDto } from "./dto/create-order.dto";
 import { OrderRepository } from "./order.repository";
 import { Response } from "express";
@@ -34,16 +34,24 @@ import { Events } from "../../shared/event/events";
 import { MiscService } from "../miscellaneous/misc.service";
 import { QueueOrderDto } from "./dto/queue-order.dto";
 import { Miscellaneous } from "../entities/Miscellaneous";
+import { PinoLogger } from "nestjs-pino";
 
 @Injectable()
 export class OrderService {
    private events: EventEmitter;
 
-   constructor(private orderRepository: OrderRepository, private productRepository: ProductRepository, private miscService: MiscService) {
+   constructor(
+      private orderRepository: OrderRepository,
+      private productRepository: ProductRepository,
+      private miscService: MiscService,
+      private logger: PinoLogger
+   ) {
+      this.logger.setContext(OrderService.name);
       this.events = new EventEmitter();
    }
 
    public async createUserOrder(dto: CreateUserOrderDto): Promise<Order> {
+      this.logger.debug(`create order for user ${dto.user_id}`);
       let total_cart_price = await this.calculateTotalCartPrice(dto.cart);
       if (dto.is_delivered) {
          total_cart_price = await this.applyDeliveryPunishment(total_cart_price);
@@ -52,7 +60,7 @@ export class OrderService {
 
       //todo: switch to utc time now() pg
       await this.orderRepository.createUserOrder(dto);
-
+      this.logger.debug("persisted order to db");
       this.events.emit(Events.ORDER_HAS_CREATED);
       return;
    }
@@ -408,11 +416,15 @@ export class OrderService {
    }
 
    async prepareDataForDelivery(orderId: number): Promise<DeliveryOrder> {
+      this.logger.info(`prepare delivery data for order ${orderId}`);
       const data = await this.orderRepository.prepareDataForDelivery(orderId);
+      this.logger.debug(`received data`);
       if (!data) {
          // throw an error
+         this.logger.debug("throw an exception (order does not exist)");
          throw new OrderDoesNotExist(orderId);
       }
+      this.logger.info("prepare data success");
       return data;
    }
 

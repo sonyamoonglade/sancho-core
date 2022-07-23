@@ -5,6 +5,7 @@ import * as path from "path";
 import { ValidationPipe } from "@nestjs/common";
 import { getConfig } from "./config/config";
 import { UserService } from "./core/user/user.service";
+import { Logger, PinoLogger } from "nestjs-pino";
 
 require("dotenv").config({
    path: path.resolve(__dirname, ".env")
@@ -14,9 +15,7 @@ async function bootstrap() {
    const config = getConfig(process.env.NODE_ENV);
    console.log("config has initialized");
    const app = await NestFactory.create(AppModule);
-   // {
-   //    logger: ["error"]
-   // }
+   app.useLogger(app.get(Logger));
    const userService: UserService = app.get<UserService>(UserService);
    app.setGlobalPrefix("/api/v1");
 

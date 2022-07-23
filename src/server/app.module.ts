@@ -28,6 +28,7 @@ import { FileStorage } from "./shared/storage/file.storage";
 import { MarkRepository } from "./core/mark/mark.repository";
 import { DeliveryController } from "./core/delivery/delivery.controller";
 import { DeliveryService } from "./core/delivery/delivery.service";
+import { LoggerModule } from "nestjs-pino";
 
 @Module({
    controllers: [AppController, UserController, OrderController, ProductController, MiscController, DeliveryController],
@@ -48,7 +49,17 @@ import { DeliveryService } from "./core/delivery/delivery.service";
       MarkRepository,
       DeliveryService
    ],
-   imports: [DbModule, QueryBuilderModule]
+   imports: [
+      DbModule,
+      QueryBuilderModule,
+      LoggerModule.forRoot({
+         pinoHttp: {
+            autoLogging: false,
+            quietReqLogger: true,
+            level: "debug"
+         }
+      })
+   ]
 })
 export class AppModule implements NestModule {
    configure(consumer: MiddlewareConsumer): any {

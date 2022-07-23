@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, InternalServerErrorException, Post, Res, UseGuards } from "@nestjs/common";
 import { DeliveryService } from "./delivery.service";
 import { Response } from "express";
 import { AuthorizationGuard } from "../authorization/authorization.guard";
@@ -7,17 +7,26 @@ import { AppRoles } from "../../../common/types";
 import { CreateDeliveryDto, CreateDeliveryDtoFrontend } from "./dto/delivery.dto";
 import { OrderService } from "../order/order.service";
 import { UserService } from "../user/user.service";
+import { PinoLogger } from "nestjs-pino";
+import { UnexpectedServerError } from "../../shared/exceptions/unexpected-errors.exceptions";
 
 @Controller("/delivery")
 @UseGuards(AuthorizationGuard)
 export class DeliveryController {
-   constructor(private deliveryService: DeliveryService, private orderService: OrderService, private userService: UserService) {}
+   constructor(
+      private deliveryService: DeliveryService,
+      private orderService: OrderService,
+      private userService: UserService,
+      private logger: PinoLogger
+   ) {
+      this.logger.setContext(DeliveryController.name);
+   }
 
    @Post("/")
    @Role([AppRoles.worker])
    async createDelivery(@Res() res: Response, @Body() b: CreateDeliveryDtoFrontend) {
+      this.logger.info(`create delivery for order ${b.order_id}`);
       try {
-         await this.deliveryService.createDelivery(null);
          //'Order' of calls is important. first call will signal if order does not exist
          const ordData = await this.orderService.prepareDataForDelivery(b.order_id);
          const usrData = await this.userService.prepareDataForDelivery(b.order_id);
@@ -25,7 +34,13 @@ export class DeliveryController {
             user: usrData,
             order: ordData
          };
-         await this.deliveryService.createDelivery(dto);
+         console.log("dto for delivery", dto);
+         const ok = await this.deliveryService.createDelivery(dto);
+         if (!ok) {
+            this.logger.error("internal error occurred calling delivery microservice");
+            throw new UnexpectedServerError();
+         }
+         this.logger.info("success call for delivery service");
          return res.status(201).end();
       } catch (e) {
          console.log(e);

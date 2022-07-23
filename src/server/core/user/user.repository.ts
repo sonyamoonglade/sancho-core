@@ -19,16 +19,18 @@ export class UserRepository implements Repository<User> {
 
    async prepareDataForDelivery(orderId: number): Promise<DeliveryUser | null> {
       const sql = `
-        SELECT u.id,u.name as username,phone_number FROM ${users} u
+        SELECT u.id as user_id,u.name as username,phone_number FROM ${users} u
         JOIN ${orders} o ON o.user_id = u.id WHERE o.id = ${orderId}
-        AND o.status = ${OrderStatus.completed} OR o.status = ${OrderStatus.verified}`;
+        AND o.status = '${OrderStatus.completed}' OR o.status = '${OrderStatus.verified}'`;
 
       const { rows } = await this.db.query(sql);
+
       if (rows.length === 0) {
          return null;
       }
 
       const result: DeliveryUser = rows[0];
+      console.log(result);
       const sql2 = `
         SELECT m.id,m.user_id,m.content,m.is_important,m.created_at FROM
         ${marks} m JOIN ${users} u ON m.user_id = u.id WHERE m.user_id = ${result.user_id}`;

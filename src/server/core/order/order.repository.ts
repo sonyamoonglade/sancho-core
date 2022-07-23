@@ -20,7 +20,7 @@ export class OrderRepository {
    }
 
    async prepareDataForDelivery(orderId: number): Promise<DeliveryOrder | null> {
-      const sql = `SELECT id,delivery_details,total_cart_price, pay FROM ${orders} WHERE id = ${orderId}`;
+      const sql = `SELECT id as order_id,delivery_details,total_cart_price, pay, is_delivered_asap, is_paid FROM ${orders} WHERE id = ${orderId}`;
       const { rows } = await this.db.query(sql);
       if (rows.length === 0) {
          return null;

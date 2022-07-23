@@ -21,20 +21,12 @@ export type Order = {
 };
 
 export class DeliveryOrder {
-   @IsDefined()
-   @IsNumber()
    order_id: number;
-
-   @IsDefined()
    delivery_details: DeliveryDetails;
-
-   @IsDefined()
-   @IsNumber()
    total_cart_price: number;
-
-   @IsDefined()
-   @IsString()
    pay: Pay;
+   is_delivered_asap: boolean;
+   is_paid: boolean;
 }
 
 export class LastVerifiedOrder {

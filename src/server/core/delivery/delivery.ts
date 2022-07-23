@@ -2,7 +2,7 @@
 import { CreateDeliveryDto, RegisterRunnerDto } from "./dto/delivery.dto";
 
 export interface DeliveryServiceInterface {
-   createDelivery(dto: CreateDeliveryDto): Promise<void>;
-   registerRunner(dto: RegisterRunnerDto): Promise<void>;
-   banRunner(runnerId: number): Promise<void>;
+   createDelivery(dto: CreateDeliveryDto): Promise<boolean>;
+   registerRunner(dto: RegisterRunnerDto): Promise<boolean>;
+   banRunner(runnerId: number): Promise<boolean>;
 }

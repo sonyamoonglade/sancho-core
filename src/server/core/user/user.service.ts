@@ -32,6 +32,7 @@ import { REGULAR_CUSTOMER_CONTENT } from "../../../common/constants";
 import { ValidationErrorException } from "../../shared/exceptions/validation.exceptions";
 import { FoundUserDto } from "./dto/found-user.dto";
 import { CouldNotGetUserDeliveryData, InvalidOrderStatus } from "../../shared/exceptions/order.exceptions";
+import { PinoLogger } from "nestjs-pino";
 
 require("dotenv").config();
 
@@ -49,14 +50,21 @@ export class UserService {
       private userRepository: UserRepository,
       private miscService: MiscService,
       private markRepository: MarkRepository,
-      private orderService: OrderService
-   ) {}
+      private orderService: OrderService,
+      private logger: PinoLogger
+   ) {
+      this.logger.setContext(UserService.name);
+   }
 
    async prepareDataForDelivery(orderId: number): Promise<DeliveryUser> {
+      this.logger.info(`prepare user delivery data for order ${orderId}`);
       const data = await this.userRepository.prepareDataForDelivery(orderId);
+      this.logger.debug(`received data ${JSON.stringify(data)}`);
       if (!data) {
+         this.logger.debug("throw an exception could not get data");
          throw new CouldNotGetUserDeliveryData();
       }
+      this.logger.debug("prepare data success");
       return data;
    }
 
