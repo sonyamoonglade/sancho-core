@@ -80,6 +80,7 @@ export interface VerifiedQueueOrder extends ResponseUserOrder {
       phone_number: string;
       name: string;
    };
+   isRunnerNotified?: boolean;
 }
 export interface WaitingQueueOrder extends ResponseUserOrder {
    user: {

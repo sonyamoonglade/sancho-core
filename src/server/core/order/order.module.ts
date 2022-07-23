@@ -11,9 +11,22 @@ import { MultiWaitingOrderGuard } from "./guard/order.multi-waiting.guard";
 import { MiscService } from "../miscellaneous/misc.service";
 import { MiscRepository } from "../miscellaneous/misc.repository";
 import { UserService } from "../user/user.service";
+import { DeliveryService } from "../delivery/delivery.service";
+import { EventsService } from "../../shared/event/event.module";
 
 @Module({
-   providers: [OrderService, OrderRepository, MultiWaitingOrderGuard, ProductRepository, CookieService, MiscService, MiscRepository, UserService],
+   providers: [
+      OrderService,
+      OrderRepository,
+      MultiWaitingOrderGuard,
+      ProductRepository,
+      CookieService,
+      MiscService,
+      MiscRepository,
+      UserService,
+      EventsService,
+      DeliveryService
+   ],
    controllers: [OrderController],
    imports: [DbModule, QueryBuilderModule, SessionModule]
 })

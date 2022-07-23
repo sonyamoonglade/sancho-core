@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Inject, Injectable } from "@nestjs/common";
 import { CreateMasterOrderDto, CreateUserOrderDto } from "./dto/create-order.dto";
 import { OrderRepository } from "./order.repository";
 import { Response } from "express";
@@ -18,7 +18,6 @@ import {
    VerifiedQueueOrder,
    WaitingQueueOrder
 } from "../../../common/types";
-import { EventEmitter } from "events";
 import { CompleteOrderDto } from "./dto/complete-order.dto";
 import { UnexpectedServerError } from "../../shared/exceptions/unexpected-errors.exceptions";
 import {
@@ -34,6 +33,9 @@ import { MiscService } from "../miscellaneous/misc.service";
 import { QueueOrderDto } from "./dto/queue-order.dto";
 import { Miscellaneous } from "../entities/Miscellaneous";
 import { PinoLogger } from "nestjs-pino";
+import { DeliveryService } from "../delivery/delivery.service";
+import { EventsService } from "../../shared/event/event.module";
+import { EventEmitter } from "node:events";
 
 @Injectable()
 export class OrderService {
@@ -43,12 +45,13 @@ export class OrderService {
       private orderRepository: OrderRepository,
       private productRepository: ProductRepository,
       private miscService: MiscService,
-      private logger: PinoLogger
+      private logger: PinoLogger,
+      private deliveryService: DeliveryService,
+      private eventService: EventsService
    ) {
+      this.events = eventService.GetEmitter();
       this.logger.setContext(OrderService.name);
-      this.events = new EventEmitter();
    }
-
    public async createUserOrder(dto: CreateUserOrderDto): Promise<Order> {
       this.logger.debug(`create order for user ${dto.user_id}`);
       let total_cart_price = await this.calculateTotalCartPrice(dto.cart);
@@ -296,7 +299,15 @@ export class OrderService {
    private async fetchOrderQueue(): Promise<OrderQueue> {
       try {
          const rawQueue = await this.orderRepository.getOrderQueue();
-         return this.mapRawQueue(rawQueue);
+         const mapped = this.mapRawQueue(rawQueue);
+
+         const verifIds = mapped.verified.map((ord) => ord.id);
+         const statuses = await this.deliveryService.status(verifIds);
+         mapped.verified = mapped.verified.map((order) => {
+            order.isRunnerNotified = statuses.find((st) => st.orderId === order.id).status;
+            return order;
+         });
+         return mapped;
       } catch (e) {
          console.log(e);
          throw new UnexpectedServerError("error occurred fetching queue");

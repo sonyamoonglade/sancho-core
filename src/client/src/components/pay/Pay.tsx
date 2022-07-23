@@ -1,13 +1,5 @@
 import React, { useEffect, useMemo } from "react";
-import {
-  orderSelector,
-  productActions,
-  useAppDispatch,
-  useAppSelector,
-  userSelector,
-  windowActions,
-  windowSelector,
-} from "../../redux";
+import { orderSelector, productActions, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector } from "../../redux";
 import "./pay.styles.scss";
 import { TiArrowBack } from "react-icons/ti";
 import { baseUrl } from "../../App";
@@ -22,7 +14,6 @@ import { useAxios } from "../../hooks/useAxios";
 import { useCreateOrder } from "../createUserOrder/hooks/useCreateOrder";
 import { useAuthentication } from "../../hooks/useAuthentication";
 import { useCart } from "../../hooks/useCart";
-import { useEvent } from "../../hooks/useEvent";
 
 const Pay = () => {
    const { pay } = useAppSelector(windowSelector);
@@ -37,7 +28,6 @@ const Pay = () => {
 
    const { setFormValues, setPayWay, handlePaywaySwitch, formValues, payWay, getFormValues, setFormDefaults } = usePayForm();
    const { userOrder: orderData } = useAppSelector(orderSelector);
-   const events = useEvent();
    const is_delivered = orderData?.is_delivered || false;
    const cart = useCart();
 
@@ -66,7 +56,7 @@ const Pay = () => {
          }
       } catch (e: any) {
          console.log(e);
-         events.emit(CLEAR_ORDER_FORM_ONLY_PHONE);
+         // events.emit(CLEAR_ORDER_FORM_ONLY_PHONE);
          const message = e?.response?.data?.message;
          dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."));
       }
@@ -95,12 +85,12 @@ const Pay = () => {
 
          await createUserOrder(createOrderDto);
          cart.clearCart();
-         events.emit(CLEAR_ORDER_FORM);
+         // events.emit(CLEAR_ORDER_FORM);
          dispatch(productActions.setCartEmpty(true));
          dispatch(productActions.setTotalCartPrice(0));
       } catch (e: any) {
          const message = e?.response?.data?.message;
-         events.emit(CLEAR_ORDER_FORM_ONLY_PHONE);
+         // events.emit(CLEAR_ORDER_FORM_ONLY_PHONE);
          dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."));
       }
    }

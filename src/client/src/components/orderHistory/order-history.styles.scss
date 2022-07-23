@@ -28,6 +28,7 @@
 }
 .second_row_right{
   span{
+    width: 300px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -195,6 +196,7 @@
 }
 
 .pay_btn{
+  outline: none;
   border: 0;
   background-color: $light-grey;
   padding: 0.2rem 0.5rem;

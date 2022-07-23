@@ -6,12 +6,18 @@ import { ValidationErrorException } from "../../shared/exceptions/validation.exc
 import { PinoLogger } from "nestjs-pino";
 import { DeliveryAlreadyExists, RunnerAlreadyExists, TelegramInternalError } from "../../shared/exceptions/delivery.exceptions";
 import { UnexpectedServerError } from "../../shared/exceptions/unexpected-errors.exceptions";
+import { DeliveryStatus } from "../../types/types";
+import { EventsService } from "../../shared/event/event.module";
+import { EventEmitter } from "node:events";
+import { Events } from "../../shared/event/events";
 
 @Injectable()
 export class DeliveryService implements DeliveryServiceInterface {
    private readonly url: string;
-   constructor(private logger: PinoLogger) {
+   private events: EventEmitter;
+   constructor(private logger: PinoLogger, private eventsService: EventsService) {
       this.logger.setContext(DeliveryService.name);
+      this.events = eventsService.GetEmitter();
       this.url = process.env.DELIVERY_SERVICE_URL + "/api";
    }
 
@@ -27,6 +33,7 @@ export class DeliveryService implements DeliveryServiceInterface {
          await axios.post(this.url + endPoint, dto);
 
          this.logger.info("call succeeded");
+         this.events.emit(Events.ORDER_QUEUE_HAS_MODIFIED);
          return true;
       } catch (e: any) {
          const payload = {
@@ -44,7 +51,6 @@ export class DeliveryService implements DeliveryServiceInterface {
          const endpoint = "/runner";
          await axios.post(this.url + endpoint, dto);
          this.logger.info("call succeeded");
-         console.log("runner creds: ", dto);
          return true;
       } catch (e: any) {
          const payload = {
@@ -53,6 +59,24 @@ export class DeliveryService implements DeliveryServiceInterface {
          this.parseDeliveryError(e, payload);
          this.logger.error("call failed with error");
          return false;
+      }
+   }
+
+   async status(orderIds: number[]): Promise<DeliveryStatus[]> {
+      this.logger.info("call delivery microservice");
+      this.logger.debug(`data:${orderIds}`);
+      try {
+         const endPoint = "/delivery/status";
+         const body = {
+            order_ids: orderIds
+         };
+         const { data } = await axios.post(this.url + endPoint, body);
+         this.logger.info("call succeeded");
+         return data.result;
+      } catch (e) {
+         this.parseDeliveryError(e);
+         this.logger.error("call failed with error");
+         return [];
       }
    }
 

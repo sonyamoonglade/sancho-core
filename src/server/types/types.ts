@@ -8,3 +8,8 @@ export enum CookieNames {
 export interface extendedRequest extends Request {
    user_id: number;
 }
+
+export type DeliveryStatus = {
+   orderId: number;
+   status: boolean;
+};

@@ -1,5 +1,5 @@
 import React, { FC, useEffect } from "react";
-import { OrderStatus, ResponseUserOrder } from "../../common/types";
+import { OrderStatus, ResponseUserOrder, VerifiedQueueOrder } from "../../common/types";
 import { currency } from "../../common/constants";
 import { BiShoppingBag } from "react-icons/bi";
 import { useCorrectOrderData } from "./hooks/useCorrectOrderData";
@@ -18,6 +18,7 @@ import {
 import { AppResponsiveState } from "../../types/types";
 import { useDrag } from "react-dnd";
 import { usePay } from "./hooks/usePay";
+import { useNotifyRunner } from "../../hooks/useNotifyRunner";
 
 export interface ExtraData {
    phoneNumber?: string;
@@ -40,12 +41,6 @@ interface DropResult {
    zone: string;
 }
 
-export const defaultItem: Droppable = {
-   status: "",
-   id: 0,
-   phoneNumber: ""
-};
-
 export enum DropZones {
    COMPLETE = "complete",
    VERIFY = "verify",
@@ -60,6 +55,10 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
    const { pay } = usePay();
    const { appResponsiveState } = useAppSelector(windowSelector);
    const { orderList } = useAppSelector(workerSelector);
+   const { notify } = useNotifyRunner();
+   const dispatch = useAppDispatch();
+
+   const isNotifiedCondition = order.status === OrderStatus.verified && (order as unknown as VerifiedQueueOrder).isRunnerNotified;
 
    useEffect(() => {
       correctData();
@@ -69,7 +68,7 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
       type: "ORDER",
       item: {
          id: order.id,
-         phoneNumber: extraData?.phoneNumber || "", // there
+         phoneNumber: extraData?.phoneNumber || "",
          status: order.status
       },
       collect: (monitor) => ({
@@ -82,7 +81,6 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
          }
       }
    }));
-   const dispatch = useAppDispatch();
    async function handleOrderPay(order: ResponseUserOrder, v: boolean) {
       if (v === order.is_paid) {
          return;
@@ -139,6 +137,14 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
       }
    }
 
+   async function handleNotifyRunner() {
+      //Check if verified (to cast without errors) and check if already notified
+      if (isNotifiedCondition) {
+         return;
+      }
+      await notify(order.id);
+   }
+
    return (
       <div ref={dragPreview}>
          <li
@@ -193,13 +199,18 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
                            : "самовывоз"}
                      </p>
                   </div>
-                  {(isWorkerAuthenticated || isAuthenticated) && (
+                  {isWorkerAuthenticated && (
                      <div className="second_row_right">
                         <span>
                            <button className="pay_btn details">
                               <p>Детали</p>
                            </button>
-                           {order.status === OrderStatus.completed && isWorkerAuthenticated && (
+                           {order.status === OrderStatus.verified && order.is_delivered && (
+                              <button onClick={handleNotifyRunner} className={isNotifiedCondition ? "pay_btn details --green" : "pay_btn details"}>
+                                 <p>{isNotifiedCondition ? "Курьер уведомлен!" : "Уведомить курьера"}</p>
+                              </button>
+                           )}
+                           {order.status === OrderStatus.completed && (
                               <>
                                  <button onClick={() => handleOrderPay(order, false)} className={!order.is_paid ? "pay_btn --green" : "pay_btn"}>
                                     <p>Не оплачен</p>

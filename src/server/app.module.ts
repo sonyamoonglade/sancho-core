@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule, RequestMethod } from "@nestjs/common";
+import { Inject, MiddlewareConsumer, Module, NestModule, RequestMethod } from "@nestjs/common";
 import { SessionMiddleware } from "./core/authentication/middleware/session.middleware";
 import { UserController } from "./core/user/user.controller";
 import { SessionService } from "./core/authentication/session.service";
@@ -23,6 +23,7 @@ import { MarkRepository } from "./core/mark/mark.repository";
 import { DeliveryController } from "./core/delivery/delivery.controller";
 import { DeliveryService } from "./core/delivery/delivery.service";
 import { LoggerModule } from "nestjs-pino";
+import { EventsService } from "./shared/event/event.module";
 
 @Module({
    controllers: [AppController, UserController, OrderController, ProductController, MiscController, DeliveryController],
@@ -41,7 +42,8 @@ import { LoggerModule } from "nestjs-pino";
       FileStorage,
       UserRepository,
       MarkRepository,
-      DeliveryService
+      DeliveryService,
+      EventsService
    ],
    imports: [
       DbModule,
