@@ -2,7 +2,7 @@ import { Inject, Injectable } from "@nestjs/common";
 import { CreateMasterOrderDto, CreateUserOrderDto } from "./dto/create-order.dto";
 import { OrderRepository } from "./order.repository";
 import { Response } from "express";
-import { DeliveryOrder, LastVerifiedOrder, Order, orders } from "../entities/Order";
+import { CheckOrder, DeliveryOrder, LastVerifiedOrder, Order, orders } from "../entities/Order";
 import { users } from "../entities/User";
 import { VerifyOrderDto } from "./dto/verify-order.dto";
 import { CancelOrderDto } from "./dto/cancel-order.dto";
@@ -344,7 +344,7 @@ export class OrderService {
                user: {
                   phone_number
                },
-               cart: this.parseJsonCart(cart as unknown as string[]),
+               cart: this.parseJsonCart(cart),
                created_at,
                total_cart_price,
                id
@@ -355,7 +355,7 @@ export class OrderService {
          const mapped: VerifiedQueueOrder = {
             is_paid,
             is_delivered_asap,
-            cart: this.parseJsonCart(cart as unknown as string[]),
+            cart: this.parseJsonCart(cart),
             created_at,
             status,
             total_cart_price,
@@ -391,7 +391,7 @@ export class OrderService {
          case OrderStatus.completed:
             list = await this.orderRepository.getOrderList(status);
             list = list.map((o) => {
-               o.cart = this.parseJsonCart(o.cart as unknown as string[]);
+               o.cart = this.parseJsonCart(o.cart);
                return o;
             });
             output = {
@@ -402,7 +402,7 @@ export class OrderService {
          case OrderStatus.cancelled:
             list = await this.orderRepository.getOrderList(status);
             list = list.map((o) => {
-               o.cart = this.parseJsonCart(o.cart as unknown as string[]);
+               o.cart = this.parseJsonCart(o.cart);
                return o;
             });
             output = {
@@ -428,13 +428,21 @@ export class OrderService {
    async prepareDataForDelivery(orderId: number): Promise<DeliveryOrder> {
       this.logger.info(`prepare delivery data for order ${orderId}`);
       const data = await this.orderRepository.prepareDataForDelivery(orderId);
-      this.logger.debug(`received data`);
       if (!data) {
-         // throw an error
-         this.logger.debug("throw an exception (order does not exist)");
          throw new OrderDoesNotExist(orderId);
       }
       this.logger.info("prepare data success");
+      return data;
+   }
+
+   async prepareDataForCheck(orderId: number): Promise<CheckOrder> {
+      this.logger.info(`prepare check data for order ${orderId}`);
+      const data = await this.orderRepository.prepareDataForCheck(orderId);
+      if (!data) {
+         throw new OrderDoesNotExist(orderId);
+      }
+      this.logger.debug("prepare data success");
+      data.cart = this.parseJsonCart(data.cart);
       return data;
    }
 
@@ -457,7 +465,7 @@ export class OrderService {
       );
    }
 
-   parseJsonCart(currentCart: string[]): DatabaseCartProduct[] {
+   parseJsonCart(currentCart: DatabaseCartProduct[]): DatabaseCartProduct[] {
       return currentCart.map((item) => JSON.parse(item as unknown as string));
    }
 }

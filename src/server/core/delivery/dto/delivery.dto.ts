@@ -1,6 +1,6 @@
 import { IsDefined, IsNumber, IsString } from "class-validator";
-import { DeliveryOrder } from "../../entities/Order";
-import { DeliveryUser } from "../../entities/User";
+import { CheckOrder, DeliveryOrder } from "../../entities/Order";
+import { CheckUser, DeliveryUser } from "../../entities/User";
 
 export class CreateDeliveryDtoFrontend {
    @IsDefined()
@@ -23,4 +23,15 @@ export class RegisterRunnerDto {
    @IsDefined()
    @IsString()
    phone_number: string;
+}
+
+export class DownloadCheckInput {
+   @IsDefined()
+   @IsNumber()
+   order_id: number;
+}
+
+export class DownloadCheckDto {
+   order: CheckOrder;
+   user: CheckUser;
 }

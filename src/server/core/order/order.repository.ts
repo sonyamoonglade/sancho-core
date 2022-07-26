@@ -1,5 +1,5 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { DeliveryOrder, LastVerifiedOrder, Order, orders } from "../entities/Order";
+import { CheckOrder, DeliveryOrder, LastVerifiedOrder, Order, orders } from "../entities/Order";
 import { Pool } from "pg";
 import { filter, QueryBuilder } from "../../shared/queryBuilder/QueryBuilder";
 import { pg_conn } from "../../shared/database/db_provider-name";
@@ -17,6 +17,15 @@ export class OrderRepository {
    async delete(id: number): Promise<void | undefined> {
       const deleteSql = this.qb.ofTable(orders).delete<Order>({ where: { id } });
       await this.db.query(deleteSql);
+   }
+
+   async prepareDataForCheck(orderId: number): Promise<CheckOrder | null> {
+      const sql = `SELECT id as order_id,delivery_details, total_cart_price, pay, is_delivered, cart FROM ${orders} WHERE id = ${orderId}`;
+      const { rows } = await this.db.query(sql);
+      if (rows.length === 0) {
+         return null;
+      }
+      return rows[0];
    }
 
    async prepareDataForDelivery(orderId: number): Promise<DeliveryOrder | null> {

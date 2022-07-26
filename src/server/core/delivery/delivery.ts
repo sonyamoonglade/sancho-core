@@ -1,5 +1,5 @@
 //Introduce interface for http communication with delivery microservice api
-import { CreateDeliveryDto, RegisterRunnerDto } from "./dto/delivery.dto";
+import { CreateDeliveryDto, DownloadCheckDto, RegisterRunnerDto } from "./dto/delivery.dto";
 import { DeliveryStatus } from "../../types/types";
 
 export interface DeliveryServiceInterface {
@@ -7,4 +7,5 @@ export interface DeliveryServiceInterface {
    registerRunner(dto: RegisterRunnerDto): Promise<boolean>;
    banRunner(runnerId: number): Promise<boolean>;
    status(orderIds: number[]): Promise<DeliveryStatus[]>;
+   downloadCheck(dto: DownloadCheckDto): Promise<Buffer>;
 }

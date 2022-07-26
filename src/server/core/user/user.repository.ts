@@ -1,7 +1,7 @@
 import { Pool } from "pg";
 import { Inject } from "@nestjs/common";
 import { Repository } from "../../shared/abstract/repository";
-import { DeliveryUser, User, users } from "../entities/User";
+import { CheckUser, DeliveryUser, User, users } from "../entities/User";
 import { filter, QueryBuilder } from "../../shared/queryBuilder/QueryBuilder";
 import { pg_conn } from "../../shared/database/db_provider-name";
 import { query_builder } from "../../shared/queryBuilder/provider-name";
@@ -14,6 +14,18 @@ import { orders } from "../entities/Order";
 
 export class UserRepository implements Repository<User> {
    constructor(@Inject(query_builder) private qb: QueryBuilder, @Inject(pg_conn) private db: Pool) {}
+
+   async prepareDataForCheck(orderId: number): Promise<CheckUser | null> {
+      const sql = `
+        SELECT u.phone_number, u.name as username FROM ${users} u
+        JOIN ${orders} o ON o.user_id = u.id WHERE o.id = ${orderId} AND
+        o.STATUS = '${OrderStatus.completed}' OR o.status = '${OrderStatus.verified}'`;
+      const { rows } = await this.db.query(sql);
+      if (rows.length === 0) {
+         return null;
+      }
+      return rows[0];
+   }
 
    async prepareDataForDelivery(orderId: number): Promise<DeliveryUser | null> {
       const sql = `
@@ -28,7 +40,6 @@ export class UserRepository implements Repository<User> {
       }
 
       const result: DeliveryUser = rows[0];
-      console.log(result);
       const sql2 = `
         SELECT m.id,m.user_id,m.content,m.is_important,m.created_at FROM
         ${marks} m JOIN ${users} u ON m.user_id = u.id WHERE m.user_id = ${result.user_id}`;

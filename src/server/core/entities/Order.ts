@@ -19,14 +19,23 @@ export type Order = {
    cancel_explanation?: string;
 };
 
-export class DeliveryOrder {
+export type DeliveryOrder = {
    order_id: number;
    delivery_details: DeliveryDetails;
    total_cart_price: number;
    pay: Pay;
    is_delivered_asap: boolean;
    is_paid: boolean;
-}
+};
+
+export type CheckOrder = {
+   order_id: number;
+   total_cart_price: number;
+   pay: Pay;
+   cart: DatabaseCartProduct[];
+   delivery_details?: DeliveryDetails;
+   is_delivered: boolean;
+};
 
 export class LastVerifiedOrder {
    created_at: Date;

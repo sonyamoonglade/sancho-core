@@ -4,7 +4,7 @@ import { Response } from "express";
 import { AuthorizationGuard } from "../authorization/authorization.guard";
 import { Role } from "../../shared/decorators/role/Role";
 import { AppRoles } from "../../../common/types";
-import { CreateDeliveryDto, CreateDeliveryDtoFrontend, RegisterRunnerDto } from "./dto/delivery.dto";
+import { CreateDeliveryDto, CreateDeliveryDtoFrontend, DownloadCheckDto, DownloadCheckInput, RegisterRunnerDto } from "./dto/delivery.dto";
 import { OrderService } from "../order/order.service";
 import { UserService } from "../user/user.service";
 import { PinoLogger } from "nestjs-pino";
@@ -59,6 +59,29 @@ export class DeliveryController {
             throw new UnexpectedServerError();
          }
          return res.status(201).end();
+      } catch (e) {
+         throw e;
+      }
+   }
+
+   @Post("/check")
+   @Role([AppRoles.worker])
+   async generateCheck(@Res() res: Response, @Body() b: DownloadCheckInput) {
+      try {
+         //'Order' of calls is important. first call will signal if order does not exist
+         const ordData = await this.orderService.prepareDataForCheck(b.order_id);
+         const usrData = await this.userService.prepareDataForCheck(b.order_id);
+         const dto: DownloadCheckDto = {
+            user: usrData,
+            order: ordData
+         };
+
+         const buff = await this.deliveryService.downloadCheck(dto);
+         res.header("Content-Type", "octet/stream");
+         res.header("Connection", "keep-alive");
+         res.header("Content-Disposition", `attachment; filename="check#${b.order_id}"`);
+         res.write(buff);
+         return res.end();
       } catch (e) {
          throw e;
       }

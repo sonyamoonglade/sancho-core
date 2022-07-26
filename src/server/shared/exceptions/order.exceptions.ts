@@ -39,7 +39,7 @@ export class InvalidOrderStatus extends HttpException {
 
 export class CouldNotGetUserDeliveryData extends HttpException {
    constructor() {
-      super("Ошибка получения данных о пользователе для доставки.", HttpStatus.BAD_REQUEST);
+      super("Ошибка получения данных о пользователе для доставки или чека.", HttpStatus.BAD_REQUEST);
    }
 }
 

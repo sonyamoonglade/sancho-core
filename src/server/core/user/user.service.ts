@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { UserRepository } from "./user.repository";
 import { SessionService } from "../authentication/session.service";
-import { DeliveryUser, User } from "../entities/User";
+import { CheckUser, DeliveryUser, User } from "../entities/User";
 import { CreateMasterUserDto } from "./dto/create-master-user.dto";
 
 import * as bcrypt from "bcrypt";
@@ -55,12 +55,22 @@ export class UserService {
       this.logger.setContext(UserService.name);
    }
 
+   async prepareDataForCheck(orderId: number): Promise<CheckUser> {
+      this.logger.info(`prepare user check data for order ${orderId}`);
+      const data = await this.userRepository.prepareDataForCheck(orderId);
+      this.logger.debug(`received data ${JSON.stringify(data)}`);
+      if (!data) {
+         throw new CouldNotGetUserDeliveryData();
+      }
+      this.logger.debug("prepare data success");
+      return data;
+   }
+
    async prepareDataForDelivery(orderId: number): Promise<DeliveryUser> {
       this.logger.info(`prepare user delivery data for order ${orderId}`);
       const data = await this.userRepository.prepareDataForDelivery(orderId);
       this.logger.debug(`received data ${JSON.stringify(data)}`);
       if (!data) {
-         this.logger.debug("throw an exception could not get data");
          throw new CouldNotGetUserDeliveryData();
       }
       this.logger.debug("prepare data success");

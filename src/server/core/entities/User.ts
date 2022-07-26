@@ -18,4 +18,9 @@ export type DeliveryUser = {
    marks: Mark[];
 };
 
+export type CheckUser = {
+   username: string;
+   phone_number: string;
+};
+
 export const users = "users";

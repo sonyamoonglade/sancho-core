@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { DeliveryServiceInterface } from "./delivery";
-import { CreateDeliveryDto, RegisterRunnerDto } from "./dto/delivery.dto";
+import { CreateDeliveryDto, DownloadCheckDto, RegisterRunnerDto } from "./dto/delivery.dto";
 import axios, { AxiosError } from "axios";
 import { ValidationErrorException } from "../../shared/exceptions/validation.exceptions";
 import { PinoLogger } from "nestjs-pino";
@@ -15,10 +15,27 @@ import { Events } from "../../shared/event/events";
 export class DeliveryService implements DeliveryServiceInterface {
    private readonly url: string;
    private events: EventEmitter;
+
    constructor(private logger: PinoLogger, private eventsService: EventsService) {
       this.logger.setContext(DeliveryService.name);
       this.events = eventsService.GetEmitter();
       this.url = process.env.DELIVERY_SERVICE_URL + "/api";
+   }
+
+   async downloadCheck(dto: DownloadCheckDto): Promise<Buffer> {
+      this.logger.info("call delivery microservice downloadCheck");
+      try {
+         const endPoint = "/check";
+         const response = await axios.post(this.url + endPoint, dto);
+         const buff = Buffer.from(response.data as string);
+         this.logger.info("call succeeded");
+         return buff;
+      } catch (e: any) {
+         const payload = {
+            order_id: dto.order.order_id
+         };
+         this.parseDeliveryError(e, payload);
+      }
    }
 
    async banRunner(runnerId: number): Promise<boolean> {
@@ -26,7 +43,7 @@ export class DeliveryService implements DeliveryServiceInterface {
    }
 
    async createDelivery(dto: CreateDeliveryDto): Promise<boolean> {
-      this.logger.info("call delivery microservice");
+      this.logger.info("call delivery microservice createDelivery");
       //todo: implement request id
       try {
          const endPoint = "/delivery";
@@ -46,7 +63,7 @@ export class DeliveryService implements DeliveryServiceInterface {
    }
 
    async registerRunner(dto: RegisterRunnerDto): Promise<boolean> {
-      this.logger.info("call delivery microservice");
+      this.logger.info("call delivery microservice registerRunner");
       try {
          const endpoint = "/runner";
          await axios.post(this.url + endpoint, dto);
@@ -83,6 +100,7 @@ export class DeliveryService implements DeliveryServiceInterface {
    parseDeliveryError(err: AxiosError, payload?: any): void {
       const responseData = err.response.data;
       const message = responseData?.message?.toLowerCase();
+      if (!message) throw new UnexpectedServerError();
       this.logger.debug(`response message: ${message}`);
       switch (true) {
          case message.includes("validation"):
