@@ -1,5 +1,4 @@
 import React, { FC, HTMLInputTypeAttribute, useEffect, useState } from "react";
-
 import "./form-input.styles.scss";
 import { FormField } from "../../types/types";
 import EventEmitter from "events";

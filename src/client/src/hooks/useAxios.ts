@@ -14,22 +14,28 @@ export function useAxios() {
    if (instance !== undefined) {
       return instance;
    }
-   function responseErrorHandler(error: AxiosError) {
+   async function responseErrorHandler(error: AxiosError) {
       const statusCode = error.response.status;
+      //Proceed unauthorized
       if (statusCode === 401) {
          dispatch(userActions.logout());
          dispatch(userActions.logoutWorker());
          dispatch(userActions.logoutMaster());
          return;
-      } // unauthorized
-      if (process.env.NODE_ENV === "development") {
-         // console.log(error)
       }
+
       if (statusCode === 500) {
          return Promise.reject(error);
       }
       const responseData: any = error.response.data;
-      const errMSg = responseData?.message || "Непредвиденная ошибка сервера!";
+      let errMSg = responseData?.message || "Непредвиденная ошибка сервера!";
+      //If requested for check
+      if (error.request.responseType === "blob") {
+         //get text from bytes
+         const text: any = await (responseData as Blob).text();
+         //read json
+         errMSg = JSON.parse(text).message;
+      }
       dispatch(workerActions.setError(errMSg));
       dispatch(workerActions.toggleErrorModal(true));
       return Promise.reject(error);

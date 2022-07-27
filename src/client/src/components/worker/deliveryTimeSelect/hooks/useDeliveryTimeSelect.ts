@@ -1,4 +1,4 @@
-import { useFormValidations } from "../../../../../hooks/useFormValidations";
+import { useFormValidations } from "../../../../hooks/useFormValidations";
 
 export function useDeliveryTimeSelect(setSelectV: Function, setFormValues: Function, opt1: string, opt2: string) {
    const { minLengthValidation } = useFormValidations();

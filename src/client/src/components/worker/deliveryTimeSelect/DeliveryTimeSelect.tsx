@@ -26,7 +26,7 @@ const DeliveryTimeSelect: FC<deliveryTimeSelectProps> = ({
 
    return (
       <>
-         <div className={`delivered_at_select_container w ${isDeliveryFormDisabledExpr}`}>
+         <div className={`delivered_at select_container w ${isDeliveryFormDisabledExpr}`}>
             <p className="delivered_at_title w">Время доставки</p>
             <select value={selectV} onChange={handleSelectChange} className="delivered_at_select w">
                <option value={opt1}>{opt1}</option>

@@ -17,3 +17,9 @@ export class RunnerAlreadyExists extends HttpException {
       super(`Курьер с телефоном ${phoneNumber} уже существует!`, HttpStatus.CONFLICT);
    }
 }
+
+export class CheckServiceUnavailable extends HttpException {
+   constructor() {
+      super(`Сервис чеков недоступен. Повторите попытку через 30 секунд`, HttpStatus.SERVICE_UNAVAILABLE);
+   }
+}

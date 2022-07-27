@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  miscSelector,
-  useAppDispatch,
-  useAppSelector,
-  windowActions,
-  windowSelector,
-  workerActions,
-  workerSelector,
-} from "../../../../redux";
+import { miscSelector, useAppDispatch, useAppSelector, windowActions, windowSelector, workerActions, workerSelector } from "../../../../redux";
 import "./create-order.styles.scss";
 import CreateOrderForm from "./createForm/CreateOrderForm";
 import { RiSettings4Line } from "react-icons/ri";
@@ -107,7 +99,6 @@ const CreateOrderModal = () => {
          <RiSettings4Line onClick={toggleVirtualCart} className="submit_settings" size={25} />
          <VirtualCart />
          <CreateOrderForm setFormDefaults={setFormDefaults} setFormValues={setFormValues} formValues={formValues} />
-
          <div className="verify_sum">
             <p>Сумма заказа </p>
             <p>

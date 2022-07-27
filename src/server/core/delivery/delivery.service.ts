@@ -4,7 +4,12 @@ import { CreateDeliveryDto, DownloadCheckDto, RegisterRunnerDto } from "./dto/de
 import axios, { AxiosError } from "axios";
 import { ValidationErrorException } from "../../shared/exceptions/validation.exceptions";
 import { PinoLogger } from "nestjs-pino";
-import { DeliveryAlreadyExists, RunnerAlreadyExists, TelegramInternalError } from "../../shared/exceptions/delivery.exceptions";
+import {
+   CheckServiceUnavailable,
+   DeliveryAlreadyExists,
+   RunnerAlreadyExists,
+   TelegramInternalError
+} from "../../shared/exceptions/delivery.exceptions";
 import { UnexpectedServerError } from "../../shared/exceptions/unexpected-errors.exceptions";
 import { DeliveryStatus } from "../../types/types";
 import { EventsService } from "../../shared/event/event.module";
@@ -38,6 +43,7 @@ export class DeliveryService implements DeliveryServiceInterface {
             order_id: dto.order.order_id
          };
          this.parseDeliveryError(e, payload);
+         return null;
       }
    }
 
@@ -102,7 +108,11 @@ export class DeliveryService implements DeliveryServiceInterface {
 
    parseDeliveryError(err: AxiosError, payload?: any): void {
       const responseData = err.response.data;
-      const message = responseData?.message?.toLowerCase();
+
+      let message = responseData?.message?.toLowerCase();
+      if (Buffer.isBuffer(responseData)) {
+         message = (responseData as Buffer).toString("utf-8").toLowerCase();
+      }
       if (!message) throw new UnexpectedServerError();
       this.logger.debug(`response message: ${message}`);
       switch (true) {
@@ -118,6 +128,10 @@ export class DeliveryService implements DeliveryServiceInterface {
          case message.includes("telegram"):
             this.logger.debug("throw internal telegram error exception");
             throw new TelegramInternalError();
+         case message.includes("check"):
+            //Means something is wrong with api keys (check service will be unavailable)
+            this.logger.debug("throw check service unavailable error exception");
+            throw new CheckServiceUnavailable();
          default:
             throw new UnexpectedServerError();
       }

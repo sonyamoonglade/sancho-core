@@ -3,8 +3,8 @@ import FormInput from "../../../../formInput/FormInput";
 import { useAppSelector, windowSelector } from "../../../../../redux";
 import { useFormValidations } from "../../../../../hooks/useFormValidations";
 import { WorkerVerifyOrderFormState } from "../hooks/useVerifyOrderForm";
-import DeliveryTimeSelect from "../../deliveryTimeSelect/DeliveryTimeSelect";
 import { AiOutlineCloudDownload } from "react-icons/ai";
+import DeliveryTimeSelect from "../../../deliveryTimeSelect/DeliveryTimeSelect";
 
 interface submitOrderFormProps {
    formValues: WorkerVerifyOrderFormState;

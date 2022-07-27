@@ -1,11 +1,7 @@
 @import "src/./variables.scss";
 
+//Input styles work only here...
 .worker_modal{
-  height: 400px;
-  z-index: 800;
-  padding-bottom: 1.5rem;
-  top: calc((100% - 400px) /2);
-
 
   input::placeholder{
     color: $gray-promo !important;
@@ -129,7 +125,7 @@
   opacity: 0;
   transition: all 0.5s ease-in-out;
   width: 220px;
-  bottom: 100px;
+  bottom: 147px;
   left: 100%;
   box-shadow: 1px 3px 5px $dark-grey;
   display: flex;

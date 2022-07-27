@@ -3,8 +3,10 @@ import { WorkerCreateOrderFormState } from "../hooks/useCreateOrderForm";
 import FormInput from "../../../../formInput/FormInput";
 import { useFormValidations } from "../../../../../hooks/useFormValidations";
 import { useAppSelector, windowSelector } from "../../../../../redux";
-import DeliveryTimeSelect from "../../deliveryTimeSelect/DeliveryTimeSelect";
 import { WorkerVerifyOrderFormState } from "../../verifyOrder/hooks/useVerifyOrderForm";
+import { Pay } from "../../../../../common/types";
+import DeliveryTimeSelect from "../../../deliveryTimeSelect/DeliveryTimeSelect";
+import PaywaySelect from "../../../paywaySelect/PaywaySelect";
 
 interface createMasterOrderFormProps {
    formValues: WorkerCreateOrderFormState;
@@ -18,7 +20,6 @@ const CreateOrderForm: FC<createMasterOrderFormProps> = ({ formValues, setFormDe
 
    useEffect(() => {
       if (!worker.createOrder) {
-         console.log("call here");
          setFormDefaults();
       }
    }, [worker.createOrder]);
@@ -45,6 +46,9 @@ const CreateOrderForm: FC<createMasterOrderFormProps> = ({ formValues, setFormDe
          });
       }
    }, [formValues.is_delivered_asap.value]);
+
+   const [payway, setPayway] = useState<Pay>("withCardRunner");
+   console.log(formValues);
    return (
       <>
          <FormInput
@@ -157,6 +161,7 @@ const CreateOrderForm: FC<createMasterOrderFormProps> = ({ formValues, setFormDe
                formValues={formValues}
                setFormValues={setFormValues}
             />
+            <PaywaySelect setPayway={setPayway} payway={payway} setFormValues={setFormValues} />
          </div>
       </>
    );

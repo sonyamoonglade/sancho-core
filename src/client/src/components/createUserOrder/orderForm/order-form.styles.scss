@@ -85,15 +85,24 @@
 }
 
 
-.delivered_at_select_container{
+.select_container{
+  select{
+    width: 200px;
+  }
   display: flex;
   justify-content: space-between;
   align-items: center;
   margin-bottom: 0.2rem;
   @media (min-height: 700px) {
-    margin-bottom: 0.8rem;
+    margin-bottom: 0.5rem;
   }
+}
 
+.delivered_at.select_container{
+  margin-top: 0.5rem;
+}
+.pay.select_container{
+  margin-bottom: 0;
 }
 
 .delivered_at_select{

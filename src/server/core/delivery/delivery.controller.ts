@@ -77,6 +77,10 @@ export class DeliveryController {
          };
 
          const buff: Buffer = await this.deliveryService.downloadCheck(dto);
+         if (!buff) {
+            return res.end();
+         }
+
          res.header("Content-Type", "octet/stream");
          res.header("Connection", "keep-alive");
          res.header("Content-Disposition", `attachment;filename="document.docx"`);
