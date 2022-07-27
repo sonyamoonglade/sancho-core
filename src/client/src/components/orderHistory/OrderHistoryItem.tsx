@@ -19,6 +19,7 @@ import { AppResponsiveState } from "../../types/types";
 import { useDrag } from "react-dnd";
 import { usePay } from "./hooks/usePay";
 import { useNotifyRunner } from "../../hooks/useNotifyRunner";
+import { useWorkerApi } from "../../hooks/useWorkerApi";
 
 export interface ExtraData {
    phoneNumber?: string;
@@ -56,6 +57,7 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
    const { appResponsiveState } = useAppSelector(windowSelector);
    const { orderList } = useAppSelector(workerSelector);
    const { notify } = useNotifyRunner();
+   const { downloadCheck } = useWorkerApi();
    const dispatch = useAppDispatch();
 
    const isNotifiedCondition = order.status === OrderStatus.verified && (order as unknown as VerifiedQueueOrder).isRunnerNotified;
@@ -145,6 +147,10 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
       await notify(order.id);
    }
 
+   async function handleCheck() {
+      await downloadCheck(order.id);
+   }
+
    return (
       <div ref={dragPreview}>
          <li
@@ -203,7 +209,7 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
                      <div className="second_row_right">
                         <span>
                            <button className="pay_btn details">
-                              <p>Детали</p>
+                              <p onClick={handleCheck}>Детали</p>
                            </button>
                            {order.status === OrderStatus.verified && order.is_delivered && (
                               <button onClick={handleNotifyRunner} className={isNotifiedCondition ? "pay_btn details --green" : "pay_btn details"}>

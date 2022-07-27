@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, ParseIntPipe, Post, Query, Res, UseGuards } from "@nestjs/common";
 import { DeliveryService } from "./delivery.service";
 import { Response } from "express";
 import { AuthorizationGuard } from "../authorization/authorization.guard";
@@ -64,22 +64,23 @@ export class DeliveryController {
       }
    }
 
-   @Post("/check")
+   @Get("/check")
    @Role([AppRoles.worker])
-   async generateCheck(@Res() res: Response, @Body() b: DownloadCheckInput) {
+   async generateCheck(@Res() res: Response, @Query("v", ParseIntPipe) orderId: number) {
       try {
          //'Order' of calls is important. first call will signal if order does not exist
-         const ordData = await this.orderService.prepareDataForCheck(b.order_id);
-         const usrData = await this.userService.prepareDataForCheck(b.order_id);
+         const ordData = await this.orderService.prepareDataForCheck(orderId);
+         const usrData = await this.userService.prepareDataForCheck(orderId);
          const dto: DownloadCheckDto = {
             user: usrData,
             order: ordData
          };
 
-         const buff = await this.deliveryService.downloadCheck(dto);
+         const buff: Buffer = await this.deliveryService.downloadCheck(dto);
          res.header("Content-Type", "octet/stream");
          res.header("Connection", "keep-alive");
-         res.header("Content-Disposition", `attachment; filename="check#${b.order_id}"`);
+         res.header("Content-Disposition", `attachment;filename="document.docx"`);
+
          res.write(buff);
          return res.end();
       } catch (e) {

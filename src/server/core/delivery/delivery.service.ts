@@ -26,10 +26,13 @@ export class DeliveryService implements DeliveryServiceInterface {
       this.logger.info("call delivery microservice downloadCheck");
       try {
          const endPoint = "/check";
-         const response = await axios.post(this.url + endPoint, dto);
-         const buff = Buffer.from(response.data as string);
-         this.logger.info("call succeeded");
-         return buff;
+         const response = await axios.post(this.url + endPoint, dto, {
+            responseType: "arraybuffer",
+            responseEncoding: "utf-8"
+         });
+         const data = response.data;
+         this.logger.debug(`received buffer with length ${data.length}`);
+         return data;
       } catch (e: any) {
          const payload = {
             order_id: dto.order.order_id
@@ -80,7 +83,7 @@ export class DeliveryService implements DeliveryServiceInterface {
    }
 
    async status(orderIds: number[]): Promise<DeliveryStatus[]> {
-      this.logger.info("call delivery microservice");
+      this.logger.info("call delivery microservice status");
       this.logger.debug(`data:${orderIds}`);
       try {
          const endPoint = "/delivery/status";

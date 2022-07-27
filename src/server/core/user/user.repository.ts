@@ -19,7 +19,7 @@ export class UserRepository implements Repository<User> {
       const sql = `
         SELECT u.phone_number, u.name as username FROM ${users} u
         JOIN ${orders} o ON o.user_id = u.id WHERE o.id = ${orderId} AND
-        o.STATUS = '${OrderStatus.completed}' OR o.status = '${OrderStatus.verified}'`;
+        (o.STATUS = '${OrderStatus.completed}' OR o.status = '${OrderStatus.verified}')`;
       const { rows } = await this.db.query(sql);
       if (rows.length === 0) {
          return null;
@@ -30,8 +30,8 @@ export class UserRepository implements Repository<User> {
    async prepareDataForDelivery(orderId: number): Promise<DeliveryUser | null> {
       const sql = `
         SELECT u.id as user_id,u.name as username,phone_number FROM ${users} u
-        JOIN ${orders} o ON o.user_id = u.id WHERE o.id = ${orderId}
-        AND o.status = '${OrderStatus.completed}' OR o.status = '${OrderStatus.verified}'`;
+        JOIN ${orders} o ON o.user_id = u.id WHERE o.id = ${orderId} AND
+        (o.status = '${OrderStatus.completed}' OR o.status = '${OrderStatus.verified}')`;
 
       const { rows } = await this.db.query(sql);
 
