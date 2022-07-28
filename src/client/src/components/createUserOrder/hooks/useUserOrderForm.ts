@@ -94,7 +94,7 @@ export function useUserOrderForm() {
 
    function clearPhone(): void {
       setFormValues((state: UserOrderFormState) => {
-         const copy = Object.assign({}, formValues);
+         const copy = Object.assign({}, state);
          copy.phone_number = {
             value: "",
             isValid: false

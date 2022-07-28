@@ -23,10 +23,6 @@ export interface WorkerCreateOrderFormState {
       value: boolean;
       isValid: boolean;
    };
-   pay: {
-      value: Pay;
-      isValid: boolean;
-   };
 }
 
 export interface WorkerCreateOrderFormValues {
@@ -35,7 +31,6 @@ export interface WorkerCreateOrderFormValues {
    username: string;
    is_delivered_asap: boolean;
    delivery_details?: DeliveryDetails;
-   pay: Pay;
 }
 
 const formDefaults: WorkerCreateOrderFormState = {
@@ -74,10 +69,6 @@ const formDefaults: WorkerCreateOrderFormState = {
    is_delivered_asap: {
       value: false,
       isValid: true
-   },
-   pay: {
-      value: "withCardRunner",
-      isValid: false
    }
 };
 
@@ -165,7 +156,6 @@ export function useCreateOrderForm() {
    function getFormValues(): WorkerCreateOrderFormValues {
       const result: WorkerCreateOrderFormValues = {
          is_delivered: formValues.is_delivered_c.value,
-         pay: formValues.pay.value,
          phone_number: `+7${formValues.phone_number_c.value}`,
          username: formValues.verified_fullname_c.value,
          is_delivered_asap: formValues.is_delivered_asap.value,

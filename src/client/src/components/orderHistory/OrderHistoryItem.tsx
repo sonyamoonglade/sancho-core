@@ -208,9 +208,11 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
                   {isWorkerAuthenticated && (
                      <div className="second_row_right">
                         <span>
-                           <button className="pay_btn details">
-                              <p onClick={handleCheck}>Детали</p>
-                           </button>
+                           {order.status === OrderStatus.verified && (
+                              <button className="pay_btn details">
+                                 <p onClick={handleCheck}>Детали</p>
+                              </button>
+                           )}
                            {order.status === OrderStatus.verified && order.is_delivered && (
                               <button onClick={handleNotifyRunner} className={isNotifiedCondition ? "pay_btn details --green" : "pay_btn details"}>
                                  <p>{isNotifiedCondition ? "Курьер уведомлен!" : "Уведомить курьера"}</p>

@@ -14,6 +14,7 @@ import { useAxios } from "../../hooks/useAxios";
 import { useCreateOrder } from "../createUserOrder/hooks/useCreateOrder";
 import { useAuthentication } from "../../hooks/useAuthentication";
 import { useCart } from "../../hooks/useCart";
+import { useEvents } from "../../hooks/useEvents";
 
 const Pay = () => {
    const { pay } = useAppSelector(windowSelector);
@@ -26,11 +27,11 @@ const Pay = () => {
 
    const { minLengthValidation } = useFormValidations();
 
-   const { setFormValues, setPayWay, handlePaywaySwitch, formValues, payWay, getFormValues, setFormDefaults } = usePayForm();
+   const { setFormValues, handlePaywaySwitch, formValues, payWay, getFormValues, setFormDefaults } = usePayForm();
    const { userOrder: orderData } = useAppSelector(orderSelector);
    const is_delivered = orderData?.is_delivered || false;
    const cart = useCart();
-
+   const events = useEvents();
    const client = useAxios();
    const { createUserOrder } = useCreateOrder(client);
    const { login } = useAuthentication(client);
@@ -41,7 +42,6 @@ const Pay = () => {
          setFormDefaults();
       }
    }, [pay]);
-
    const isSubmitButtonActive = useMemo(() => {
       return formValues.email.isValid && formValues.username.isValid;
    }, [formValues]);
@@ -55,8 +55,7 @@ const Pay = () => {
             await login(phoneNumber);
          }
       } catch (e: any) {
-         console.log(e);
-         // events.emit(CLEAR_ORDER_FORM_ONLY_PHONE);
+         events.emit(CLEAR_ORDER_FORM_ONLY_PHONE);
          const message = e?.response?.data?.message;
          dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."));
       }
@@ -71,8 +70,8 @@ const Pay = () => {
             is_delivered_asap,
             pay: payWay
          };
-         //Only if user selects withCard we need it's personal data (email, username)
-         if (payWay === "withCard") {
+         //Only if user selects online we need it's personal data (email, username)
+         if (payWay === "online") {
             createOrderDto.email = data.email;
             createOrderDto.username = data.username;
          }
@@ -81,16 +80,16 @@ const Pay = () => {
             createOrderDto.promo = data.promo;
          }
 
-         console.log(createOrderDto);
-
          await createUserOrder(createOrderDto);
+         //Order has created successfully. Clear up previous form and cart
          cart.clearCart();
-         // events.emit(CLEAR_ORDER_FORM);
+         events.emit(CLEAR_ORDER_FORM);
          dispatch(productActions.setCartEmpty(true));
          dispatch(productActions.setTotalCartPrice(0));
       } catch (e: any) {
+         //Error creating an order. Clear only phone for UX
          const message = e?.response?.data?.message;
-         // events.emit(CLEAR_ORDER_FORM_ONLY_PHONE);
+         events.emit(CLEAR_ORDER_FORM_ONLY_PHONE);
          dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."));
       }
    }
@@ -105,7 +104,7 @@ const Pay = () => {
             <p className="pay_title">Способ оплаты</p>
             <ul className="pay_way">
                <li className="payway_item">
-                  <PaySelector opt={"withCard"} onClick={handlePaywaySwitch} selected={payWay === "withCard"} disabled={false} />
+                  <PaySelector opt={"online"} onClick={handlePaywaySwitch} selected={payWay === "online"} disabled={false} />
                   <div className="payway_content">
                      <p className="main_content">Банковской картой</p>
                      <img className="card_payment_icon" src={`${baseUrl}/card-payment.png`} alt="payment" />
@@ -113,22 +112,10 @@ const Pay = () => {
                </li>
 
                <li className={is_delivered ? "payway_item" : "payway_item payway--disabled"}>
-                  <PaySelector opt={"cash"} onClick={handlePaywaySwitch} selected={payWay === "cash"} disabled={is_delivered === false} />
+                  <PaySelector opt={"onPickup"} onClick={handlePaywaySwitch} selected={payWay === "onPickup"} disabled={is_delivered === false} />
                   <div className="payway_content">
-                     <p className="main_content">Наличными курьеру</p>
-                     <p className="sub_content">при получении</p>
-                  </div>
-               </li>
-               <li className={is_delivered ? "payway_item" : "payway_item payway--disabled"}>
-                  <PaySelector
-                     opt={"withCardRunner"}
-                     onClick={handlePaywaySwitch}
-                     selected={payWay === "withCardRunner"}
-                     disabled={is_delivered === false}
-                  />
-                  <div className="payway_content">
-                     <p className="main_content">Картой курьеру</p>
-                     <p className="sub_content">при получении</p>
+                     <p className="main_content">При получении</p>
+                     <p className="sub_content">картой или наличными</p>
                   </div>
                </li>
             </ul>

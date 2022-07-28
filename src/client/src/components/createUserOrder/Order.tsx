@@ -8,9 +8,10 @@ import { orderActions, useAppDispatch, useAppSelector, windowActions, windowSele
 import OrderForm from "./orderForm/OrderForm";
 import Check from "./check/Check";
 import { useUserOrderForm } from "./hooks/useUserOrderForm";
-import { FormField, UserOrderFormData } from "../../types/types";
+import { CLEAR_ORDER_FORM, CLEAR_ORDER_FORM_ONLY_PHONE, FormField, UserOrderFormData } from "../../types/types";
 import { DeliveryDetails } from "../../common/types";
 import { baseUrl } from "../../App";
+import { useEvents } from "../../hooks/useEvents";
 
 export interface UserOrderFormValuesInterface {
    is_delivered: boolean;
@@ -42,6 +43,7 @@ const Order = () => {
    const { userOrder, pay } = useAppSelector(windowSelector);
    const dispatch = useAppDispatch();
    const { formValues, isSubmitButtonActive, setFormValues, setFormDefaults, getFormValues, clearPhone } = useUserOrderForm();
+   const events = useEvents();
 
    useEffect(() => {
       dispatch(orderActions.setCanPay(isSubmitButtonActive));
@@ -53,19 +55,16 @@ const Order = () => {
    }, [isSubmitButtonActive, formValues]);
 
    useEffect(() => {
-      // if (events.listeners(CLEAR_ORDER_FORM).length === 0) {
-      //    events.addListener(CLEAR_ORDER_FORM, () => {
-      //       console.log("im here");
-      //       setFormDefaults();
-      //    });
-      // }
-      // if (events.listeners(CLEAR_ORDER_FORM_ONLY_PHONE).length === 0) {
-      //    events.addListener(CLEAR_ORDER_FORM_ONLY_PHONE, () => {
-      //       console.log("im here");
-      //       clearPhone();
-      //    });
-      // }
+      //Register events only once
+      if (events.listeners(CLEAR_ORDER_FORM).length === 0) {
+         events.on(CLEAR_ORDER_FORM, setFormDefaults);
+      }
+      if (events.listeners(CLEAR_ORDER_FORM_ONLY_PHONE).length === 0) {
+         events.on(CLEAR_ORDER_FORM_ONLY_PHONE, clearPhone);
+      }
+   }, []);
 
+   useEffect(() => {
       if (userOrder) {
          document.querySelector(".phone_number_input").classList.remove("--valid");
 
@@ -74,12 +73,6 @@ const Order = () => {
          document.body.style.overflow = "visible";
       }
    }, [userOrder]);
-
-   useEffect(() => {
-      if (!pay) {
-         setFormDefaults();
-      }
-   }, [pay]);
 
    function getOrderData(): UserOrderFormData {
       const formValues = getFormValues();

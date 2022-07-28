@@ -152,7 +152,7 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
             fieldValidationFn={minLengthValidation}
             extraClassName={`${isDeliveryFormDisabledExpr}comment`}
          />
-         <div className={`delivered_at_select_container ${isDeliveryFormDisabledExpr}`}>
+         <div className={`delivered_at select_container ${isDeliveryFormDisabledExpr}`}>
             <p className="delivered_at_title">Когда доставить?</p>
             <select value={selectV} onChange={handleSelectChange} className="delivered_at_select">
                <option value={opt1}>{opt1}</option>

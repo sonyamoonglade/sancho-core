@@ -49,8 +49,6 @@ export class CreateMasterOrderDto {
    @IsBoolean()
    is_delivered_asap: boolean;
 
-   @IsDefined()
-   @IsString()
    pay: Pay;
 
    @IsDefined()

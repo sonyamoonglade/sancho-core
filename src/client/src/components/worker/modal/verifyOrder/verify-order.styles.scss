@@ -16,6 +16,11 @@
   }
 }
 
+.verify.worker_modal{
+  height: 400px !important;
+  top: calc((100% - 440px) /2) !important;
+
+}
 
 .--disabled.w{
   color: $gray-promo;
@@ -23,7 +28,7 @@
 
 .delivery_input.w{
   margin-top: .5rem;
-  margin-bottom: 1rem;
+  margin-bottom: .5rem;
 }
 
 .flat_call_input.w{
@@ -124,9 +129,10 @@
   position: absolute;
   opacity: 0;
   transition: all 0.5s ease-in-out;
-  width: 220px;
-  bottom: 147px;
+  width: 250px;
+  bottom: 100px;
   left: 100%;
+  z-index: 1800;
   box-shadow: 1px 3px 5px $dark-grey;
   display: flex;
   align-items: center;

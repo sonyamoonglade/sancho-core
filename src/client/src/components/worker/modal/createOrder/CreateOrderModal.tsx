@@ -28,6 +28,7 @@ const CreateOrderModal = () => {
    const virtualCart = useVirtualCart();
 
    async function handleOrderCreation() {
+      console.log(isSubmitButtonActive, totalOrderPrice, virtualCartState);
       if (!isSubmitButtonActive) {
          return;
       }
@@ -40,9 +41,6 @@ const CreateOrderModal = () => {
 
       // todo: apply typing!
       const body: any = getFormValues();
-      if (virtualCartState.items.length === 0) {
-         return;
-      }
       body.cart = virtualCartState.items;
 
       await createMasterOrder(body);

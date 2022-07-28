@@ -105,7 +105,7 @@ export interface ListResponse {
    complete: VerifiedQueueOrder[];
 }
 
-export type Pay = "cash" | "withCard" | "withCardRunner";
+export type Pay = "online" | "onPickup";
 
 export type CreateUserOrderDto = {
    cart: DatabaseCartProduct[];

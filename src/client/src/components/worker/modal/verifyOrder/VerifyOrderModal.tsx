@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  miscSelector,
-  useAppDispatch,
-  useAppSelector,
-  windowActions,
-  windowSelector,
-  workerActions,
-  workerSelector,
-} from "../../../../redux";
+import { miscSelector, useAppDispatch, useAppSelector, windowActions, windowSelector, workerActions, workerSelector } from "../../../../redux";
 import "./verify-order.styles.scss";
 import "../../../createUserOrder/orderForm/order-form.styles.scss";
 import { RiSettings4Line } from "react-icons/ri";
@@ -161,7 +153,7 @@ const VerifyOrderModal = () => {
    }, [formValues.phone_number_w.isValid, virtualCartState.items, formValues.is_delivered_w.value]);
 
    return (
-      <div className={worker.verifyOrder ? "worker_modal --w-opened" : "worker_modal"}>
+      <div className={worker.verifyOrder ? "verify worker_modal --w-opened" : "verify worker_modal"}>
          <p className="modal_title">Подтвердить заказ</p>
          <RiSettings4Line onClick={toggleVirtualCart} className="submit_settings" size={25} />
          <VirtualCart />

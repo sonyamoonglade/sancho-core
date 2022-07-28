@@ -53,6 +53,8 @@ export class OrderController {
    @UseGuards(CreationLimitGuard)
    @Role([AppRoles.worker])
    async createMasterOrder(@Res() res: Response, @Body() dto: CreateMasterOrderDto) {
+      //Only one way to pay is onPickup if order is created by worker 'master'
+      dto.pay = "onPickup";
       try {
          const userId = await this.userService.getUserId(dto.phone_number);
          if (userId === undefined) {
@@ -72,7 +74,6 @@ export class OrderController {
 
          return res.status(201).end();
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }
@@ -111,7 +112,6 @@ export class OrderController {
          }
          return res.status(200).end();
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }
@@ -124,7 +124,6 @@ export class OrderController {
          const orderHistory = await this.orderService.userOrderHistory(userId);
          return res.status(200).send({ orders: orderHistory });
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }
@@ -140,7 +139,6 @@ export class OrderController {
          });
          return this.orderService.orderQueue(res);
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }
@@ -151,7 +149,6 @@ export class OrderController {
          const initialQueue = await this.orderService.initialQueue();
          return res.status(200).send({ queue: initialQueue });
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }
@@ -163,7 +160,6 @@ export class OrderController {
          const orderStatus = await this.orderService.completeOrder(dto);
          return res.status(200).send({ status: orderStatus as OrderStatus.completed });
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }
@@ -175,7 +171,6 @@ export class OrderController {
          const lists = await this.orderService.orderList(status as OrderStatus);
          return res.status(200).send(lists);
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }
@@ -187,7 +182,6 @@ export class OrderController {
          await this.orderService.payForOrder(orderId);
          return res.status(200).end();
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }

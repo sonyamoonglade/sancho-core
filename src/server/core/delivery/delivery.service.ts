@@ -106,9 +106,8 @@ export class DeliveryService implements DeliveryServiceInterface {
       }
    }
 
-   parseDeliveryError(err: AxiosError, payload?: any): void {
-      const responseData = err.response.data;
-
+   parseDeliveryError(err: any, payload?: any): void {
+      const responseData = err?.response?.data;
       let message = responseData?.message?.toLowerCase();
       if (Buffer.isBuffer(responseData)) {
          message = (responseData as Buffer).toString("utf-8").toLowerCase();

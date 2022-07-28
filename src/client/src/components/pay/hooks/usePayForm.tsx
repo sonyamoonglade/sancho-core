@@ -29,7 +29,7 @@ interface PayFormValues {
    username: string;
 }
 export function usePayForm() {
-   const [payWay, setPayWay] = useState<types.Pay>("withCard");
+   const [payWay, setPayWay] = useState<types.Pay>("online");
    const [formValues, setFormValues] = useState<PayFormState>(defaultValues);
 
    function handlePaywaySwitch(option: types.Pay) {
@@ -39,7 +39,7 @@ export function usePayForm() {
    }
 
    function setFormDefaults(): void {
-      setPayWay("withCard");
+      setPayWay("online");
       setFormValues((state: PayFormState) => {
          const copy = Object.assign({}, state);
          copy.promo = {
