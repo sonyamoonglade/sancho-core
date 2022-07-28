@@ -13,3 +13,4 @@ export type DeliveryStatus = {
    orderId: number;
    status: boolean;
 };
+export type OrderType = "worker" | "user";

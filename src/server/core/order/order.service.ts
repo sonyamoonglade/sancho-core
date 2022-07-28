@@ -1,4 +1,4 @@
-import { Inject, Injectable } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import { CreateMasterOrderDto, CreateUserOrderDto } from "./dto/create-order.dto";
 import { OrderRepository } from "./order.repository";
 import { Response } from "express";
@@ -11,6 +11,7 @@ import { ProductRepository } from "../product/product.repository";
 import {
    AppRoles,
    DatabaseCartProduct,
+   DeliveryDetails,
    ListResponse,
    OrderQueue,
    OrderStatus,
@@ -62,12 +63,13 @@ export class OrderService {
 
       //todo: switch to utc time now() pg
       await this.orderRepository.createUserOrder(dto);
-      this.logger.debug("persisted order to db");
+      this.logger.debug("saved order to db");
       this.events.emit(Events.ORDER_HAS_CREATED);
       return;
    }
 
    public async createMasterOrder(createMasterOrderDto: CreateMasterOrderDto): Promise<void> {
+      this.logger.info(`create master order for ${createMasterOrderDto.userId}`);
       let total_cart_price = await this.calculateTotalCartPrice(createMasterOrderDto.cart);
       if (createMasterOrderDto.is_delivered) {
          total_cart_price = await this.applyDeliveryPunishment(total_cart_price);
@@ -75,40 +77,58 @@ export class OrderService {
       // Make sure total cart price is correct and punishment for delivery is applied.
       createMasterOrderDto.total_cart_price = total_cart_price;
       await this.orderRepository.createMasterOrder(createMasterOrderDto);
-
+      this.logger.debug("saved order to db");
       this.events.emit(Events.ORDER_HAS_CREATED);
       return;
    }
 
    public async verifyOrder(verifyOrderDto: VerifyOrderDto): Promise<OrderStatus> {
+      this.logger.info(`verify order for ${verifyOrderDto.userId}`);
       try {
          const { phoneNumber } = verifyOrderDto;
+         //Get orderId that method verifies and if there's more waiting orders for this user
          const hasOrd = await this.hasWaitingOrder(null, phoneNumber);
-
          const { id: orderId, has } = hasOrd;
+         this.logger.debug(`user has waiting order: ${has}`);
+         //Does not have waiting order
          if (!has) {
             throw new Error(`verification ${phoneNumber}`);
          }
-         const { deliveryDetails, isDelivered, cart, deliveredAt, isDeliveredAsap } = verifyOrderDto;
+         const { deliveryDetails, isDelivered, cart, isDeliveredAsap } = verifyOrderDto;
+         //todo: use utc time
          const now = new Date(Date.now());
+         //Fetch older delivery details to obtain comment
+         const prevDeliveryDetails: DeliveryDetails = await this.orderRepository.getDeliveryDetails(orderId);
+
          const updated: Partial<Order> = {
-            delivery_details: deliveryDetails !== null ? deliveryDetails : null,
             status: OrderStatus.verified,
             verified_at: now,
             is_delivered_asap: isDeliveredAsap
          };
 
+         //Update delivery status
          if (verifyOrderDto.isDelivered !== undefined) {
+            this.logger.debug("update is delivered");
             updated.is_delivered = isDelivered;
+            //Optionally change delivery details and make sure comment stays with it (*verify order form doesn't send a comment)
+            if (prevDeliveryDetails?.comment !== "" && verifyOrderDto.isDelivered) {
+               this.logger.debug("save a comment");
+               updated.delivery_details = {
+                  ...deliveryDetails,
+                  comment: prevDeliveryDetails.comment
+               };
+            }
          }
+         //Recalculate cart price if cart is sent (*changed)
          if (verifyOrderDto.cart !== undefined) {
+            this.logger.debug("recalculate cart price");
             const recalculatedTotalCartPrice = await this.calculateTotalCartPrice(cart);
             updated.cart = cart;
             updated.total_cart_price = recalculatedTotalCartPrice;
          }
-
+         //todo: change for verify method
          await this.orderRepository.update(orderId, updated);
-
+         this.logger.debug("verified order");
          this.events.emit(Events.ORDER_QUEUE_HAS_MODIFIED);
          return OrderStatus.verified;
       } catch (e) {
@@ -116,7 +136,7 @@ export class OrderService {
             const phone = e.message.split(" ").pop();
             throw new OrderCannotBeVerified(phone);
          }
-         console.log(e);
+         console.error(e);
          throw new UnexpectedServerError();
       }
    }
@@ -215,7 +235,7 @@ export class OrderService {
       return this.orderRepository.getLastVerifiedOrder(phoneNumber);
    }
 
-   public async hasWaitingOrder(user_id: number, phone_number: string): Promise<{ id: number | null; has: boolean }> {
+   public async hasWaitingOrder(user_id: number, phone_number: string): Promise<{ id: number; has: boolean }> {
       if (!phone_number) {
          const ord = (
             await this.orderRepository.get({
@@ -228,7 +248,7 @@ export class OrderService {
          )[0];
          if (ord === undefined) {
             return {
-               id: null,
+               id: 0,
                has: false
             };
          }
@@ -245,7 +265,7 @@ export class OrderService {
       const ord = (await this.orderRepository.customQuery(sql))[0];
       if (ord === undefined) {
          return {
-            id: null,
+            id: 0,
             has: false
          };
       }
@@ -431,6 +451,8 @@ export class OrderService {
       if (!data) {
          throw new OrderDoesNotExist(orderId);
       }
+
+      console.log(data);
       this.logger.info("prepare data success");
       return data;
    }

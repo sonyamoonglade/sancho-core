@@ -1,4 +1,4 @@
-import { Body, Controller, Get, ParseIntPipe, Post, Put, Query, Req, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, ParseIntPipe, Post, Put, Query, Req, Res, UseFilters, UseGuards, UseInterceptors } from "@nestjs/common";
 import { CreateMasterOrderDto, CreateUserOrderDto, CreateUserOrderInput } from "./dto/create-order.dto";
 import { OrderService } from "./order.service";
 import { Response } from "express";
@@ -15,6 +15,8 @@ import { UserService } from "../user/user.service";
 import { User } from "../entities/User";
 import { MultiWaitingOrderGuard } from "./guard/order.multi-waiting.guard";
 import { CreationLimitGuard } from "./guard/order.creation-limit.guard";
+import { PolicyFilter } from "./filter/order.filter";
+import { applyPayPolicy } from "../../shared/pay/policy";
 
 @Controller("/order")
 @UseGuards(AuthorizationGuard)
@@ -24,8 +26,11 @@ export class OrderController {
    @Post("/createUserOrder")
    @UseGuards(MultiWaitingOrderGuard)
    @Role([AppRoles.user])
+   @UseFilters(PolicyFilter)
    async createUserOrder(@Res() res: Response, @Req() req: extendedRequest, @Body() inp: CreateUserOrderInput) {
       try {
+         //Make sure pay is 100% valid for specific case. Throws an exception that is caught by PolicyFilter
+         applyPayPolicy(inp.pay, inp.is_delivered, "user");
          const userId = req.user_id;
 
          const dto: CreateUserOrderDto = {
@@ -52,7 +57,10 @@ export class OrderController {
    @Post("/createMasterOrder")
    @UseGuards(CreationLimitGuard)
    @Role([AppRoles.worker])
+   @UseFilters(PolicyFilter)
    async createMasterOrder(@Res() res: Response, @Body() dto: CreateMasterOrderDto) {
+      applyPayPolicy(dto.pay, dto.is_delivered, "worker");
+
       //Only one way to pay is onPickup if order is created by worker 'master'
       dto.pay = "onPickup";
       try {

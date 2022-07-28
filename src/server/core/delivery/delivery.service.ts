@@ -90,7 +90,6 @@ export class DeliveryService implements DeliveryServiceInterface {
 
    async status(orderIds: number[]): Promise<DeliveryStatus[]> {
       this.logger.info("call delivery microservice status");
-      this.logger.debug(`data:${orderIds}`);
       try {
          const endPoint = "/delivery/status";
          const body = {

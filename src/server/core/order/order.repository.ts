@@ -5,7 +5,7 @@ import { filter, QueryBuilder } from "../../shared/queryBuilder/QueryBuilder";
 import { pg_conn } from "../../shared/database/db_provider-name";
 import { query_builder } from "../../shared/queryBuilder/provider-name";
 import { RepositoryException } from "../../shared/exceptions/repository.exceptions";
-import { OrderStatus, VerifiedQueueOrder } from "../../../common/types";
+import { DeliveryDetails, OrderStatus, VerifiedQueueOrder } from "../../../common/types";
 import { users } from "../entities/User";
 import { QueueOrderDto } from "./dto/queue-order.dto";
 import { CreateMasterOrderDto, CreateUserOrderDto } from "./dto/create-order.dto";
@@ -87,6 +87,12 @@ export class OrderRepository {
       const values = [dto.is_delivered, dto.cart, strDetails, dto.total_cart_price, dto.is_delivered_asap, dto.user_id, dto.status, dto.pay];
       await this.db.query(sql, values);
       return;
+   }
+
+   async getDeliveryDetails(orderId: number): Promise<DeliveryDetails> {
+      const sql = `SELECT delivery_details FROM ${orders} WHERE id = ${orderId}`;
+      const { rows } = await this.db.query(sql);
+      return rows[0].delivery_details as unknown as DeliveryDetails;
    }
 
    async createMasterOrder(dto: CreateMasterOrderDto): Promise<void> {
