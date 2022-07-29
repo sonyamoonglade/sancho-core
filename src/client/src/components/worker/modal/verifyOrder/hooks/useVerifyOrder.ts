@@ -18,15 +18,5 @@ export function useVerifyOrder(client: AxiosInstance, orderQueue: OrderQueue, to
       return "";
    }, []);
 
-   function findWaitingOrderByPhoneNumber(phoneNumber: string): WaitingQueueOrder | undefined {
-      const order = orderQueue?.waiting.find((o) => {
-         if (o.user.phone_number === `+7${phoneNumber}`) {
-            return o;
-         }
-         return undefined;
-      });
-      return order;
-   }
-
-   return { verifyOrder, findWaitingOrderByPhoneNumber, fetchUsername };
+   return { verifyOrder, fetchUsername };
 }

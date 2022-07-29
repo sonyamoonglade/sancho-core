@@ -5,7 +5,7 @@ import CreateOrderForm from "./createForm/CreateOrderForm";
 import { RiSettings4Line } from "react-icons/ri";
 import VirtualCart from "../../virtualCart/VirtualCart";
 import { currency } from "../../../../common/constants";
-import { utils } from "../../../../utils/util.functions";
+import { helpers } from "../../../../helpers/helpers";
 import { useCreateOrderForm } from "./hooks/useCreateOrderForm";
 import { useCreateMasterOrder } from "./hooks/useCreateMasterOrder";
 import { useVirtualCart } from "../../hooks/useVirtualCart";
@@ -28,7 +28,6 @@ const CreateOrderModal = () => {
    const virtualCart = useVirtualCart();
 
    async function handleOrderCreation() {
-      console.log(isSubmitButtonActive, totalOrderPrice, virtualCartState);
       if (!isSubmitButtonActive) {
          return;
       }
@@ -45,8 +44,6 @@ const CreateOrderModal = () => {
 
       await createMasterOrder(body);
       dispatch(windowActions.toggleCreateOrder());
-      dispatch(workerActions.setVirtualCart([]));
-      virtualCart.clearVirtualCart();
    }
    async function fetchAndSetUserCredentialsAsync(phoneNumber: string) {
       const creds = await fetchUserCredentials(phoneNumber);
@@ -66,7 +63,7 @@ const CreateOrderModal = () => {
    }
 
    useEffect(() => {
-      let price = utils.getOrderTotalPrice(virtualCartState.items);
+      let price = helpers.getOrderTotalPrice(virtualCartState.items);
       if (formValues.is_delivered_c.value) {
          const isPunished = checkIsPunished(price);
          if (isPunished) {
@@ -83,13 +80,6 @@ const CreateOrderModal = () => {
          dispatch(workerActions.setMarks([]));
       }
    }, [formValues.phone_number_c.isValid]);
-
-   useEffect(() => {
-      if (!worker.createOrder) {
-         dispatch(workerActions.setVirtualCart([]));
-         virtualCart.clearVirtualCart();
-      }
-   }, [worker.createOrder]);
 
    return (
       <div className={worker.createOrder ? "create worker_modal --w-opened" : "create worker_modal"}>

@@ -10,7 +10,7 @@ export function useCorrectOrderData(order: ResponseUserOrder) {
    const [cddate, setCDDate] = useState(""); // delivery date
 
    const orderItemCorrespondingClassName = useMemo(() => {
-      return order.status === OrderStatus.waiting_for_verification
+      return order?.status === OrderStatus.waiting_for_verification
          ? "--yellow order_h_item"
          : order.status === OrderStatus.verified
          ? "--green order_h_item"
@@ -22,7 +22,7 @@ export function useCorrectOrderData(order: ResponseUserOrder) {
    }, [order]);
    const monthTranslations = new Map<string, string>();
    function sixifyOrderId() {
-      let currentId: string[] = order.id.toString().split("");
+      let currentId: string[] = order?.id.toString().split("");
       for (let i = 0; i < 6; i++) {
          if (currentId.length !== 6) {
             currentId.unshift("0");
@@ -31,7 +31,7 @@ export function useCorrectOrderData(order: ResponseUserOrder) {
       setCid(currentId.join(""));
    }
    function translateStatus() {
-      switch (order.status) {
+      switch (order?.status) {
          case OrderStatus.cancelled:
             setCStatus(OrderStatusTranslate.cancelled);
             break;
@@ -47,7 +47,7 @@ export function useCorrectOrderData(order: ResponseUserOrder) {
       }
    }
    function parseCreationTime() {
-      const createdAt = dayjs(order.created_at);
+      const createdAt = dayjs(order?.created_at);
       const deliveredAt = dayjs(order?.delivery_details?.delivered_at);
 
       const formattedc = createdAt.format(DATE_FORMAT_TEMPLATE).split(" ");

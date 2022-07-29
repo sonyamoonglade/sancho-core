@@ -10,7 +10,7 @@ import VirtualCart from "../../virtualCart/VirtualCart";
 import { useVirtualCart } from "../../hooks/useVirtualCart";
 import { currency } from "../../../../common/constants";
 import { useVerifyOrder } from "./hooks/useVerifyOrder";
-import { utils } from "../../../../utils/util.functions";
+import { helpers } from "../../../../helpers/helpers";
 import { useCreateMasterOrder, UserCredentials } from "../createOrder/hooks/useCreateMasterOrder";
 
 const VerifyOrderModal = () => {
@@ -34,7 +34,7 @@ const VerifyOrderModal = () => {
       setCredentials
    } = useVerifyOrderForm(orderQueue);
 
-   const { verifyOrder, findWaitingOrderByPhoneNumber } = useVerifyOrder(client, orderQueue, totalOrderPrice, virtualCartState.items);
+   const { verifyOrder } = useVerifyOrder(client, orderQueue, totalOrderPrice, virtualCartState.items);
    const { fetchUserCredentials } = useCreateMasterOrder();
    const { DELIVERY_PUNISHMENT_THRESHOLD, DELIVERY_PUNISHMENT_VALUE } = useAppSelector(miscSelector);
 
@@ -42,9 +42,10 @@ const VerifyOrderModal = () => {
       dispatch(windowActions.toggleVirtualCart());
       presetVirtualCartItems(formValues.phone_number_w.value);
    }
+
    function presetVirtualCartItems(phoneNumber: string) {
       if (formValues.phone_number_w.isValid) {
-         const order = findWaitingOrderByPhoneNumber(phoneNumber);
+         const order = helpers.findOrderInWaitingQByPhoneNumber(orderQueue, phoneNumber);
          const parsedCart = order?.cart || [];
          dispatch(workerActions.setVirtualCart(parsedCart));
          virtualCart.setVirtualCart(parsedCart);
@@ -75,7 +76,7 @@ const VerifyOrderModal = () => {
       }
       const phoneNumber = formValues.phone_number_w.value;
       const body: any = getFormValues();
-      const order = findWaitingOrderByPhoneNumber(phoneNumber);
+      const order = helpers.findOrderInWaitingQByPhoneNumber(orderQueue, phoneNumber);
       // Make sure price has changed, cart is not empty ( first condition fails if worker toggles delivery ). Virtual cart stays empty so check it.
       if (order.total_cart_price !== totalOrderPrice && totalOrderPrice !== 0 && virtualCartState.items.length) {
          body.cart = virtualCartState.items;
@@ -91,49 +92,48 @@ const VerifyOrderModal = () => {
 
    useEffect(() => {
       if (!worker.verifyOrder) {
-         dispatch(workerActions.setVirtualCart([]));
-         virtualCart.clearVirtualCart();
          setFormDefaults();
          setIsFetchedCreds(false);
          dispatch(workerActions.setMarks([]));
          return;
       }
-      const currentCart = virtualCart.getCurrentCart();
-      if (currentCart.length === 0) {
-         // null value in local storage
-         virtualCart.setVirtualCart([]);
-      }
 
       if (worker.verifyOrder && drag.item && drag.item.id !== 0) {
+         const orderId = drag.item.id;
          const phoneNumber = drag.item.phoneNumber.substring(2, drag.item.phoneNumber.length);
-         const order = findWaitingOrderByPhoneNumber(phoneNumber);
+         const order = helpers.findOrderInWaitingQ(orderQueue, orderId);
          setPhoneNumber(phoneNumber);
          if (order.is_delivered) {
             presetDeliveryDetails(order);
          }
       }
    }, [worker.verifyOrder]);
+   //If virtual cart, validity of phone number or delivery state changes
    useEffect(() => {
       if (!worker.verifyOrder) {
          return;
       }
       const { isValid, value: phoneNumber } = formValues.phone_number_w;
-      const o = findWaitingOrderByPhoneNumber(phoneNumber);
+      //find order
+      const order = helpers.findOrderInWaitingQByPhoneNumber(orderQueue, phoneNumber);
 
+      //Nullify values if number is no longer valid
       if (isValid === false) {
          setTotalOrderPrice(0);
          setIsFetchedCreds(false);
          dispatch(workerActions.setMarks([]));
          return;
       }
-
+      //Fetch credentials
       if (!isFetchedCreds) {
          fetchUserCredentialsAsync(phoneNumber);
       }
 
+      //If virtual cart is opened
       if (worker.virtualCart) {
-         let price = utils.getOrderTotalPrice(virtualCartState.items);
+         let price = helpers.getOrderTotalPrice(virtualCartState.items);
          if (formValues.is_delivered_w.value) {
+            //Apply delivery punishment
             if (checkIsPunished(price)) {
                price = applyPunishment(price);
             }
@@ -142,7 +142,7 @@ const VerifyOrderModal = () => {
          return;
       }
 
-      let price = utils.getOrderTotalPriceByCart(o?.cart);
+      let price = helpers.getOrderTotalPriceByCart(order?.cart);
       if (formValues.is_delivered_w.value) {
          //check and apply punishment
          if (checkIsPunished(price)) {

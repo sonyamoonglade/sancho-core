@@ -1,4 +1,4 @@
-import React, { useMemo, useRef } from "react";
+import React, { useEffect, useMemo, useRef } from "react";
 import { DatabaseCartProduct } from "../../../common/types";
 import "./virtual-cart.styles.scss";
 import "../worker-globals.scss";
@@ -30,6 +30,14 @@ const VirtualCart = () => {
    const onlyRussianLettersRegexp = useMemo(() => {
       return new RegExp("!?[0-9]+|!?[A-Za-z]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+");
    }, []);
+
+   useEffect(() => {
+      if (!worker.virtualCart) {
+         virtualCart.clearVirtualCart();
+         dispatch(workerActions.setVirtualCart([]));
+      }
+   }, [worker.virtualCart]);
+
    return (
       <>
          <div className={worker.virtualCart ? "livesearch_container --ls-active " : "livesearch_container"}>

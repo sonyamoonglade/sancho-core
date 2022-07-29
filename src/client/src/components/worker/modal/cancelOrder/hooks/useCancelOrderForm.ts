@@ -1,6 +1,6 @@
 import { FormField } from "../../../../../types/types";
 import { useEffect, useMemo, useState } from "react";
-import { utils } from "../../../../../utils/util.functions";
+import { helpers } from "../../../../../helpers/helpers";
 import { WaitingQueueOrder } from "../../../../../common/types";
 import { useAppSelector, workerSelector } from "../../../../../redux";
 
@@ -26,7 +26,7 @@ export function useCancelOrderForm() {
    useEffect(() => {
       if (formValues.orderId.isValid) {
          const orderId = Number(formValues.orderId.value);
-         const o: WaitingQueueOrder = utils.findOrderInWaitingQ(orderQueue, orderId) || utils.findOrderInVerifiedQ(orderQueue, orderId);
+         const o: WaitingQueueOrder = helpers.findOrderInWaitingQ(orderQueue, orderId) || helpers.findOrderInVerifiedQ(orderQueue, orderId);
          if (o) {
             return setCancellable(true);
          }
@@ -43,6 +43,16 @@ export function useCancelOrderForm() {
       });
       return;
    }
+   function setSixifiedOrderId(orderId: number) {
+      setFormValues((state: CancelOrderFormState) => {
+         const copy = Object.assign({}, state);
+         const correctIdFormat = helpers.sixifyOrderId(orderId);
+         copy.orderId.value = correctIdFormat;
+         copy.orderId.isValid = true;
+         return { ...copy };
+      });
+   }
+
    function setFormDefaults() {
       setFormValues(formDefaults);
       setCancellable(false);
@@ -60,6 +70,7 @@ export function useCancelOrderForm() {
       setFormDefaults,
       cancellable,
       getFormValues,
-      setCancellable
+      setCancellable,
+      setSixifiedOrderId
    };
 }

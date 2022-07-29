@@ -20,10 +20,12 @@ interface WorkerInitialState {
    user: {
       marks: Mark[];
    };
+   detailedOrder: VerifiedQueueOrder;
 }
 
 const initialState: WorkerInitialState = {
    productQueryResults: [],
+   detailedOrder: null,
    findUserQueryResults: [],
    error: {
       val: "",
@@ -46,6 +48,9 @@ const workerSlice = createSlice({
    initialState,
    name: "worker",
    reducers: {
+      setDetailedOrder: function (s, a: PayloadAction<VerifiedQueueOrder>) {
+         s.detailedOrder = a?.payload;
+      },
       setMarks: function (s, a: PayloadAction<Mark[]>) {
          s.user.marks = a.payload || [];
       },

@@ -1,6 +1,6 @@
 import { FormField } from "../../../../../types/types";
 import { useEffect, useMemo, useState } from "react";
-import { utils } from "../../../../../utils/util.functions";
+import { helpers } from "../../../../../helpers/helpers";
 import { WaitingQueueOrder } from "../../../../../common/types";
 import { useAppSelector, workerSelector } from "../../../../../redux";
 
@@ -28,7 +28,7 @@ export function useCompleteOrderForm() {
    useEffect(() => {
       if (formValues.orderId.isValid) {
          const orderId = Number(formValues.orderId.value);
-         const o: WaitingQueueOrder = utils.findOrderInVerifiedQ(orderQueue, orderId);
+         const o: WaitingQueueOrder = helpers.findOrderInVerifiedQ(orderQueue, orderId);
          if (o) {
             return setCompletable(true);
          }
@@ -48,7 +48,7 @@ export function useCompleteOrderForm() {
    function setCorrectOrderId(orderId: number): void {
       setFormValues((state: CompleteOrderFormState) => {
          const obj = state.orderId;
-         const correctIdFormat = utils.sixifyOrderId(orderId);
+         const correctIdFormat = helpers.sixifyOrderId(orderId);
          obj.value = correctIdFormat;
          obj.isValid = true;
          return { ...state, orderId: obj };

@@ -1,0 +1,26 @@
+@import "src/./variables.scss";
+
+.details.worker_modal{
+  height: 440px;
+  top: calc((100% - 440px) /2);
+
+}
+
+.detail_item{
+  font-family: "Geometria",sans-serif;
+  font-size: $font-mder;
+}
+
+
+.detail_data{
+  width: 100%;
+}
+.detail_sum{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  strong{
+    font-size: $font-prelg;
+    font-family: "Geometria Bold",sans-serif;
+  }
+}

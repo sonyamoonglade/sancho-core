@@ -57,6 +57,7 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
    const { appResponsiveState } = useAppSelector(windowSelector);
    const { orderList } = useAppSelector(workerSelector);
    const { notify } = useNotifyRunner();
+   //check
    const { downloadCheck } = useWorkerApi();
    const dispatch = useAppDispatch();
 
@@ -139,16 +140,18 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
       }
    }
 
+   //Func only for workers so can cast type because orders from queue
+   function toggleDetails() {
+      dispatch(windowActions.toggleDetails());
+      dispatch(workerActions.setDetailedOrder(order as VerifiedQueueOrder));
+   }
+
    async function handleNotifyRunner() {
       //Check if verified (to cast without errors) and check if already notified
       if (isNotifiedCondition) {
          return;
       }
       await notify(order.id);
-   }
-
-   async function handleCheck() {
-      await downloadCheck(order.id);
    }
 
    return (
@@ -210,7 +213,7 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
                         <span>
                            {order.status === OrderStatus.verified && (
                               <button className="pay_btn details">
-                                 <p onClick={handleCheck}>Детали</p>
+                                 <p onClick={toggleDetails}>Детали</p>
                               </button>
                            )}
                            {order.status === OrderStatus.verified && order.is_delivered && (

@@ -1,7 +1,7 @@
 import { DatabaseCartProduct, OrderQueue, VerifiedQueueOrder, WaitingQueueOrder } from "../common/types";
 
-export const utils = {
-   sixifyOrderId: function (orderId: number) {
+export const helpers = {
+   sixifyOrderId: function (orderId: number): string {
       let currentId: string[] = orderId.toString().split("");
       for (let i = 0; i < 6; i++) {
          if (currentId.length !== 6) {
@@ -16,16 +16,20 @@ export const utils = {
          return a;
       }, 0);
    },
-   findOrderInWaitingQ: function (q: OrderQueue, orderId: number): WaitingQueueOrder {
+   findOrderInWaitingQ: function (q: OrderQueue, orderId: number): WaitingQueueOrder | undefined {
       return q.waiting.find((o) => {
          return o.id === orderId;
       });
    },
 
-   findOrderInVerifiedQ: function (q: OrderQueue, orderId: number): VerifiedQueueOrder {
+   findOrderInVerifiedQ: function (q: OrderQueue, orderId: number): VerifiedQueueOrder | undefined {
       return q.verified.find((o) => {
          return o.id === orderId;
       });
+   },
+
+   findOrderInWaitingQByPhoneNumber: function (q: OrderQueue, phoneNumber: string): WaitingQueueOrder | undefined {
+      return q?.waiting.find((o) => o.user.phone_number === `+7${phoneNumber}`);
    },
 
    getOrderTotalPriceByCart: function (cart: DatabaseCartProduct[]) {
