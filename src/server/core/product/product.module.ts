@@ -6,15 +6,15 @@ import { UserService } from "../user/user.service";
 import { SessionService } from "../authentication/session.service";
 import { UserRepository } from "../user/user.repository";
 import { SessionRepository } from "../authentication/session.repository";
-import { QueryBuilderModule } from "../../packages/queryBuilder/qb.module";
+import { QueryBuilderModule } from "../../packages/query_builder/qb.module";
 import { DbModule } from "../../packages/database/db.module";
-import { FileStorageModule } from "../../packages/storage/file-storage.module";
-import { FileStorage } from "../../packages/storage/file.storage";
+import { ImageStorageService } from "../../packages/image_storage/image_storage.service";
+import { ImageStorageModule } from "../../packages/image_storage/image_storage.module";
 
 @Module({
-   providers: [ProductRepository, ProductService, SessionService, UserRepository, SessionRepository, UserService, FileStorage],
+   providers: [ProductRepository, ProductService, SessionService, UserRepository, SessionRepository, UserService, ImageStorageService],
    controllers: [ProductController],
    exports: [ProductService, ProductRepository],
-   imports: [DbModule, QueryBuilderModule, FileStorageModule]
+   imports: [DbModule, QueryBuilderModule, ImageStorageModule]
 })
 export class ProductModule {}

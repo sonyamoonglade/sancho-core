@@ -24,11 +24,6 @@ export interface ProductRepositoryInterface {
    approveProduct(productId: number): Promise<boolean>;
 }
 
-export interface FileStorageInterface {
-   putImage(dto: PutImageDto, f: Express.Multer.File, productId: number): Promise<boolean>;
-   deleteImage(id: number): Promise<boolean>;
-}
-
 @Injectable()
 export class ProductService {
    constructor(private productRepository: ProductRepository) {}

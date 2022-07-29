@@ -1,9 +1,9 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { CheckOrder, DeliveryOrder, LastVerifiedOrder, Order, orders } from "../entities/Order";
 import { Pool } from "pg";
-import { filter, QueryBuilder } from "../../packages/queryBuilder/QueryBuilder";
+import { filter, QueryBuilder } from "../../packages/query_builder/QueryBuilder";
 import { pg_conn } from "../../packages/database/db_provider-name";
-import { query_builder } from "../../packages/queryBuilder/provider-name";
+import { query_builder } from "../../packages/query_builder/provider-name";
 import { RepositoryException } from "../../packages/exceptions/repository.exceptions";
 import { DeliveryDetails, OrderStatus, VerifiedQueueOrder } from "../../../common/types";
 import { users } from "../entities/User";

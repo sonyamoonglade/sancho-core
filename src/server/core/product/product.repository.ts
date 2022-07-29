@@ -1,9 +1,9 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Product, products } from "../entities/Product";
 import { Pool } from "pg";
-import { QueryBuilder } from "../../packages/queryBuilder/QueryBuilder";
+import { QueryBuilder } from "../../packages/query_builder/QueryBuilder";
 import { pg_conn } from "../../packages/database/db_provider-name";
-import { query_builder } from "../../packages/queryBuilder/provider-name";
+import { query_builder } from "../../packages/query_builder/provider-name";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { ProductRepositoryInterface } from "./product.service";
 

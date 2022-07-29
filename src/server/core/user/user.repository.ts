@@ -1,10 +1,9 @@
 import { Pool } from "pg";
 import { Inject } from "@nestjs/common";
-import { Repository } from "../../packages/abstract/repository";
 import { CheckUser, DeliveryUser, User, users } from "../entities/User";
-import { filter, QueryBuilder } from "../../packages/queryBuilder/QueryBuilder";
+import { filter, QueryBuilder } from "../../packages/query_builder/QueryBuilder";
 import { pg_conn } from "../../packages/database/db_provider-name";
-import { query_builder } from "../../packages/queryBuilder/provider-name";
+import { query_builder } from "../../packages/query_builder/provider-name";
 import { RepositoryException } from "../../packages/exceptions/repository.exceptions";
 import { UserCredentialsDto } from "./dto/user-creds.dto";
 import { AppRoles, OrderStatus } from "../../../common/types";
@@ -12,7 +11,7 @@ import { marks } from "../entities/Mark";
 import { FoundUserDto } from "./dto/found-user.dto";
 import { orders } from "../entities/Order";
 
-export class UserRepository implements Repository<User> {
+export class UserRepository {
    constructor(@Inject(query_builder) private qb: QueryBuilder, @Inject(pg_conn) private db: Pool) {}
 
    async prepareDataForCheck(orderId: number): Promise<CheckUser | null> {

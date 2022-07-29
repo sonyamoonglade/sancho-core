@@ -1,20 +1,21 @@
 import { Injectable } from "@nestjs/common";
-import { FileStorageInterface } from "../../core/product/product.service";
 import { PutImageDto } from "../../core/product/dto/put-image.dto";
 import axios from "axios";
 import { x_destination, x_file_ext, x_file_name, x_hmac_signature } from "../../../common/constants";
 import * as crypto from "crypto";
 import { BinaryToTextEncoding } from "crypto";
+import { ImageStorageInterface } from "./image_storage";
+import { PinoLogger } from "nestjs-pino";
 
 require("dotenv").config();
 
 @Injectable()
-export class FileStorage implements FileStorageInterface {
+export class ImageStorageService implements ImageStorageInterface {
    private readonly url: string;
    private readonly HASHING_ALGORITHM: string;
    private readonly ENCODING: BinaryToTextEncoding;
 
-   constructor() {
+   constructor(private logger: PinoLogger) {
       this.url = process.env.FILE_SERVICE_URL;
       this.HASHING_ALGORITHM = "sha256";
       this.ENCODING = "hex";
@@ -54,7 +55,7 @@ export class FileStorage implements FileStorageInterface {
 
          return ok;
       } catch (e: any) {
-         console.log(e);
+         console.error(e);
          return false;
       }
    }

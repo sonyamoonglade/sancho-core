@@ -2,8 +2,8 @@ import { Inject, Injectable } from "@nestjs/common";
 import { PoolClient } from "pg";
 import { pg_conn } from "../../packages/database/db_provider-name";
 import { InitMiscDto } from "./dto/init-misc.dto";
-import { query_builder } from "../../packages/queryBuilder/provider-name";
-import { QueryBuilder } from "../../packages/queryBuilder/QueryBuilder";
+import { query_builder } from "../../packages/query_builder/provider-name";
+import { QueryBuilder } from "../../packages/query_builder/QueryBuilder";
 import { Miscellaneous } from "../entities/Miscellaneous";
 
 @Injectable()

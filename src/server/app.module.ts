@@ -8,7 +8,7 @@ import { OrderController } from "./core/order/order.controller";
 import { OrderService } from "./core/order/order.service";
 import { OrderRepository } from "./core/order/order.repository";
 import { AppController } from "./app.controller";
-import { QueryBuilderModule } from "./packages/queryBuilder/qb.module";
+import { QueryBuilderModule } from "./packages/query_builder/qb.module";
 import { DbModule } from "./packages/database/db.module";
 import { MiscController } from "./core/miscellaneous/misc.controller";
 import { UserService } from "./core/user/user.service";
@@ -18,12 +18,12 @@ import { UserRepository } from "./core/user/user.repository";
 import { MiscRepository } from "./core/miscellaneous/misc.repository";
 import { CookieService } from "./packages/cookie/cookie.service";
 import { ProductService } from "./core/product/product.service";
-import { FileStorage } from "./packages/storage/file.storage";
 import { MarkRepository } from "./core/mark/mark.repository";
 import { DeliveryController } from "./core/delivery/delivery.controller";
 import { DeliveryService } from "./core/delivery/delivery.service";
 import { LoggerModule } from "nestjs-pino";
 import { EventsService } from "./packages/event/event.module";
+import { ImageStorageService } from "./packages/image_storage/image_storage.service";
 
 @Module({
    controllers: [AppController, UserController, OrderController, ProductController, MiscController, DeliveryController],
@@ -35,11 +35,11 @@ import { EventsService } from "./packages/event/event.module";
       OrderRepository,
       UserService,
       ProductRepository,
+      ImageStorageService,
       MiscService,
       MiscRepository,
       CookieService,
       ProductService,
-      FileStorage,
       UserRepository,
       MarkRepository,
       DeliveryService,

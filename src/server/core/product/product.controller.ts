@@ -7,13 +7,13 @@ import { Role } from "../../packages/decorators/role/Role";
 import { FileInterceptor } from "@nestjs/platform-express";
 import { extendedRequest } from "../../types/types";
 import { PutImageDto } from "./dto/put-image.dto";
-import { FileStorage } from "../../packages/storage/file.storage";
 import { AuthorizationGuard } from "../authorization/authorization.guard";
+import { ImageStorageService } from "../../packages/image_storage/image_storage.service";
 
 @Controller("/product")
 @UseGuards(AuthorizationGuard)
 export class ProductController {
-   constructor(private productService: ProductService, private fileStorage: FileStorage) {}
+   constructor(private productService: ProductService, private imageStorage: ImageStorageService) {}
 
    @Get("/all")
    @Role([AppRoles.master])
@@ -75,7 +75,7 @@ export class ProductController {
       try {
          const dto: PutImageDto = new PutImageDto();
 
-         const ok = await this.fileStorage.putImage(dto, f, productId);
+         const ok = await this.imageStorage.putImage(dto, f, productId);
          if (!ok) {
             return res.status(400).end();
          }

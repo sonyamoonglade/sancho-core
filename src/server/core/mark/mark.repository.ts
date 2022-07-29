@@ -1,7 +1,7 @@
 import { pg_conn } from "../../packages/database/db_provider-name";
 import { PoolClient } from "pg";
-import { query_builder } from "../../packages/queryBuilder/provider-name";
-import { QueryBuilder } from "../../packages/queryBuilder/QueryBuilder";
+import { query_builder } from "../../packages/query_builder/provider-name";
+import { QueryBuilder } from "../../packages/query_builder/QueryBuilder";
 import { CreateMarkDto } from "./dto/create-mark.dto";
 import { Mark, marks } from "../entities/Mark";
 import { Inject, Injectable } from "@nestjs/common";

@@ -8,7 +8,7 @@ import { OrderService } from "../order/order.service";
 import { ProductRepository } from "../product/product.repository";
 import { CookieService } from "../../packages/cookie/cookie.service";
 import { RegisterSpamGuard } from "../authentication/guard/register-spam.guard";
-import { QueryBuilderModule } from "../../packages/queryBuilder/qb.module";
+import { QueryBuilderModule } from "../../packages/query_builder/qb.module";
 import { DbModule } from "../../packages/database/db.module";
 import { MiscRepository } from "../miscellaneous/misc.repository";
 import { MiscService } from "../miscellaneous/misc.service";

@@ -5,7 +5,7 @@ import { OrderRepository } from "./order.repository";
 import { ProductRepository } from "../product/product.repository";
 import { CookieService } from "../../packages/cookie/cookie.service";
 import { SessionModule } from "../authentication/session.module";
-import { QueryBuilderModule } from "../../packages/queryBuilder/qb.module";
+import { QueryBuilderModule } from "../../packages/query_builder/qb.module";
 import { DbModule } from "../../packages/database/db.module";
 import { MultiWaitingOrderGuard } from "./guard/order.multi-waiting.guard";
 import { MiscService } from "../miscellaneous/misc.service";
