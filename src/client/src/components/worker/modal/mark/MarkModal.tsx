@@ -5,7 +5,7 @@ import { useMarkForm } from "./hooks/useMarkForm";
 import LiveSearch, { Livesearch } from "../../liveSearch/LiveSearch";
 import LsUserResultContainer from "./LSUserResultContainer";
 import { FoundUser } from "../../../../types/types";
-import FormInput from "../../../formInput/FormInput";
+import FormInput from "../../../ui/formInput/FormInput";
 import { useFormValidations } from "../../../../hooks/useFormValidations";
 import { useMark } from "./hooks/useMark";
 

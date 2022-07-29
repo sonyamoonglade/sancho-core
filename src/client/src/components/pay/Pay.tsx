@@ -5,7 +5,7 @@ import { TiArrowBack } from "react-icons/ti";
 import { baseUrl } from "../../App";
 import PaySelector from "../ui/paySelector/PaySelector";
 import { CreateUserOrderDto } from "../../common/types";
-import FormInput from "../formInput/FormInput";
+import FormInput from "../ui/formInput/FormInput";
 import { CLEAR_ORDER_FORM, CLEAR_ORDER_FORM_ONLY_PHONE } from "../../types/types";
 import { useFormValidations } from "../../hooks/useFormValidations";
 import SubmitOrderButton from "../createUserOrder/submitOrderButton/SubmitOrderButton";

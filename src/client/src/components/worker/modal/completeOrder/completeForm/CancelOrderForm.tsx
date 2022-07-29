@@ -1,7 +1,7 @@
 import React, { FC, useEffect } from "react";
 import { useAppSelector, windowSelector } from "../../../../../redux";
 import { useFormValidations } from "../../../../../hooks/useFormValidations";
-import FormInput from "../../../../formInput/FormInput";
+import FormInput from "../../../../ui/formInput/FormInput";
 import { CompleteOrderFormState } from "../hooks/useCompleteOrderForm";
 
 interface CompleteOrderFormProps {

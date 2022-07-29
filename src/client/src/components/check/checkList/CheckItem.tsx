@@ -1,7 +1,7 @@
 import React, { FC } from "react";
 
 import "../check.styles.scss";
-import { Categories, DatabaseCartProduct } from "../../../../common/types";
+import { Categories, DatabaseCartProduct } from "../../../common/types";
 
 interface checkItemProps {
    product: DatabaseCartProduct;

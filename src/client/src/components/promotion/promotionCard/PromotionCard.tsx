@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import "../promotion.styles.scss";
-import { Promotion } from "../../../../common/types";
+import { Promotion } from "../../../common/types";
 
 interface promotionCardProps {
    promotion: Promotion;

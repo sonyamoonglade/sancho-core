@@ -4,16 +4,7 @@ import { useAxios } from "./hooks/useAxios";
 import Layout from "./components/layout/layout/Layout";
 import AppForm from "./components/appForm/AppForm";
 import { CatalogContext } from "./components/layout/context";
-import {
-  fetchMiscData,
-  getCatalog,
-  productSelector,
-  useAppDispatch,
-  useAppSelector,
-  userSelector,
-  windowActions,
-  windowSelector,
-} from "./redux";
+import { fetchMiscData, getCatalog, productSelector, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector } from "./redux";
 import CartLink from "./components/cart/cartLink/CartLink";
 import OrderLink from "./components/createUserOrder/orderLink/OrderLink";
 import ProductPresentation from "./components/product/productPresentation/ProductPresentation";
@@ -22,7 +13,7 @@ import { authMe } from "./redux/user/user-async.actions";
 import { useMediaQuery } from "react-responsive";
 import { AppResponsiveState } from "./types/types";
 import { useNavigate } from "react-router-dom";
-import Categories from "./components/layout/categories/Categories";
+import Categories from "./components/categories/Categories";
 import PayLink from "./components/ui/payLink/PayLink";
 
 export const baseBackendUrl = "https://pizza-fullstack.herokuapp.com";

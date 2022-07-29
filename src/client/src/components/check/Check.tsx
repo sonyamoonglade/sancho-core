@@ -1,11 +1,10 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
-
-import { miscSelector, productSelector, useAppSelector } from "../../../redux";
+import { baseUrl } from "../../App";
 import CheckList from "./checkList/CheckList";
-import { CartInterface } from "../../../types/types";
-import { DatabaseCartProduct } from "../../../common/types";
-import { currency } from "../../../common/constants";
-import { baseUrl } from "../../../App";
+import { CartInterface } from "../../types/types";
+import { miscSelector, productSelector, useAppSelector } from "../../redux";
+import { DatabaseCartProduct } from "../../common/types";
+import { currency } from "../../common/constants";
 
 interface checkProps {
    cart: CartInterface;

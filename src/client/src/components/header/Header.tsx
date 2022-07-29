@@ -1,26 +1,26 @@
 import React, { FC } from "react";
 
-import PromotionList from "../promotion/PromotionList";
-import "../layout/layout.styles.scss";
+import "../layout/layout/layout.styles.scss";
 
 import "./header.styles.scss";
-import { useAppDispatch, useAppSelector, userSelector, windowSelector, windowSlice } from "../../../redux";
-import MobileNavigation from "../navigation/mobile/MobileNavigation";
-import Cart from "../../cart/cart/Cart";
-import Order from "../../createUserOrder/Order";
-import Loading from "../../loading/Loading";
-import { Promotion } from "../../../common/types";
-import OrderHistory from "../../orderHistory/OrderHistory";
+import { useAppDispatch, useAppSelector, userSelector, windowSelector, windowSlice } from "../../redux";
+import Cart from "../cart/cart/Cart";
+import Order from "../createUserOrder/CreateUserOrder";
+import Loading from "../loading/Loading";
+import { Promotion } from "../../common/types";
+import OrderHistory from "../orderHistory/OrderHistory";
 import { RiCloseCircleLine } from "react-icons/ri";
 import { CgMenuRound } from "react-icons/cg";
-import { AppResponsiveState } from "../../../types/types";
-import OtherNavigation from "../navigation/other/OtherNavigation";
+import { AppResponsiveState } from "../../types/types";
 import DesktopHeaderRight from "../desktopHeader/DesktopHeaderRight";
-import MasterLogin from "../../masterLogin/MasterLogin";
-import WorkerNavigation from "../../worker/navigation/WorkerNavigation";
-import WorkerNavigationRight from "../../worker/navigation/WorkerNavigationRight";
-import AdminNavigation from "../../admin/navigation/AdminNavigation";
-import Pay from "../../pay/Pay";
+import MasterLogin from "../masterLogin/MasterLogin";
+import WorkerNavigation from "../worker/navigation/WorkerNavigation";
+import WorkerNavigationRight from "../worker/navigation/WorkerNavigationRight";
+import AdminNavigation from "../admin/navigation/AdminNavigation";
+import Pay from "../pay/Pay";
+import OtherNavigation from "../navigation/other/OtherNavigation";
+import PromotionList from "../promotion/PromotionList";
+import MobileNavigation from "../navigation/mobile/MobileNavigation";
 
 const mockPromotions: Promotion[] = [
    {

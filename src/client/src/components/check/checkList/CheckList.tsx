@@ -1,9 +1,9 @@
 import React, { FC, useMemo } from "react";
 import CheckItem from "./CheckItem";
 import "../check.styles.scss";
-import { DatabaseCartProduct } from "../../../../common/types";
+import { DatabaseCartProduct } from "../../../common/types";
 import DeliveryPunishmentItem from "../DeliveryPunishmentItem";
-import { miscSelector, useAppSelector, windowSelector } from "../../../../redux";
+import { miscSelector, useAppSelector, windowSelector } from "../../../redux";
 
 interface checkListProps {
    products: DatabaseCartProduct[];

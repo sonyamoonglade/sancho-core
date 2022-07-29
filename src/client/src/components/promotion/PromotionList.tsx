@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useRef, useState } from "react";
 import PromotionCard from "./promotionCard/PromotionCard";
 import "./promotion.styles.scss";
-import { Promotion } from "../../../common/types";
+import { Promotion } from "../../common/types";
 
 interface promotionListProps {
    promotions: Promotion[];

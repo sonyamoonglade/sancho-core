@@ -1,8 +1,8 @@
 import React, { FC, useState } from "react";
-import FormInput from "../../formInput/FormInput";
+import FormInput from "../../ui/formInput/FormInput";
 import { useFormValidations } from "../../../hooks/useFormValidations";
 import "./order-form.styles.scss";
-import { UserOrderFormState } from "../Order";
+import { UserOrderFormState } from "../CreateUserOrder";
 import EventEmitter from "events";
 import { useAppSelector, userSelector } from "../../../redux";
 

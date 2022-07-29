@@ -1,6 +1,6 @@
 import React from "react";
-import { miscSelector, useAppSelector } from "../../../redux";
-import { currency } from "../../../common/constants";
+import { miscSelector, useAppSelector } from "../../redux";
+import { currency } from "../../common/constants";
 
 const DeliveryPunishmentItem = () => {
    const { DELIVERY_PUNISHMENT_VALUE: value, DELIVERY_PUNISHMENT_THRESHOLD: threshold } = useAppSelector(miscSelector);

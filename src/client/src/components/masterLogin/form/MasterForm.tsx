@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import { AppResponsiveState } from "../../../types/types";
-import FormInput from "../../formInput/FormInput";
+import FormInput from "../../ui/formInput/FormInput";
 import "../master-login.styles.scss";
 import { useFormValidations } from "../../../hooks/useFormValidations";
 import { useAxios } from "../../../hooks/useAxios";

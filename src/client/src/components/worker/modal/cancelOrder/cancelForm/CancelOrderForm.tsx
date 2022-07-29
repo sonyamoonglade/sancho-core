@@ -2,7 +2,7 @@ import React, { FC, useEffect } from "react";
 import { useAppSelector, windowSelector } from "../../../../../redux";
 import { useFormValidations } from "../../../../../hooks/useFormValidations";
 import { CancelOrderFormState } from "../hooks/useCancelOrderForm";
-import FormInput from "../../../../formInput/FormInput";
+import FormInput from "../../../../ui/formInput/FormInput";
 
 interface cancelOrderFormProps {
    formValues: CancelOrderFormState;

@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
-import FormInput from "../../../../formInput/FormInput";
+import FormInput from "../../../../ui/formInput/FormInput";
 import { useAppSelector, windowSelector } from "../../../../../redux";
 import { useFormValidations } from "../../../../../hooks/useFormValidations";
 import { WorkerVerifyOrderFormState } from "../hooks/useVerifyOrderForm";

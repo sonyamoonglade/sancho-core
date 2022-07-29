@@ -1,18 +1,11 @@
 import React from "react";
-import {
-  orderSelector,
-  productSelector,
-  useAppDispatch,
-  useAppSelector,
-  windowActions,
-  windowSelector,
-} from "../../../../redux";
+import { orderSelector, productSelector, useAppDispatch, useAppSelector, windowActions, windowSelector } from "../../../redux";
 import { BsCart4, BsClipboardData } from "react-icons/bs";
 import { MdDeliveryDining, MdOutlineReceiptLong } from "react-icons/md";
 import { RiQuestionAnswerLine } from "react-icons/ri";
 import "./mob-navigation.styles.scss";
-import "../../layout/layout.styles.scss";
-import { OrderStatus } from "../../../../common/types";
+import { OrderStatus } from "../../../common/types";
+import "../../layout/layout/layout.styles.scss";
 
 const MobileNavigation = () => {
    const { navigation, navigationNotification } = useAppSelector(windowSelector);

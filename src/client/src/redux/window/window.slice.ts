@@ -27,6 +27,7 @@ interface WindowState {
       completeList: boolean;
       cancelList: boolean;
       mark: boolean;
+      details: boolean;
    };
 
    drag: {
@@ -52,6 +53,7 @@ const initialState: WindowState = {
       orders: false
    },
    worker: {
+      details: false,
       verifyOrder: false,
       createOrder: false,
       cancelOrder: false,
@@ -81,6 +83,7 @@ export const windowSlice = createSlice({
       toggleCompleteList: function (s, a: PayloadAction<boolean>) {
          s.worker.completeList = a?.payload || !s.worker.completeList;
          s.worker.virtualCart = false;
+         s.worker.details = false;
          s.worker.createOrder = false;
          s.worker.cancelOrder = false;
          s.worker.verifyOrder = false;
@@ -91,6 +94,7 @@ export const windowSlice = createSlice({
          s.worker.cancelList = a?.payload || !s.worker.cancelList;
          s.worker.virtualCart = false;
          s.worker.createOrder = false;
+         s.worker.details = false;
          s.worker.cancelOrder = false;
          s.worker.verifyOrder = false;
          s.worker.completeOrder = false;
@@ -101,6 +105,7 @@ export const windowSlice = createSlice({
          s.worker.virtualCart = false;
          s.worker.createOrder = false;
          s.worker.cancelOrder = false;
+         s.worker.details = false;
          s.worker.verifyOrder = false;
          s.worker.mark = false;
       },
@@ -174,11 +179,12 @@ export const windowSlice = createSlice({
          s.masterLogin = false;
       },
 
-      toggleVerifyOrder: (s, a: PayloadAction<string>) => {
+      toggleVerifyOrder: (s) => {
          s.worker.verifyOrder = !s.worker.verifyOrder;
          s.worker.completeOrder = false;
          s.worker.virtualCart = false;
          s.worker.createOrder = false;
+         s.worker.details = false;
          s.worker.cancelOrder = false;
          s.worker.mark = false;
       },
@@ -189,7 +195,9 @@ export const windowSlice = createSlice({
          s.worker.virtualCart = false;
          s.worker.verifyOrder = false;
          s.worker.cancelOrder = false;
+         s.worker.details = false;
          s.worker.mark = false;
+         s.worker.details = false;
       },
 
       toggleWorkersOff: (s) => {
@@ -198,6 +206,7 @@ export const windowSlice = createSlice({
          s.worker.createOrder = false;
          s.worker.cancelOrder = false;
          s.worker.completeOrder = false;
+         s.worker.details = false;
          s.worker.mark = false;
       },
 
@@ -209,6 +218,7 @@ export const windowSlice = createSlice({
          s.worker.completeOrder = false;
          s.worker.virtualCart = false;
          s.worker.verifyOrder = false;
+         s.worker.details = false;
          s.worker.mark = false;
          s.worker.createOrder = false;
          s.worker.cancelOrder = !s.worker.cancelOrder;
@@ -217,10 +227,22 @@ export const windowSlice = createSlice({
       toggleMark: function (s) {
          s.worker.completeOrder = false;
          s.worker.virtualCart = false;
+         s.worker.details = false;
          s.worker.verifyOrder = false;
          s.worker.createOrder = false;
          s.worker.cancelOrder = false;
          s.worker.mark = !s.worker.mark;
+      },
+
+      toggleDetails: function (s) {
+         s.worker.virtualCart = false;
+         s.worker.details = false;
+         s.worker.completeOrder = false;
+         s.worker.verifyOrder = false;
+         s.worker.createOrder = false;
+         s.worker.cancelOrder = false;
+         s.worker.mark = false;
+         s.worker.details = !s.worker.details;
       }
    }
 });

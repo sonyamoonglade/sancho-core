@@ -1,7 +1,7 @@
 import React, { FC, useEffect, useMemo, useState } from "react";
 
 import "./live-search.styles.scss";
-import FormInput from "../../formInput/FormInput";
+import FormInput from "../../ui/formInput/FormInput";
 import { FormField } from "../../../types/types";
 import { useFormValidations } from "../../../hooks/useFormValidations";
 import { useDebounce } from "../../../hooks/useDebounce";

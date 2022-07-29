@@ -1,7 +1,7 @@
 import React, { useContext, useState } from "react";
 import "./categories.styles.scss";
-import { productSelector, useAppSelector } from "../../../redux";
-import { LayoutContext } from "../context";
+import { productSelector, useAppSelector } from "../../redux";
+import { LayoutContext } from "../layout/context";
 
 const Categories = () => {
    const { categories: list, categoriesScrollAdj: mapLikeObj } = useAppSelector(productSelector);

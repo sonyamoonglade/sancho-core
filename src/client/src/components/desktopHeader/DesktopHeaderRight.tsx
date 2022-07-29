@@ -1,9 +1,9 @@
 import React from "react";
-import DesktopCartLink from "../../cart/desktopCartLink/DesktopCartLink";
+import DesktopCartLink from "../cart/desktopCartLink/DesktopCartLink";
 import "./desktop-header.styles.scss";
 
 import { FaUserCircle } from "react-icons/fa";
-import { useAppDispatch, windowActions } from "../../../redux";
+import { useAppDispatch, windowActions } from "../../redux";
 
 const DesktopHeaderRight = () => {
    const dispatch = useAppDispatch();

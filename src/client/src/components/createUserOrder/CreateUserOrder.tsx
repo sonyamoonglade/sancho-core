@@ -1,12 +1,12 @@
 import React, { useEffect } from "react";
 
-import "./order.styles.scss";
+import "./create-usr-order.scss";
 import { TiArrowBack } from "react-icons/ti";
 import { GrFormClose } from "react-icons/gr";
 import { useCart } from "../../hooks/useCart";
 import { orderActions, useAppDispatch, useAppSelector, windowActions, windowSelector } from "../../redux";
 import OrderForm from "./orderForm/OrderForm";
-import Check from "./check/Check";
+import Check from "../check/Check";
 import { useUserOrderForm } from "./hooks/useUserOrderForm";
 import { CLEAR_ORDER_FORM, CLEAR_ORDER_FORM_ONLY_PHONE, FormField, UserOrderFormData } from "../../types/types";
 import { DeliveryDetails } from "../../common/types";
@@ -37,7 +37,7 @@ export interface UserOrderFormState {
    comment: FormField;
 }
 
-const Order = () => {
+const CreateUserOrder = () => {
    const cart = useCart();
 
    const { userOrder, pay } = useAppSelector(windowSelector);
@@ -116,4 +116,4 @@ const Order = () => {
    );
 };
 
-export default React.memo(Order);
+export default React.memo(CreateUserOrder);
