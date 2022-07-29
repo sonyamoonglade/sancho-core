@@ -1,15 +1,33 @@
-import React, { FC, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import FormInput from "../../ui/formInput/FormInput";
 import { useFormValidations } from "../../../hooks/useFormValidations";
 import "./order-form.styles.scss";
 import { UserOrderFormState } from "../CreateUserOrder";
 import EventEmitter from "events";
 import { useAppSelector, userSelector } from "../../../redux";
+import { useEvents } from "../../../hooks/useEvents";
+import { DeliveryDetails } from "../../../common/types";
 
 interface orderFormProps {
    formValues: UserOrderFormState;
    setFormValues: Function;
 }
+
+interface autocomplete {
+   phone_number: boolean;
+   address: boolean;
+   entrance_number: boolean;
+   floor: boolean;
+   flat_call: boolean;
+}
+
+const defaults: autocomplete = {
+   address: false,
+   entrance_number: false,
+   flat_call: false,
+   phone_number: false,
+   floor: false
+};
 
 const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
    const isDeliveryFormDisabledExpr = formValues["is_delivered"].value ? "" : "--disabled ";
@@ -17,9 +35,51 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
 
    const [opt1, opt2] = ["скажу по телефону", "в ближайшее время"];
    const [selectV, setSelectV] = useState<string>(opt1);
-   const { isAuthenticated, phoneNumber } = useAppSelector(userSelector);
+   const { isAuthenticated, phoneNumber, delivery_details } = useAppSelector(userSelector);
+   const events = useEvents();
 
-   const emitter = new EventEmitter();
+   const [autoComplete, setAutocomplete] = useState<autocomplete>(defaults);
+
+   useEffect(() => {
+      if (isAuthenticated) {
+         registerEvents();
+      }
+   }, [isAuthenticated]);
+
+   function registerEvents() {
+      registerAutocompleteEvent("phone_number");
+
+      //Register autocomplete only if user has remembered delivery address
+      if (delivery_details) {
+         registerAutocompleteEvent("address");
+         registerAutocompleteEvent("floor");
+         registerAutocompleteEvent("flat_call");
+         registerAutocompleteEvent("entrance_number");
+      }
+   }
+
+   function registerAutocompleteEvent(name: string) {
+      events.on(`autocomplete_${name}`, () => {
+         if (isAuthenticated) {
+            setAutocomplete((s: autocomplete) => {
+               const copy = Object.assign({}, s);
+               const k: keyof autocomplete = `${name}` as keyof autocomplete;
+               copy[k] = true;
+               return { ...copy };
+            });
+         }
+      });
+      events.on(`blur_${name}`, () => {
+         if (isAuthenticated) {
+            setAutocomplete((s: autocomplete) => {
+               const copy = Object.assign({}, s);
+               const k: keyof autocomplete = `${name}` as keyof autocomplete;
+               copy[k] = false;
+               return { ...copy };
+            });
+         }
+      });
+   }
 
    function handleSelectChange(event: any) {
       const v = event.target.value;
@@ -43,26 +103,27 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
       }
    }
 
-   const [show, setShow] = useState<boolean>(false);
-
-   emitter.on("autocomplete", () => {
-      if (isAuthenticated) {
-         setShow(true);
+   function handleAutocomplete(name: keyof autocomplete) {
+      if (name === "phone_number") {
+         setFormValues((prev: UserOrderFormState) => {
+            const copy = Object.assign({}, prev);
+            copy.phone_number = {
+               value: phoneNumber.split("").splice(2, phoneNumber.length).join(""),
+               isValid: true
+            };
+            return { ...copy };
+         });
+         return;
       }
-   });
-   emitter.on("blur", () => {
-      if (isAuthenticated) {
-         setShow(false);
-      }
-   });
-
-   function handleAutoCompleteClick() {
-      setFormValues((prev: UserOrderFormState) => {
-         const obj = prev.phone_number;
-         obj.value = phoneNumber.split("").splice(2, phoneNumber.length).join("");
-         obj.isValid = true;
-         return { ...prev, phone_number: obj };
+      setFormValues((state: UserOrderFormState) => {
+         const copy = Object.assign({}, state);
+         copy[name] = {
+            isValid: true,
+            value: String(delivery_details[name as keyof DeliveryDetails])
+         };
+         return { ...copy };
       });
+      return;
    }
 
    return (
@@ -96,6 +157,11 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
                Regexp={new RegExp("[_!\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
                fieldValidationFn={minLengthValidation}
             />
+            {delivery_details && autoComplete["address"] && (
+               <div onClick={() => handleAutocomplete("address")} className="autocomplete address">
+                  <p>{delivery_details.address}</p>
+               </div>
+            )}
             <div className="delivery_details_container">
                <FormInput
                   name={"entrance_number"}
@@ -110,6 +176,11 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
                   Regexp={new RegExp("[A-Za-z]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
                   fieldValidationFn={minLengthValidation}
                />
+               {delivery_details && autoComplete["entrance_number"] && (
+                  <div onClick={() => handleAutocomplete("entrance_number")} className="autocomplete entrance_number">
+                     <p>{delivery_details.entrance_number}</p>
+                  </div>
+               )}
 
                <FormInput
                   name={"flat_call"}
@@ -124,6 +195,11 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
                   Regexp={new RegExp("[A-Za-z]")}
                   fieldValidationFn={minLengthValidation}
                />
+               {delivery_details && autoComplete["flat_call"] && (
+                  <div onClick={() => handleAutocomplete("flat_call")} className="autocomplete flat_call">
+                     <p>{delivery_details.flat_call}</p>
+                  </div>
+               )}
 
                <FormInput
                   name={"floor"}
@@ -138,6 +214,11 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
                   Regexp={new RegExp("[A-Za-z]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
                   fieldValidationFn={minLengthValidation}
                />
+               {delivery_details && autoComplete["floor"] && (
+                  <div onClick={() => handleAutocomplete("floor")} className="autocomplete floor">
+                     <p>{delivery_details.floor}</p>
+                  </div>
+               )}
             </div>
          </div>
          <FormInput
@@ -173,22 +254,17 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
                formValue={formValues["phone_number"]}
                setV={setFormValues}
                onBlurValue={"+7"}
-               emitter={emitter}
                maxLength={10}
                fieldValidationFn={validatePhoneNumber}
                Regexp={new RegExp("!?[A-Za-z]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
                extraClassName={"phone_number_input"}
                minLength={10}
             />
-            {show ? (
-               <div
-                  onClick={() => {
-                     handleAutoCompleteClick();
-                  }}
-                  className="autocomplete">
+            {autoComplete["phone_number"] && (
+               <div onClick={() => handleAutocomplete("phone_number")} className="autocomplete phone">
                   <p>{phoneNumber}</p>
                </div>
-            ) : null}
+            )}
          </div>
       </div>
    );

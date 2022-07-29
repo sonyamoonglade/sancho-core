@@ -134,18 +134,33 @@
     font-size: $font-mder
   }
 }
+.autocomplete.phone{
+  left: 2rem;
+  padding: 0.2rem !important;
 
+}
 .autocomplete{
   box-shadow: 0 0 5px $black-50;
   border-radius: 7px;
   z-index: 4000;
-  padding: 0.2rem;
-  left: 2rem;
+  padding: 0.5rem;
   position: absolute;
   background-color: $light-grey;
   p{
     font-family: "Geometria",sans-serif;
   }
+}
+.autocomplete.floor{
+  right: 3rem;
+  bottom: 31%;
+}
+.autocomplete.flat_call{
+  bottom: 31%;
+  right: 45%;
+}
+.autocomplete.entrance_number{
+  bottom: 31%;
+  left: 4rem;
 }
 
 .comment{
