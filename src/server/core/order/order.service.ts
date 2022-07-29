@@ -55,6 +55,7 @@ export class OrderService {
    }
    public async createUserOrder(dto: CreateUserOrderDto): Promise<Order> {
       this.logger.debug(`create order for user ${dto.user_id}`);
+
       let total_cart_price = await this.calculateTotalCartPrice(dto.cart);
       if (dto.is_delivered) {
          total_cart_price = await this.applyDeliveryPunishment(total_cart_price);

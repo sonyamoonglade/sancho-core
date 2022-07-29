@@ -106,7 +106,7 @@ const Header: FC = () => {
                <Cart />
                <OrderHistory />
                <MasterLogin />
-               <Loading duration={4000} />
+               <Loading />
                {appResponsiveState === AppResponsiveState.mobileOrTablet && <MobileNavigation />}
             </>
          )}

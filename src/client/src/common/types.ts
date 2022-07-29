@@ -14,9 +14,15 @@ export interface DeliveryDetails {
    entrance_number: number;
    floor: number;
    flat_call: number;
-   delivered_at: Date | null;
+   delivered_at?: Date;
    comment?: string;
 }
+
+export type CustomerUser = {
+   username?: string;
+   delivery_details?: DeliveryDetails;
+   phone_number: string;
+};
 
 export interface Features {
    weight: number;

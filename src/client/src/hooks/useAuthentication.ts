@@ -1,7 +1,7 @@
 import { AxiosInstance } from "axios";
 import { useAppDispatch, userActions } from "../redux";
 import { MasterFormValues } from "../components/masterLogin/MasterLogin";
-import { AppRoles } from "../common/types";
+import { AppRoles, CustomerUser } from "../common/types";
 
 export function useAuthentication(client: AxiosInstance) {
    const dispatch = useAppDispatch();
@@ -13,7 +13,12 @@ export function useAuthentication(client: AxiosInstance) {
          };
          const r = await client.post(`/users/login`, body);
          if (r.status === 200 || r.status === 201) {
-            return dispatch(userActions.login(phone_number));
+            const data: CustomerUser = {
+               username: "",
+               delivery_details: null,
+               phone_number
+            };
+            return dispatch(userActions.login(data));
          }
          return dispatch(userActions.logout());
       } catch (e) {

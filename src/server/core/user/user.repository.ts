@@ -83,10 +83,10 @@ export class UserRepository {
       await this.db.query(sql);
       return;
    }
-   async getById(id: number | string): Promise<User | undefined> {
+   async getById(id: number): Promise<User | undefined> {
       const selectSql = this.qb.ofTable(users).select<User>({ where: { id: id as number } });
       const { rows } = await this.db.query(selectSql);
-      return rows[0] ? (rows[0] as User) : undefined;
+      return rows[0];
    }
 
    async save(dto: any): Promise<User | undefined> {
@@ -127,10 +127,6 @@ export class UserRepository {
       } catch (e) {
          throw new RepositoryException("user", e.message);
       }
-   }
-
-   customQuery(query: string): Promise<User[] | User | undefined> {
-      return Promise.resolve(undefined);
    }
 
    async isStillRegularCustomer(durationInDays: number, markId: number): Promise<boolean> {

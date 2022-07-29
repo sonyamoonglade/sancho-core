@@ -18,6 +18,7 @@ import { CreationLimitGuard } from "./guard/order.creation-limit.guard";
 import { PolicyFilter } from "./filter/order.filter";
 import { applyPayPolicy } from "../../packages/pay/policy";
 import { PinoLogger } from "nestjs-pino";
+import { ValidationErrorException } from "../../packages/exceptions/validation.exceptions";
 
 @Controller("/order")
 @UseGuards(AuthorizationGuard)
@@ -37,6 +38,12 @@ export class OrderController {
       try {
          //Make sure pay is 100% valid for specific case. Throws an exception that is caught by PolicyFilter
          applyPayPolicy(inp.pay, inp.is_delivered, "user");
+
+         //If user selects onPickup and somehow sends an email or username - error
+         if (inp.pay === "onPickup" && (inp.email !== undefined || inp.username !== undefined)) {
+            throw new ValidationErrorException();
+         }
+
          const userId = req.user_id;
 
          const dto: CreateUserOrderDto = {
@@ -48,12 +55,19 @@ export class OrderController {
             status: OrderStatus.waiting_for_verification,
             user_id: userId
          };
+
          await this.orderService.createUserOrder(dto);
+
          if (dto.is_delivered === true) {
             const stringDetails: string = JSON.stringify(dto.delivery_details);
             await this.userService.updateUserRememberedDeliveryAddress(userId, stringDetails);
          }
-         //todo: implement different strategies pay (withCard or smth else)
+
+         //todo: implement online pay with redirect
+         //const redirectUrl = payservice.Pay()
+         // return res.status(201).send({
+         //    redirect_url: redirectUrl
+         // });
          return res.status(201).end();
       } catch (e) {
          throw e;

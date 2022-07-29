@@ -5,13 +5,14 @@ import { CreateMasterUserDto } from "./dto/create-master-user.dto";
 import { PreventAuthedGuard } from "./guard/prevent-authed.guard";
 import { LoginMasterUserDto } from "./dto/login-master-user.dto";
 import { SessionService } from "../authentication/session.service";
-import { AppRoles } from "../../../common/types";
+import { AppRoles, DeliveryDetails } from "../../../common/types";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { CookieNames, extendedRequest } from "../../types/types";
 import { Role } from "../../packages/decorators/role/Role";
 import { RegisterSpamGuard } from "../authentication/guard/register-spam.guard";
 import { CreateMarkDto } from "../mark/dto/create-mark.dto";
 import { AuthorizationGuard } from "../authorization/authorization.guard";
+import { CustomerData } from "../entities/User";
 
 @Controller("/users")
 export class UserController {
@@ -35,8 +36,9 @@ export class UserController {
       try {
          const userId = req.user_id;
          const user = await this.userService.authMe(userId);
+         const data = CustomerData(user);
          if (user.role === AppRoles.user) {
-            return res.status(200).send({ phone_number: user.phone_number });
+            return res.status(200).json(data);
          }
          return res.status(200).send({ role: user.role });
       } catch (e) {

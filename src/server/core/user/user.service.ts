@@ -234,12 +234,9 @@ export class UserService {
       return user;
    }
 
-   async authMe(userId: number): Promise<Partial<User>> {
-      const users = await this.userRepository.get({
-         where: { id: userId },
-         returning: ["phone_number", "role"]
-      });
-      const u = users[0];
+   async authMe(userId: number): Promise<User> {
+      const u = await this.userRepository.getById(userId);
+      u.remembered_delivery_address = JSON.parse(u.remembered_delivery_address as unknown as string);
       return u;
    }
 

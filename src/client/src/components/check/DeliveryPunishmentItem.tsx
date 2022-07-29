@@ -4,7 +4,6 @@ import { currency } from "../../common/constants";
 
 const DeliveryPunishmentItem = () => {
    const { DELIVERY_PUNISHMENT_VALUE: value, DELIVERY_PUNISHMENT_THRESHOLD: threshold } = useAppSelector(miscSelector);
-   console.log(value);
    return (
       <>
          <li className="check_item">

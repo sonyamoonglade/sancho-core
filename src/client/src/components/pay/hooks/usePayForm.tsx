@@ -33,9 +33,27 @@ export function usePayForm() {
    const [formValues, setFormValues] = useState<PayFormState>(defaultValues);
 
    function handlePaywaySwitch(option: types.Pay) {
+      if (option === "onPickup") {
+         clearEmailAndUsername();
+      }
       if (option !== payWay) {
          setPayWay(option);
       }
+   }
+
+   function clearEmailAndUsername() {
+      setFormValues((state: PayFormState) => {
+         const copy = Object.assign({}, state);
+         copy.username = {
+            isValid: false,
+            value: ""
+         };
+         copy.email = {
+            isValid: false,
+            value: ""
+         };
+         return { ...copy };
+      });
    }
 
    function setFormDefaults(): void {

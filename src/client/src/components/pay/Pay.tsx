@@ -15,6 +15,7 @@ import { useCreateOrder } from "../createUserOrder/hooks/useCreateOrder";
 import { useAuthentication } from "../../hooks/useAuthentication";
 import { useCart } from "../../hooks/useCart";
 import { useEvents } from "../../hooks/useEvents";
+import { animationPeriod, loadingDuration } from "../loading/Loading";
 
 const Pay = () => {
    const { pay } = useAppSelector(windowSelector);
@@ -43,9 +44,11 @@ const Pay = () => {
       }
    }, [pay]);
    const isSubmitButtonActive = useMemo(() => {
-      return formValues.email.isValid && formValues.username.isValid;
-   }, [formValues]);
-
+      if (payWay === "online") {
+         return formValues.email.isValid && formValues.username.isValid;
+      }
+      return true;
+   }, [formValues, payWay]);
    async function handleOrderCreation() {
       const { phone_number: phoneNumber } = orderData;
       try {
@@ -80,7 +83,14 @@ const Pay = () => {
             createOrderDto.promo = data.promo;
          }
 
-         await createUserOrder(createOrderDto);
+         //todo: utilize redirect
+         const { redirect_url } = await createUserOrder(createOrderDto);
+
+         // //Redirect user to pay page
+         // setTimeout(() => {
+         //    window.location.replace(redirect_url);
+         // }, loadingDuration + animationPeriod);
+
          //Order has created successfully. Clear up previous form and cart
          cart.clearCart();
          events.emit(CLEAR_ORDER_FORM);
@@ -119,7 +129,7 @@ const Pay = () => {
                   </div>
                </li>
             </ul>
-            <div className="email_inp">
+            <div className={payWay === "onPickup" ? "email_inp --disabled" : "email_inp"}>
                <p className="field_title">Почта*</p>
                <FormInput
                   name={"email"}
@@ -133,7 +143,7 @@ const Pay = () => {
                   formValue={formValues["email"]}
                />
             </div>
-            <div className="username_inp">
+            <div className={payWay === "onPickup" ? "username_inp --disabled" : "username_inp"}>
                <p className="field_title">Полное имя*</p>
                <FormInput
                   name={"username"}

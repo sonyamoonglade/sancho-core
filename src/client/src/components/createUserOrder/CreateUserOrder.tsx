@@ -67,7 +67,6 @@ const CreateUserOrder = () => {
    useEffect(() => {
       if (userOrder) {
          document.querySelector(".phone_number_input").classList.remove("--valid");
-
          document.body.style.overflow = "hidden";
       } else {
          document.body.style.overflow = "visible";

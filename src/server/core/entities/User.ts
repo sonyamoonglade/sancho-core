@@ -11,6 +11,41 @@ export type User = {
    name?: string;
 };
 
+export function CustomerData(u: User): CustomerUser {
+   if (!u.remembered_delivery_address) {
+      if (u.name) {
+         return {
+            phone_number: u.phone_number,
+            username: u.name
+         };
+      }
+      return {
+         phone_number: u.phone_number
+      };
+   }
+   if (u.name) {
+      return {
+         phone_number: u.phone_number,
+         delivery_details: {
+            address: u.remembered_delivery_address.address,
+            entrance_number: u.remembered_delivery_address.entrance_number,
+            flat_call: u.remembered_delivery_address.flat_call,
+            floor: u.remembered_delivery_address.floor
+         },
+         username: u.name
+      };
+   }
+   return {
+      username: u.name,
+      phone_number: u.phone_number
+   };
+}
+export type CustomerUser = {
+   username?: string;
+   delivery_details?: DeliveryDetails;
+   phone_number: string;
+};
+
 export type DeliveryUser = {
    user_id: number;
    username: string;

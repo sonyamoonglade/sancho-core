@@ -14,7 +14,7 @@ export interface DeliveryDetails {
    entrance_number: number;
    floor: number;
    flat_call: number;
-   delivered_at: Date | null;
+   delivered_at?: Date;
    comment?: string;
 }
 

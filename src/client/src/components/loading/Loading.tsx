@@ -6,10 +6,6 @@ import { FaCheckCircle } from "react-icons/fa";
 import { AiFillCloseCircle } from "react-icons/ai";
 import { useDotsAnimation } from "./hooks/useDotsAnimation";
 
-interface loadingProps {
-   duration: number;
-}
-
 export enum LoadingSteps {
    "starting" = "Отправляем заказ в пиццерию",
    "middle" = "Создаем заказ",
@@ -17,18 +13,12 @@ export enum LoadingSteps {
    "afterFinish" = "Готово!"
 }
 
-export interface Loading {
-   loading: boolean;
-   duration: number;
-   stopDotsAnimation: Function;
-   dots: string;
-   stopDots: boolean;
-   loadingStep: LoadingSteps;
-   stepsAnimation: Function;
-   dotsAnimation: Function;
-}
+export const loadingDuration = 4 * 1000;
+const waitDuration = 2 * 1000;
+export const animationPeriod = 0.5 * 1000;
+const errorScreenDuration = 5 * 1000;
 
-const Loading: FC<loadingProps> = ({ duration }) => {
+const Loading = () => {
    const { loading, error, errorMessage } = useAppSelector(windowSelector);
    const dispatch = useAppDispatch();
    const { stepsAnimation, dotsAnimation, stopDotsAnimation, setDefaults, loadingStep, dots, stopDots } = useDotsAnimation();
@@ -43,7 +33,7 @@ const Loading: FC<loadingProps> = ({ duration }) => {
 
    useEffect(() => {
       if (loading) {
-         const timePerStep = duration / 3;
+         const timePerStep = loadingDuration / 3;
          const stepsAnimationInterval = setInterval(() => {
             stepsAnimation();
          }, timePerStep);
@@ -51,8 +41,8 @@ const Loading: FC<loadingProps> = ({ duration }) => {
             setTimeout(() => {
                clearInterval(stepsAnimationInterval);
                stopDotsAnimation();
-               setTimeout(finishLoadingAndCloseAllModals, 2000);
-            }, 2000);
+               setTimeout(finishLoadingAndCloseAllModals, waitDuration);
+            }, waitDuration);
          }
          return () => {
             clearInterval(stepsAnimationInterval);
@@ -63,7 +53,7 @@ const Loading: FC<loadingProps> = ({ duration }) => {
       if (loading) {
          let i: any;
          if (loading && !stopDots) {
-            i = setInterval(dotsAnimation, 500);
+            i = setInterval(dotsAnimation, animationPeriod);
          }
 
          return () => clearInterval(i);
@@ -82,7 +72,7 @@ const Loading: FC<loadingProps> = ({ duration }) => {
       setDefaults();
       const t = setTimeout(() => {
          dispatch(windowActions.stopErrorScreen());
-      }, 5000);
+      }, errorScreenDuration);
       return t;
    }
    return (
