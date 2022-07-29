@@ -1,11 +1,11 @@
 import { Pool } from "pg";
 import { Inject } from "@nestjs/common";
-import { Repository } from "../../shared/abstract/repository";
+import { Repository } from "../../packages/abstract/repository";
 import { CheckUser, DeliveryUser, User, users } from "../entities/User";
-import { filter, QueryBuilder } from "../../shared/queryBuilder/QueryBuilder";
-import { pg_conn } from "../../shared/database/db_provider-name";
-import { query_builder } from "../../shared/queryBuilder/provider-name";
-import { RepositoryException } from "../../shared/exceptions/repository.exceptions";
+import { filter, QueryBuilder } from "../../packages/queryBuilder/QueryBuilder";
+import { pg_conn } from "../../packages/database/db_provider-name";
+import { query_builder } from "../../packages/queryBuilder/provider-name";
+import { RepositoryException } from "../../packages/exceptions/repository.exceptions";
 import { UserCredentialsDto } from "./dto/user-creds.dto";
 import { AppRoles, OrderStatus } from "../../../common/types";
 import { marks } from "../entities/Mark";
@@ -135,6 +135,7 @@ export class UserRepository implements Repository<User> {
    }
 
    async isStillRegularCustomer(durationInDays: number, markId: number): Promise<boolean> {
+      //See doc
       const sql = `SELECT (SELECT extract(epoch FROM NOW()+INTERVAL '+4HOUR'))
                    >= (SELECT extract(epoch FROM (SELECT (SELECT created_at FROM ${marks}
                     WHERE id = ${markId}) + INTERVAL '+${durationInDays}DAYS'))::integer) as still

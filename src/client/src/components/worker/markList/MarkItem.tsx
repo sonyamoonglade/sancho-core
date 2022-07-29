@@ -7,13 +7,14 @@ import { GrFormClose } from "react-icons/gr";
 interface markProps {
    onDelete: (markId: number) => Promise<void>;
    mark: Mark;
+   readonly: boolean;
 }
 
-const MarkItem: FC<markProps> = ({ mark, onDelete }) => {
+const MarkItem: FC<markProps> = ({ mark, onDelete, readonly }) => {
    return (
       <div className={mark.is_important ? "mark_item --green" : "mark_item"}>
          <p>{mark.content}</p>
-         <GrFormClose onClick={() => onDelete(mark.id)} className="mark_close_icon" size={35} />
+         {!readonly && <GrFormClose onClick={() => onDelete(mark.id)} className="mark_close_icon" size={35} />}
       </div>
    );
 };

@@ -4,7 +4,7 @@ import * as dayjs from "dayjs";
 import { SessionRepository } from "./session.repository";
 import { Response } from "express";
 import { CookieNames } from "../../types/types";
-import { UnexpectedServerError } from "../../shared/exceptions/unexpected-errors.exceptions";
+import { UnexpectedServerError } from "../../packages/exceptions/unexpected-errors.exceptions";
 import * as crypto from "crypto";
 
 require("dotenv").config();

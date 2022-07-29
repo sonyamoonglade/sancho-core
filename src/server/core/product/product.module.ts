@@ -6,10 +6,10 @@ import { UserService } from "../user/user.service";
 import { SessionService } from "../authentication/session.service";
 import { UserRepository } from "../user/user.repository";
 import { SessionRepository } from "../authentication/session.repository";
-import { QueryBuilderModule } from "../../shared/queryBuilder/qb.module";
-import { DbModule } from "../../shared/database/db.module";
-import { FileStorageModule } from "../../shared/storage/file-storage.module";
-import { FileStorage } from "../../shared/storage/file.storage";
+import { QueryBuilderModule } from "../../packages/queryBuilder/qb.module";
+import { DbModule } from "../../packages/database/db.module";
+import { FileStorageModule } from "../../packages/storage/file-storage.module";
+import { FileStorage } from "../../packages/storage/file.storage";
 
 @Module({
    providers: [ProductRepository, ProductService, SessionService, UserRepository, SessionRepository, UserService, FileStorage],

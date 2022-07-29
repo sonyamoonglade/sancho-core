@@ -13,6 +13,8 @@ const DetailsModal = () => {
    const { downloadCheck } = useWorkerApi();
    const dispatch = useAppDispatch();
    const virtualCart = useVirtualCart();
+   const { fetchUserCredentials } = useWorkerApi();
+
    function deliveryTranslate(isDelivered: boolean) {
       return isDelivered ? "Да" : "Нет";
    }
@@ -22,11 +24,22 @@ const DetailsModal = () => {
    }
 
    const { cddate, cid, cdate, correctData } = useCorrectOrderData(detailedOrder);
+
+   async function fetchCredentialsWrapper() {
+      //in this case phoneNumber goes with '+' so need to cut it up to 2 chars so it becomes 79128988808..
+      const len = detailedOrder?.user?.phone_number.length;
+      const formattedPhoneNumber = detailedOrder?.user?.phone_number.substring(2, len);
+      const creds = await fetchUserCredentials(formattedPhoneNumber);
+      dispatch(workerActions.setMarks(creds?.marks));
+   }
+
    useEffect(() => {
       if (worker.details && detailedOrder) {
          correctData();
+         fetchCredentialsWrapper();
       } else {
          dispatch(workerActions.setDetailedOrder(null));
+         dispatch(workerActions.setMarks([]));
       }
    }, [worker, detailedOrder]);
    useEffect(() => {
@@ -80,10 +93,10 @@ const DetailsModal = () => {
                </>
             )}
             <br />
-            <div className="detail_sum">
-               <p className="detail_item">Сумма заказа: </p>
-               <strong className="detail_item">{detailedOrder.total_cart_price}.00 ₽</strong>
-            </div>
+         </div>
+         <div className="detail_sum">
+            <p className="detail_item">Сумма заказа: </p>
+            <strong className="detail_item">{detailedOrder.total_cart_price}.00 ₽</strong>
          </div>
          <button className="modal_button" onClick={handleCheckDownload}>
             Скачать как чек

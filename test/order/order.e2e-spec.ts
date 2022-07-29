@@ -19,7 +19,7 @@ import { UserService } from "../../src/server/core/user/user.service";
 import { VerifyOrderDto } from "../../src/server/core/order/dto/verify-order.dto";
 import { CancelOrderDto } from "../../src/server/core/order/dto/cancel-order.dto";
 import { CompleteOrderDto } from "../../src/server/core/order/dto/complete-order.dto";
-import { QueryBuilder } from "../../src/server/shared/queryBuilder/QueryBuilder";
+import { QueryBuilder } from "../../src/server/packages/queryBuilder/QueryBuilder";
 
 describe("OrderController (e2e)", () => {
    let app: INestApplication;

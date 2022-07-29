@@ -1,10 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { CheckOrder, DeliveryOrder, LastVerifiedOrder, Order, orders } from "../entities/Order";
 import { Pool } from "pg";
-import { filter, QueryBuilder } from "../../shared/queryBuilder/QueryBuilder";
-import { pg_conn } from "../../shared/database/db_provider-name";
-import { query_builder } from "../../shared/queryBuilder/provider-name";
-import { RepositoryException } from "../../shared/exceptions/repository.exceptions";
+import { filter, QueryBuilder } from "../../packages/queryBuilder/QueryBuilder";
+import { pg_conn } from "../../packages/database/db_provider-name";
+import { query_builder } from "../../packages/queryBuilder/provider-name";
+import { RepositoryException } from "../../packages/exceptions/repository.exceptions";
 import { DeliveryDetails, OrderStatus, VerifiedQueueOrder } from "../../../common/types";
 import { users } from "../entities/User";
 import { QueueOrderDto } from "./dto/queue-order.dto";
@@ -117,13 +117,9 @@ export class OrderRepository {
    }
 
    async update(id: number, updated: Partial<Order | undefined>): Promise<void> {
-      try {
-         const [updateSql, values] = this.qb.ofTable(orders).update<Order>({ where: { id }, set: updated });
-         await this.db.query(updateSql, values);
-         return;
-      } catch (e) {
-         throw new RepositoryException("order repository", e);
-      }
+      const [updateSql, values] = this.qb.ofTable(orders).update<Order>({ where: { id }, set: updated });
+      await this.db.query(updateSql, values);
+      return;
    }
 
    async getAll(): Promise<Order[]> {
@@ -139,13 +135,8 @@ export class OrderRepository {
    }
 
    async customQuery(query: string, values?: any[]): Promise<any[]> {
-      try {
-         const { rows } = await this.db.query(query, values);
-
-         return rows as Order[];
-      } catch (e) {
-         throw new RepositoryException("order repository", e.message);
-      }
+      const { rows } = await this.db.query(query, values);
+      return rows as Order[];
    }
 
    async getOrderList(status: OrderStatus): Promise<VerifiedQueueOrder[]> {
@@ -174,7 +165,9 @@ export class OrderRepository {
    }
 
    async payForOrder(orderId: number): Promise<boolean> {
-      const sql = `UPDATE ${orders} SET is_paid = CASE WHEN is_paid = false THEN true ELSE false END WHERE id = ${orderId} AND status = '${OrderStatus.completed}'  RETURNING id`;
+      const sql = `
+            UPDATE ${orders} SET is_paid = CASE WHEN is_paid = false THEN true ELSE false END
+            WHERE id = ${orderId} AND status = '${OrderStatus.completed}'  RETURNING id`;
       const { rows } = await this.db.query(sql);
       if (rows.length > 0) {
          return true;

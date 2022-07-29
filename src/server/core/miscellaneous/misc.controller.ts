@@ -2,7 +2,7 @@ import { Body, Controller, Get, Post, Put, Res, UseGuards } from "@nestjs/common
 
 import { MiscService } from "./misc.service";
 import { Response } from "express";
-import { Role } from "../../shared/decorators/role/Role";
+import { Role } from "../../packages/decorators/role/Role";
 import { AppRoles } from "../../../common/types";
 import { InitMiscDto } from "./dto/init-misc.dto";
 import { UpdateMiscDto } from "./dto/update-misc.dto";

@@ -20,7 +20,7 @@ import {
    WaitingQueueOrder
 } from "../../../common/types";
 import { CompleteOrderDto } from "./dto/complete-order.dto";
-import { UnexpectedServerError } from "../../shared/exceptions/unexpected-errors.exceptions";
+import { UnexpectedServerError } from "../../packages/exceptions/unexpected-errors.exceptions";
 import {
    CancelExplanationHasNotBeenProvided,
    InvalidOrderStatus,
@@ -28,14 +28,14 @@ import {
    OrderCannotBePaid,
    OrderCannotBeVerified,
    OrderDoesNotExist
-} from "../../shared/exceptions/order.exceptions";
-import { Events } from "../../shared/event/events";
+} from "../../packages/exceptions/order.exceptions";
+import { Events } from "../../packages/event/events";
 import { MiscService } from "../miscellaneous/misc.service";
 import { QueueOrderDto } from "./dto/queue-order.dto";
 import { Miscellaneous } from "../entities/Miscellaneous";
 import { PinoLogger } from "nestjs-pino";
 import { DeliveryService } from "../delivery/delivery.service";
-import { EventsService } from "../../shared/event/event.module";
+import { EventsService } from "../../packages/event/event.module";
 import { EventEmitter } from "node:events";
 
 @Injectable()

@@ -1,6 +1,6 @@
 import { ArgumentsHost, Catch } from "@nestjs/common";
 import { BaseExceptionFilter } from "@nestjs/core";
-import { PayPolicyException } from "../../../shared/pay/policy";
+import { PayPolicyException } from "../../../packages/pay/policy";
 import { Response } from "express";
 
 @Catch()

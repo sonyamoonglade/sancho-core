@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo } from "react";
 import "./MarkItem";
 import { useAppDispatch, useAppSelector, windowSelector, workerActions, workerSelector } from "../../../redux";
 import Mark from "./MarkItem";
@@ -11,6 +11,10 @@ const MarkList = () => {
    const isActive = useMemo(() => {
       return user.marks.length > 0;
    }, [worker, user]);
+
+   const isReadonly = useMemo(() => {
+      return worker.details;
+   }, [worker]);
 
    const { deleteMark } = useMark();
    const dispatch = useAppDispatch();
@@ -26,7 +30,7 @@ const MarkList = () => {
    return (
       <div className={isActive ? "marks list --marks-active" : "marks list"}>
          {user?.marks?.map((mark) => (
-            <Mark onDelete={handleMarkDelete} mark={mark} key={mark.id} />
+            <Mark readonly={isReadonly} onDelete={handleMarkDelete} mark={mark} key={mark.id} />
          ))}
       </div>
    );

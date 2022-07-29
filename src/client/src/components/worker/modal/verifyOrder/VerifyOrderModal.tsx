@@ -12,6 +12,7 @@ import { currency } from "../../../../common/constants";
 import { useVerifyOrder } from "./hooks/useVerifyOrder";
 import { helpers } from "../../../../helpers/helpers";
 import { useCreateMasterOrder, UserCredentials } from "../createOrder/hooks/useCreateMasterOrder";
+import { useWorkerApi } from "../../../../hooks/useWorkerApi";
 
 const VerifyOrderModal = () => {
    const { worker, drag } = useAppSelector(windowSelector);
@@ -35,7 +36,7 @@ const VerifyOrderModal = () => {
    } = useVerifyOrderForm(orderQueue);
 
    const { verifyOrder } = useVerifyOrder(client, orderQueue, totalOrderPrice, virtualCartState.items);
-   const { fetchUserCredentials } = useCreateMasterOrder();
+   const { fetchUserCredentials } = useWorkerApi();
    const { DELIVERY_PUNISHMENT_THRESHOLD, DELIVERY_PUNISHMENT_VALUE } = useAppSelector(miscSelector);
 
    function toggleVirtualCart() {

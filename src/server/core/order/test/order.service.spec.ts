@@ -1,14 +1,14 @@
 import { OrderRepository } from "../order.repository";
 import { OrderService } from "../order.service";
 import { UserService } from "../../user/user.service";
-import { JsonService } from "../../../shared/database/json.service";
+import { JsonService } from "../../../packages/database/json.service";
 import { ProductRepository } from "../../product/product.repository";
 import { MiscService } from "../../miscellaneous/misc.service";
 import { MiscRepository } from "../../miscellaneous/misc.repository";
 import { SessionService } from "../../authentication/session.service";
 import { SessionRepository } from "../../authentication/session.repository";
 import { UserRepository } from "../../user/user.repository";
-import { OrderCannotBePaid } from "../../../shared/exceptions/order.exceptions";
+import { OrderCannotBePaid } from "../../../packages/exceptions/order.exceptions";
 import { MarkRepository } from "../../mark/mark.repository";
 
 describe("OrderService", () => {

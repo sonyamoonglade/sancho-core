@@ -2,13 +2,13 @@ import { Body, Controller, Get, ParseIntPipe, Post, Query, Res, UseGuards } from
 import { DeliveryService } from "./delivery.service";
 import { Response } from "express";
 import { AuthorizationGuard } from "../authorization/authorization.guard";
-import { Role } from "../../shared/decorators/role/Role";
+import { Role } from "../../packages/decorators/role/Role";
 import { AppRoles } from "../../../common/types";
 import { CreateDeliveryDto, CreateDeliveryDtoFrontend, DownloadCheckDto, DownloadCheckInput, RegisterRunnerDto } from "./dto/delivery.dto";
 import { OrderService } from "../order/order.service";
 import { UserService } from "../user/user.service";
 import { PinoLogger } from "nestjs-pino";
-import { UnexpectedServerError } from "../../shared/exceptions/unexpected-errors.exceptions";
+import { UnexpectedServerError } from "../../packages/exceptions/unexpected-errors.exceptions";
 
 @Controller("/delivery")
 @UseGuards(AuthorizationGuard)
@@ -34,7 +34,6 @@ export class DeliveryController {
             user: usrData,
             order: ordData
          };
-         console.log("dto for delivery", dto);
          const ok = await this.deliveryService.createDelivery(dto);
          if (!ok) {
             this.logger.error("internal error occurred calling delivery microservice");
@@ -43,7 +42,6 @@ export class DeliveryController {
          this.logger.info("success call for delivery service");
          return res.status(201).end();
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }

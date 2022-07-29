@@ -1,10 +1,10 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { Session, sessions } from "../entities/Session";
 import { Pool } from "pg";
-import { filter, QueryBuilder } from "../../shared/queryBuilder/QueryBuilder";
-import { pg_conn } from "../../shared/database/db_provider-name";
-import { query_builder } from "../../shared/queryBuilder/provider-name";
-import { RepositoryException } from "../../shared/exceptions/repository.exceptions";
+import { filter, QueryBuilder } from "../../packages/queryBuilder/QueryBuilder";
+import { pg_conn } from "../../packages/database/db_provider-name";
+import { query_builder } from "../../packages/queryBuilder/provider-name";
+import { RepositoryException } from "../../packages/exceptions/repository.exceptions";
 
 @Injectable()
 export class SessionRepository {

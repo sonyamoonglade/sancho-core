@@ -8,7 +8,7 @@ import { SessionService } from "../authentication/session.service";
 import { AppRoles } from "../../../common/types";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { CookieNames, extendedRequest } from "../../types/types";
-import { Role } from "../../shared/decorators/role/Role";
+import { Role } from "../../packages/decorators/role/Role";
 import { RegisterSpamGuard } from "../authentication/guard/register-spam.guard";
 import { CreateMarkDto } from "../mark/dto/create-mark.dto";
 import { AuthorizationGuard } from "../authorization/authorization.guard";

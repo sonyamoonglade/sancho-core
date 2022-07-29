@@ -20,17 +20,5 @@ export function useCreateMasterOrder() {
       [client]
    );
 
-   const fetchUserCredentials = useCallback(async function (phoneNumber: string): Promise<UserCredentials | null> {
-      try {
-         const res = await client.get(`users/credentials?phoneNumber=7${phoneNumber}`);
-         if (res.status === 200) {
-            return res.data.credentials;
-         }
-         return null;
-      } catch (e) {
-         return null;
-      }
-   }, []);
-
-   return { createMasterOrder, fetchUserCredentials };
+   return { createMasterOrder };
 }

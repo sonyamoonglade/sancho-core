@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { CreateMasterOrderDto } from "../dto/create-order.dto";
-import { OrderCreationLimitExceeded } from "../../../shared/exceptions/order.exceptions";
+import { OrderCreationLimitExceeded } from "../../../packages/exceptions/order.exceptions";
 import { OrderService } from "../order.service";
 import { LastVerifiedOrder, Order } from "../../entities/Order";
 import * as dayjs from "dayjs";

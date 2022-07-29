@@ -7,8 +7,8 @@ import {
    ProductAlreadyExistsException,
    ProductCantBeApproved,
    ProductDoesNotExistException
-} from "../../shared/exceptions/product.exceptions";
-import { ValidationErrorException } from "../../shared/exceptions/validation.exceptions";
+} from "../../packages/exceptions/product.exceptions";
+import { ValidationErrorException } from "../../packages/exceptions/validation.exceptions";
 import { ProductRepository } from "./product.repository";
 import { PutImageDto } from "./dto/put-image.dto";
 

@@ -9,6 +9,7 @@ import { helpers } from "../../../../helpers/helpers";
 import { useCreateOrderForm } from "./hooks/useCreateOrderForm";
 import { useCreateMasterOrder } from "./hooks/useCreateMasterOrder";
 import { useVirtualCart } from "../../hooks/useVirtualCart";
+import { useWorkerApi } from "../../../../hooks/useWorkerApi";
 
 const CreateOrderModal = () => {
    const { worker } = useAppSelector(windowSelector);
@@ -23,9 +24,8 @@ const CreateOrderModal = () => {
    }
 
    const { formValues, setFormDefaults, setFormValues, getFormValues, setUserCredentials, isSubmitButtonActive } = useCreateOrderForm();
-   const { createMasterOrder, fetchUserCredentials } = useCreateMasterOrder();
-
-   const virtualCart = useVirtualCart();
+   const { createMasterOrder } = useCreateMasterOrder();
+   const { fetchUserCredentials } = useWorkerApi();
 
    async function handleOrderCreation() {
       if (!isSubmitButtonActive) {

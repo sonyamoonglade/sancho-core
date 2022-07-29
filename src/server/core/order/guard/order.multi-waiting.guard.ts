@@ -1,7 +1,7 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 
 import { OrderService } from "../order.service";
-import { LastOrderIsNotYetVerified } from "../../../shared/exceptions/order.exceptions";
+import { LastOrderIsNotYetVerified } from "../../../packages/exceptions/order.exceptions";
 
 @Injectable()
 export class MultiWaitingOrderGuard implements CanActivate {

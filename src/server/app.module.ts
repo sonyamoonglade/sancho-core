@@ -8,22 +8,22 @@ import { OrderController } from "./core/order/order.controller";
 import { OrderService } from "./core/order/order.service";
 import { OrderRepository } from "./core/order/order.repository";
 import { AppController } from "./app.controller";
-import { QueryBuilderModule } from "./shared/queryBuilder/qb.module";
-import { DbModule } from "./shared/database/db.module";
+import { QueryBuilderModule } from "./packages/queryBuilder/qb.module";
+import { DbModule } from "./packages/database/db.module";
 import { MiscController } from "./core/miscellaneous/misc.controller";
 import { UserService } from "./core/user/user.service";
 import { ProductRepository } from "./core/product/product.repository";
 import { MiscService } from "./core/miscellaneous/misc.service";
 import { UserRepository } from "./core/user/user.repository";
 import { MiscRepository } from "./core/miscellaneous/misc.repository";
-import { CookieService } from "./shared/cookie/cookie.service";
+import { CookieService } from "./packages/cookie/cookie.service";
 import { ProductService } from "./core/product/product.service";
-import { FileStorage } from "./shared/storage/file.storage";
+import { FileStorage } from "./packages/storage/file.storage";
 import { MarkRepository } from "./core/mark/mark.repository";
 import { DeliveryController } from "./core/delivery/delivery.controller";
 import { DeliveryService } from "./core/delivery/delivery.service";
 import { LoggerModule } from "nestjs-pino";
-import { EventsService } from "./shared/event/event.module";
+import { EventsService } from "./packages/event/event.module";
 
 @Module({
    controllers: [AppController, UserController, OrderController, ProductController, MiscController, DeliveryController],

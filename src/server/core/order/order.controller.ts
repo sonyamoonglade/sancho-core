@@ -7,8 +7,8 @@ import { CancelOrderDto } from "./dto/cancel-order.dto";
 import { AppRoles, OrderStatus } from "../../../common/types";
 import { CanCancelGuard } from "./guard/can-cancel.guard";
 import { CompleteOrderDto } from "./dto/complete-order.dto";
-import { CookieService } from "../../shared/cookie/cookie.service";
-import { Role } from "../../shared/decorators/role/Role";
+import { CookieService } from "../../packages/cookie/cookie.service";
+import { Role } from "../../packages/decorators/role/Role";
 import { extendedRequest } from "../../types/types";
 import { AuthorizationGuard } from "../authorization/authorization.guard";
 import { UserService } from "../user/user.service";
@@ -16,7 +16,7 @@ import { User } from "../entities/User";
 import { MultiWaitingOrderGuard } from "./guard/order.multi-waiting.guard";
 import { CreationLimitGuard } from "./guard/order.creation-limit.guard";
 import { PolicyFilter } from "./filter/order.filter";
-import { applyPayPolicy } from "../../shared/pay/policy";
+import { applyPayPolicy } from "../../packages/pay/policy";
 import { PinoLogger } from "nestjs-pino";
 
 @Controller("/order")

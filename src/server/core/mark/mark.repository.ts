@@ -1,7 +1,7 @@
-import { pg_conn } from "../../shared/database/db_provider-name";
+import { pg_conn } from "../../packages/database/db_provider-name";
 import { PoolClient } from "pg";
-import { query_builder } from "../../shared/queryBuilder/provider-name";
-import { QueryBuilder } from "../../shared/queryBuilder/QueryBuilder";
+import { query_builder } from "../../packages/queryBuilder/provider-name";
+import { QueryBuilder } from "../../packages/queryBuilder/QueryBuilder";
 import { CreateMarkDto } from "./dto/create-mark.dto";
 import { Mark, marks } from "../entities/Mark";
 import { Inject, Injectable } from "@nestjs/common";
@@ -16,7 +16,6 @@ export class MarkRepository implements MarkRepositoryInterface {
       const sql = `INSERT INTO ${marks} (user_id,content,is_important,created_at) VALUES ($1,$2,$3,NOW()) ON CONFLICT DO NOTHING RETURNING *`;
       const values = [dto.userId, dto.content, dto.isImportant];
       const { rows } = await this.db.query(sql, values);
-      console.log(rows);
       if (rows.length > 0) {
          return rows[0];
       }
