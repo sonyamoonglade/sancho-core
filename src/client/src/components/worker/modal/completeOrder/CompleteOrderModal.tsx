@@ -29,7 +29,7 @@ const CompleteOrderModal = () => {
       } catch (e) {}
    }
    return (
-      <div className={worker.completeOrder ? "worker_modal complete --w-opened" : "worker_modal"}>
+      <div className={worker.completeOrder ? "complete worker_modal --w-opened" : "complete worker_modal "}>
          <div>
             <p className="modal_title">Подтвердить готовность заказа</p>
 

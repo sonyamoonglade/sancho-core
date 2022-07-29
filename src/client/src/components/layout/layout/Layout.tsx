@@ -20,7 +20,7 @@ import Dashboard from "../../admin/dashboard/Dashboard";
 import Users from "../../admin/users/Users";
 import Orders from "../../admin/orders/Orders";
 import AdminQueue from "../../admin/queue/AdminQueue";
-import MarkList from "../../worker/mark/MarkList";
+import MarkList from "../../worker/markList/MarkList";
 import MarkModal from "../../worker/modal/mark/MarkModal";
 import { CatalogContext, LayoutContext } from "../context";
 

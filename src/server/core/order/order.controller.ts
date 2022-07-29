@@ -17,11 +17,17 @@ import { MultiWaitingOrderGuard } from "./guard/order.multi-waiting.guard";
 import { CreationLimitGuard } from "./guard/order.creation-limit.guard";
 import { PolicyFilter } from "./filter/order.filter";
 import { applyPayPolicy } from "../../shared/pay/policy";
+import { PinoLogger } from "nestjs-pino";
 
 @Controller("/order")
 @UseGuards(AuthorizationGuard)
 export class OrderController {
-   constructor(private orderService: OrderService, private cookieService: CookieService, private userService: UserService) {}
+   constructor(
+      private orderService: OrderService,
+      private cookieService: CookieService,
+      private userService: UserService,
+      private logger: PinoLogger
+   ) {}
 
    @Post("/createUserOrder")
    @UseGuards(MultiWaitingOrderGuard)
@@ -108,12 +114,15 @@ export class OrderController {
    @UseGuards(CanCancelGuard)
    @Role([AppRoles.worker, AppRoles.user])
    async cancelOrder(@Res() res: Response, @Req() req: extendedRequest, @Body() dto: CancelOrderDto) {
+      this.logger.info("cancel order");
       try {
          const userId = req.user_id;
          const role = await this.userService.getUserRole(userId);
          dto.role = role as AppRoles;
          const isCancelledByUser = await this.orderService.cancelOrder(userId, dto);
+         this.logger.debug("cancelled order");
          if (isCancelledByUser) {
+            this.logger.debug("set can cancel cookie");
             // todo: set to env / config var / pg var
             const cancelBanTtl = 5;
             res = this.cookieService.setCanCancelCookie(res, cancelBanTtl);

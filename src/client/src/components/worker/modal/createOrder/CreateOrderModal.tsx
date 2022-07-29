@@ -92,7 +92,7 @@ const CreateOrderModal = () => {
    }, [worker.createOrder]);
 
    return (
-      <div className={worker.createOrder ? "worker_modal create --w-opened" : "worker_modal create"}>
+      <div className={worker.createOrder ? "create worker_modal --w-opened" : "create worker_modal"}>
          <p className="modal_title">Создать заказ</p>
          <RiSettings4Line onClick={toggleVirtualCart} className="submit_settings" size={25} />
          <VirtualCart />

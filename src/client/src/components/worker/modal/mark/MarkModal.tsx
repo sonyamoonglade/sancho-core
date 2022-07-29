@@ -42,7 +42,7 @@ const MarkModal = () => {
       const body = getFormValues();
       const ok = await createMark(body);
       if (ok) {
-         // show alert here
+         //TODO: show alert here
       }
       dispatch(windowActions.toggleMark());
       return;
@@ -56,7 +56,7 @@ const MarkModal = () => {
    }, [worker.mark]);
 
    return (
-      <div className={worker.mark ? "worker_modal mark --w-opened" : "worker_modal mark"}>
+      <div className={worker.mark ? "mark worker_modal --w-opened" : "mark worker_modal"}>
          <p className="modal_title">Прикрепить метку</p>
          <LiveSearch focusRef={focusRef} type={Livesearch.PHONE_NUMBER} regexp={onlyPhoneNumberRegexp} />
          <LsUserResultContainer onSelect={handleSelectOnUser} result={findUserQueryResults} />

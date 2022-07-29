@@ -17,21 +17,16 @@ export const getOrderHistory = (client: AxiosInstance, to: number) => async (dis
       dispatch(orderActions.setIsFetching(false));
    } catch (e: any) {
       dispatch(orderActions.setIsFetching(false));
-      return Promise.reject(e.message);
    }
 };
 
 export const cancelOrder = (client: AxiosInstance, orderId: number, phoneNumber: string) => async (dispatch: AppDispatch) => {
-   try {
-      const uce = USER_CANCEL_EXPLANATION;
-      const body = {
-         order_id: orderId,
-         cancel_explanation: `${uce} `
-      };
+   const uce = USER_CANCEL_EXPLANATION;
+   const body = {
+      order_id: orderId,
+      cancel_explanation: `${uce} ${phoneNumber}`
+   };
 
-      await client.put("order/cancel", body);
-      dispatch(orderActions.cancelById(orderId));
-   } catch (e: any) {
-      return Promise.reject(e.message);
-   }
+   await client.put("order/cancel", body);
+   dispatch(orderActions.cancelById(orderId));
 };

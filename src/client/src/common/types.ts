@@ -105,7 +105,8 @@ export interface ListResponse {
    complete: VerifiedQueueOrder[];
 }
 
-export type Pay = "online" | "onPickup";
+export const PayMethods = ["online", "onPickup"] as const;
+export type Pay = typeof PayMethods[number];
 
 export type CreateUserOrderDto = {
    cart: DatabaseCartProduct[];

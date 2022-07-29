@@ -26,7 +26,6 @@ export class UserController {
          res = this.sessionService.putMasterSession(res, SID);
          return res.status(200).send({ role });
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }
@@ -36,14 +35,11 @@ export class UserController {
       try {
          const userId = req.user_id;
          const user = await this.userService.authMe(userId);
-         console.log(user);
          if (user.role === AppRoles.user) {
             return res.status(200).send({ phone_number: user.phone_number });
          }
          return res.status(200).send({ role: user.role });
       } catch (e) {
-         console.log(e);
-
          throw e;
       }
    }
@@ -55,7 +51,6 @@ export class UserController {
             username
          });
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }
@@ -66,7 +61,6 @@ export class UserController {
          const credentials = await this.userService.getUserCredentials(phoneNumber);
          return res.status(200).send({ credentials });
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }
@@ -89,7 +83,6 @@ export class UserController {
          res = this.sessionService.putUserSession(res, SID);
          return res.status(200).end();
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }
@@ -104,8 +97,6 @@ export class UserController {
             role: masterUser.role
          });
       } catch (e) {
-         console.log(e);
-
          throw e;
       }
    }
@@ -118,7 +109,6 @@ export class UserController {
          this.sessionService.clearSession(res);
          return res.status(200).end();
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }
@@ -132,7 +122,6 @@ export class UserController {
          await this.userService.createMark(dto);
          return res.status(201).end();
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }
@@ -146,7 +135,6 @@ export class UserController {
          }
          return res.status(200).end();
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }
@@ -157,7 +145,6 @@ export class UserController {
          const result = await this.userService.findByNumberQuery(query);
          return res.status(200).send({ result });
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }

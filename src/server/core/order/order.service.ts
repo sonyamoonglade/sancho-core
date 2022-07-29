@@ -451,8 +451,6 @@ export class OrderService {
       if (!data) {
          throw new OrderDoesNotExist(orderId);
       }
-
-      console.log(data);
       this.logger.info("prepare data success");
       return data;
    }

@@ -61,7 +61,7 @@ const CancelOrderModal = () => {
    }
 
    return (
-      <div className={worker.cancelOrder ? "worker_modal cancel --w-opened" : "worker_modal"}>
+      <div className={worker.cancelOrder ? "cancel worker_modal --w-opened" : "cancel worker_modal"}>
          <div>
             <p className="modal_title">Отменить заказ</p>
             <CancelOrderForm

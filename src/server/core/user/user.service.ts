@@ -58,7 +58,6 @@ export class UserService {
    async prepareDataForCheck(orderId: number): Promise<CheckUser> {
       this.logger.info(`prepare user check data for order ${orderId}`);
       const data = await this.userRepository.prepareDataForCheck(orderId);
-      this.logger.debug(`received data ${JSON.stringify(data)}`);
       if (!data) {
          throw new CouldNotGetUserDeliveryData();
       }
@@ -69,7 +68,6 @@ export class UserService {
    async prepareDataForDelivery(orderId: number): Promise<DeliveryUser> {
       this.logger.info(`prepare user delivery data for order ${orderId}`);
       const data = await this.userRepository.prepareDataForDelivery(orderId);
-      this.logger.debug(`received data ${JSON.stringify(data)}`);
       if (!data) {
          throw new CouldNotGetUserDeliveryData();
       }

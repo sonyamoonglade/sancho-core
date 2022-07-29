@@ -24,7 +24,7 @@ const MarkList = () => {
    }
 
    return (
-      <div className={isActive ? "marks --marks-active" : "marks"}>
+      <div className={isActive ? "marks list --marks-active" : "marks list"}>
          {user?.marks?.map((mark) => (
             <Mark onDelete={handleMarkDelete} mark={mark} key={mark.id} />
          ))}
