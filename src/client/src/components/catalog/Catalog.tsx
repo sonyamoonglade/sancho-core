@@ -15,6 +15,19 @@ const Catalog: FC<catalogProps> = ({ productList }) => {
          return p.category;
       }
 
+      const categCount = productList.reduce((a: number, c: Product, i: number) => {
+         const currCateg = c.category;
+         let nextCateg: string;
+         if (i !== productList.length - 1) {
+            nextCateg = productList[i + 1]?.category;
+         }
+         if (currCateg !== nextCateg) {
+            a += 1;
+         }
+         return a;
+      }, 0);
+      console.log(categCount);
+
       if (productList[i].category !== productList[i - 1].category) {
          return productList[i].category;
       }

@@ -27,8 +27,14 @@
     top: 35px;
   }
 
-  @media (min-width: 1440px) {
-    top: 60px;
+  @media (min-width: 1540px) {
+    margin: 1rem 0 0 9%;
   }
+
+  @media (min-width: 1700px) {
+    margin: 1rem 0 0 12%;
+  }
+
+
 
 }

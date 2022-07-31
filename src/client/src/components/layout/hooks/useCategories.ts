@@ -5,15 +5,23 @@ export function useCategories(catalogRef: any) {
    const { categories } = useAppSelector(productSelector);
    const dispatch = useAppDispatch();
    const adjm = useRef<Map<string, number>>(null);
-
    function fillUpAdj(): Map<string, number> {
       if (catalogRef.current !== null) {
          const m = new Map<string, number>();
-         for (const cat of categories) {
-            for (const child of catalogRef?.current.children) {
+         for (const [i, cat] of categories.entries()) {
+            //Catalog items
+            const children = catalogRef?.current.children;
+            for (const child of children) {
                if (cat.value === child.id) {
                   const bounds = (child as HTMLElement).getBoundingClientRect();
-                  m.set(cat.value, Math.round(bounds.top));
+                  let scrollv = Math.round(bounds.top);
+                  //Compare calculated scroll value with previous category in the map
+                  if (i !== 0 && scrollv === m.get(categories[i - 1].value)) {
+                     //Increase scroll value by 10% to prevent identic scroll values in the map
+                     scrollv = scrollv * 1.1;
+                  }
+                  //Put it
+                  m.set(cat.value, scrollv);
                }
             }
          }
@@ -30,22 +38,18 @@ export function useCategories(catalogRef: any) {
          return out;
       }, {} as any);
    }
-   function findClosest(v: number): string {
+   function findClosest(v: number): void {
       for (const [k, mv] of adjm.current.entries()) {
          const currCateg = categories.find((c) => c.active);
+         //Find the closest category by scroll value and activate it
          if (v * 0.95 < mv && v * 1.05 > mv) {
+            if (currCateg.value === k) {
+               break;
+            }
             dispatch(productActions.activateCategory(k));
             break;
-         } else if (v < adjm.current.get(currCateg.value)) {
-            const currIdx = categories.findIndex((c) => c.active);
-            if (currIdx > 0) {
-               const next = categories[currIdx - 1];
-               dispatch(productActions.activateCategory(next.value));
-            }
          }
       }
-
-      return "";
    }
 
    return { fillUpAdj, findClosest, adjm, categories };

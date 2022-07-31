@@ -1,56 +1,40 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import "./categories.styles.scss";
-import { productSelector, useAppSelector } from "../../redux";
+import { productActions, productSelector, useAppDispatch, useAppSelector, windowSelector } from "../../redux";
 import { LayoutContext } from "../layout/context";
 
 const Categories = () => {
    const { categories: list, categoriesScrollAdj: mapLikeObj } = useAppSelector(productSelector);
    const { layoutRef } = useContext(LayoutContext);
-   const [isScrolling, setIsScrolling] = useState(false);
+   const { appResponsiveState } = useAppSelector(windowSelector);
+   const categRef = useRef(null);
+   useEffect(() => {
+      //Make Categories position property 'top' = 0 after certain scroll
+      //1550px is breakpoint for @media query in stylesheet
+      if (layoutRef.current.offsetWidth > 1550) {
+         layoutRef.current.onscroll = function () {
+            const curr = layoutRef.current.scrollTop;
+            if (curr >= 220) {
+               categRef.current.style.top = "80px";
+            } else {
+               categRef.current.style.top = "280px";
+            }
+         };
+      }
+   }, [layoutRef, layoutRef.current, appResponsiveState, layoutRef?.current?.offsetWidth]);
 
    function activate(categ: string) {
-      if (isScrolling) {
-         return;
-      }
       if (layoutRef.current !== null && mapLikeObj !== null) {
          const m: Map<string, number> = objToMap(mapLikeObj);
          const categScroll: number = m.get(categ);
-         const finalScroll = categScroll - 120 - 16;
-         smoothTo(layoutRef, finalScroll);
+         //120 - 16 is approx height of box
+         let finalScroll = categScroll - 120 - 16;
+         scrollTo(layoutRef, finalScroll);
       }
    }
 
-   function smoothTo(ref: any, v: number) {
-      setIsScrolling(true);
-      let curr: number = ref?.current.scrollTop;
-      if (curr === 0) {
-         curr = 80;
-      }
-      if (curr >= v) {
-         const steps = 50;
-         const interval = setInterval(() => {
-            const perStep = curr / steps;
-
-            if (curr <= v) {
-               clearInterval(interval);
-               setIsScrolling(false);
-            }
-            curr -= perStep;
-            ref.current.scroll({ top: curr - perStep });
-         }, 3);
-      } else {
-         const steps = 150;
-         const interval = setInterval(() => {
-            const perStep = curr / steps;
-
-            if (curr >= v) {
-               clearInterval(interval);
-               setIsScrolling(false);
-            }
-            curr += perStep;
-            ref.current.scroll({ top: curr + perStep });
-         }, 3);
-      }
+   function scrollTo(ref: any, v: number) {
+      ref.current.scroll(0, v);
    }
 
    function objToMap(v: object): Map<string, any> {
@@ -61,8 +45,8 @@ const Categories = () => {
    }
 
    return (
-      <div className="categories">
-         {list?.map((c) => (
+      <div className="categories" ref={categRef}>
+         {list?.map((c, i) => (
             <div onClick={() => activate(c.value)} key={c.value} className={c.active ? "category_item --category-active" : "category_item"}>
                <p>{c.value}</p>
             </div>

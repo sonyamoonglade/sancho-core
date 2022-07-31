@@ -6,13 +6,13 @@ import { AppRoles } from "../../common/types";
 export const authMe = (client: AxiosInstance) => async (dispatch: AppDispatch) => {
    const r = await client.get(`/users/auth/me`);
 
-   if (r.status === 200 && r.data.phone_number !== undefined && r.data.role === undefined) {
+   if (r && r.status === 200 && r.data.phone_number !== undefined && r.data.role === undefined) {
       return dispatch(userActions.login(r.data));
    }
-   if (r.data.role === AppRoles.worker) {
+   if (r && r.data.role === AppRoles.worker) {
       return dispatch(userActions.loginWorker());
    }
-   if (r.data.role === AppRoles.master) {
+   if (r && r.data.role === AppRoles.master) {
       return dispatch(userActions.loginMaster());
    }
 };

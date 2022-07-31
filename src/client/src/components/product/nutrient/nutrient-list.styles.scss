@@ -17,6 +17,9 @@
     @media (min-width: 768px) {
       font-size: $font-md;
     }
+    @media (min-width: 1440px) {
+      font-size: $font-regular;
+    }
   }
 
 }
@@ -32,7 +35,6 @@
 
 .nutrient.row{
   margin-right: 0.5rem;
-  font-size: $font-smer;
 
 }
 .nutrient.row:last-of-type{

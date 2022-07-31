@@ -3,15 +3,37 @@
 
 .categories{
   position: sticky;
-  width: 100%;
+  //width: 100%;
   white-space: nowrap;
   overflow-x: auto;
   display: flex;
   align-items: center;
+  transition: all 0.3s ease-in-out;
   z-index: 50;
   top: 68px;
   margin-left: 1rem;
   margin-top: 1.5rem;
+
+  @media (min-width: 1440px) {
+    margin-top: 2.5rem;
+    top: 88px;
+  }
+
+  @media (min-width: 1540px) {
+    flex-direction: column;
+    position: fixed;
+    left: calc((10% - 130px)/2 );
+    top: 280px;
+    margin-left: 0;
+
+    align-items: flex-start;
+  }
+  @media (min-width: 1700px) {
+    left: calc((10% - 115px)/2 );
+
+  }
+
+
 }
 
 .category_item{
@@ -25,6 +47,14 @@
     font-size: $font-regular;
     user-select: none;
 
+
+  }
+  @media (min-width: 1540px) {
+    margin-bottom: 0.7rem;
+    width: 120px;
+    p{
+      text-align: center;
+    }
   }
 }
 .--category-active{

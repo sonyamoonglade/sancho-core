@@ -118,3 +118,9 @@ export type CreateUserOrderDto = {
    username?: string;
    promo?: string;
 };
+
+export type CustomerUser = {
+   username?: string;
+   delivery_details?: DeliveryDetails;
+   phone_number: string;
+};

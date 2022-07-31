@@ -18,12 +18,6 @@ export interface DeliveryDetails {
    comment?: string;
 }
 
-export type CustomerUser = {
-   username?: string;
-   delivery_details?: DeliveryDetails;
-   phone_number: string;
-};
-
 export interface Features {
    weight: number;
    energy_value?: number;
@@ -123,4 +117,10 @@ export type CreateUserOrderDto = {
    email?: string;
    username?: string;
    promo?: string;
+};
+
+export type CustomerUser = {
+   username?: string;
+   delivery_details?: DeliveryDetails;
+   phone_number: string;
 };

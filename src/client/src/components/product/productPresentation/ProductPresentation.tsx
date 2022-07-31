@@ -46,7 +46,6 @@ const ProductPresentation = () => {
                   <div className="title presentation">
                      <span>
                         <p className="name presentation">{presentedProduct.translate}</p>
-                        {/*{isLongName && <p className='long_name'>{longName}</p>}*/}
                      </span>
                      <p className="price">
                         {presentedProduct.price} {currency}

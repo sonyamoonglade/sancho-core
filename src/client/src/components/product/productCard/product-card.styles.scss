@@ -104,6 +104,7 @@
 
 }
 .image{
+  padding: 1rem;
   width: 85vw;
   border-radius: 40px;
   aspect-ratio: 95/73;
@@ -133,7 +134,7 @@
   }
   @media (min-width: 1440px) {
     width: calc(((100vw - 4rem) / 3) - 4rem);;
-    max-width: 450px;
+    max-width: 515px;
   }
 
 }
