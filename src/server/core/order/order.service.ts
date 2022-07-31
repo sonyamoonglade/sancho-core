@@ -296,19 +296,16 @@ export class OrderService {
       }
    }
 
-   public async orderQueue(res: Response): Promise<void> {
-      this.events.on(Events.REFRESH_ORDER_QUEUE, async () => {
-         this.logger.debug("handle REFRESH_ORDER_QUEUE event");
-         const queue = await this.fetchOrderQueue();
-         const chunk = `data: ${JSON.stringify({ queue })}\n\n`;
-         res.write(chunk);
-      });
+   public async notifyQueueSubscribers(connections: Response[]): Promise<void> {
+      const queue = await this.fetchOrderQueue();
+      const chunk = `data: ${JSON.stringify({ queue })}\n\n`;
 
-      res.on("close", () => {
-         this.logger.info("closing order queue connection");
-         this.events.removeAllListeners(Events.REFRESH_ORDER_QUEUE);
-         res.end();
-      });
+      connections
+         .filter((conn) => conn.writable)
+         .forEach((conn) => {
+            conn.write(chunk);
+         });
+      return;
    }
 
    private async fetchOrderQueue(): Promise<OrderQueue> {

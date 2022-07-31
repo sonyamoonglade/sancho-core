@@ -52,13 +52,13 @@ export class DeliveryService implements DeliveryServiceInterface {
    }
 
    async createDelivery(dto: CreateDeliveryDto): Promise<boolean> {
-      this.logger.info("call delivery microservice createDelivery");
+      this.logger.info("createDelivery");
       //todo: implement request id
       try {
          const endPoint = "/delivery";
          await axios.post(this.url + endPoint, dto);
 
-         this.logger.info("call succeeded");
+         this.logger.info("ok");
          this.events.emit(Events.REFRESH_ORDER_QUEUE);
          return true;
       } catch (e: any) {
@@ -66,41 +66,41 @@ export class DeliveryService implements DeliveryServiceInterface {
             order_id: dto.order.order_id
          };
          this.parseDeliveryError(e, payload);
-         this.logger.error("call failed with error");
+         this.logger.error("failed with error");
          return false;
       }
    }
 
    async registerRunner(dto: RegisterRunnerDto): Promise<boolean> {
-      this.logger.info("call delivery microservice registerRunner");
+      this.logger.info("registerRunner");
       try {
          const endpoint = "/runner";
          await axios.post(this.url + endpoint, dto);
-         this.logger.info("call succeeded");
+         this.logger.info("ok");
          return true;
       } catch (e: any) {
          const payload = {
             phoneNumber: dto.phone_number
          };
          this.parseDeliveryError(e, payload);
-         this.logger.error("call failed with error");
+         this.logger.error("failed with error");
          return false;
       }
    }
 
    async status(orderIds: number[]): Promise<DeliveryStatus[]> {
-      this.logger.info("call delivery microservice status");
+      this.logger.info("status");
       try {
          const endPoint = "/delivery/status";
          const body = {
             order_ids: orderIds
          };
          const { data } = await axios.post(this.url + endPoint, body);
-         this.logger.info("call succeeded");
+         this.logger.info("ok");
          return data.result;
       } catch (e) {
          this.parseDeliveryError(e);
-         this.logger.error("call failed with error");
+         this.logger.error("failed with error");
          return [];
       }
    }

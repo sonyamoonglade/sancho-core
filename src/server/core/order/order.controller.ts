@@ -19,6 +19,8 @@ import { PolicyFilter } from "./filter/order.filter";
 import { applyPayPolicy } from "../../packages/pay/policy";
 import { PinoLogger } from "nestjs-pino";
 import { ValidationErrorException } from "../../packages/exceptions/validation.exceptions";
+import { EventsService } from "../../packages/event/event.module";
+import { Events } from "../../packages/event/events";
 
 @Controller("/order")
 @UseGuards(AuthorizationGuard)
@@ -29,8 +31,18 @@ export class OrderController {
       private orderService: OrderService,
       private cookieService: CookieService,
       private userService: UserService,
-      private logger: PinoLogger
-   ) {}
+      private logger: PinoLogger,
+      private eventService: EventsService
+   ) {
+      this.subscribeToEvent();
+   }
+
+   private subscribeToEvent() {
+      this.eventService.GetEmitter().on(Events.REFRESH_ORDER_QUEUE, async () => {
+         await this.orderService.notifyQueueSubscribers(this.queueConnections);
+         this.logger.debug("notified queue subscribers");
+      });
+   }
 
    @Post("/createUserOrder")
    @UseGuards(MultiWaitingOrderGuard)
@@ -161,18 +173,29 @@ export class OrderController {
    @Get("/queue")
    @Role([AppRoles.worker])
    async orderQueue(@Res() res: Response) {
+      this.logger.info("+1 orderQueue connection");
       try {
+         //Base headers for SSE(server sent events)
          res.writeHead(200, {
             "Content-Type": "text/event-stream",
             Connection: "keep-alive",
             "Cache-Control": "no-cache"
          });
-         this.queueConnections.push(res);
-         await this.orderService.orderQueue(res);
+         //Log and end request properly
+         res.on("close", () => {
+            res.end();
+            return;
+         });
+         //Append new connection and filter from closed or errored ones
+         this.queueConnections = this.queueConnections.filter((conn) => conn.writable && !conn.finished).concat(res);
+         this.logger.debug(`active connections: ${this.queueConnections.length}`);
+
+         return;
       } catch (e) {
          throw e;
       }
    }
+
    @Get("/initialQueue")
    @Role([AppRoles.worker])
    async initialQueue(@Res() res: Response) {
