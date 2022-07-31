@@ -23,6 +23,8 @@ import { ValidationErrorException } from "../../packages/exceptions/validation.e
 @Controller("/order")
 @UseGuards(AuthorizationGuard)
 export class OrderController {
+   private queueConnections: Response[] = [];
+
    constructor(
       private orderService: OrderService,
       private cookieService: CookieService,
@@ -59,8 +61,7 @@ export class OrderController {
          await this.orderService.createUserOrder(dto);
 
          if (dto.is_delivered === true) {
-            const stringDetails: string = JSON.stringify(dto.delivery_details);
-            await this.userService.updateUserRememberedDeliveryAddress(userId, stringDetails);
+            await this.userService.updateUserRememberedDeliveryAddress(userId, dto.delivery_details);
          }
 
          //todo: implement online pay with redirect
@@ -96,8 +97,7 @@ export class OrderController {
          await this.userService.updateUsername(dto.username, dto.userId);
          await this.orderService.createMasterOrder(dto);
          if (dto.is_delivered === true) {
-            const stringDetails: string = JSON.stringify(dto.delivery_details);
-            await this.userService.updateUserRememberedDeliveryAddress(dto.userId, stringDetails);
+            await this.userService.updateUserRememberedDeliveryAddress(dto.userId, dto.delivery_details);
          }
 
          return res.status(201).end();
@@ -115,8 +115,7 @@ export class OrderController {
          await this.userService.updateUsername(dto.username, dto.userId);
          const orderStatus = await this.orderService.verifyOrder(dto);
          if (dto.isDelivered === true) {
-            const stringDetails: string = JSON.stringify(dto.deliveryDetails);
-            await this.userService.updateUserRememberedDeliveryAddress(dto.userId, stringDetails);
+            await this.userService.updateUserRememberedDeliveryAddress(dto.userId, dto.deliveryDetails);
          }
          return res.status(200).send({ status: orderStatus as OrderStatus.verified });
       } catch (e) {
@@ -161,14 +160,15 @@ export class OrderController {
 
    @Get("/queue")
    @Role([AppRoles.worker])
-   orderQueue(@Res() res: Response) {
+   async orderQueue(@Res() res: Response) {
       try {
          res.writeHead(200, {
             "Content-Type": "text/event-stream",
             Connection: "keep-alive",
             "Cache-Control": "no-cache"
          });
-         return this.orderService.orderQueue(res);
+         this.queueConnections.push(res);
+         await this.orderService.orderQueue(res);
       } catch (e) {
          throw e;
       }

@@ -152,9 +152,9 @@ export class UserService {
       // }
    }
 
-   async updateUserRememberedDeliveryAddress(userId: number, deliveryDetails: string): Promise<void> {
-      const updated: Partial<User> = {
-         remembered_delivery_address: deliveryDetails as unknown as DeliveryDetails
+   async updateUserRememberedDeliveryAddress(userId: number, deliveryDetails: DeliveryDetails): Promise<void> {
+      const updated = {
+         remembered_delivery_address: deliveryDetails
       };
       await this.userRepository.update(userId, updated);
    }

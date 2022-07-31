@@ -55,6 +55,7 @@ export class UserRepository {
       const dto = new UserCredentialsDto();
       if (rows.length > 0) {
          dto.username = rows[0].name;
+         //Returned type is json-string
          dto.userDeliveryAddress = JSON.parse(rows[0].remembered_delivery_address);
          return dto;
       }

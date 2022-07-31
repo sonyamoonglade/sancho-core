@@ -122,6 +122,7 @@ export function useCreateOrderForm() {
    }
 
    function setUserCredentials(creds: UserCredentials): void {
+      console.log(creds);
       setFormValues((state: WorkerCreateOrderFormState) => {
          const copy: WorkerCreateOrderFormState = Object.assign({}, state);
          if (creds.userDeliveryAddress !== null) {
