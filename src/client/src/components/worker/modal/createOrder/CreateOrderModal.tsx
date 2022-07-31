@@ -8,7 +8,6 @@ import { currency } from "../../../../common/constants";
 import { helpers } from "../../../../helpers/helpers";
 import { useCreateOrderForm } from "./hooks/useCreateOrderForm";
 import { useCreateMasterOrder } from "./hooks/useCreateMasterOrder";
-import { useVirtualCart } from "../../hooks/useVirtualCart";
 import { useWorkerApi } from "../../../../hooks/useWorkerApi";
 
 const CreateOrderModal = () => {
@@ -23,7 +22,8 @@ const CreateOrderModal = () => {
       dispatch(windowActions.toggleVirtualCart());
    }
 
-   const { formValues, setFormDefaults, setFormValues, getFormValues, setUserCredentials, isSubmitButtonActive } = useCreateOrderForm();
+   const { formValues, setFormDefaults, setFormValues, getFormValues, setUserCredentials, isSubmitButtonActive, clearDeliveryDetails } =
+      useCreateOrderForm();
    const { createMasterOrder } = useCreateMasterOrder();
    const { fetchUserCredentials } = useWorkerApi();
 
@@ -86,7 +86,12 @@ const CreateOrderModal = () => {
          <p className="modal_title">Создать заказ</p>
          <RiSettings4Line onClick={toggleVirtualCart} className="submit_settings" size={25} />
          <VirtualCart />
-         <CreateOrderForm setFormDefaults={setFormDefaults} setFormValues={setFormValues} formValues={formValues} />
+         <CreateOrderForm
+            clearDeliveryDetails={clearDeliveryDetails}
+            setFormDefaults={setFormDefaults}
+            setFormValues={setFormValues}
+            formValues={formValues}
+         />
          <div className="verify_sum">
             <p>Сумма заказа </p>
             <p>

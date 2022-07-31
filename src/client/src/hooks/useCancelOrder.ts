@@ -1,7 +1,8 @@
-import { useRef, useState } from "react";
-import { cancelOrder, useAppDispatch, useAppSelector, userSelector } from "../redux";
+import { useMemo, useRef, useState } from "react";
+import { cancelOrder, useAppDispatch } from "../redux";
 import { useAxios } from "./useAxios";
 import { OrderStatus, ResponseUserOrder } from "../common/types";
+import { useAppCookies } from "./useAppCookies";
 
 export function useCancelOrder(order: ResponseUserOrder) {
    const [x, setX] = useState(0);
@@ -14,11 +15,20 @@ export function useCancelOrder(order: ResponseUserOrder) {
    const animationRef = useRef<HTMLLIElement>(null);
    const cancelIconAnimationRef = useRef<HTMLSpanElement>(null);
    const dispatch = useAppDispatch();
-   const { phoneNumber } = useAppSelector(userSelector);
+   const { phoneNumber } = useAppCookies();
    const client = useAxios();
 
    let screenWidthX: number;
    let cancelBreakpoint: number;
+
+   const phone_number: string = useMemo(() => {
+      //Same as delivery details
+      if (phoneNumber?.value && phoneNumber?.value?.trim().length !== 0) {
+         return phoneNumber.value;
+      }
+      return "";
+   }, [phoneNumber]);
+
    function animateIcon() {
       setIsAnimating(true);
       if (cancelIconAnimationRef.current !== null) {
@@ -81,7 +91,7 @@ export function useCancelOrder(order: ResponseUserOrder) {
    }
    function onEnd() {
       if (isCanceling && order.status === OrderStatus.waiting_for_verification) {
-         dispatch(cancelOrder(client, order.id, phoneNumber));
+         dispatch(cancelOrder(client, order.id, phone_number));
       }
 
       if (animationRef.current !== null && cancelIconAnimationRef.current !== null) {

@@ -1,4 +1,5 @@
 import { DatabaseCartProduct, DeliveryDetails } from "../common/types";
+import { CookieOptions } from "express";
 
 export enum CategoryColor {
    "Напитки" = "#6fbecf",
@@ -73,4 +74,14 @@ export type UserOrderFormData = {
    phone_number: string;
    is_delivered_asap: boolean;
    is_delivered: boolean;
+};
+
+export type AppCookies = {
+   phoneNumber: AppCookie;
+   deliveryDetails: AppCookie;
+};
+
+export type AppCookie = {
+   value: string;
+   set: (name: any, value: string, options?: CookieOptions) => void;
 };

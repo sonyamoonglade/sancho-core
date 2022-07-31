@@ -7,6 +7,7 @@ import { store } from "./redux";
 import { BrowserRouter } from "react-router-dom";
 import { DndProvider } from "react-dnd";
 import { HTML5Backend } from "react-dnd-html5-backend";
+import { CookiesProvider } from "react-cookie";
 
 const root = ReactDOM.createRoot(document.getElementById("root") as HTMLElement);
 
@@ -14,7 +15,9 @@ root.render(
    <DndProvider backend={HTML5Backend}>
       <Provider store={store}>
          <BrowserRouter>
-            <App />
+            <CookiesProvider>
+               <App />
+            </CookiesProvider>
          </BrowserRouter>
       </Provider>
    </DndProvider>

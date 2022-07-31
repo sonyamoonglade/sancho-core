@@ -15,7 +15,7 @@ import { useCreateOrder } from "../createUserOrder/hooks/useCreateOrder";
 import { useAuthentication } from "../../hooks/useAuthentication";
 import { useCart } from "../../hooks/useCart";
 import { useEvents } from "../../hooks/useEvents";
-import { animationPeriod, loadingDuration } from "../loading/Loading";
+import { useUser } from "../../hooks/useUser";
 
 const Pay = () => {
    const { pay } = useAppSelector(windowSelector);
@@ -36,8 +36,8 @@ const Pay = () => {
    const client = useAxios();
    const { createUserOrder } = useCreateOrder(client);
    const { login } = useAuthentication(client);
-   const { isAuthenticated, phoneNumber: userPhoneNumber } = useAppSelector(userSelector);
-
+   const { isAuthenticated } = useAppSelector(userSelector);
+   const { phone_number: userPhoneNumber } = useUser();
    useEffect(() => {
       if (pay) {
          setFormDefaults();

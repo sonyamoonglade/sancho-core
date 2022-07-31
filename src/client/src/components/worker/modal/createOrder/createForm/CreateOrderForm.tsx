@@ -10,9 +10,10 @@ interface createMasterOrderFormProps {
    formValues: WorkerCreateOrderFormState;
    setFormValues: Function;
    setFormDefaults: Function;
+   clearDeliveryDetails: Function;
 }
 
-const CreateOrderForm: FC<createMasterOrderFormProps> = ({ formValues, setFormDefaults, setFormValues }) => {
+const CreateOrderForm: FC<createMasterOrderFormProps> = ({ formValues, setFormDefaults, setFormValues, clearDeliveryDetails }) => {
    const { worker } = useAppSelector(windowSelector);
    const { minLengthValidation, validatePhoneNumber } = useFormValidations();
 
@@ -44,6 +45,12 @@ const CreateOrderForm: FC<createMasterOrderFormProps> = ({ formValues, setFormDe
          });
       }
    }, [formValues.is_delivered_asap.value]);
+
+   useEffect(() => {
+      if (!formValues.phone_number_c.isValid && formValues.is_delivered_c.value === false) {
+         clearDeliveryDetails();
+      }
+   }, [formValues.phone_number_c.isValid]);
 
    return (
       <>

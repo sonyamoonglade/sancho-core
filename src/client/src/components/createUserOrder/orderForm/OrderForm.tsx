@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useEffect, useMemo, useState } from "react";
 import FormInput from "../../ui/formInput/FormInput";
 import { useFormValidations } from "../../../hooks/useFormValidations";
 import "./order-form.styles.scss";
@@ -7,6 +7,8 @@ import EventEmitter from "events";
 import { useAppSelector, userSelector } from "../../../redux";
 import { useEvents } from "../../../hooks/useEvents";
 import { DeliveryDetails } from "../../../common/types";
+import { useAppCookies } from "../../../hooks/useAppCookies";
+import { useUser } from "../../../hooks/useUser";
 
 interface orderFormProps {
    formValues: UserOrderFormState;
@@ -35,7 +37,9 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
 
    const [opt1, opt2] = ["скажу по телефону", "в ближайшее время"];
    const [selectV, setSelectV] = useState<string>(opt1);
-   const { isAuthenticated, phoneNumber, delivery_details } = useAppSelector(userSelector);
+   const { isAuthenticated } = useAppSelector(userSelector);
+   const { phone_number, delivery_details } = useUser();
+   console.log(phone_number, delivery_details);
    const events = useEvents();
 
    const [autoComplete, setAutocomplete] = useState<autocomplete>(defaults);
@@ -47,7 +51,9 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
    }, [isAuthenticated]);
 
    function registerEvents() {
-      registerAutocompleteEvent("phone_number");
+      if (phone_number) {
+         registerAutocompleteEvent("phone_number");
+      }
 
       //Register autocomplete only if user has remembered delivery address
       if (delivery_details) {
@@ -108,7 +114,7 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
          setFormValues((prev: UserOrderFormState) => {
             const copy = Object.assign({}, prev);
             copy.phone_number = {
-               value: phoneNumber.split("").splice(2, phoneNumber.length).join(""),
+               value: phone_number.split("").splice(2, phone_number.length).join(""),
                isValid: true
             };
             return { ...copy };
@@ -262,7 +268,7 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
             />
             {autoComplete["phone_number"] && (
                <div onClick={() => handleAutocomplete("phone_number")} className="autocomplete phone">
-                  <p>{phoneNumber}</p>
+                  <p>{phone_number}</p>
                </div>
             )}
          </div>

@@ -96,14 +96,15 @@ export function useCreateOrderForm() {
             value: "",
             isValid: false
          };
-         copy.phone_number_c = {
-            value: "",
-            isValid: false
-         };
          copy.flat_call_c = {
             value: "",
             isValid: false
          };
+         copy.phone_number_c = {
+            value: "",
+            isValid: false
+         };
+
          copy.is_delivered_asap = {
             value: false,
             isValid: true
@@ -122,7 +123,6 @@ export function useCreateOrderForm() {
    }
 
    function setUserCredentials(creds: UserCredentials): void {
-      console.log(creds);
       setFormValues((state: WorkerCreateOrderFormState) => {
          const copy: WorkerCreateOrderFormState = Object.assign({}, state);
          if (creds.userDeliveryAddress !== null) {
@@ -174,12 +174,36 @@ export function useCreateOrderForm() {
       return result;
    }
 
+   function clearDeliveryDetails() {
+      setFormValues((state: WorkerCreateOrderFormState) => {
+         const copy = Object.assign({}, state);
+         copy.floor_c = {
+            value: "",
+            isValid: false
+         };
+         copy.address_c = {
+            value: "",
+            isValid: false
+         };
+         copy.entrance_number_c = {
+            value: "",
+            isValid: false
+         };
+         copy.flat_call_c = {
+            value: "",
+            isValid: false
+         };
+         return { ...copy };
+      });
+   }
+
    return {
       setFormDefaults,
       setFormValues,
       formValues,
       getFormValues,
       isSubmitButtonActive,
-      setUserCredentials
+      setUserCredentials,
+      clearDeliveryDetails
    };
 }
