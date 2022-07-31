@@ -114,15 +114,15 @@ const Pay = () => {
             <p className="pay_title">Способ оплаты</p>
             <ul className="pay_way">
                <li className="payway_item">
-                  <PaySelector opt={"online"} onClick={handlePaywaySwitch} selected={payWay === "online"} disabled={false} />
+                  <PaySelector opt={"online"} onClick={handlePaywaySwitch} selected={payWay === "online"} />
                   <div className="payway_content">
                      <p className="main_content">Банковской картой</p>
                      <img className="card_payment_icon" src={`${baseUrl}/card-payment.png`} alt="payment" />
                   </div>
                </li>
 
-               <li className={is_delivered ? "payway_item" : "payway_item payway--disabled"}>
-                  <PaySelector opt={"onPickup"} onClick={handlePaywaySwitch} selected={payWay === "onPickup"} disabled={is_delivered === false} />
+               <li className="payway_item">
+                  <PaySelector opt={"onPickup"} onClick={handlePaywaySwitch} selected={payWay === "onPickup"} />
                   <div className="payway_content">
                      <p className="main_content">При получении</p>
                      <p className="sub_content">картой или наличными</p>

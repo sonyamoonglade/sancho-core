@@ -2,8 +2,8 @@
 
 
 .worker_modal{
+  pointer-events: none;
   flex-direction: column;
-  display: flex;
   align-items: center;
   position: absolute;
   background-color: $yellow-accent;
@@ -14,7 +14,8 @@
   height: 400px;
   top: calc((100% - 400px) /2);
   left: calc((100% - 500px) /2);
-  transition: 0.2s opacity ease-in-out;
+  display: none;
+  transition: 0.3s opacity ease-in-out;
   z-index: 800;
   padding: 1rem 2rem 1.5rem;
 
@@ -35,8 +36,9 @@
 
 .--w-opened{
   opacity: 1;
+  display: flex;
   z-index: 1501 !important;
-
+  pointer-events: all;
 }
 
 .modal_title{
@@ -123,6 +125,7 @@
 
 .--ls-active{
   opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 .--expanded{

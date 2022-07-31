@@ -64,9 +64,9 @@ export class OrderRepository {
 
    async getOrderQueue(): Promise<QueueOrderDto[]> {
       const sql = `
-        select o.id,o.cart,o.total_cart_price,o.status,o.is_delivered,o.delivery_details,o.created_at,
-        u.name,u.phone_number,o.is_delivered_asapfrom ${orders} o join ${users} u on o.user_id= 
-        u.id where o.status = '${OrderStatus.waiting_for_verification}' or o.status = '${OrderStatus.verified}' order by o.created_at desc
+        SELECT o.id, o.cart, o.total_cart_price, o.status, o.is_delivered, o.is_delivered_asap, o.delivery_details, o.created_at,
+        u.name, u.phone_number FROM ${orders} o JOIN ${users} u ON o.user_id= 
+        u.id WHERE o.status = '${OrderStatus.waiting_for_verification}' or o.status = '${OrderStatus.verified}' ORDER BY o.created_at DESC
       `;
       const { rows } = await this.db.query(sql);
       return rows;

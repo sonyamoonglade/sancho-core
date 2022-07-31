@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ForbiddenException, Injectable } from "@nestjs/common";
 import { CreateMasterOrderDto, CreateUserOrderDto } from "./dto/create-order.dto";
 import { OrderRepository } from "./order.repository";
 import { Response } from "express";
@@ -65,7 +65,7 @@ export class OrderService {
       //todo: switch to utc time now() pg
       await this.orderRepository.createUserOrder(dto);
       this.logger.debug("saved order to db");
-      this.events.emit(Events.ORDER_HAS_CREATED);
+      this.events.emit(Events.REFRESH_ORDER_QUEUE);
       return;
    }
 
@@ -79,7 +79,7 @@ export class OrderService {
       createMasterOrderDto.total_cart_price = total_cart_price;
       await this.orderRepository.createMasterOrder(createMasterOrderDto);
       this.logger.debug("saved order to db");
-      this.events.emit(Events.ORDER_HAS_CREATED);
+      this.events.emit(Events.REFRESH_ORDER_QUEUE);
       return;
    }
 
@@ -130,7 +130,7 @@ export class OrderService {
          //todo: change for verify method
          await this.orderRepository.update(orderId, updated);
          this.logger.debug("verified order");
-         this.events.emit(Events.ORDER_QUEUE_HAS_MODIFIED);
+         this.events.emit(Events.REFRESH_ORDER_QUEUE);
          return OrderStatus.verified;
       } catch (e) {
          if (e.message.includes("verification")) {
@@ -149,7 +149,7 @@ export class OrderService {
          const { order_id } = cancelOrderDto;
          const o = await this.orderRepository.getById(order_id);
          if (o.status === OrderStatus.cancelled || o.status === OrderStatus.completed) {
-            throw new UnexpectedServerError("Некоректный статус заказа");
+            throw new ForbiddenException("Некорректный статус заказа");
          }
          try {
             const updated: Partial<Order> = {
@@ -159,7 +159,7 @@ export class OrderService {
                cancelled_by: userId
             };
             await this.orderRepository.update(o.id, updated);
-            this.events.emit(Events.ORDER_QUEUE_HAS_MODIFIED);
+            this.events.emit(Events.REFRESH_ORDER_QUEUE);
             return true;
          } catch (e) {
             throw new UnexpectedServerError("Ошибка отмены заказа");
@@ -180,7 +180,7 @@ export class OrderService {
 
          await this.orderRepository.update(cancelOrderDto.order_id, updated);
 
-         this.events.emit(Events.ORDER_QUEUE_HAS_MODIFIED);
+         this.events.emit(Events.REFRESH_ORDER_QUEUE);
          return false;
       } catch (e) {
          throw new UnexpectedServerError("Ошибка отмены заказа");
@@ -204,7 +204,7 @@ export class OrderService {
       };
 
       await this.orderRepository.update(order_id, updated);
-      this.events.emit(Events.ORDER_QUEUE_HAS_MODIFIED);
+      this.events.emit(Events.REFRESH_ORDER_QUEUE);
 
       return OrderStatus.completed;
    }
@@ -296,23 +296,18 @@ export class OrderService {
       }
    }
 
-   public async orderQueue(res: Response) {
-      this.events.on(Events.ORDER_HAS_CREATED, async () => {
+   public async orderQueue(res: Response): Promise<void> {
+      this.events.on(Events.REFRESH_ORDER_QUEUE, async () => {
+         this.logger.debug("handle REFRESH_ORDER_QUEUE event");
          const queue = await this.fetchOrderQueue();
          const chunk = `data: ${JSON.stringify({ queue })}\n\n`;
-         return res.write(chunk);
-      });
-
-      this.events.on(Events.ORDER_QUEUE_HAS_MODIFIED, async () => {
-         const queue = await this.fetchOrderQueue();
-         const chunk = `data: ${JSON.stringify({ queue })}\n\n`;
-         return res.write(chunk);
+         res.write(chunk);
       });
 
       res.on("close", () => {
-         console.log("closing queue conn..");
-         this.events.removeAllListeners();
-         return res.end();
+         this.logger.info("closing order queue connection");
+         this.events.removeAllListeners(Events.REFRESH_ORDER_QUEUE);
+         res.end();
       });
    }
 
@@ -329,7 +324,7 @@ export class OrderService {
          });
          return mapped;
       } catch (e) {
-         console.log(e);
+         this.logger.error(e);
          throw new UnexpectedServerError("error occurred fetching queue");
       }
    }

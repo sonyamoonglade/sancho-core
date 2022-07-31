@@ -59,7 +59,7 @@ export class DeliveryService implements DeliveryServiceInterface {
          await axios.post(this.url + endPoint, dto);
 
          this.logger.info("call succeeded");
-         this.events.emit(Events.ORDER_QUEUE_HAS_MODIFIED);
+         this.events.emit(Events.REFRESH_ORDER_QUEUE);
          return true;
       } catch (e: any) {
          const payload = {

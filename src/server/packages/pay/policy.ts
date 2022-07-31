@@ -8,18 +8,15 @@ export class PayPolicyException extends Error {
 }
 
 export function applyPayPolicy(pay: Pay, isDelivered: boolean, type: OrderType): void {
-   //If was not passed for worker orders - ok
+   //If was not passed for worker orders - ok (see order.controller.createMasterOrder)
    if (pay === undefined && type === "worker") {
       return;
    }
 
-   //Order is self picked-up. Only online payments
    if (PayMethods.includes(pay) === false) {
       throw new PayPolicyException();
    }
-   if (isDelivered === false && pay === "onPickup") {
-      throw new PayPolicyException();
-   }
+
    //If Order is created by worker 'master' then pay could NOT be onPickup
    if (type === "worker" && pay !== "onPickup") {
       throw new PayPolicyException();
