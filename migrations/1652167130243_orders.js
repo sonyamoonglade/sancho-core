@@ -72,11 +72,6 @@ exports.up = (pgm) => {
          notNull: false,
          default: null
       },
-      is_paid: {
-         type: "boolean",
-         notNull: true,
-         default: false
-      },
       pay: {
          type: "pay",
          notNull: true
@@ -84,15 +79,11 @@ exports.up = (pgm) => {
    });
    pgm.createIndex("orders", "user_id");
    pgm.createIndex("orders", "status");
-   pgm.createIndex("orders", "is_paid");
 };
 
 exports.down = (pgm) => {
-   pgm.dropConstraint("orders", "orders_user_id_fkey");
-   pgm.dropConstraint("orders", "orders_cancelled_by_fkey");
    pgm.dropIndex("orders", "user_id");
    pgm.dropIndex("orders", "status");
-   pgm.dropIndex("orders", "is_paid");
    pgm.dropTable("orders");
    pgm.dropType("pay");
 };

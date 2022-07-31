@@ -29,7 +29,7 @@ export class OrderRepository {
    }
 
    async prepareDataForDelivery(orderId: number): Promise<DeliveryOrder | null> {
-      const sql = `SELECT id as order_id,delivery_details,total_cart_price, pay, is_delivered_asap, is_paid FROM ${orders} WHERE id = ${orderId}`;
+      const sql = `SELECT id as order_id,delivery_details,total_cart_price, pay, is_delivered_asap FROM ${orders} WHERE id = ${orderId}`;
       const { rows } = await this.db.query(sql);
       if (rows.length === 0) {
          return null;
@@ -37,13 +37,13 @@ export class OrderRepository {
       return rows[0];
    }
 
-   async getOrderSumInTerms(termsInDays: number, userId: number): Promise<Partial<Order>[]> {
+   async getOrderSumInTerms(termsInDays: number, userId: number): Promise<number[]> {
       const sql = `
-        SELECT total_cart_price FROM ${orders} WHERE is_paid = true AND status = '${OrderStatus.completed}' AND user_id = ${userId}
+        SELECT total_cart_price FROM ${orders} WHERE status = '${OrderStatus.completed}' AND user_id = ${userId}
         AND created_at > ((NOW() + INTERVAL '+4HOUR')- INTERVAL '30DAYS') AND created_at < (NOW() + INTERVAL '+4HOUR')
       `;
       const { rows } = await this.db.query(sql);
-      return rows;
+      return rows.map((e) => e.total_cart_price);
    }
 
    async getUserOrderHistory(userId: number): Promise<Order[]> {
@@ -65,7 +65,7 @@ export class OrderRepository {
    async getOrderQueue(): Promise<QueueOrderDto[]> {
       const sql = `
         select o.id,o.cart,o.total_cart_price,o.status,o.is_delivered,o.delivery_details,o.created_at,
-        u.name,u.phone_number,o.is_delivered_asap,o.is_paid from ${orders} o join ${users} u on o.user_id= 
+        u.name,u.phone_number,o.is_delivered_asapfrom ${orders} o join ${users} u on o.user_id= 
         u.id where o.status = '${OrderStatus.waiting_for_verification}' or o.status = '${OrderStatus.verified}' order by o.created_at desc
       `;
       const { rows } = await this.db.query(sql);
@@ -142,7 +142,7 @@ export class OrderRepository {
    async getOrderList(status: OrderStatus): Promise<VerifiedQueueOrder[]> {
       const sql = `
         SELECT o.id,o.cart,o.total_cart_price,o.status,o.is_delivered,o.delivery_details,o.created_at,
-        u.name,u.phone_number,o.is_delivered_asap,o.is_paid FROM ${orders} o JOIN ${users} u ON o.user_id= 
+        u.name,u.phone_number,o.is_delivered_asap FROM ${orders} o JOIN ${users} u ON o.user_id= 
         u.id WHERE o.status = '${status}' ORDER BY o.created_at DESC LIMIT 15`;
       const { rows } = await this.db.query(sql);
       return rows.map((res: any) => {
@@ -158,20 +158,8 @@ export class OrderRepository {
                phone_number: res.phone_number
             },
             is_delivered: res.is_delivered,
-            id: res.id,
-            is_paid: res.is_paid
+            id: res.id
          };
       });
-   }
-
-   async payForOrder(orderId: number): Promise<boolean> {
-      const sql = `
-            UPDATE ${orders} SET is_paid = CASE WHEN is_paid = false THEN true ELSE false END
-            WHERE id = ${orderId} AND status = '${OrderStatus.completed}'  RETURNING id`;
-      const { rows } = await this.db.query(sql);
-      if (rows.length > 0) {
-         return true;
-      }
-      return false;
    }
 }

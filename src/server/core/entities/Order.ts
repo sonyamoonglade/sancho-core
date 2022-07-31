@@ -12,7 +12,6 @@ export type Order = {
    created_at: Date;
    pay: Pay;
    verified_at?: Date;
-   is_paid?: boolean;
    completed_at?: Date;
    cancelled_at?: Date;
    cancelled_by?: number;
@@ -25,7 +24,6 @@ export type DeliveryOrder = {
    total_cart_price: number;
    pay: Pay;
    is_delivered_asap: boolean;
-   is_paid: boolean;
 };
 
 export type CheckOrder = {

@@ -211,10 +211,9 @@ export class OrderService {
 
    public mapRawHistory(raw: Order[]): ResponseUserOrder[] {
       return raw.map((o: Order) => {
-         const { total_cart_price, id, created_at, status, is_delivered, delivery_details, cart, is_delivered_asap, is_paid } = o;
+         const { total_cart_price, id, created_at, status, is_delivered, delivery_details, cart, is_delivered_asap } = o;
          const rso: ResponseUserOrder = {
             total_cart_price,
-            is_paid,
             id,
             created_at,
             status,
@@ -352,13 +351,11 @@ export class OrderService {
             name,
             phone_number,
             is_delivered,
-            id,
-            is_paid
+            id
          } = rawOrder;
          if (rawOrder.status === OrderStatus.waiting_for_verification) {
             const mapped: WaitingQueueOrder = {
                status,
-               is_paid,
                is_delivered,
                delivery_details: is_delivered ? delivery_details : null,
                is_delivered_asap,
@@ -374,7 +371,6 @@ export class OrderService {
             continue;
          }
          const mapped: VerifiedQueueOrder = {
-            is_paid,
             is_delivered_asap,
             cart: this.parseJsonCart(cart),
             created_at,
@@ -438,14 +434,6 @@ export class OrderService {
       return output;
    }
 
-   async payForOrder(orderId: number): Promise<void> {
-      const ok = await this.orderRepository.payForOrder(orderId);
-      if (!ok) {
-         throw new OrderCannotBePaid(orderId);
-      }
-      return;
-   }
-
    async prepareDataForDelivery(orderId: number): Promise<DeliveryOrder> {
       this.logger.info(`prepare delivery data for order ${orderId}`);
       const data = await this.orderRepository.prepareDataForDelivery(orderId);
@@ -477,13 +465,11 @@ export class OrderService {
    }
 
    async calculateOrderSumInTerms(termsInDays: number, userId: number): Promise<number> {
-      const raw: Partial<Order>[] = await this.orderRepository.getOrderSumInTerms(termsInDays, userId);
-      return (
-         raw.reduce((acc, curr) => {
-            acc += curr.total_cart_price;
-            return acc;
-         }, 0) || 0
-      );
+      const raw: number[] = await this.orderRepository.getOrderSumInTerms(termsInDays, userId);
+      return raw.reduce((acc, curr) => {
+         acc += curr;
+         return acc;
+      }, 0);
    }
 
    parseJsonCart(currentCart: DatabaseCartProduct[]): DatabaseCartProduct[] {

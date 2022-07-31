@@ -205,15 +205,4 @@ export class OrderController {
          throw e;
       }
    }
-
-   @Put("/pay")
-   @Role([AppRoles.worker])
-   async payForOrder(@Query("v", ParseIntPipe) orderId: number, @Res() res: Response) {
-      try {
-         await this.orderService.payForOrder(orderId);
-         return res.status(200).end();
-      } catch (e) {
-         throw e;
-      }
-   }
 }

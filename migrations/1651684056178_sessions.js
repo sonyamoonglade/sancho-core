@@ -20,7 +20,6 @@ exports.up = (pgm) => {
 };
 
 exports.down = (pgm) => {
-   pgm.dropConstraint("sessions", "sessions_user_id_fkey");
    pgm.dropIndex("sessions", "user_id");
    pgm.dropTable("sessions");
 };

@@ -101,53 +101,55 @@ export class UserService {
 
       const userId = await this.getUserId(phoneNumberWithPlus);
       const userMarks: Mark[] = await this.markRepository.getUserMarks(userId);
+
+      //todo: find new algo!!
       // Get Regular Customer Mark duration in days.
       // todo: replace with cache value
-      const { reg_cust_duration, reg_cust_threshold } = await this.miscService.getAllValues();
+      // const { reg_cust_duration, reg_cust_threshold } = await this.miscService.getAllValues();
       // Check if user has Regular Customer Mark
-      const regCustMark = this.hasRegularCustomerMark(userMarks);
-      if (!regCustMark) {
-         // Get paid and completed order sum in terms of [now-duration,now] period.
-         const sum = await this.orderService.calculateOrderSumInTerms(reg_cust_duration, userId);
-         if (sum >= reg_cust_threshold) {
-            const regCustMarkDto = this.generateRegularCustomerMark(userId, phoneNumberWithPlus);
-            const mark: Mark = await this.createMark(regCustMarkDto);
-            //Updating initial marks with newly created Regular Customer mark.
-            userMarks.push(mark);
-            return {
-               marks: userMarks,
-               username: credentialsWithoutMarks.username,
-               userDeliveryAddress: credentialsWithoutMarks.userDeliveryAddress
-            };
-         }
-         // Return without Regular Customer mark.
-         return {
-            marks: userMarks,
-            username: credentialsWithoutMarks.username,
-            userDeliveryAddress: credentialsWithoutMarks.userDeliveryAddress
-         };
-      }
+      // const regCustMark = this.hasRegularCustomerMark(userMarks);
+      // if (!regCustMark) {
+      //    Get paid and completed order sum in terms of [now-duration,now] period.
+      // const sum = await this.orderService.calculateOrderSumInTerms(reg_cust_duration, userId);
+      // if (sum >= reg_cust_threshold) {
+      //    const regCustMarkDto = this.generateRegularCustomerMark(userId, phoneNumberWithPlus);
+      //    const mark: Mark = await this.createMark(regCustMarkDto);
+      //    Updating initial marks with newly created Regular Customer mark.
+      // userMarks.push(mark);
+      // return {
+      //    marks: userMarks,
+      //    username: credentialsWithoutMarks.username,
+      //    userDeliveryAddress: credentialsWithoutMarks.userDeliveryAddress
+      // };
+      // }
+      // Return without Regular Customer mark.
+      return {
+         marks: userMarks,
+         username: credentialsWithoutMarks.username,
+         userDeliveryAddress: credentialsWithoutMarks.userDeliveryAddress
+      };
+      // }
 
-      const isStillRegCust = await this.userRepository.isStillRegularCustomer(reg_cust_duration, regCustMark.id);
-      if (isStillRegCust) {
-         // Keep marks the same
-         const credentials: UserCredentialsDto = {
-            userDeliveryAddress: credentialsWithoutMarks?.userDeliveryAddress,
-            username: credentialsWithoutMarks?.username,
-            marks: userMarks
-         };
-         return credentials;
-      }
+      // const isStillRegCust = await this.userRepository.isStillRegularCustomer(reg_cust_duration, regCustMark.id);
+      // if (isStillRegCust) {
+      //    // Keep marks the same
+      //    const credentials: UserCredentialsDto = {
+      //       userDeliveryAddress: credentialsWithoutMarks?.userDeliveryAddress,
+      //       username: credentialsWithoutMarks?.username,
+      //       marks: userMarks
+      //    };
+      //    return credentials;
+      // }
       // Delete Regular Customer mark and filter initial mark array.
-      else {
-         await this.deleteMark(regCustMark.id);
-         const credentials: UserCredentialsDto = {
-            userDeliveryAddress: credentialsWithoutMarks?.userDeliveryAddress,
-            username: credentialsWithoutMarks?.username,
-            marks: userMarks.filter((mark) => mark.id !== regCustMark.id)
-         };
-         return credentials;
-      }
+      // else {
+      //    await this.deleteMark(regCustMark.id);
+      //    const credentials: UserCredentialsDto = {
+      //       userDeliveryAddress: credentialsWithoutMarks?.userDeliveryAddress,
+      //       username: credentialsWithoutMarks?.username,
+      //       marks: userMarks.filter((mark) => mark.id !== regCustMark.id)
+      //    };
+      //    return credentials;
+      // }
    }
 
    async updateUserRememberedDeliveryAddress(userId: number, deliveryDetails: string): Promise<void> {
@@ -184,15 +186,15 @@ export class UserService {
             name,
             role: AppRoles.master
          };
-         console.log("Registering Super Admin");
+         this.logger.info("Registering Super Admin");
          const ok = await this.userRepository.registerSuperAdmin(u);
          if (ok) {
-            console.log("Success");
+            this.logger.info("Success");
          } else {
-            console.log("Fail. Super Admin already exists");
+            this.logger.info("Fail. Super Admin already exists");
          }
       } catch (e) {
-         console.log("Fail");
+         this.logger.error("Fail");
          throw e;
       }
    }

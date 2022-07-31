@@ -84,38 +84,6 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
          }
       }
    }));
-   async function handleOrderPay(order: ResponseUserOrder, v: boolean) {
-      if (v === order.is_paid) {
-         return;
-      }
-      if (!v) {
-         const ans = window.confirm("Вы уверены?\n\rПодозрительные действия отслеживаются.");
-         if (!ans) {
-            return;
-         }
-      }
-      const res = await pay(order.id);
-      if (!res) {
-         return;
-      }
-      const currCompList = orderList.complete;
-      const afterPayCompList = currCompList.map((ord) => {
-         if (ord.id === order.id) {
-            return {
-               ...ord,
-               is_paid: !ord.is_paid
-            };
-         }
-         return ord;
-      });
-      dispatch(
-         workerActions.setOrderList({
-            complete: afterPayCompList,
-            cancel: orderList.cancel
-         })
-      );
-      return;
-   }
 
    function handleDrop(dropzone: string, item: Droppable) {
       dispatch(windowActions.setDropItem(item));
@@ -220,16 +188,6 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
                               <button onClick={handleNotifyRunner} className={isNotifiedCondition ? "pay_btn details --green" : "pay_btn details"}>
                                  <p>{isNotifiedCondition ? "Курьер уведомлен!" : "Уведомить курьера"}</p>
                               </button>
-                           )}
-                           {order.status === OrderStatus.completed && (
-                              <>
-                                 <button onClick={() => handleOrderPay(order, false)} className={!order.is_paid ? "pay_btn --green" : "pay_btn"}>
-                                    <p>Не оплачен</p>
-                                 </button>
-                                 <button onClick={() => handleOrderPay(order, true)} className={order.is_paid ? "pay_btn --green" : "pay_btn"}>
-                                    <p>Оплачен</p>
-                                 </button>
-                              </>
                            )}
                         </span>
                      </div>
