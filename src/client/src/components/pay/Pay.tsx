@@ -4,7 +4,7 @@ import "./pay.styles.scss";
 import { TiArrowBack } from "react-icons/ti";
 import { baseUrl } from "../../App";
 import PaySelector from "../ui/paySelector/PaySelector";
-import { CreateUserOrderDto } from "../../common/types";
+import { CreateUserOrderDto, DeliveryDetails } from "../../common/types";
 import FormInput from "../ui/formInput/FormInput";
 import { CLEAR_ORDER_FORM, CLEAR_ORDER_FORM_ONLY_PHONE } from "../../types/types";
 import { useFormValidations } from "../../hooks/useFormValidations";
@@ -16,6 +16,7 @@ import { useAuthentication } from "../../hooks/useAuthentication";
 import { useCart } from "../../hooks/useCart";
 import { useEvents } from "../../hooks/useEvents";
 import { useUser } from "../../hooks/useUser";
+import { useAppCookies } from "../../hooks/useAppCookies";
 
 const Pay = () => {
    const { pay } = useAppSelector(windowSelector);
@@ -30,7 +31,6 @@ const Pay = () => {
 
    const { setFormValues, handlePaywaySwitch, formValues, payWay, getFormValues, setFormDefaults } = usePayForm();
    const { userOrder: orderData } = useAppSelector(orderSelector);
-   const is_delivered = orderData?.is_delivered || false;
    const cart = useCart();
    const events = useEvents();
    const client = useAxios();
@@ -38,6 +38,8 @@ const Pay = () => {
    const { login } = useAuthentication(client);
    const { isAuthenticated } = useAppSelector(userSelector);
    const { phone_number: userPhoneNumber } = useUser();
+   const { phoneNumber: phCookie, deliveryDetails: deliv_dCookie } = useAppCookies();
+
    useEffect(() => {
       if (pay) {
          setFormDefaults();
@@ -54,8 +56,12 @@ const Pay = () => {
       try {
          if (!isAuthenticated) {
             await login(phoneNumber);
+            //After successful login set a phoneNumber cookie
+            phCookie.set(phoneNumber);
          } else if (phoneNumber !== userPhoneNumber) {
             await login(phoneNumber);
+            //After successful login set a phoneNumber cookie
+            phCookie.set(phoneNumber);
          }
       } catch (e: any) {
          events.emit(CLEAR_ORDER_FORM_ONLY_PHONE);
@@ -66,6 +72,22 @@ const Pay = () => {
       try {
          const data = getFormValues();
          const { cart: usrCart, is_delivered_asap, delivery_details, is_delivered } = orderData;
+
+         // delivery_details is null if order is not delivered
+         if (is_delivered) {
+            //Prepare JSON string for a cookie.
+            const detailsWithoutCommAndDlvAt: DeliveryDetails = {
+               address: delivery_details.address,
+               floor: delivery_details.floor,
+               flat_call: delivery_details.flat_call,
+               entrance_number: delivery_details.entrance_number
+            };
+            const json = JSON.stringify(detailsWithoutCommAndDlvAt);
+
+            //After click on 'Оформить заказ' set a deliveryDetails cookie
+            deliv_dCookie.set(json);
+         }
+
          const createOrderDto: CreateUserOrderDto = {
             cart: usrCart,
             delivery_details,

@@ -26,7 +26,6 @@ const Catalog: FC<catalogProps> = ({ productList }) => {
          }
          return a;
       }, 0);
-      console.log(categCount);
 
       if (productList[i].category !== productList[i - 1].category) {
          return productList[i].category;

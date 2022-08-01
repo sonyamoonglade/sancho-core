@@ -37,18 +37,14 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
 
    const [opt1, opt2] = ["скажу по телефону", "в ближайшее время"];
    const [selectV, setSelectV] = useState<string>(opt1);
-   const { isAuthenticated } = useAppSelector(userSelector);
    const { phone_number, delivery_details } = useUser();
-   console.log(phone_number, delivery_details);
    const events = useEvents();
 
    const [autoComplete, setAutocomplete] = useState<autocomplete>(defaults);
 
    useEffect(() => {
-      if (isAuthenticated) {
-         registerEvents();
-      }
-   }, [isAuthenticated]);
+      registerEvents();
+   }, []);
 
    function registerEvents() {
       if (phone_number) {
@@ -66,24 +62,20 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
 
    function registerAutocompleteEvent(name: string) {
       events.on(`autocomplete_${name}`, () => {
-         if (isAuthenticated) {
-            setAutocomplete((s: autocomplete) => {
-               const copy = Object.assign({}, s);
-               const k: keyof autocomplete = `${name}` as keyof autocomplete;
-               copy[k] = true;
-               return { ...copy };
-            });
-         }
+         setAutocomplete((s: autocomplete) => {
+            const copy = Object.assign({}, s);
+            const k: keyof autocomplete = `${name}` as keyof autocomplete;
+            copy[k] = true;
+            return { ...copy };
+         });
       });
       events.on(`blur_${name}`, () => {
-         if (isAuthenticated) {
-            setAutocomplete((s: autocomplete) => {
-               const copy = Object.assign({}, s);
-               const k: keyof autocomplete = `${name}` as keyof autocomplete;
-               copy[k] = false;
-               return { ...copy };
-            });
-         }
+         setAutocomplete((s: autocomplete) => {
+            const copy = Object.assign({}, s);
+            const k: keyof autocomplete = `${name}` as keyof autocomplete;
+            copy[k] = false;
+            return { ...copy };
+         });
       });
    }
 

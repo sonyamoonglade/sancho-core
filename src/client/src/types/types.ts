@@ -82,6 +82,6 @@ export type AppCookies = {
 };
 
 export type AppCookie = {
-   value: string;
-   set: (name: any, value: string, options?: CookieOptions) => void;
+   value: any;
+   set: (value: string) => void;
 };

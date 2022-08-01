@@ -22,7 +22,6 @@ const misc = createSlice({
    initialState,
    reducers: {
       INIT_MISC: function (s, a: PayloadAction<MiscInitialState>) {
-         console.log(a);
          s.DELIVERY_PUNISHMENT_VALUE = a.payload.DELIVERY_PUNISHMENT_VALUE;
          s.DELIVERY_PUNISHMENT_THRESHOLD = a.payload.DELIVERY_PUNISHMENT_THRESHOLD;
       }
@@ -32,7 +31,6 @@ const misc = createSlice({
 export const fetchMiscData = (client: AxiosInstance) => async (dispatch: AppDispatch) => {
    try {
       const { data } = await client.get("/misc");
-      console.log(data);
       dispatch(miscActions.INIT_MISC(data.result));
    } catch (e) {
       dispatch(miscActions.INIT_MISC(placeholders));

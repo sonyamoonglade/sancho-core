@@ -322,7 +322,10 @@ export class OrderService {
          return mapped;
       } catch (e) {
          this.logger.error(e);
-         throw new UnexpectedServerError("error occurred fetching queue");
+         return {
+            verified: [],
+            waiting: []
+         };
       }
    }
 

@@ -11,7 +11,7 @@ export function useAppCookies(): AppCookies {
       secure: true
    };
    function wrapper(name: string, value: string, f: (name: any, value: string, options: CookieOptions) => void) {
-      return f("deliveryDetails", value, baseOptions);
+      return f(name, value, baseOptions);
    }
 
    return {

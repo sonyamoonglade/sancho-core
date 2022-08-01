@@ -4,11 +4,11 @@ import { useMemo } from "react";
 
 export function useUser() {
    const { deliveryDetails, phoneNumber } = useAppCookies();
-
+   console.log(deliveryDetails, phoneNumber);
    const delivery_details: DeliveryDetails | null = useMemo(() => {
       // If cookie is defined parse it as delivery_details
-      if (deliveryDetails?.value && deliveryDetails?.value?.trim().length !== 0) {
-         return JSON.parse(deliveryDetails.value) as unknown as DeliveryDetails;
+      if (deliveryDetails?.value !== undefined) {
+         return deliveryDetails.value;
       }
       return null;
    }, [deliveryDetails]);
