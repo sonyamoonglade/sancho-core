@@ -15,18 +15,24 @@
   margin-left: 16px;
 
   transition: all 0.1s ease-in-out;
-  @media (min-width: 768px) {
-    margin-left: 0;
-    margin-right: 0;
-    left: calc((100vw - 500px) / 2);
-  }
-  @media (min-width: 500px) {
-    margin-right: 0;
-    margin-left: 0;
-    left: calc((100vw - 500px) / 2);
 
+
+  @media (min-width: 500px) {
+    margin-left: 0;
+    margin-right: 0;
+    left: calc((100vw - 500px) / 2);
   }
+
+
+  @media (min-width: 1440px) {
+
+    max-width: none;
+    width: calc(40% - 40px);
+    left: calc(60% + 20px);
+    margin: 0;
   }
+
+}
 
 
 .pay_link:active{

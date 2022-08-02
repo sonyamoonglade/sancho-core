@@ -4,6 +4,11 @@
 
 .order_form{
   padding: .5rem 1rem 1rem;
+
+
+  @media (min-width: 1440px) {
+    padding: 1rem 2rem 2rem 2rem;
+  }
 }
 
 .delivery_input{
@@ -134,15 +139,12 @@
     font-size: $font-mder
   }
 }
-.autocomplete.phone{
-  left: 2rem;
-  padding: 0.2rem !important;
 
-}
 .autocomplete{
   box-shadow: 0 0 5px $black-50;
   border-radius: 7px;
   z-index: 4000;
+  cursor: pointer;
   padding: 0.5rem;
   position: absolute;
   background-color: $light-grey;
@@ -150,17 +152,41 @@
     font-family: "Geometria",sans-serif;
   }
 }
+
+.autocomplete.phone{
+  left: 2rem;
+  padding: 0.3rem !important;
+
+  @media (min-width: 1440px) {
+    left: 4rem;
+  }
+}
+
 .autocomplete.floor{
   right: 3rem;
-  bottom: 31%;
+  bottom: 25%;
+  @media (min-width: 1440px) {
+    bottom: 31%;
+    right: 5.5rem;
+  }
 }
 .autocomplete.flat_call{
-  bottom: 31%;
   right: 45%;
+  bottom: 25%;
+
+  @media (min-width: 1440px) {
+    bottom: 31%;
+
+  }
 }
 .autocomplete.entrance_number{
-  bottom: 31%;
   left: 4rem;
+  bottom: 25%;
+
+  @media (min-width: 1440px) {
+    bottom: 31%;
+    left: 8rem;
+  }
 }
 
 .comment{

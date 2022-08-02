@@ -2,6 +2,7 @@
 
 .cart_item{
   list-style: none;
+  user-select: none;
   display: flex;
   justify-content: space-between;
   border-bottom: 1px solid $black-18;
@@ -39,7 +40,7 @@
 }
 
 .cart_item_translate{
-
+  user-select: none;
   font-family: "Geometria Medium", serif;
   line-height: 15px;
   margin-bottom: 10px;
@@ -53,6 +54,7 @@
 }
 
 .cart_item_price{
+  user-select: none;
   font-family: "Geometria Medium", serif;
   font-size: $font-mder;
 }
@@ -71,6 +73,7 @@
 
 .quantity_price{
   color: $gray-promo;
+  user-select: none;
   font-size: $font-smer;
   text-align: right;
   margin-top: 0.3rem;

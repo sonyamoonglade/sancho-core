@@ -61,9 +61,9 @@ function App() {
          <Layout>
             <Categories />
             {productList.length !== 0 && <Catalog productList={productList} />}
-            {!isNotMobileOrTablet ? cart && <OrderLink /> : null}
-            {!isNotMobileOrTablet ? !isCartEmpty && <CartLink /> : null}
-            {!isNotMobileOrTablet ? userOrder && <PayLink /> : null}
+            {cart && <OrderLink />}
+            {!isNotMobileOrTablet && !isCartEmpty && <CartLink />}
+            {userOrder && <PayLink />}
             <AppForm />
             <ProductPresentation />
          </Layout>

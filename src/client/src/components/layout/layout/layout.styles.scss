@@ -72,12 +72,18 @@ button{
   height: 100%;
   width: 100%;
   z-index: 100;
-  top: 5vh;
   transition: all .4s ease;
   position: fixed;
   background-color: white;
   right: -100%;
   overflow: hidden;
+
+  @media (min-width: 1440px) {
+    width: 40%;
+    top: 80px!important;
+    height: calc(100% - 80px) !important;
+    border: 1px solid $gray-promo;
+  }
 }
 .--disabled{
   pointer-events: none;

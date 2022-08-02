@@ -1,6 +1,9 @@
 @import "src/./variables.scss";
 
-
+.nav.modal{
+  z-index: 130!important;
+  top: 64px;
+}
 
 .nav_list{
   max-width: 768px;

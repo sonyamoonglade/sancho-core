@@ -17,6 +17,11 @@ export function applyPayPolicy(pay: Pay, isDelivered: boolean, type: OrderType):
       throw new PayPolicyException();
    }
 
+   //Can not select onPickup if not delivered
+   if (isDelivered === false && pay === "onPickup") {
+      throw new PayPolicyException();
+   }
+
    //If Order is created by worker 'master' then pay could NOT be onPickup
    if (type === "worker" && pay !== "onPickup") {
       throw new PayPolicyException();

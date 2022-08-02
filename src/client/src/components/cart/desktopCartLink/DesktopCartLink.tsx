@@ -9,7 +9,6 @@ const DesktopCartLink = () => {
    const dispatch = useAppDispatch();
    function toggleCart() {
       dispatch(windowActions.toggleCart());
-      dispatch(windowActions.turnOffAllDesktop());
    }
 
    return (

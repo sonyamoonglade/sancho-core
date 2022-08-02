@@ -131,6 +131,7 @@ export const windowSlice = createSlice({
          s.navigation = false;
          s.userOrder = false;
          s.pay = false;
+         s.orderHistory = false;
       },
       toggleLoading: (s, a: PayloadAction<boolean>) => {
          s.loading = a.payload;

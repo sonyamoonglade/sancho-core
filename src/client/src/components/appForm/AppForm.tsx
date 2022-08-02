@@ -1,26 +1,36 @@
-import React from "react";
-import {
-  productActions,
-  productSelector,
-  useAppDispatch,
-  useAppSelector,
-  windowActions,
-  windowSelector,
-} from "../../redux";
+import React, { useMemo } from "react";
+import { productActions, productSelector, useAppDispatch, useAppSelector, windowActions, windowSelector } from "../../redux";
+import { AppResponsiveState } from "../../types/types";
 
 const AppForm = () => {
    const dispatch = useAppDispatch();
    const { isPresentingNow } = useAppSelector(productSelector);
-   const { masterLogin } = useAppSelector(windowSelector);
-   function stopPresentation() {
-      dispatch(productActions.stopPresentation());
+   const { masterLogin, cart, userOrder, pay, orderHistory } = useAppSelector(windowSelector);
+
+   const { appResponsiveState } = useAppSelector(windowSelector);
+
+   function handleClick() {
+      if (isPresentingNow) {
+         dispatch(productActions.stopPresentation());
+      }
+
+      if (appResponsiveState === AppResponsiveState.computer) {
+         dispatch(windowActions.closeAll());
+      }
       if (masterLogin) {
-         dispatch(windowActions.toggleMasterLogin());
+         dispatch(windowActions.toggleMasterLogin(false));
       }
    }
 
+   const isActive = useMemo(() => {
+      if (appResponsiveState === AppResponsiveState.mobileOrTablet) {
+         return isPresentingNow;
+      }
+      return isPresentingNow || masterLogin || cart || userOrder || pay || orderHistory;
+   }, [appResponsiveState, isPresentingNow, masterLogin, cart, userOrder, pay]);
+   console.log(isActive);
    return (
-      <div onClick={() => stopPresentation()} className={isPresentingNow || masterLogin ? "app_form visible" : "app_form"}>
+      <div onClick={() => handleClick()} className={isActive ? "app_form visible" : "app_form"}>
          <span></span>
       </div>
    );

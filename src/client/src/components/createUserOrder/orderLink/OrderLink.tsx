@@ -2,12 +2,13 @@ import React, { useEffect, useRef } from "react";
 import { GoVerified } from "react-icons/go";
 
 import "./order-link.styles.scss";
-import { productSelector, useAppDispatch, useAppSelector, windowActions } from "../../../redux";
+import { productSelector, useAppDispatch, useAppSelector, windowActions, windowSelector } from "../../../redux";
 import { currency } from "../../../common/constants";
+import { AppResponsiveState } from "../../../types/types";
 
 const OrderLink = () => {
    const animationRef = useRef<HTMLButtonElement>(null);
-
+   const { appResponsiveState } = useAppSelector(windowSelector);
    useEffect(() => {
       startAnimation();
    }, []);
@@ -17,7 +18,7 @@ const OrderLink = () => {
 
    function startAnimation() {
       animationRef.current.animate([{ transform: "translateX(100%)" }, { transform: "translateX(0)" }], {
-         duration: 400,
+         duration: appResponsiveState === AppResponsiveState.mobileOrTablet ? 400 : 480,
          easing: "ease",
          delay: 0
       });

@@ -1,11 +1,15 @@
 @import "src/./variables.scss";
 
-
+//todo:
 .check{
   position: relative;
-  width: 83vw;
+  width: 100%;
   height: 30vh;
   max-height: 30vh;
+
+  @media (min-width: 1440px) {
+    width: 100%;
+  }
 }
 
 .check_title{
@@ -15,11 +19,20 @@
   font-size: $font-lg;
   margin-bottom: 0.5rem;
   height: 30px;
+
+  @media (min-width: 1440px) {
+    margin-left: 2rem;
+  }
 }
 
+//todo:
 .check_container{
   position: relative;
-  width: 83vw;
+  width: 100%;
+  @media (min-width: 1440px){
+    width: 90%;
+    margin: 0 auto;
+  }
 }
 
 

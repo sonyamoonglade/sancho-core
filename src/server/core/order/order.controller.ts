@@ -34,6 +34,7 @@ export class OrderController {
       private logger: PinoLogger,
       private eventService: EventsService
    ) {
+      this.logger.setContext(OrderController.name);
       this.subscribeToEvent();
    }
 

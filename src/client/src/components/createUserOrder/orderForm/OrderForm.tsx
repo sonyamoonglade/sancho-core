@@ -3,11 +3,8 @@ import FormInput from "../../ui/formInput/FormInput";
 import { useFormValidations } from "../../../hooks/useFormValidations";
 import "./order-form.styles.scss";
 import { UserOrderFormState } from "../CreateUserOrder";
-import EventEmitter from "events";
-import { useAppSelector, userSelector } from "../../../redux";
 import { useEvents } from "../../../hooks/useEvents";
 import { DeliveryDetails } from "../../../common/types";
-import { useAppCookies } from "../../../hooks/useAppCookies";
 import { useUser } from "../../../hooks/useUser";
 
 interface orderFormProps {
@@ -102,6 +99,7 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
    }
 
    function handleAutocomplete(name: keyof autocomplete) {
+      console.log("autocomplete");
       if (name === "phone_number") {
          setFormValues((prev: UserOrderFormState) => {
             const copy = Object.assign({}, prev);

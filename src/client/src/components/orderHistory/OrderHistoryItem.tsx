@@ -51,14 +51,10 @@ export enum DropZones {
 const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extraData, canDrag = true }) => {
    const { orderHistory } = useAppSelector(orderSelector);
    const { cid, cstatus, cdate, cddate, correctData, orderItemCorrespondingClassName } = useCorrectOrderData(order);
-   const { isWorkerAuthenticated, isAuthenticated } = useAppSelector(userSelector);
+   const { isWorkerAuthenticated } = useAppSelector(userSelector);
    const { onEnd, onMove, cancelIconAnimationRef, animationRef, x } = useCancelOrder(order);
-   const { pay } = usePay();
    const { appResponsiveState } = useAppSelector(windowSelector);
-   const { orderList } = useAppSelector(workerSelector);
    const { notify } = useNotifyRunner();
-   //check
-   const { downloadCheck } = useWorkerApi();
    const dispatch = useAppDispatch();
 
    const isNotifiedCondition = order.status === OrderStatus.verified && (order as unknown as VerifiedQueueOrder).isRunnerNotified;
@@ -129,7 +125,7 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
             style={{ transform: `translateX(${x}px)`, opacity: isDragging ? 0.4 : 1 }}
             onTouchMove={(e) => onMove(e)}
             onTouchEnd={(e) => onEnd()}
-            ref={appResponsiveState === AppResponsiveState.computer && canDrag ? drag : animationRef}
+            ref={appResponsiveState === AppResponsiveState.computer && isWorkerAuthenticated && canDrag ? drag : animationRef}
             className={orderItemCorrespondingClassName}>
             <div className="top">
                <div className="top_left">

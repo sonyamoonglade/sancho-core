@@ -38,6 +38,7 @@
 .virtual_icon{
   background-color: #c9c9c9;
   width: 25px;
+  user-select: none;
   height: 25px;
   border-radius: 50%;
   transition: all 0.05s ease-in-out;

@@ -9,6 +9,13 @@
   padding-bottom: 2rem;
   -ms-overflow-style: none;
 
+  @media (min-width: 1440px) {
+    white-space: normal;
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: grid;
+    grid-template-columns: auto auto auto;
+  }
 }
 
 .cart_extra_list::-webkit-scrollbar{
@@ -16,13 +23,17 @@
 }
 
 .extra_item{
-  white-space: nowrap;
   display: inline-block;
   padding: 1.5rem 0.7rem 0.5rem 0.7rem;
   background-color: $light-grey;
   border-radius: 15px;
   margin-right: .8rem;
   transition: all 0.2s ease-in-out;
+
+  @media (min-width: 1440px) {
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+  }
 }
 
 .extra_item:hover{
@@ -49,6 +60,7 @@
   color: $black-50;
   font-weight: 300;
   font-family: "Geometria";
+  user-select: none;
 
 }
 
@@ -56,10 +68,13 @@
   font-family: "Geometria";
   font-size: $font-regular;
   color: $black-50;
+  user-select: none;
+
 }
 
 .item_name{
   font-family: "Geometria";
   font-style: normal;
+  user-select: none;
 
 }

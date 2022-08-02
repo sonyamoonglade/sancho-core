@@ -18,7 +18,7 @@ import WorkerNavigation from "../worker/navigation/WorkerNavigation";
 import WorkerNavigationRight from "../worker/navigation/WorkerNavigationRight";
 import AdminNavigation from "../admin/navigation/AdminNavigation";
 import Pay from "../pay/Pay";
-import OtherNavigation from "../navigation/other/OtherNavigation";
+import DesktopNavigation from "../navigation/other/DesktopNavigation";
 import PromotionList from "../promotion/PromotionList";
 import MobileNavigation from "../navigation/mobile/MobileNavigation";
 
@@ -82,7 +82,7 @@ const Header: FC = () => {
 
             {appResponsiveState === AppResponsiveState.computer && !isWorkerAuthenticated && !isMasterAuthenticated ? (
                <>
-                  <OtherNavigation />
+                  <DesktopNavigation />
                   <DesktopHeaderRight />
                </>
             ) : appResponsiveState === AppResponsiveState.computer && isWorkerAuthenticated ? (

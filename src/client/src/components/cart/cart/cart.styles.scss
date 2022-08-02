@@ -1,13 +1,16 @@
 @import "src/./variables.scss";
 
 .cart.modal{
-  top: 0 !important;
+
   z-index: 140 !important;
   overflow-y: auto;
+
+
 }
 
 .cart_header{
   z-index: 600;
+  user-select: none;
   position: fixed;
   width: 100%;
   background-color: white;
@@ -23,8 +26,17 @@
     font-weight: 500;
     position: absolute;
     left: calc(50vw - 30px - 25px);
-
   }
+
+
+  @media (min-width: 1440px) {
+
+
+    p{
+      left: calc(40vw/2 - 30px);
+    }
+  }
+
 }
 
 .cart_back_icon{

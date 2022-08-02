@@ -4,13 +4,14 @@ import { Pay } from "../../../common/types";
 
 interface PaySelectorProps {
    selected: boolean;
+   disabled: boolean;
    onClick: (opt: Pay) => void;
    opt: Pay;
 }
 
-const PaySelector: FC<PaySelectorProps> = ({ selected, opt, onClick }) => {
+const PaySelector: FC<PaySelectorProps> = ({ selected, opt, onClick, disabled }) => {
    return (
-      <button onClick={() => onClick(opt)} className="pay_selector">
+      <button disabled={disabled} onClick={() => onClick(opt)} className={disabled ? "pay_selector selector--disabled" : "pay_selector"}>
          {selected && <div className="selector">&nbsp;</div>}
       </button>
    );

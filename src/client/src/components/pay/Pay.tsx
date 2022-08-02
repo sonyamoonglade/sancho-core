@@ -39,7 +39,7 @@ const Pay = () => {
    const { isAuthenticated } = useAppSelector(userSelector);
    const { phone_number: userPhoneNumber } = useUser();
    const { phoneNumber: phCookie, deliveryDetails: deliv_dCookie } = useAppCookies();
-
+   const is_delivered = orderData?.is_delivered;
    useEffect(() => {
       if (pay) {
          setFormDefaults();
@@ -136,15 +136,15 @@ const Pay = () => {
             <p className="pay_title">Способ оплаты</p>
             <ul className="pay_way">
                <li className="payway_item">
-                  <PaySelector opt={"online"} onClick={handlePaywaySwitch} selected={payWay === "online"} />
+                  <PaySelector opt={"online"} onClick={handlePaywaySwitch} selected={payWay === "online"} disabled={false} />
                   <div className="payway_content">
                      <p className="main_content">Банковской картой</p>
                      <img className="card_payment_icon" src={`${baseUrl}/card-payment.png`} alt="payment" />
                   </div>
                </li>
 
-               <li className="payway_item">
-                  <PaySelector opt={"onPickup"} onClick={handlePaywaySwitch} selected={payWay === "onPickup"} />
+               <li className={is_delivered ? "payway_item" : "payway_item payway--disabled"}>
+                  <PaySelector opt={"onPickup"} onClick={handlePaywaySwitch} selected={payWay === "onPickup"} disabled={is_delivered === false} />
                   <div className="payway_content">
                      <p className="main_content">При получении</p>
                      <p className="sub_content">картой или наличными</p>

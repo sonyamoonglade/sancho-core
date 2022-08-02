@@ -3,9 +3,10 @@
 
 .make_user_order{
   z-index: 180 !important;
-  top: 0 !important;
   overflow-y: auto;
   padding-bottom: 20rem;
+
+
 
 }
 
@@ -31,6 +32,10 @@
   position: fixed;
   z-index: 500;
   background-color: white;
+
+  @media (min-width: 1440px) {
+    width: 40%;
+  }
 }
 
 .user_order_close_icon{
@@ -44,18 +49,32 @@
 
 .make_user_order_form{
   padding: 1rem;
+  top: 60px;
+  position: relative;
+  max-width: 768px;
   @media (max-height: 700px) {
     padding-top: 0.8rem;
   }
-  top: 60px;
-  position: relative;
+  @media (min-width: 768px) {
+    margin: 0 auto;
+  }
+  @media (min-width: 1440px) {
+    padding: 1rem 2rem 2rem 2rem;
+  }
 }
 
 .form_top{
   display: flex;
+  padding: 1rem;
   align-items: center;
   width: 100%;
   justify-content:center;
+  @media (min-width: 1440px) {
+    //todo:
+    padding: 0;
+    display: block;
+    width: auto;
+  }
 }
 
 
@@ -68,6 +87,21 @@
   right: 4%;
   top: 5%;
   transform: rotate(-0deg);
+
+  @media (min-width: 650px) {
+    right: calc(4% - 10px);
+  }
+  @media (min-width: 750px) {
+    right: calc(4% - 15px);
+
+  }
+  @media (min-width:1440px){
+    right: 5%;
+    top: 4%;
+  }
+  @media (min-width: 1900px) {
+    right: 6%;
+  }
 }
 
 

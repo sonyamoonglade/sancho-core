@@ -1,17 +1,18 @@
 import { useAppCookies } from "./useAppCookies";
 import { DeliveryDetails } from "../common/types";
 import { useMemo } from "react";
+import { useAppSelector, userSelector } from "../redux";
 
 export function useUser() {
    const { deliveryDetails, phoneNumber } = useAppCookies();
-   console.log(deliveryDetails, phoneNumber);
+   const { isAuthenticated } = useAppSelector(userSelector);
    const delivery_details: DeliveryDetails | null = useMemo(() => {
       // If cookie is defined parse it as delivery_details
       if (deliveryDetails?.value !== undefined) {
          return deliveryDetails.value;
       }
       return null;
-   }, [deliveryDetails]);
+   }, [deliveryDetails, isAuthenticated]);
 
    const phone_number: string = useMemo(() => {
       // Same as delivery details
@@ -19,7 +20,7 @@ export function useUser() {
          return phoneNumber.value;
       }
       return "";
-   }, [phoneNumber]);
+   }, [phoneNumber, isAuthenticated]);
 
    return { delivery_details, phone_number };
 }
