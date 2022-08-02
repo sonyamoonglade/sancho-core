@@ -1,5 +1,6 @@
 /* eslint-disable camelcase */
 
+const { orders } = require("../dist/server/core/entities/Order");
 exports.shorthands = undefined;
 
 exports.up = (pgm) => {
@@ -42,22 +43,18 @@ exports.up = (pgm) => {
          default: "{}"
       },
       created_at: {
-         type: "timestamp",
-         notNull: true
+         type: "timestamp without time zone"
       },
       verified_at: {
-         type: "timestamp",
-         notNull: false,
+         type: "timestamp without time zone",
          default: null
       },
       completed_at: {
-         type: "timestamp",
-         notNull: false,
+         type: "timestamp without time zone",
          default: null
       },
       cancelled_at: {
-         type: "timestamp",
-         notNull: false,
+         type: "timestamp without time zone",
          default: null
       },
       cancelled_by: {
@@ -79,6 +76,8 @@ exports.up = (pgm) => {
    });
    pgm.createIndex("orders", "user_id");
    pgm.createIndex("orders", "status");
+   //Alter timestamp column (migration tool doesn't accept this default value so its as raw sql..)
+   pgm.sql(`ALTER TABLE ${orders} ALTER COLUMN created_at SET DEFAULT (NOW() AT TIME ZONE 'utc')`);
 };
 
 exports.down = (pgm) => {

@@ -38,5 +38,12 @@ export const helpers = {
          a += c.price * c.quantity;
          return a;
       }, 0);
+   },
+
+   utcNow(): string {
+      //utc ISO-String
+      return new Date().toLocaleString("en", {
+         timeZone: "UTC"
+      });
    }
 };

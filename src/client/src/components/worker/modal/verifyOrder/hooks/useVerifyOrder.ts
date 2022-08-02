@@ -1,10 +1,11 @@
 import { DatabaseCartProduct, OrderQueue, WaitingQueueOrder } from "../../../../../common/types";
 import { AxiosInstance } from "axios";
 import { useCallback } from "react";
+import { WorkerVerifyOrderFormValues } from "./useVerifyOrderForm";
 
 export function useVerifyOrder(client: AxiosInstance, orderQueue: OrderQueue, totalOrderPrice: number, vcart: DatabaseCartProduct[]) {
    const verifyOrder = useCallback(
-      async function (body: any) {
+      async function (body: WorkerVerifyOrderFormValues) {
          await client.put("order/verify", body);
       },
       [vcart, totalOrderPrice, orderQueue]

@@ -156,7 +156,6 @@
 .autocomplete.phone{
   left: 2rem;
   padding: 0.3rem !important;
-
   @media (min-width: 1440px) {
     left: 4rem;
   }
@@ -164,7 +163,7 @@
 
 .autocomplete.floor{
   right: 3rem;
-  bottom: 25%;
+  bottom: 26%;
   @media (min-width: 1440px) {
     bottom: 31%;
     right: 5.5rem;
@@ -172,17 +171,14 @@
 }
 .autocomplete.flat_call{
   right: 45%;
-  bottom: 25%;
-
+  bottom: 26%;
   @media (min-width: 1440px) {
     bottom: 31%;
-
   }
 }
 .autocomplete.entrance_number{
   left: 4rem;
-  bottom: 25%;
-
+  bottom: 26%;
   @media (min-width: 1440px) {
     bottom: 31%;
     left: 8rem;

@@ -66,7 +66,7 @@ export type Promotion = {
 export type ResponseUserOrder = {
    id: number;
    cart: DatabaseCartProduct[];
-   created_at: Date;
+   created_at: string;
    status: OrderStatus;
    is_delivered: boolean;
    delivery_details: null | DeliveryDetails;

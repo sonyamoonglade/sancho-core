@@ -1,9 +1,9 @@
-import { Body, Controller, Get, ParseIntPipe, Post, Put, Query, Req, Res, UseFilters, UseGuards, UseInterceptors } from "@nestjs/common";
-import { CreateMasterOrderDto, CreateUserOrderDto, CreateUserOrderInput } from "./dto/create-order.dto";
+import { Body, Controller, Get, Post, Put, Query, Req, Res, UseFilters, UseGuards } from "@nestjs/common";
+import { CreateMasterOrderDto, CreateMasterOrderInput, CreateUserOrderDto, CreateUserOrderInput } from "./dto/create-order.dto";
 import { OrderService } from "./order.service";
 import { Response } from "express";
-import { VerifyOrderDto } from "./dto/verify-order.dto";
-import { CancelOrderDto } from "./dto/cancel-order.dto";
+import { VerifyOrderDto, VerifyOrderInput } from "./dto/verify-order.dto";
+import { CancelOrderDto, CancelOrderInput } from "./dto/cancel-order.dto";
 import { AppRoles, OrderStatus } from "../../../common/types";
 import { CanCancelGuard } from "./guard/can-cancel.guard";
 import { CompleteOrderDto } from "./dto/complete-order.dto";
@@ -21,6 +21,8 @@ import { PinoLogger } from "nestjs-pino";
 import { ValidationErrorException } from "../../packages/exceptions/validation.exceptions";
 import { EventsService } from "../../packages/event/event.module";
 import { Events } from "../../packages/event/events";
+import { helpers } from "../../../client/src/helpers/helpers";
+import { OrderCannotBeVerified } from "../../packages/exceptions/order.exceptions";
 
 @Controller("/order")
 @UseGuards(AuthorizationGuard)
@@ -60,6 +62,7 @@ export class OrderController {
          }
 
          const userId = req.user_id;
+         this.logger.debug(`create order for user ${userId}`);
 
          const dto: CreateUserOrderDto = {
             cart: inp.cart,
@@ -92,25 +95,44 @@ export class OrderController {
    @UseGuards(CreationLimitGuard)
    @Role([AppRoles.worker])
    @UseFilters(PolicyFilter)
-   async createMasterOrder(@Res() res: Response, @Body() dto: CreateMasterOrderDto) {
-      applyPayPolicy(dto.pay, dto.is_delivered, "worker");
+   async createMasterOrder(@Res() res: Response, @Body() inp: CreateMasterOrderInput) {
+      applyPayPolicy(inp.pay, inp.is_delivered, "worker");
 
-      //Only one way to pay is onPickup if order is created by worker 'master'
-      dto.pay = "onPickup";
       try {
-         const userId = await this.userService.getUserId(dto.phone_number);
+         //Try get userId to check if user is in system already
+         let userId = await this.userService.getUserId(inp.phone_number);
          if (userId === undefined) {
+            //Register user
             const registeredUser: User = await this.userService.createUser({
-               phone_number: dto.phone_number
+               phone_number: inp.phone_number
             });
-            dto.userId = registeredUser.id;
-         } else {
-            dto.userId = userId;
+            userId = registeredUser.id;
          }
-         await this.userService.updateUsername(dto.username, dto.userId);
+
+         const dto: CreateMasterOrderDto = {
+            cart: inp.cart,
+            user_id: userId,
+            verified_at: helpers.utcNow(),
+            delivery_details: inp.delivery_details,
+            delivered_at: inp.delivered_at,
+            is_delivered: inp.is_delivered,
+            total_cart_price: 0, //to be updated in service
+            phone_number: inp.phone_number,
+            is_delivered_asap: inp.is_delivered_asap,
+            pay: "onPickup" // Only one method is allowed
+         };
+
+         this.logger.debug(`create master order for user: ${userId}`);
+
+         //Update user's name. (Do it first because orderQueue won't catch up)
+         await this.userService.updateUsername(inp.username, userId);
+
+         //Create order
          await this.orderService.createMasterOrder(dto);
+
+         //Update user's preferred delivery details
          if (dto.is_delivered === true) {
-            await this.userService.updateUserRememberedDeliveryAddress(dto.userId, dto.delivery_details);
+            await this.userService.updateUserRememberedDeliveryAddress(userId, dto.delivery_details);
          }
 
          return res.status(201).end();
@@ -121,17 +143,56 @@ export class OrderController {
 
    @Put("/verify")
    @Role([AppRoles.worker])
-   async verifyOrder(@Res() res: Response, @Body() dto: VerifyOrderDto) {
+   async verifyOrder(@Res() res: Response, @Body() inp: VerifyOrderInput) {
       try {
-         const userId = await this.userService.getUserId(dto.phoneNumber);
-         dto.userId = userId;
-         await this.userService.updateUsername(dto.username, dto.userId);
-         const orderStatus = await this.orderService.verifyOrder(dto);
-         if (dto.isDelivered === true) {
-            await this.userService.updateUserRememberedDeliveryAddress(dto.userId, dto.deliveryDetails);
+         const userId = await this.userService.getUserId(inp.phone_number);
+
+         const { phone_number } = inp;
+
+         //Check if user actually has waiting order.
+         const waitingOrd = await this.orderService.hasWaitingOrder(null, phone_number);
+         const { id, ok } = waitingOrd;
+
+         //Does not have waiting order
+         if (!ok) {
+            throw new Error(`verification ${phone_number}`);
          }
-         return res.status(200).send({ status: orderStatus as OrderStatus.verified });
+
+         const dto: VerifyOrderDto = {
+            id, //orderId
+            is_delivered_asap: inp.is_delivered_asap,
+            verified_at: helpers.utcNow(),
+            total_cart_price: 0, //updated in service
+            status: OrderStatus.verified
+         };
+
+         if (inp.cart !== undefined) {
+            dto.cart = inp.cart;
+         }
+         if (inp.is_delivered !== undefined) {
+            dto.is_delivered = inp.is_delivered;
+         }
+         if (inp.delivery_details !== undefined) {
+            dto.delivery_details = inp.delivery_details;
+         }
+
+         //Update user's name. (Do it first because orderQueue won't catch up)
+         await this.userService.updateUsername(inp.username, userId);
+
+         //Verify order
+         await this.orderService.verifyOrder(dto);
+
+         //Update user's preferred delivery details
+         if (inp.is_delivered === true) {
+            await this.userService.updateUserRememberedDeliveryAddress(userId, dto.delivery_details);
+         }
+
+         return res.status(200).send(OrderStatus.verified);
       } catch (e) {
+         if (e.message.includes("verification")) {
+            const phone = e.message.split(" ").pop();
+            throw new OrderCannotBeVerified(phone);
+         }
          throw e;
       }
    }
@@ -139,20 +200,28 @@ export class OrderController {
    @Put("/cancel")
    @UseGuards(CanCancelGuard)
    @Role([AppRoles.worker, AppRoles.user])
-   async cancelOrder(@Res() res: Response, @Req() req: extendedRequest, @Body() dto: CancelOrderDto) {
-      this.logger.info("cancel order");
+   async cancelOrder(@Res() res: Response, @Req() req: extendedRequest, @Body() inp: CancelOrderInput) {
       try {
          const userId = req.user_id;
          const role = await this.userService.getUserRole(userId);
-         dto.role = role as AppRoles;
-         const isCancelledByUser = await this.orderService.cancelOrder(userId, dto);
-         this.logger.debug("cancelled order");
-         if (isCancelledByUser) {
+
+         const dto: CancelOrderDto = {
+            id: inp.order_id,
+            cancelled_by: userId,
+            status: OrderStatus.cancelled,
+            cancel_explanation: inp.cancel_explanation,
+            cancelled_at: helpers.utcNow()
+         };
+
+         await this.orderService.cancelOrder(dto);
+
+         //If user cancels then set temp-ban cookie for it
+         if (role === "user") {
             this.logger.debug("set can cancel cookie");
-            // todo: set to env / config var / pg var
             const cancelBanTtl = 5;
             res = this.cookieService.setCanCancelCookie(res, cancelBanTtl);
          }
+
          return res.status(200).end();
       } catch (e) {
          throw e;

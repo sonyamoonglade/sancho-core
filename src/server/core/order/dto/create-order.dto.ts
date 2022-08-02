@@ -33,7 +33,7 @@ export class CreateUserOrderDto {
 
    total_cart_price?: number;
 }
-export class CreateMasterOrderDto {
+export class CreateMasterOrderInput {
    @IsDefined()
    @IsString()
    phone_number: string;
@@ -60,4 +60,16 @@ export class CreateMasterOrderDto {
    delivery_details?: DeliveryDetails | null = null;
    userId: number;
    total_cart_price: number;
+}
+export class CreateMasterOrderDto {
+   user_id: number;
+   phone_number: string;
+   cart: DatabaseCartProduct[];
+   pay: Pay;
+   is_delivered_asap: boolean;
+   is_delivered: boolean;
+   verified_at: string;
+   total_cart_price: number;
+   delivery_details?: DeliveryDetails | null = null;
+   delivered_at: Date | null = null;
 }

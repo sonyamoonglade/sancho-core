@@ -25,11 +25,11 @@ export interface WorkerVerifyOrderFormState {
    };
 }
 export interface WorkerVerifyOrderFormValues {
-   phoneNumber: string;
+   phone_number: string;
    username: string;
-   deliveryDetails: DeliveryDetails;
-   isDeliveredAsap: boolean;
-   isDelivered: boolean;
+   delivery_details: DeliveryDetails;
+   is_delivered_asap: boolean;
+   is_delivered: boolean;
 }
 const formDefaults: WorkerVerifyOrderFormState = {
    verified_fullname_w: {
@@ -76,15 +76,15 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
    //apply types
    function getFormValues(): WorkerVerifyOrderFormValues {
       const out: WorkerVerifyOrderFormValues = {
-         phoneNumber: `+7${formValues.phone_number_w.value}`,
-         isDelivered: formValues.is_delivered_w.value,
+         phone_number: `+7${formValues.phone_number_w.value}`,
+         is_delivered: formValues.is_delivered_w.value,
          username: formValues.verified_fullname_w.value,
-         isDeliveredAsap: formValues.is_delivered_asap.value,
-         deliveryDetails: null
+         is_delivered_asap: formValues.is_delivered_asap.value,
+         delivery_details: null
       };
 
       if (formValues.is_delivered_w.value) {
-         out.deliveryDetails = {
+         out.delivery_details = {
             address: formValues.address_w.value,
             flat_call: Number(formValues.flat_call_w.value),
             entrance_number: Number(formValues.entrance_number_w.value),
@@ -210,6 +210,7 @@ export function useVerifyOrderForm(orderQueue: OrderQueue) {
    }
 
    function presetDeliveryDetails(order: WaitingQueueOrder) {
+      console.log(order);
       if (!order) {
          return;
       }

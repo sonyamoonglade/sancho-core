@@ -3,13 +3,12 @@ import { DatabaseCartProduct, DeliveryDetails, OrderStatus } from "../../../../c
 export class QueueOrderDto {
    id: number;
    cart: DatabaseCartProduct[];
-   created_at: Date;
+   created_at: string;
    status: OrderStatus;
    is_delivered: boolean;
    delivery_details: null | DeliveryDetails;
    total_cart_price: number;
    is_delivered_asap: boolean;
-
    name: string;
    phone_number: string;
 }

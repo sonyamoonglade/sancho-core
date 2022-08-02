@@ -4,11 +4,11 @@ import { Pool } from "pg";
 import { filter, QueryBuilder } from "../../packages/query_builder/QueryBuilder";
 import { pg_conn } from "../../packages/database/db_provider-name";
 import { query_builder } from "../../packages/query_builder/provider-name";
-import { RepositoryException } from "../../packages/exceptions/repository.exceptions";
 import { DeliveryDetails, OrderStatus, VerifiedQueueOrder } from "../../../common/types";
 import { users } from "../entities/User";
 import { QueueOrderDto } from "./dto/queue-order.dto";
 import { CreateMasterOrderDto, CreateUserOrderDto } from "./dto/create-order.dto";
+import { CancelOrderDto } from "./dto/cancel-order.dto";
 
 @Injectable()
 export class OrderRepository {
@@ -40,7 +40,7 @@ export class OrderRepository {
    async getOrderSumInTerms(termsInDays: number, userId: number): Promise<number[]> {
       const sql = `
         SELECT total_cart_price FROM ${orders} WHERE status = '${OrderStatus.completed}' AND user_id = ${userId}
-        AND created_at > ((NOW() + INTERVAL '+4HOUR')- INTERVAL '30DAYS') AND created_at < (NOW() + INTERVAL '+4HOUR')
+        AND created_at > (NOW() - INTERVAL '30DAYS') AND created_at < NOW()
       `;
       const { rows } = await this.db.query(sql);
       return rows.map((e) => e.total_cart_price);
@@ -81,8 +81,8 @@ export class OrderRepository {
    async createUserOrder(dto: CreateUserOrderDto): Promise<void> {
       const strDetails = JSON.stringify(dto?.delivery_details || {});
       const sql = `
-         INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,pay,created_at)
-         VALUES($1,$2,$3,$4,$5,$6,$7,$8,NOW()+INTERVAL '+4HOUR')
+         INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,pay)
+         VALUES($1,$2,$3,$4,$5,$6,$7,$8)
       `;
       const values = [dto.is_delivered, dto.cart, strDetails, dto.total_cart_price, dto.is_delivered_asap, dto.user_id, dto.status, dto.pay];
       await this.db.query(sql, values);
@@ -96,11 +96,10 @@ export class OrderRepository {
    }
 
    async createMasterOrder(dto: CreateMasterOrderDto): Promise<void> {
-      //Todo: Adding time zone ( later fix to automatic )
       const strDelDetails = JSON.stringify(dto?.delivery_details || {});
       const sql = `
-         INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,pay,created_at,verified_at)
-          VALUES($1,$2,$3,$4,$5,$6,$7,$8, NOW()+INTERVAL '+4HOUR',NOW()+INTERVAL '+4HOUR') 
+         INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,pay,verified_at)
+          VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) 
       `;
       const values = [
          dto.is_delivered,
@@ -108,18 +107,23 @@ export class OrderRepository {
          strDelDetails,
          dto.total_cart_price,
          dto.is_delivered_asap,
-         dto.userId,
+         dto.user_id,
          OrderStatus.verified,
-         dto.pay
+         dto.pay,
+         dto.verified_at
       ];
       await this.db.query(sql, values);
       return;
    }
 
-   async update(id: number, updated: Partial<Order | undefined>): Promise<void> {
-      const [updateSql, values] = this.qb.ofTable(orders).update<Order>({ where: { id }, set: updated });
+   async update(orderId: number, updated: Partial<Order>): Promise<void> {
+      const [updateSql, values] = this.qb.ofTable(orders).update<Order>({ where: { id: orderId }, set: updated });
       await this.db.query(updateSql, values);
-      return;
+   }
+
+   async cancel(dto: CancelOrderDto): Promise<void> {
+      const sql = `UPDATE ${orders} SET cancel_explanation = $1, status = '${OrderStatus.cancelled}', cancelled_at = $2, cancelled_by = $3 WHERE id = $4`;
+      const values = [dto.cancel_explanation, dto.status, dto.cancelled_at, dto.cancelled_by];
    }
 
    async getAll(): Promise<Order[]> {

@@ -1,7 +1,7 @@
 import { IsDefined, IsNumber, IsString } from "class-validator";
-import { AppRoles } from "../../../../common/types";
+import { AppRoles, OrderStatus } from "../../../../common/types";
 
-export class CancelOrderDto {
+export class CancelOrderInput {
    @IsDefined()
    @IsNumber()
    order_id: number;
@@ -9,6 +9,12 @@ export class CancelOrderDto {
    @IsDefined()
    @IsString()
    cancel_explanation: string;
+}
 
-   role: AppRoles;
+export class CancelOrderDto {
+   id: number;
+   cancel_explanation: string;
+   cancelled_at: string;
+   status: OrderStatus;
+   cancelled_by: number;
 }

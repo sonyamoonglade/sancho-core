@@ -299,7 +299,7 @@ export class UserService {
       return user === undefined ? undefined : user.id;
    }
 
-   async getUserRole(user_id: number): Promise<string> {
+   async getUserRole(user_id: number): Promise<AppRoles> {
       const user = (
          await this.userRepository.get({
             where: { id: user_id },
