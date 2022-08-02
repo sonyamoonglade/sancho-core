@@ -24,6 +24,12 @@
     margin-right: 29%;
 
   }
+  @media (min-width:1440px){
+    width: 40%;
+    p{
+      margin-right: 40%;
+    }
+  }
 }
 .second_row_right{
   span{

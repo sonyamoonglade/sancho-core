@@ -6,7 +6,7 @@ const AppForm = () => {
    const dispatch = useAppDispatch();
    const { isPresentingNow } = useAppSelector(productSelector);
    const { masterLogin, cart, userOrder, pay, orderHistory } = useAppSelector(windowSelector);
-
+   console.log(orderHistory);
    const { appResponsiveState } = useAppSelector(windowSelector);
 
    function handleClick() {
@@ -27,8 +27,7 @@ const AppForm = () => {
          return isPresentingNow;
       }
       return isPresentingNow || masterLogin || cart || userOrder || pay || orderHistory;
-   }, [appResponsiveState, isPresentingNow, masterLogin, cart, userOrder, pay]);
-   console.log(isActive);
+   }, [appResponsiveState, isPresentingNow, masterLogin, cart, userOrder, pay, orderHistory]);
    return (
       <div onClick={() => handleClick()} className={isActive ? "app_form visible" : "app_form"}>
          <span></span>
