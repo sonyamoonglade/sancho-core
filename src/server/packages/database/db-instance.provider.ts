@@ -3,7 +3,7 @@ import { Pool, PoolClient } from "pg";
 require("dotenv").config();
 
 export class DbInstanceProvider {
-   public pool: Pool | PoolClient;
+   private pool: Pool | PoolClient;
 
    private retries: number = 5;
    private retryDelay: number = 500;
@@ -18,14 +18,14 @@ export class DbInstanceProvider {
       });
    }
 
-   public async connect(): Promise<Pool | PoolClient> {
+   public async connect(): Promise<PoolClient | void> {
       try {
-         await this.pool.connect();
          console.log("Connection to database has established");
-         return this.pool;
+         const conn = await this.pool.connect();
+         return conn;
       } catch (e) {
          if (this.retries == 0) {
-            console.log(e);
+            console.error(e);
             throw new Error("cannot establish connection");
          }
          setTimeout(async () => {

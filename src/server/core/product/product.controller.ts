@@ -122,7 +122,6 @@ export class ProductController {
          await this.productService.approveProduct(productId);
          return res.status(200).end();
       } catch (e) {
-         console.log(e);
          throw e;
       }
    }

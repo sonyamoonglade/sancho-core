@@ -12,25 +12,34 @@ require("dotenv").config({
 });
 
 async function bootstrap() {
+   //Init config
    const config = getConfig(process.env.NODE_ENV);
-   console.log("config has initialized");
+   //Init an app
    const app = await NestFactory.create(AppModule);
-   app.useLogger(app.get(Logger));
-   const userService: UserService = app.get<UserService>(UserService);
-   app.setGlobalPrefix("/api/v1");
+   //Get logger instance
+   const logger = app.get(Logger);
+   app.useLogger(logger);
 
-   const origins = ["https://zharpizza-front.herokuapp.com", "http://localhost:3001", "http://localhost:3000", "http://localhost:5001"];
+   const userService: UserService = app.get<UserService>(UserService);
+
+   app.setGlobalPrefix("/api/v1");
+   const origins = ["https://zharpizza-front.herokuapp.com", "http://localhost:3001", "http://localhost:3000"];
    app.use(cookieParser());
    app.enableCors({
       origin: origins,
       credentials: true,
       allowedHeaders: ["Set-Cookie", "Content-type", "accept"]
    });
+
    app.useGlobalPipes(new ValidationPipe());
+   //Configure app port (*first option is optional. For hosting providers that setup port by their own)
    const APP_PORT = Number(process.env.PORT) || Number(config.app.port);
-   userService.registerSuperAdmin();
+
+   //Register super admin(if db empty)
+   await userService.registerSuperAdmin();
+
    await app.listen(APP_PORT, () => {
-      console.log(`application is listening :${APP_PORT}`);
+      logger.log(`application is listening :${APP_PORT}`);
    });
 }
 

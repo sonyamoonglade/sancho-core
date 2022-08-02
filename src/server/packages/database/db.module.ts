@@ -11,7 +11,7 @@ const instanceProvider = new DbInstanceProvider(config);
 
 const dbProvider = {
    provide: pg_conn,
-   useValue: instanceProvider.pool.connect()
+   useValue: instanceProvider.connect()
 };
 
 @Module({

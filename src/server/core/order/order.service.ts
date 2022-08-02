@@ -260,12 +260,6 @@ export class OrderService {
             return order;
          });
 
-         rawQueue.forEach((v) => {
-            v.is_delivered
-               ? console.log(`id: ${v.id}, delivered_at: ${v.delivery_details.delivered_at}, created_at: ${v.created_at.toISOString()}`)
-               : null;
-         });
-
          return mapped;
       } catch (e) {
          this.logger.error(e);
