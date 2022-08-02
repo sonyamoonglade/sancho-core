@@ -3,7 +3,7 @@ import { DatabaseCartProduct, DeliveryDetails, OrderStatus } from "../../../../c
 export class QueueOrderDto {
    id: number;
    cart: DatabaseCartProduct[];
-   created_at: string;
+   created_at: Date;
    status: OrderStatus;
    is_delivered: boolean;
    delivery_details: null | DeliveryDetails;

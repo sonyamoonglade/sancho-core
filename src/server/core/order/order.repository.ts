@@ -99,7 +99,7 @@ export class OrderRepository {
       const strDelDetails = JSON.stringify(dto?.delivery_details || {});
       const sql = `
          INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,pay,verified_at)
-          VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) 
+          VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)
       `;
       const values = [
          dto.is_delivered,
@@ -111,6 +111,7 @@ export class OrderRepository {
          OrderStatus.verified,
          dto.pay,
          dto.verified_at
+         // dto.created_at
       ];
       await this.db.query(sql, values);
       return;
@@ -146,7 +147,7 @@ export class OrderRepository {
    async getOrderList(status: OrderStatus): Promise<VerifiedQueueOrder[]> {
       const sql = `
         SELECT o.id,o.cart,o.total_cart_price,o.status,o.is_delivered,o.delivery_details,o.created_at,
-        u.name,u.phone_number,o.is_delivered_asap FROM ${orders} o JOIN ${users} u ON o.user_id= 
+        u.name,u.phone_number,o.is_delivered_asap,o.cancelled_at FROM ${orders} o JOIN ${users} u ON o.user_id= 
         u.id WHERE o.status = '${status}' ORDER BY o.created_at DESC LIMIT 15`;
       const { rows } = await this.db.query(sql);
       return rows.map((res: any) => {

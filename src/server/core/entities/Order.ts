@@ -9,11 +9,11 @@ export type Order = {
    is_delivered: boolean;
    is_delivered_asap: boolean;
    delivery_details?: DeliveryDetails;
-   created_at: string;
+   created_at: Date;
    pay: Pay;
-   verified_at?: string;
-   completed_at?: string;
-   cancelled_at?: string;
+   verified_at?: Date;
+   completed_at?: Date;
+   cancelled_at?: Date;
    cancelled_by?: number;
    cancel_explanation?: string;
 };
@@ -36,7 +36,7 @@ export type CheckOrder = {
 };
 
 export class LastVerifiedOrder {
-   created_at: string;
+   created_at: Date;
    id: number;
    status: OrderStatus;
 }

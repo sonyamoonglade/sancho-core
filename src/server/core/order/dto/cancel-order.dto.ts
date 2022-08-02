@@ -14,7 +14,7 @@ export class CancelOrderInput {
 export class CancelOrderDto {
    id: number;
    cancel_explanation: string;
-   cancelled_at: string;
+   cancelled_at: Date;
    status: OrderStatus;
    cancelled_by: number;
 }

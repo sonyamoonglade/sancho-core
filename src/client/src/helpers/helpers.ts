@@ -40,10 +40,10 @@ export const helpers = {
       }, 0);
    },
 
-   utcNow(): string {
-      //utc ISO-String
+   utcNow(): Date {
+      //utc ISO-String (*Need return type of Date for DTO's. Database accepts strings as date)
       return new Date().toLocaleString("en", {
          timeZone: "UTC"
-      });
+      }) as unknown as Date;
    }
 };

@@ -113,6 +113,7 @@ export class OrderController {
             cart: inp.cart,
             user_id: userId,
             verified_at: helpers.utcNow(),
+            // created_at: helpers.utcNow(),
             delivery_details: inp.delivery_details,
             delivered_at: inp.delivered_at,
             is_delivered: inp.is_delivered,

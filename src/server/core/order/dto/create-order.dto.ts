@@ -68,7 +68,7 @@ export class CreateMasterOrderDto {
    pay: Pay;
    is_delivered_asap: boolean;
    is_delivered: boolean;
-   verified_at: string;
+   verified_at: Date;
    total_cart_price: number;
    delivery_details?: DeliveryDetails | null = null;
    delivered_at: Date | null = null;

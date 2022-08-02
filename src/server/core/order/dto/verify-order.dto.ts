@@ -26,7 +26,7 @@ export class VerifyOrderDto {
    delivery_details?: DeliveryDetails;
    is_delivered?: boolean;
    cart?: DatabaseCartProduct[];
-   verified_at: string;
+   verified_at: Date;
    status: OrderStatus;
    total_cart_price: number;
 }

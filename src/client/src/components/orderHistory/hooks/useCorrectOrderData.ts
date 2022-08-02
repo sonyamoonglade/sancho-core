@@ -20,7 +20,9 @@ export function useCorrectOrderData(order: ResponseUserOrder) {
          ? "--dark-blue order_h_item"
          : "order_h_item";
    }, [order]);
-   const monthTranslations = new Map<string, string>();
+   const monthTranslations = useMemo(() => {
+      return new Map<string, string>();
+   }, []);
    function sixifyOrderId() {
       let currentId: string[] = order?.id.toString().split("");
       for (let i = 0; i < 6; i++) {
@@ -49,10 +51,11 @@ export function useCorrectOrderData(order: ResponseUserOrder) {
    function parseCreationTime() {
       const createdAt = dayjs(order?.created_at);
       const deliveredAt = dayjs(order?.delivery_details?.delivered_at);
-
       const formattedc = createdAt.format(DATE_FORMAT_TEMPLATE).split(" ");
       const formattedd = deliveredAt.format(DATE_FORMAT_TEMPLATE).split(" ");
 
+      console.log(deliveredAt, formattedd);
+      console.log(createdAt, formattedc);
       let indexOfMonth = 1;
       const currMonthc = formattedc[indexOfMonth];
       const currMonthd = formattedd[indexOfMonth];
@@ -77,10 +80,14 @@ export function useCorrectOrderData(order: ResponseUserOrder) {
    }
 
    function correctData() {
-      setupMonthTranslations();
+      if (order.is_delivered) {
+         setupMonthTranslations();
+      }
       sixifyOrderId();
       translateStatus();
-      parseCreationTime();
+      if (order.is_delivered) {
+         parseCreationTime();
+      }
    }
 
    return { correctData, cdate, cddate, cstatus, cid, orderItemCorrespondingClassName };

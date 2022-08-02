@@ -43,18 +43,19 @@ exports.up = (pgm) => {
          default: "{}"
       },
       created_at: {
-         type: "timestamp without time zone"
+         type: "timestamptz",
+         notNull: true
       },
       verified_at: {
-         type: "timestamp without time zone",
+         type: "timestamptz",
          default: null
       },
       completed_at: {
-         type: "timestamp without time zone",
+         type: "timestamptz",
          default: null
       },
       cancelled_at: {
-         type: "timestamp without time zone",
+         type: "timestamptz",
          default: null
       },
       cancelled_by: {

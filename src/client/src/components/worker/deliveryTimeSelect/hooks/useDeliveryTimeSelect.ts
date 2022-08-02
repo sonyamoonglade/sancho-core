@@ -38,6 +38,7 @@ export function useDeliveryTimeSelect(setSelectV: Function, setFormValues: Funct
    }
    function handleTimeChange(event: any) {
       const v = event.target.value;
+      console.log(v);
       setFormValues((state: any) => {
          const obj = state.delivered_at;
          obj.value = v;
