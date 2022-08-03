@@ -8,6 +8,7 @@ import AddToCartOnPresentation from "../../cart/addToCartButton/AddToCartBtn";
 import NutrientList from "../nutrient/NutrientList";
 import { usePresentation } from "./hooks/usePresentation";
 import { currency } from "../../../common/constants";
+import ProductBackground from "../../ui/productBg/ProductBackground";
 
 const ProductPresentation = () => {
    const cart = useCart();
@@ -51,7 +52,10 @@ const ProductPresentation = () => {
                         {presentedProduct.price} {currency}
                      </p>
                   </div>
+
+                  <ProductBackground forPresentation={true} />
                   <img className="image presentation" src={productImage} alt="Изображение" onTouchEnd={() => hide()} />
+
                   <div className="miscellaneous">
                      <div>
                         <p className="description">{presentedProduct.description}</p>

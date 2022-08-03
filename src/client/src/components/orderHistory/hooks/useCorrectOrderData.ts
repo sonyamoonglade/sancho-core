@@ -79,14 +79,10 @@ export function useCorrectOrderData(order: ResponseUserOrder) {
    }
 
    function correctData() {
-      if (order.is_delivered) {
-         setupMonthTranslations();
-      }
+      setupMonthTranslations();
       sixifyOrderId();
       translateStatus();
-      if (order.is_delivered) {
-         parseCreationTime();
-      }
+      parseCreationTime();
    }
 
    return { correctData, cdate, cddate, cstatus, cid, orderItemCorrespondingClassName };

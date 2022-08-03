@@ -44,7 +44,7 @@ const AddToCartBtn: FC<addToCartOnPresentationProps> = (props) => {
          {isProductInCart ? (
             <CartButton quantity={presentedProductCartQuantity} cart={cart} />
          ) : (
-            <p style={{ transform: "translateX(3px)" }}>Добавить в корзину</p>
+            <p className="add_to_cart_text">Добавить в корзину</p>
          )}
          <p className="total_cart_price">
             {totalCartPrice} {currency}

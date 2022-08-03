@@ -12,6 +12,11 @@
   margin-bottom: 0.3rem;
   align-items: center;
   transition: all 1s ease-in-out .5s;
+
+  @media (min-width: 1440px) {
+    padding: 1.2rem 2rem 1.2rem 1rem;
+    margin-bottom: 0.5rem;
+  }
 }
 
 
@@ -28,7 +33,9 @@
   }
   @media (min-height: 850px) {
     width: 90px;
-
+  }
+  @media (min-width: 1440px) {
+    width: 100px;
   }
 }
 
@@ -51,24 +58,34 @@
   @media (min-height: 800px) {
     font-size: $font-regular;
   }
+  @media (min-width: 1440px) {
+    font-size: $font-prelg;
+  }
 }
 
 .cart_item_price{
   user-select: none;
   font-family: "Geometria Medium", serif;
   font-size: $font-mder;
+  @media (min-width: 1440px) {
+    font-size: $font-lg;
+  }
 }
 .cart_item_quantity{
   p{
     font-size: $font-regular;
     font-family: "Geometria Bold", serif;
-
+    @media (min-width: 1440px) {
+      font-size: $font-mder;
+    }
   }
 }
 .price_info{
   line-height: 1rem;
   display: flex;
   flex-direction: column;
+
+
 }
 
 .quantity_price{
@@ -77,4 +94,7 @@
   font-size: $font-smer;
   text-align: right;
   margin-top: 0.3rem;
+  @media (min-width: 1440px) {
+    font-size: $font-regular;
+  }
 }

@@ -165,22 +165,23 @@
   right: 3rem;
   bottom: 26%;
   @media (min-width: 1440px) {
-    bottom: 31%;
-    right: 5.5rem;
+    bottom: 30%;
+    right: 8.3rem;
   }
 }
 .autocomplete.flat_call{
   right: 45%;
   bottom: 26%;
   @media (min-width: 1440px) {
-    bottom: 31%;
+    bottom: 30%;
+    right: 48%;
   }
 }
 .autocomplete.entrance_number{
   left: 4rem;
   bottom: 26%;
   @media (min-width: 1440px) {
-    bottom: 31%;
+    bottom: 30%;
     left: 8rem;
   }
 }

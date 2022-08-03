@@ -76,5 +76,7 @@
   font-family: "Geometria";
   font-style: normal;
   user-select: none;
-
+  @media (min-width: 1440px) {
+    font-size: $font-mder;
+  }
 }

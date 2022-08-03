@@ -25,8 +25,7 @@ export class MultiWaitingOrderGuard implements CanActivate {
          this.logger.debug("ok");
          return true;
       } catch (e) {
-         this.logger.error(e);
-         return false;
+         throw e;
       }
    }
 }

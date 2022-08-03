@@ -1,0 +1,28 @@
+@import "src/./variables.scss";
+
+
+
+.product_background{
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.card_bg{
+  width: 100%;
+  height: 100%;
+}
+.card_bg.--for-presentation{
+  margin: 0 auto;
+  width: 90%;
+}
+.--for-presentation{
+ display: block;
+  height: calc((500px/95 * 73) + .1rem);
+  top: calc(30px + 2rem);
+  width: 100%;
+}

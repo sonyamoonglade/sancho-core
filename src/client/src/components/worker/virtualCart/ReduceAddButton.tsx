@@ -3,6 +3,8 @@ import "./virtual-cart.styles.scss";
 import { BsPlus } from "react-icons/bs";
 import { BiMinus } from "react-icons/bi";
 import { DatabaseCartProduct } from "../../../common/types";
+import { useAppSelector, windowSelector } from "../../../redux";
+import { AppResponsiveState } from "../../../types/types";
 
 interface reduceAddButtonProps {
    add: Function;
@@ -11,6 +13,7 @@ interface reduceAddButtonProps {
 }
 
 const ReduceAddButton: FC<reduceAddButtonProps> = ({ add, reduce, dbProduct }) => {
+   const { appResponsiveState } = useAppSelector(windowSelector);
    return (
       <div className="reduce_add_button">
          <span className="virtual_icon">
@@ -20,7 +23,7 @@ const ReduceAddButton: FC<reduceAddButtonProps> = ({ add, reduce, dbProduct }) =
                   e.preventDefault();
                   reduce(dbProduct.id);
                }}
-               size={25}
+               size={appResponsiveState === AppResponsiveState.mobileOrTablet ? 25 : 35}
             />
          </span>
          <p className="virtual_product_quantity">{dbProduct.quantity}</p>
@@ -31,7 +34,7 @@ const ReduceAddButton: FC<reduceAddButtonProps> = ({ add, reduce, dbProduct }) =
                   e.preventDefault();
                   add(dbProduct);
                }}
-               size={25}
+               size={appResponsiveState === AppResponsiveState.mobileOrTablet ? 25 : 35}
             />
          </span>
       </div>

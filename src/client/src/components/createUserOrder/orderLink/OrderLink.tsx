@@ -17,8 +17,8 @@ const OrderLink = () => {
    const { totalCartPrice } = useAppSelector(productSelector);
 
    function startAnimation() {
-      animationRef.current.animate([{ transform: "translateX(100%)" }, { transform: "translateX(0)" }], {
-         duration: appResponsiveState === AppResponsiveState.mobileOrTablet ? 400 : 480,
+      animationRef.current.animate([{ transform: "translateX(120%)" }, { transform: "translateX(0)" }], {
+         duration: appResponsiveState === AppResponsiveState.mobileOrTablet ? 400 : 400,
          easing: "ease",
          delay: 0
       });

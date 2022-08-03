@@ -29,9 +29,9 @@ const NutrientList: FC<nutrientListProps> = ({ children, nutrients, isPresenting
 
    const asRow = (
       <div className="nutrients_list row">
-         <p className="nutrient row">Жиры: {nutrients.fats}г;</p>
-         <p className="nutrient row">Углеводы: {nutrients.carbs}г;</p>
-         <p className="nutrient row">Белки: {nutrients.proteins}г; </p>
+         <p className="nutrient row">Жиры: {nutrients.fats}г |</p>
+         <p className="nutrient row">Углеводы: {nutrients.carbs}г |</p>
+         <p className="nutrient row">Белки: {nutrients.proteins}г</p>
       </div>
    );
 

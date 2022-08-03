@@ -140,7 +140,11 @@ s
   background-color: $light-grey !important;
 }
 .--dark-blue{
-  background-color: $blue-dark !important;
+  background-color: $blue-dark !important; // lighter than --blue :)
+}
+
+.--pink{
+  background-color: $pink !important;
 }
 
 .app_form.w{

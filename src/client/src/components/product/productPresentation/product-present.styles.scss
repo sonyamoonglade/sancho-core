@@ -14,6 +14,17 @@
   flex-direction: column;
   align-items: center;
   justify-content: space-between;
+
+  @media (min-width: 1440px) {
+    height: calc(100% - 80px + 4%);
+    bottom: -4%;
+    width: 40%;
+    right: 0;
+    border: 1px solid $gray-promo;
+    padding: 1rem 2rem 5vh;
+
+  }
+
 }
 .top_part{
   width: 100%;
@@ -26,6 +37,11 @@
   height: 0;
   overflow: hidden;
   opacity: 0;
+
+  @media (min-width:1440px){
+    height: calc(100% - 80px + 4%) !important;
+    right: -100%;
+  }
 }
 
 .miscellaneous{
@@ -43,6 +59,10 @@
     }
     @media (min-height: 800px) {
       font-size: $font-regular;
+    }
+    @media (min-width: 1440px) {
+      font-size: $font-mder;
+      line-height: 1.5rem;
     }
   }
 }
@@ -82,6 +102,16 @@
   }
   @media (min-height: 720px) {
     height: 3rem;
+  }
+  @media (min-width: 1440px) {
+    height: 3.5rem;
+  }
+}
+.add_to_cart_text {
+  transform: translateX(3px);
+  cursor: pointer;
+  @media (min-width: 1440px) {
+    font-size: $font-mder;
   }
 }
 

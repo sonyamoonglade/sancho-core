@@ -29,6 +29,9 @@
   display: flex;
   p{
     font-family: "Geometria", sans-serif !important;
+    @media (min-width: 1440px) {
+      font-size: $font-mder;
+    }
   }
   margin-top: 1rem;
 }
