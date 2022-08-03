@@ -163,7 +163,6 @@ export class OrderController {
             id, //orderId
             is_delivered_asap: inp.is_delivered_asap,
             verified_at: helpers.utcNow(),
-            total_cart_price: 0, //updated in service
             status: OrderStatus.verified
          };
 

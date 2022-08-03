@@ -28,5 +28,5 @@ export class VerifyOrderDto {
    cart?: DatabaseCartProduct[];
    verified_at: Date;
    status: OrderStatus;
-   total_cart_price: number;
+   total_cart_price?: number;
 }
