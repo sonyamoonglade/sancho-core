@@ -91,14 +91,18 @@
 }
 
 .description{
+  margin-bottom: 1rem;
   line-height: 1.1rem;
   color: $black-50;
   font-family: "Geometria", sans-serif;
   @media (max-height: 650px) {
     font-size: $font-smer !important;
   }
-  @media (min-width: 768px) {
-    margin-bottom: 0rem;
+
+  @media (min-width: 1440px) {
+    font-size: $font-regular;
+    line-height: 1.4rem;
+    margin-bottom: .5rem;
   }
 
 }

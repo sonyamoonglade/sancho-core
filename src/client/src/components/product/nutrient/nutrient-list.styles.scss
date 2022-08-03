@@ -6,7 +6,7 @@
   color: $black-50;
   font-weight: 400;
   padding: 0;
-
+  margin-top: 0;
   p{
     @media (min-height: 650px) {
       font-size: $font-md;
@@ -30,10 +30,9 @@
   p{
     font-family: "Geometria", sans-serif !important;
     @media (min-width: 1440px) {
-      font-size: $font-mder;
+      font-size: $font-regular;
     }
   }
-  margin-top: 1rem;
 }
 
 .nutrient.row{
