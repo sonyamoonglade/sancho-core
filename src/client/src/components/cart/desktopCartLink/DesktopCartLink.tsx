@@ -18,7 +18,7 @@ const DesktopCartLink = () => {
             {totalCartPrice} {currency}{" "}
          </p>
          <p>&#8226;</p>
-         <p className="pass">Оформить</p>
+         <p className="pass">Корзина</p>
       </button>
    );
 };

@@ -9,6 +9,9 @@
   overflow-x: hidden;
   padding-bottom: 5rem;
 }
+.layout::-webkit-scrollbar{
+  display: none;
+}
 
 html{
   margin: 0;

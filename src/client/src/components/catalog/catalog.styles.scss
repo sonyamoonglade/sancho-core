@@ -24,15 +24,19 @@
     grid-template-columns: 1fr 1fr 1fr;
     grid-column-gap: 3rem;
     margin: 0 auto;
-    top: 35px;
+    top: 30px;
   }
 
   @media (min-width: 1540px) {
-    margin: 1rem 0 0 9%;
+    //margin: 1rem 0 0 9%;
+    top: 3.2rem;
+    margin: 1rem 9% 0 2.5rem;
   }
 
   @media (min-width: 1700px) {
-    margin: 1rem 0 0 12%;
+    //margin: 1rem 0 0 12%;
+    margin: 1rem 12% 0 2.5rem;
+
   }
 
 

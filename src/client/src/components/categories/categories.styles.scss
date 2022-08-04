@@ -3,7 +3,6 @@
 
 .categories{
   position: sticky;
-  //width: 100%;
   white-space: nowrap;
   overflow-x: auto;
   display: flex;
@@ -11,37 +10,33 @@
   transition: all 0.3s ease-in-out;
   z-index: 50;
   top: 68px;
-  margin-left: 1rem;
+  margin-left: 1.4rem;
   margin-top: 1.5rem;
 
   @media (min-width: 1440px) {
-    margin-top: 2.5rem;
+    margin-top: 3.2rem;
     top: 88px;
   }
 
   @media (min-width: 1540px) {
     flex-direction: column;
     position: fixed;
-    left: calc((10% - 130px)/2 );
     top: 280px;
     margin-left: 0;
-
+    right: calc((9% - 100px)/2);
     align-items: flex-start;
   }
-  @media (min-width: 1700px) {
-    left: calc((10% - 115px)/2 );
 
-  }
 
 
 }
 
 .category_item{
+  border-radius: 4px;
   margin-right: 0.3rem;
   background-color: $light-grey;
   padding: 0.5rem;
   transition: all 0.15s ease-in-out ;
-  border-radius: 1px;
   p{
     font-family: "Geometria",sans-serif;
     font-size: $font-regular;
@@ -51,11 +46,14 @@
   }
   @media (min-width: 1540px) {
     margin-bottom: 0.7rem;
+
     width: 120px;
+    margin-right: 0;
     p{
       text-align: center;
     }
   }
+
 }
 .--category-active{
   background-color: $black;

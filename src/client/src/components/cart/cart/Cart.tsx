@@ -54,7 +54,7 @@ const Cart = React.memo(() => {
          </ul>
          <div className="cart_extra">
             <div className="cart_extra_header">
-               <p className="extra_title">Добавить к заказу</p>
+               <p className="extra_title">Что-то забыли?</p>
             </div>
             <ExtraList updateCart={setCartProducts} />
          </div>

@@ -132,13 +132,21 @@
   }
   @media (min-width: 1024px) {
     width: 30vw;
-    max-width: calc(((100vw - 2rem) / 3) - 4rem);
+    max-width: calc(((100vw - 2rem) / 3) - 3rem);
 
   }
   @media (min-width: 1440px) {
-    width: calc(((100vw - 4rem) / 3) - 4rem);;
+    width: calc(((100vw - 4rem) / 3) - 2rem);;
     max-width: 515px;
   }
+  @media (min-width: 1540px) {
+    width: calc(((100vw - 4rem) / 3) - 5rem);;
+
+  }
+  @media (min-width: 1900px) {
+    max-width: 530px;
+  }
+
 
 }
 

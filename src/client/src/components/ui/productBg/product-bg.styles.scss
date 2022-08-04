@@ -11,6 +11,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+
 }
 .card_bg{
   width: 100%;
@@ -19,10 +20,24 @@
 .card_bg.--for-presentation{
   margin: 0 auto;
   width: 90%;
+  max-width: 650px;
+  @media (max-width: 1440px) {
+    //max-width: 5px;
+    max-height: 380px;
+  }
+  @media (max-height: 620px) {
+    max-height: 300px ;
+  }
 }
 .--for-presentation{
- display: block;
-  height: calc((500px/95 * 73) + .1rem);
+  display: block;
   top: calc(30px + 2rem);
   width: 100%;
+  @media (max-width: 1440px) {
+    height: calc(90vw/95 * 73 + .1rem);
+
+  }
+  @media (min-width: 1440px) {
+    height: calc((500px/95 * 73) + .1rem);
+  }
 }
