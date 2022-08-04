@@ -1,6 +1,6 @@
 import React from "react";
-import "../../components/admin/catalog/adm-catalog.styles.scss";
-import CatalogManipulator from "../../components/admin/catalog/CatalogManipulator";
+import "../../components/admin/MPCatalog/adm-catalog.styles.scss";
+import CatalogManipulator from "../../components/admin/MPCatalog/CatalogManipulator";
 import ProductModal from "../../components/admin/productModal/ProductModal";
 const Catalog = () => {
    return (

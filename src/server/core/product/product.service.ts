@@ -66,7 +66,10 @@ export class ProductService {
       return productId;
    }
    async getAll(): Promise<Product[]> {
-      return this.productRepository.getAll();
+      const all = await this.productRepository.getAll();
+      return all.map((p) => {
+         return { ...p, features: JSON.parse(p.features as string) };
+      });
    }
    async getCatalog(): Promise<Product[]> {
       const products = await this.productRepository.getCatalog();

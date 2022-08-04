@@ -84,6 +84,9 @@
 .mp_control:not(.end){
   margin-right: 1rem;
 }
+.mp_control.save{
+  align-self: end;
+}
 .mp_add{
   display: flex;
   justify-content: space-between;

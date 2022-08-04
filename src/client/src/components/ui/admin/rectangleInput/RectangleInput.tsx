@@ -9,14 +9,16 @@ interface RectangleInputProps {
    name: string;
    extraClass?: string;
    width?: number;
+   maxLength?: number;
 }
 
-const RectangleInput: FC<RectangleInputProps> = ({ value, setValue, disabled, regexp, name, extraClass, width }) => {
+const RectangleInput: FC<RectangleInputProps> = ({ value, setValue, disabled, regexp, name, extraClass, width, maxLength }) => {
    return (
       <input
          style={width && { width }}
          name={name}
          type={"text"}
+         maxLength={maxLength && maxLength}
          pattern={regexp && regexp.source}
          disabled={disabled}
          className={`rectangle_input ${extraClass || ""}`}

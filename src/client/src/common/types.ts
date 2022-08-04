@@ -44,7 +44,7 @@ export type Product = {
 export type AdminProduct = {
    id?: number;
    category: Categories;
-   features: Features | string;
+   features: Features;
    name: string;
    translate: string;
    price: number;
