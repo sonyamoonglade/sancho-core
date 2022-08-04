@@ -5,7 +5,9 @@
   position: fixed;
   top: -100%;
   background-color: $light-grey;
+  min-width: 750px;
   width: 50%;
+  max-width: 850px;
   z-index: 130;
   margin: 0 auto;
   height: auto;
@@ -81,6 +83,7 @@ display: none;
   background-color: $light-grey;
   border-radius: 5px;
   border: 1px solid $black-50;
+  align-self: flex-end;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -94,4 +97,5 @@ display: none;
 .filename{
   font-family: "Geometria",sans-serif;
   margin-bottom: 1rem;
+  text-align: right;
 }

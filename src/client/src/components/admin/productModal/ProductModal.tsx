@@ -155,14 +155,15 @@ const ProductModal = () => {
                      )}
                   </div>
                </section>
-               <section>
+               <section style={{ width: "100%", display: "flex", flexDirection: "column", alignContent: "flex-end" }}>
                   <div className="label_control">
                      <label htmlFor="file">Загрузить фото</label>
                   </div>
-                  <input onChange={handleFileSelect} type="file" id="file" className="file_upload" />
                   <button className="mp_control end save" onClick={handleSave}>
                      Сохранить изменения
                   </button>
+                  <input onChange={handleFileSelect} type="file" id="file" className="file_upload" />
+
                   {isFileSelected && (
                      <p className="filename">
                         Файл: <strong>{file.name}</strong>
