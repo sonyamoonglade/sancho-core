@@ -30,7 +30,7 @@ export type nutrients = {
    fats: number;
    proteins: number;
 };
-
+//FrontendProduct
 export type Product = {
    id: number;
    category: Categories;
@@ -40,6 +40,18 @@ export type Product = {
    currency: string;
    price: number;
    description: string;
+};
+export type AdminProduct = {
+   id?: number;
+   category: Categories;
+   features: Features | string;
+   name: string;
+   translate: string;
+   price: number;
+   description?: string;
+   approved?: boolean;
+   currency?: string;
+   has_image?: boolean;
 };
 
 export type LocalStorageCartProduct = {

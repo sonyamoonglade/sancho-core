@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { CreateProductDto } from "./dto/create-product.dto";
-import { Product } from "../entities/Product";
+import { FrontendProduct, Product } from "../entities/Product";
 import { Categories, Features } from "../../../common/types";
 import {
    InvalidCategoryException,
@@ -69,10 +69,22 @@ export class ProductService {
       return this.productRepository.getAll();
    }
    async getCatalog(): Promise<Product[]> {
-      let products = await this.productRepository.getCatalog();
-      products = products.map((product) => this.parseJSONProductFeatures(product));
-      const sorted = this.sortByCategory(products);
-      return sorted;
+      const products = await this.productRepository.getCatalog();
+      const mapped = this.mapToFrontendProduct(products);
+      return this.sortByCategory(mapped);
+   }
+   mapToFrontendProduct(toMap: Product[]): FrontendProduct[] {
+      return toMap.map((p) => {
+         return {
+            id: p.id,
+            price: p.price,
+            description: p.description,
+            features: this.parseJSONFeatures(p.features as string), // from db it's a string
+            translate: p.translate,
+            category: p.category,
+            name: p.name
+         };
+      });
    }
    async approveProduct(productId: number): Promise<void> {
       const ok = await this.productRepository.approveProduct(productId);
@@ -85,10 +97,13 @@ export class ProductService {
    getCategories(): string[] {
       return Object.values(Categories);
    }
-   parseJSONProductFeatures(product: Product): Product {
-      return { ...product, features: JSON.parse(product.features as string) };
+
+   parseJSONFeatures(features: string): Features {
+      return JSON.parse(features);
    }
+
    sortByCategory(unsorted: Product[]): Product[] {
+      //todo: filter by rank
       const pizza = unsorted.filter((p) => p.category === Categories.PIZZA);
       const drinks = unsorted.filter((p) => p.category === Categories.DRINKS);
       const desserts = unsorted.filter((p) => p.category === Categories.DESSERT);

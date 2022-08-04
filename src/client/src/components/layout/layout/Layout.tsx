@@ -11,6 +11,7 @@ import { CatalogContext, LayoutContext } from "../context";
 import { useCategories } from "../hooks/useCategories";
 import Modals from "../../ui/worker/Modals";
 import Drags from "../../ui/worker/Drags";
+import AdminAppForm from "../../admin/adminAppForm/AdminAppForm";
 
 interface layoutProps {
    children: any;
@@ -30,6 +31,9 @@ const Layout: FC<layoutProps> = ({ children }) => {
       <div
          ref={layoutRef}
          onScroll={() => {
+            if (isMasterAuthenticated) {
+               return;
+            }
             if (!isCategSet.current) {
                if (catalogRef.current !== null) {
                   fillUpAdj();
@@ -55,6 +59,7 @@ const Layout: FC<layoutProps> = ({ children }) => {
                <Drags />
             </>
          )}
+         {isMasterAuthenticated && <AdminAppForm />}
          {routes}
       </div>
    );

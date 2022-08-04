@@ -29,6 +29,9 @@ interface WindowState {
       mark: boolean;
       details: boolean;
    };
+   admin: {
+      productModal: boolean;
+   };
 
    drag: {
       item: Droppable;
@@ -63,6 +66,9 @@ const initialState: WindowState = {
       completeList: false,
       mark: false
    },
+   admin: {
+      productModal: false
+   },
    drag: {
       dropzone: "",
       item: {
@@ -77,6 +83,9 @@ export const windowSlice = createSlice({
    initialState,
    name: "window",
    reducers: {
+      toggleProductModal: function (s, a?: PayloadAction<boolean>) {
+         s.admin.productModal = a?.payload || !s.admin.productModal;
+      },
       togglePay: function (s, a?: PayloadAction<boolean>) {
          s.pay = a?.payload || !s.pay;
       },
@@ -244,6 +253,9 @@ export const windowSlice = createSlice({
          s.worker.cancelOrder = false;
          s.worker.mark = false;
          s.worker.details = !s.worker.details;
+      },
+      closeAllAdmin: function (s) {
+         s.admin.productModal = false;
       }
    }
 });

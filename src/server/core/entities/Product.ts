@@ -12,4 +12,14 @@ export type Product = {
    currency?: string;
    has_image?: boolean;
 };
+
+export type FrontendProduct = {
+   id?: number;
+   category: Categories;
+   features: Features | string;
+   name: string;
+   translate: string;
+   price: number;
+   description?: string;
+};
 export const products = "products";

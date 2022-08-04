@@ -1,0 +1,47 @@
+@import "src/./variables.scss";
+
+
+.product_modal{
+  position: fixed;
+  top: -100%;
+  background-color: $light-grey;
+  width: 50%;
+  z-index: 130;
+  margin: 0 auto;
+  height: 400px;
+  padding: 1rem;
+  border-radius: 5px;
+  left: 25% ;
+}
+
+.--product-modal-active{
+  top: 30%;
+}
+.edit{
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: 150px 300px;
+  grid-column-gap: 1rem;
+  grid-row-gap: 0.5rem;
+  //section{
+  //  margin-bottom: 0.5rem;
+  //  display: flex;
+  //  width: 400px;
+  //  justify-content: space-between;
+    p{
+      font-size: $font-mder;
+      font-family: "Geometria Bold",sans-serif;
+    //}
+  }
+  section:nth-of-type(4){
+    width: 600px;
+  }
+}
+.edit_description{
+  resize: none;
+  font-family: "Geometria",sans-serif;
+  padding: 0.2rem 0.5rem;
+  font-size: $font-regular;
+  width: 400px;
+  outline: none;
+}

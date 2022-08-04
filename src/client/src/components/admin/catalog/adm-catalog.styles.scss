@@ -1,1 +1,98 @@
+@import "src/./variables.scss";
+.manipulator{
+  padding-left: 1rem;
+  width: 50%;
+}
+.mp_card{
+  list-style: none;
+  margin-bottom: 2rem;
+  padding: 1rem;
+  display: flex;
+  border-radius: 5px;
+  justify-content: space-between;
+  width: 100%;
+  transition: all 0.1s ease-in-out;
+  border: 1px solid $gray-promo
+}
+.mp_card:hover{
+  background-color: $light-grey-50;
+}
 
+.mp_image{
+  margin-right: 1rem;
+  aspect-ratio: 95/73;
+  width: 200px;
+  cursor: pointer;
+}
+.mp_left{
+  display: flex;
+}
+.mp_right{
+  display: grid;
+  grid-template-columns: auto auto;
+  section{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+.mp_content{
+  span{
+    display: flex;
+    align-items: center;
+  }
+}
+.mp_title{
+  font-size: $font-mder;
+  font-family: "Geometria Bold",sans-serif;
+  small{
+    font-family: "Geometria",sans-serif;
+    color: $dark-grey;
+  }
+}
+.mp_subtitle{
+  font-family: "Geometria",sans-serif;
+}
+.mp_price{
+  text-align: left;
+  font-size: $font-prelg;
+  margin-top: 0.5rem;
+  font-family: "Geometria Bold",sans-serif;
+}
+
+
+.mp_control{
+  width: 150px;
+  height: 50px;
+  outline: none;
+  font-family: "Geometria",sans-serif;
+  font-size: $font-md;
+  background-color: $light-grey;
+  border-radius: 5px;
+  border: 1px solid $black-50;
+  padding: 0.2rem;
+  transition: all 0.05s ease-in-out;
+}
+.mp_control:not(:disabled):active{
+  transform: scale(.98)
+}
+.mp_control:not(.bot){
+  margin-bottom: 1rem;
+}
+.mp_control:not(.end){
+  margin-right: 1rem;
+}
+.mp_add{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+
+  //icon
+  svg{
+    cursor: pointer;
+  }
+
+}

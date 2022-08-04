@@ -5,7 +5,7 @@ import Dashboard from "../components/admin/dashboard/Dashboard";
 import Users from "../components/admin/users/Users";
 import Orders from "../components/admin/orders/Orders";
 import AdminQueue from "../components/admin/queue/AdminQueue";
-import AdminCatalog from "../components/admin/catalog/AdminCatalog";
+import Catalog from "../pages/admin/Catalog";
 
 export function useRoutes(isWorkerAuthenticated: boolean, isMasterAuthenticated: boolean) {
    const worker = useMemo(
@@ -25,7 +25,7 @@ export function useRoutes(isWorkerAuthenticated: boolean, isMasterAuthenticated:
             <Route path={"/admin/users"} element={<Users />} />
             <Route path={"/admin/orders"} element={<Orders />} />
             <Route path={"/admin/queue"} element={<AdminQueue />} />
-            <Route path={"/admin/catalog"} element={<AdminCatalog />} />
+            <Route path={"/admin/catalog"} element={<Catalog />} />
             <Route path={"*"} element={<Navigate to="/admin/dashboard" />} />
          </Routes>
       );

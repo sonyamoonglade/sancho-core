@@ -18,6 +18,10 @@ export * from "./order/order.selecotrs";
 export * from "./worker/worker.slice";
 export * from "./worker/worker.selectors";
 
+export * from "./admin/admin-async.actions";
+export * from "./admin/admin.slice";
+export * from "./admin/admin.selector";
+
 export * from "./misc";
 
 export * from "./store";

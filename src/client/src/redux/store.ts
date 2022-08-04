@@ -4,6 +4,7 @@ import userReducer from "./user/user.slice";
 import windowReducer from "./window/window.slice";
 import orderReducer from "./order/order.slice";
 import workerReducer from "./worker/worker.slice";
+import adminReducer from "./admin/admin.slice";
 import miscReducer from "./misc";
 
 export const store = configureStore({
@@ -13,6 +14,7 @@ export const store = configureStore({
       windowReducer,
       orderReducer,
       workerReducer,
+      adminReducer,
       miscReducer
    }
 });

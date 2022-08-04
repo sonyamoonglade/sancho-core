@@ -92,6 +92,7 @@ export class ProductController {
    @Role([AppRoles.worker])
    async query(@Query("v") q: string, @Res() res: Response) {
       try {
+         //decode it
          q = decodeURI(q);
          const resultQuery = await this.productService.query(q);
          return res.status(200).send({ result: resultQuery });
@@ -102,10 +103,11 @@ export class ProductController {
 
    @Get("/catalog")
    @Role([AppRoles.user])
-   async getCatalog(@Res() res: Response) {
+   async catalog(@Res() res: Response) {
       try {
          const catalog = await this.productService.getCatalog();
          const categories = this.productService.getCategories();
+
          return res.status(200).send({
             catalog,
             categories
@@ -115,7 +117,20 @@ export class ProductController {
       }
    }
 
-   @Put("/approve")
+   @Get("/admin/catalog")
+   async adminCatalog(@Res() res: Response) {
+      try {
+         const catalog = await this.productService.getAll();
+         const sorted = this.productService.sortByCategory(catalog);
+         return res.status(200).send({
+            catalog: sorted
+         });
+      } catch (e) {
+         throw e;
+      }
+   }
+
+   @Put("/admin/approve")
    @Role([AppRoles.master])
    async approveProduct(@Res() res: Response, @Query("v", ParseIntPipe) productId: number) {
       try {

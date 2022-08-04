@@ -6,7 +6,6 @@ const AppForm = () => {
    const dispatch = useAppDispatch();
    const { isPresentingNow } = useAppSelector(productSelector);
    const { masterLogin, cart, userOrder, pay, orderHistory } = useAppSelector(windowSelector);
-   console.log(orderHistory);
    const { appResponsiveState } = useAppSelector(windowSelector);
 
    function handleClick() {
