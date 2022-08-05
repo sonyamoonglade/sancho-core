@@ -4,93 +4,31 @@ import { adminSelector, useAppDispatch, useAppSelector, windowSelector } from ".
 import RectangleInput from "../../ui/admin/rectangleInput/RectangleInput";
 import ModalNutrient from "../modalNutrient/ModalNutrient";
 import EditDescription from "../editDescription/EditDescription";
-
-export interface EditFormState {
-   name: string;
-   translate: string;
-   price: string;
-   description: string;
-   carbs: string;
-   fats: string;
-   proteins: string;
-   volume: string;
-   category: string;
-}
-const defaults: EditFormState = {
-   name: "",
-   translate: "",
-   price: "",
-   description: "",
-   carbs: "",
-   fats: "",
-   proteins: "",
-   volume: "",
-   category: ""
-};
+import { useAdminApi } from "../../../hooks/useAdminApi";
+import { EditFormState, useProductModalForm } from "./hooks/useProductModalForm";
+import { useEvents } from "../../../hooks/useEvents";
+import { Events } from "../../../events/Events";
 
 const ProductModal = () => {
    const { admin } = useAppSelector(windowSelector);
    const { selectedProduct } = useAppSelector(adminSelector);
-   const [state, setState] = useState<EditFormState>(Object.assign({}, defaults));
    const [isFileSelected, setIsFileSelected] = useState<boolean>(false);
    const [file, setFile] = useState<File>(null);
-
-   const inputw = useMemo(() => {
-      if (selectedProduct !== null) {
-         //Long name
-         if (selectedProduct.name.split(" ").length === 2) {
-            return 220;
-         }
-         return 150;
-      }
-      return 0;
-   }, [selectedProduct?.name]);
-
+   const { uploadImage } = useAdminApi();
+   const { state, setState, setFormDefaults, presetProductData, inputw } = useProductModalForm(selectedProduct);
+   const events = useEvents();
    useEffect(() => {
       if (selectedProduct && admin.productModal) {
          presetProductData();
          return;
       }
-      setDefaults();
+      setGlobDefaults();
    }, [selectedProduct, admin.productModal]);
 
-   function setDefaults() {
+   function setGlobDefaults() {
       setFile(null);
       setIsFileSelected(false);
-      setState((state: EditFormState) => {
-         const copy = Object.assign({}, state);
-         copy.name = "";
-         copy.translate = "";
-         copy.price = "";
-         copy.description = "";
-         copy.carbs = "";
-         copy.fats = "";
-         copy.proteins = "";
-         copy.volume = "";
-         copy.category = "";
-         return { ...copy };
-      });
-   }
-
-   function presetProductData() {
-      const { name, description, price, category, translate, features } = selectedProduct;
-      setState((state: EditFormState) => {
-         const copy = Object.assign({}, state);
-         copy.name = name;
-         copy.description = description;
-         copy.category = category;
-         copy.translate = translate;
-         copy.price = price.toString();
-         if (features.nutrients) {
-            copy.carbs = features.nutrients.carbs.toString();
-            copy.proteins = features.nutrients.proteins.toString();
-            copy.fats = features.nutrients.fats.toString();
-         }
-         if (features.volume) {
-            copy.volume = features.volume.toString();
-         }
-         return { ...copy };
-      });
+      setFormDefaults();
    }
 
    function handleFileSelect(event: any) {
@@ -111,6 +49,16 @@ const ProductModal = () => {
          2. If ok: save the rest of the edits
          3. If ok: indicate success and close modal
        */
+
+      if (file) {
+         const ok = await uploadImage(file, selectedProduct.id);
+         if (!ok) {
+            //Indicate an error
+            return;
+         }
+      }
+      //Save the rest
+      events.emit(Events.REFRESH_ADMIN_CATALOG);
    }
 
    return (

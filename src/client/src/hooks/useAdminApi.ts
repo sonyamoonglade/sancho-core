@@ -1,6 +1,7 @@
 import { useAxios } from "./useAxios";
 import { useCallback } from "react";
-import { AdminProduct, Categories, Product } from "../common/types";
+import { AdminProduct } from "../types/types";
+import { Categories } from "../common/types";
 
 interface AdminCatalogResponse {
    categories: Categories;
@@ -20,5 +21,20 @@ export function useAdminApi() {
       return res.status === 200;
    }, []);
 
-   return { fetchAdminCatalog, approveProduct };
+   const uploadImage = useCallback(async function (file: File, productId: number): Promise<boolean> {
+      const formData = new FormData();
+      //Name of formData field
+      const name = "payload";
+      formData.append(name, file);
+      //Set productId that we upload image for
+      const url = `/product/admin/upload?v=${productId}`;
+      const res = await client.post(url, formData, {
+         headers: {
+            "Content-Type": "multipart/form-data"
+         }
+      });
+      return res.status === 201;
+   }, []);
+
+   return { fetchAdminCatalog, approveProduct, uploadImage };
 }

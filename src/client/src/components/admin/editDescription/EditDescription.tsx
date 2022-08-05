@@ -1,5 +1,5 @@
 import React, { FC } from "react";
-import { EditFormState } from "../productModal/ProductModal";
+import { EditFormState } from "../productModal/hooks/useProductModalForm";
 
 interface EditDescriptionProps {
    value: any;

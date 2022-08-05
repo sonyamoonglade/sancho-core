@@ -1,9 +1,9 @@
 import React, { FC } from "react";
 import { baseUrl } from "../../../App";
 import { currency } from "../../../common/constants";
-import { AdminProduct } from "../../../common/types";
 import { adminActions, useAppDispatch, windowActions } from "../../../redux";
 import { useAdminApi } from "../../../hooks/useAdminApi";
+import { AdminProduct } from "../../../types/types";
 
 interface MPItemProps {
    product: AdminProduct;

@@ -1,17 +1,41 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import "./adm-catalog.styles.scss";
-import { AdminProduct } from "../../../common/types";
 import { useAdminApi } from "../../../hooks/useAdminApi";
 import { IoIosAddCircleOutline } from "react-icons/io";
 import MPItem from "../MPItem/MPItem";
+import { AdminProduct } from "../../../types/types";
+import { useEvents } from "../../../hooks/useEvents";
+import { Events } from "../../../events/Events";
+import { useNavigate } from "react-router-dom";
+import { useRememberScroll } from "../../../hooks/useRememberScroll";
+import { LayoutContext } from "../../layout/context";
+import { adminActions, useAppDispatch, useAppSelector, userSelector } from "../../../redux";
 
 const CatalogManipulator = () => {
    const [products, setProducts] = useState<AdminProduct[]>([]);
    const { fetchAdminCatalog } = useAdminApi();
-
+   const events = useEvents();
+   const dispatch = useAppDispatch();
    useEffect(() => {
-      fetchAdminCatalog().then((products) => setProducts(products));
+      fetchCatalog();
+      registerRefreshEvent();
    }, []);
+
+   function fetchCatalog() {
+      dispatch(adminActions.setIsProductsLoading(true));
+      fetchAdminCatalog().then((products) => {
+         setProducts(products);
+         setTimeout(() => {
+            dispatch(adminActions.setIsProductsLoading(false));
+         }, 200);
+      });
+   }
+
+   function registerRefreshEvent() {
+      events.on(Events.REFRESH_ADMIN_CATALOG, () => {
+         window.location.reload();
+      });
+   }
 
    //Indication of local approval without fetching catalog (run only if receive 200 OK)
    function locallyApproveProduct(productId: number) {
@@ -41,4 +65,4 @@ const CatalogManipulator = () => {
    );
 };
 
-export default CatalogManipulator;
+export default React.memo(CatalogManipulator);

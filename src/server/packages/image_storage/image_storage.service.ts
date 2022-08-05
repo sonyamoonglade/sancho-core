@@ -6,6 +6,7 @@ import * as crypto from "crypto";
 import { BinaryToTextEncoding } from "crypto";
 import { ImageStorageInterface } from "./image_storage";
 import { PinoLogger } from "nestjs-pino";
+import { InvalidFileExtension } from "../exceptions/file.exceptions";
 
 require("dotenv").config();
 
@@ -16,13 +17,24 @@ export class ImageStorageService implements ImageStorageInterface {
    private readonly ENCODING: BinaryToTextEncoding;
 
    constructor(private logger: PinoLogger) {
+      //todo: inject with config
       this.url = process.env.FILE_SERVICE_URL;
       this.HASHING_ALGORITHM = "sha256";
       this.ENCODING = "hex";
+      this.logger.setContext(ImageStorageService.name);
    }
 
    async deleteImage(id: number): Promise<boolean> {
       return Promise.resolve(false);
+   }
+
+   public validateFileExtension(mime: string, name: string): void {
+      const validMime = "image/png";
+      const validExt = ".png";
+      const ext = name.split(".").pop();
+      if (mime !== validMime && ext !== validExt) {
+         throw new InvalidFileExtension(mime);
+      }
    }
 
    async putImage(dto: PutImageDto, f: Express.Multer.File, productId: number): Promise<boolean> {
@@ -55,7 +67,7 @@ export class ImageStorageService implements ImageStorageInterface {
 
          return ok;
       } catch (e: any) {
-         console.error(e);
+         //todo: function to handle errors
          return false;
       }
    }

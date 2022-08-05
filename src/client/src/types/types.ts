@@ -1,5 +1,6 @@
 import { DatabaseCartProduct, DeliveryDetails } from "../common/types";
 import { CookieOptions } from "express";
+import { Categories, Features } from "../../../common/types";
 
 export enum CategoryColor {
    "Напитки" = "#6fbecf",
@@ -64,7 +65,7 @@ export type FoundUser = {
    phoneNumber: string;
    username: string;
 };
-
+//todo: move to events
 export const CLEAR_ORDER_FORM = "clear_order_form";
 export const CLEAR_ORDER_FORM_ONLY_PHONE = "clear_order_form_only_phone";
 
@@ -84,4 +85,17 @@ export type AppCookies = {
 export type AppCookie = {
    value: any;
    set: (value: string) => void;
+};
+
+export type AdminProduct = {
+   id?: number;
+   category: Categories;
+   features: Features;
+   name: string;
+   translate: string;
+   price: number;
+   description?: string;
+   approved?: boolean;
+   currency?: string;
+   has_image?: boolean;
 };

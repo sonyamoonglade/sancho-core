@@ -6,8 +6,8 @@ export class FileUploadErrorException extends HttpException {
    }
 }
 
-export class FileDoesNotExist extends HttpException {
-   constructor(fileName: string) {
-      super(`Файл с именем ${fileName} не существует`, HttpStatus.BAD_REQUEST);
+export class InvalidFileExtension extends HttpException {
+   constructor(mime: string) {
+      super(`Некорректный формат файла ${mime}.`, HttpStatus.BAD_REQUEST);
    }
 }

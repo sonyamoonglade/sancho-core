@@ -1,17 +1,18 @@
 import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
 import "./categories.styles.scss";
-import { productActions, productSelector, useAppDispatch, useAppSelector, windowSelector } from "../../redux";
+import { productActions, productSelector, useAppDispatch, useAppSelector, userSelector, windowSelector } from "../../redux";
 import { LayoutContext } from "../layout/context";
 
 const Categories = () => {
    const { categories: list, categoriesScrollAdj: mapLikeObj } = useAppSelector(productSelector);
    const { layoutRef } = useContext(LayoutContext);
+   const { isAuthenticated } = useAppSelector(userSelector);
    const { appResponsiveState } = useAppSelector(windowSelector);
    const categRef = useRef(null);
    useEffect(() => {
       //Make Categories position property 'top' = 0 after certain scroll
       //1550px is breakpoint for @media query in stylesheet
-      if (layoutRef.current.offsetWidth > 1550) {
+      if (layoutRef.current.offsetWidth > 1550 && isAuthenticated) {
          layoutRef.current.onscroll = function () {
             const curr = layoutRef.current.scrollTop;
             if (curr >= 220) {
@@ -21,7 +22,7 @@ const Categories = () => {
             }
          };
       }
-   }, [layoutRef, layoutRef.current, appResponsiveState, layoutRef?.current?.offsetWidth]);
+   }, [layoutRef, layoutRef.current, appResponsiveState, layoutRef?.current?.offsetWidth, isAuthenticated]);
 
    function activate(categ: string) {
       if (layoutRef.current !== null && mapLikeObj !== null) {
@@ -29,12 +30,12 @@ const Categories = () => {
          const categScroll: number = m.get(categ);
          //120 - 16 is approx height of box
          let finalScroll = categScroll - 120 - 16;
-         scrollTo(layoutRef, finalScroll);
+         scrollTo(layoutRef.current, finalScroll);
       }
    }
 
-   function scrollTo(ref: any, v: number) {
-      ref.current.scroll(0, v);
+   function scrollTo(element: HTMLElement, v: number) {
+      element.scrollTo({ behavior: "smooth", top: v });
    }
 
    function objToMap(v: object): Map<string, any> {

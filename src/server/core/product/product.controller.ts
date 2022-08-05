@@ -9,26 +9,16 @@ import { extendedRequest } from "../../types/types";
 import { PutImageDto } from "./dto/put-image.dto";
 import { AuthorizationGuard } from "../authorization/authorization.guard";
 import { ImageStorageService } from "../../packages/image_storage/image_storage.service";
+import { PinoLogger } from "nestjs-pino";
 
 @Controller("/product")
 @UseGuards(AuthorizationGuard)
 export class ProductController {
-   constructor(private productService: ProductService, private imageStorage: ImageStorageService) {}
-
-   @Get("/all")
-   @Role([AppRoles.master])
-   async getAll(@Res() res: Response) {
-      try {
-         const all = await this.productService.getAll();
-         return res.status(200).send({
-            products: all
-         });
-      } catch (e) {
-         throw e;
-      }
+   constructor(private productService: ProductService, private imageStorage: ImageStorageService, private logger: PinoLogger) {
+      this.logger.setContext(ProductController.name);
    }
 
-   @Post("/createProduct")
+   @Post("/admin/new")
    @Role([AppRoles.master])
    async createProduct(@Body() createProductDto: CreateProductDto, @Res() res: Response) {
       try {
@@ -39,7 +29,7 @@ export class ProductController {
       }
    }
 
-   @Put("/updateProduct")
+   @Put("/admin/update")
    @Role([AppRoles.master])
    async updateProduct(@Res() res: Response, @Query("id", ParseIntPipe) id: number, @Body() updatedProduct) {
       try {
@@ -50,7 +40,7 @@ export class ProductController {
       }
    }
 
-   @Delete("/deleteProduct")
+   @Delete("/admin/delete")
    @Role([AppRoles.master])
    async deleteProduct(@Res() res: Response, @Query("id", ParseIntPipe) id: number) {
       try {
@@ -63,23 +53,30 @@ export class ProductController {
       }
    }
 
-   @Post("/putImage")
+   @Post("/admin/upload")
    @UseInterceptors(FileInterceptor("payload"))
    @Role([AppRoles.master])
    async putImage(
       @Res() res: Response,
       @Req() req: extendedRequest,
       @UploadedFile() f: Express.Multer.File,
-      @Query("productId", ParseIntPipe) productId: number
+      @Query("v", ParseIntPipe) productId: number
    ) {
       try {
+         this.logger.info(`upload image to product. ID:${productId}`);
+         this.imageStorage.validateFileExtension(f.mimetype, f.originalname);
          const dto: PutImageDto = new PutImageDto();
 
          const ok = await this.imageStorage.putImage(dto, f, productId);
          if (!ok) {
+            this.logger.error("failed");
             return res.status(400).end();
          }
-         await this.productService.updateProduct({ has_image: true, approved: false }, productId);
+         //Set has_image(because updated an image) and approved to false (for safety)
+         const updateDto = { has_image: true, approved: false };
+         await this.productService.updateProduct(updateDto, productId);
+         this.logger.debug("success");
+         res.header("Cache-Control", "no-cache");
          return res.status(201).send({
             file: dto.productId + ".png"
          });
@@ -122,6 +119,9 @@ export class ProductController {
       try {
          const catalog = await this.productService.getAll();
          const sorted = this.productService.sortByCategory(catalog);
+
+         //Free-up cache (to prevent image cache)
+         res.header("Cache-Control", "no-cache");
          return res.status(200).send({
             catalog: sorted
          });

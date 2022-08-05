@@ -26,7 +26,7 @@ export function useRoutes(isWorkerAuthenticated: boolean, isMasterAuthenticated:
             <Route path={"/admin/orders"} element={<Orders />} />
             <Route path={"/admin/queue"} element={<AdminQueue />} />
             <Route path={"/admin/catalog"} element={<Catalog />} />
-            <Route path={"*"} element={<Navigate to="/admin/dashboard" />} />
+            <Route path={"*"} element={<Navigate to="/admin/catalog" />} />
          </Routes>
       );
    }, []);
