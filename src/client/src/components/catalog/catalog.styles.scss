@@ -4,7 +4,7 @@
 .catalog{
   position: relative;
   z-index: 5;
-  padding: 0 0 3rem;
+  padding: 0 0 10rem;
   top: 1rem;
 
 
@@ -31,6 +31,7 @@
     //margin: 1rem 0 0 9%;
     top: 3.2rem;
     margin: 1rem 9% 0 2.5rem;
+    padding-bottom: 15rem;
   }
 
   @media (min-width: 1700px) {

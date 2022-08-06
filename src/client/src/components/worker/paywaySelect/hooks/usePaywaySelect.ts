@@ -1,5 +1,3 @@
-import { WorkerCreateOrderFormState } from "../../modal/createOrder/hooks/useCreateOrderForm";
-
 //Deprecated
 export function usePaywaySelect(setPayway: Function, setFormValues: Function) {
    function handlePayChange(e: any) {

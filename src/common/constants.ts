@@ -1,7 +1,10 @@
 export const currency = "₽";
 export const USER_CANCEL_EXPLANATION = "отменен пользователем - ";
-export const x_hmac_signature = "x-hmac-signature";
-export const x_file_name = "x-file-name";
-export const x_destination = "x-destination";
-export const x_file_ext = "x-file-ext";
+export const x_content_type = "X-Content-Type";
+export const x_file_name = "X-Filename";
+export const x_destination = "X-Destination";
+export const x_root = "X-Root";
 export const REGULAR_CUSTOMER_CONTENT = "Постоянный клиент";
+export const imagePNG = "image/png";
+export const baseDestination = "static/images/";
+export const baseStorageUrl = "https://storage.yandexcloud.net/zharpizza-bucket/static/images";

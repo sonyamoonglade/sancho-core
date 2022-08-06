@@ -3,7 +3,7 @@ import { AppModule } from "./app.module";
 import * as cookieParser from "cookie-parser";
 import * as path from "path";
 import { ValidationPipe } from "@nestjs/common";
-import { getConfig } from "./config/config";
+import { GetAppConfig } from "./packages/config/config";
 import { UserService } from "./core/user/user.service";
 import { Logger } from "nestjs-pino";
 
@@ -13,7 +13,7 @@ require("dotenv").config({
 
 async function bootstrap() {
    //Init config
-   const config = getConfig(process.env.NODE_ENV);
+   const config = GetAppConfig();
    //Init an app
    const app = await NestFactory.create(AppModule);
    //Get logger instance

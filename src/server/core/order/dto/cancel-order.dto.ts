@@ -1,5 +1,5 @@
 import { IsDefined, IsNumber, IsString } from "class-validator";
-import { AppRoles, OrderStatus } from "../../../../common/types";
+import { OrderStatus } from "../../../../common/types";
 
 export class CancelOrderInput {
    @IsDefined()

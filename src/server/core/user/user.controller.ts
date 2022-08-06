@@ -5,7 +5,7 @@ import { CreateMasterUserDto } from "./dto/create-master-user.dto";
 import { PreventAuthedGuard } from "./guard/prevent-authed.guard";
 import { LoginMasterUserDto } from "./dto/login-master-user.dto";
 import { SessionService } from "../authentication/session.service";
-import { AppRoles, DeliveryDetails } from "../../../common/types";
+import { AppRoles } from "../../../common/types";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { CookieNames, extendedRequest } from "../../types/types";
 import { Role } from "../../packages/decorators/role/Role";

@@ -1,5 +1,4 @@
 import { useCallback } from "react";
-import { AxiosInstance } from "axios";
 import { useAxios } from "./useAxios";
 
 type NotifyRunnerDto = {

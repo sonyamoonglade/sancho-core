@@ -1,5 +1,13 @@
 import React, { useEffect, useMemo } from "react";
-import { orderSelector, productActions, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector } from "../../redux";
+import {
+   orderSelector,
+   productActions,
+   useAppDispatch,
+   useAppSelector,
+   userSelector,
+   windowActions,
+   windowSelector,
+} from "../../redux";
 import "./pay.styles.scss";
 import { TiArrowBack } from "react-icons/ti";
 import { baseUrl } from "../../App";

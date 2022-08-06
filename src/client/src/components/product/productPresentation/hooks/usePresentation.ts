@@ -2,7 +2,6 @@ import { useEffect, useMemo, useState } from "react";
 import { DatabaseCartProduct, Product } from "../../../../common/types";
 import { useCart } from "../../../../hooks/useCart";
 import { productActions, useAppDispatch } from "../../../../redux";
-import { baseUrl } from "../../../../App";
 
 export function usePresentation(isPresentingNow: boolean, presentedProduct: Product) {
    const cart = useCart();
@@ -20,10 +19,7 @@ export function usePresentation(isPresentingNow: boolean, presentedProduct: Prod
       }
       return 0;
    }, [isPresentingNow]);
-   const productImage = useMemo(() => {
-      if (presentedProduct) return `${baseUrl}/${presentedProduct.id}.png`;
-      return "";
-   }, [presentedProduct]);
+
    const isEmptyCart = useMemo(() => {
       const c = cart.getCart();
       const onCondition = !(c.length > 0);
@@ -62,7 +58,8 @@ export function usePresentation(isPresentingNow: boolean, presentedProduct: Prod
          id: product.id,
          quantity: 1,
          translate: product.translate,
-         price: product.price
+         price: product.price,
+         image_url: product.image_url
       };
       cart.addProduct(cartProduct);
       const totalCartPrice = cart.calculateCartTotalPrice();
@@ -79,7 +76,7 @@ export function usePresentation(isPresentingNow: boolean, presentedProduct: Prod
       splitLongName,
       addToCart,
       checkIsInCart,
-      productImage,
+
       startingQuantity,
       isLongName,
       longName,

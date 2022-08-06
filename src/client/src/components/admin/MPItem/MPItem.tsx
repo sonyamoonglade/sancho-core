@@ -1,5 +1,4 @@
 import React, { FC } from "react";
-import { baseUrl } from "../../../App";
 import { currency } from "../../../common/constants";
 import { adminActions, useAppDispatch, windowActions } from "../../../redux";
 import { useAdminApi } from "../../../hooks/useAdminApi";
@@ -29,7 +28,7 @@ const MPItem: FC<MPItemProps> = ({ product, locallyApprove }) => {
    return (
       <li className="mp_card" key={product.id}>
          <div className="mp_left">
-            <img className="mp_image" src={`${baseUrl}/${product.id}.png`} alt="" />
+            <img className="mp_image" src={product.image_url} alt="" />
             <div className="mp_content">
                <span>
                   <p className="mp_title">

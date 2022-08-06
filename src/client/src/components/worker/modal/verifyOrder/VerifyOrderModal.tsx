@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { miscSelector, useAppDispatch, useAppSelector, windowActions, windowSelector, workerActions, workerSelector } from "../../../../redux";
+import {
+  miscSelector,
+  useAppDispatch,
+  useAppSelector,
+  windowActions,
+  windowSelector,
+  workerActions,
+  workerSelector,
+} from "../../../../redux";
 import "./verify-order.styles.scss";
 import "../../../createUserOrder/orderForm/order-form.styles.scss";
 import { RiSettings4Line } from "react-icons/ri";
@@ -11,7 +19,7 @@ import { useVirtualCart } from "../../hooks/useVirtualCart";
 import { currency } from "../../../../common/constants";
 import { useVerifyOrder } from "./hooks/useVerifyOrder";
 import { helpers } from "../../../../helpers/helpers";
-import { useCreateMasterOrder, UserCredentials } from "../createOrder/hooks/useCreateMasterOrder";
+import { UserCredentials } from "../createOrder/hooks/useCreateMasterOrder";
 import { useWorkerApi } from "../../../../hooks/useWorkerApi";
 
 const VerifyOrderModal = () => {

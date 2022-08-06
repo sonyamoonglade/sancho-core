@@ -1,5 +1,12 @@
 import React, { useMemo } from "react";
-import { productActions, productSelector, useAppDispatch, useAppSelector, windowActions, windowSelector } from "../../redux";
+import {
+  productActions,
+  productSelector,
+  useAppDispatch,
+  useAppSelector,
+  windowActions,
+  windowSelector,
+} from "../../redux";
 import { AppResponsiveState } from "../../types/types";
 
 const AppForm = () => {

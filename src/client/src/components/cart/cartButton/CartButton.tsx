@@ -57,7 +57,8 @@ const CartButton: FC<cartButtonProps> = ({ quantity, cart }) => {
          id,
          price,
          translate,
-         quantity: 1
+         quantity: 1,
+         image_url: presentedProduct.image_url
       };
       cart.addProduct(p);
       const totalCartPrice = cart.calculateCartTotalPrice();

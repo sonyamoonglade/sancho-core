@@ -1,5 +1,12 @@
 import React, { useEffect } from "react";
-import { orderSelector, useAppDispatch, useAppSelector, windowActions, windowSelector, workerActions, workerSelector } from "../../../../redux";
+import {
+  useAppDispatch,
+  useAppSelector,
+  windowActions,
+  windowSelector,
+  workerActions,
+  workerSelector,
+} from "../../../../redux";
 import { useCorrectOrderData } from "../../../orderHistory/hooks/useCorrectOrderData";
 import "./details.styles.scss";
 import { useWorkerApi } from "../../../../hooks/useWorkerApi";

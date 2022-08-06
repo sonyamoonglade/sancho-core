@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from "react";
+import React, { FC } from "react";
 
 import "./cart-item.styles.scss";
 import { DatabaseCartProduct } from "../../../common/types";
@@ -6,19 +6,14 @@ import { currency } from "../../../common/constants";
 import { useCart } from "../../../hooks/useCart";
 import { productActions, useAppDispatch } from "../../../redux";
 import ReduceAddButton from "../../worker/virtualCart/ReduceAddButton";
-import { baseUrl } from "../../../App";
 
 interface cartItemProps {
    product: DatabaseCartProduct;
-   isActive?: boolean;
 }
 
-const CartItem: FC<cartItemProps> = ({ product, isActive }) => {
+const CartItem: FC<cartItemProps> = ({ product }) => {
    const cart = useCart();
    const dispatch = useAppDispatch();
-   const productImage = useMemo(() => {
-      return `${baseUrl}/${product.id}.png    `;
-   }, [product]);
 
    function reduceProductQuantity(id: number) {
       cart.removeProduct(id);
@@ -37,7 +32,7 @@ const CartItem: FC<cartItemProps> = ({ product, isActive }) => {
    return (
       <li className="cart_item">
          <div className="leading">
-            <img className="cart_item_image" src={productImage} alt="" />
+            <img className="cart_item_image" src={product.image_url} alt="" />
             <div className="info">
                <p className="cart_item_translate">{product.translate}</p>
                <p className="cart_item_price">

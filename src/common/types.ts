@@ -33,6 +33,7 @@ export type nutrients = {
 
 export type Product = {
    id: number;
+   image_url: string;
    category: Categories;
    features: Features;
    name: string;
@@ -51,6 +52,7 @@ export type LocalStorageCartProduct = {
 export type DatabaseCartProduct = {
    id: number;
    category: Categories;
+   image_url: string;
    quantity: number;
    translate: string;
    price: number;

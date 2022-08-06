@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./adm-catalog.styles.scss";
 import { useAdminApi } from "../../../hooks/useAdminApi";
 import { IoIosAddCircleOutline } from "react-icons/io";
@@ -6,10 +6,7 @@ import MPItem from "../MPItem/MPItem";
 import { AdminProduct } from "../../../types/types";
 import { useEvents } from "../../../hooks/useEvents";
 import { Events } from "../../../events/Events";
-import { useNavigate } from "react-router-dom";
-import { useRememberScroll } from "../../../hooks/useRememberScroll";
-import { LayoutContext } from "../../layout/context";
-import { adminActions, useAppDispatch, useAppSelector, userSelector } from "../../../redux";
+import { adminActions, useAppDispatch } from "../../../redux";
 
 const CatalogManipulator = () => {
    const [products, setProducts] = useState<AdminProduct[]>([]);

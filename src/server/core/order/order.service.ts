@@ -9,24 +9,22 @@ import { CancelOrderDto } from "./dto/cancel-order.dto";
 import { Product } from "../entities/Product";
 import { ProductRepository } from "../product/product.repository";
 import {
-   AppRoles,
-   DatabaseCartProduct,
-   DeliveryDetails,
-   ListResponse,
-   OrderQueue,
-   OrderStatus,
-   ResponseUserOrder,
-   VerifiedQueueOrder,
-   WaitingQueueOrder
+  DatabaseCartProduct,
+  DeliveryDetails,
+  ListResponse,
+  OrderQueue,
+  OrderStatus,
+  ResponseUserOrder,
+  VerifiedQueueOrder,
+  WaitingQueueOrder,
 } from "../../../common/types";
 import { CompleteOrderDto } from "./dto/complete-order.dto";
 import { UnexpectedServerError } from "../../packages/exceptions/unexpected-errors.exceptions";
 import {
-   CancelExplanationHasNotBeenProvided,
-   InvalidOrderStatus,
-   OrderCannotBeCompleted,
-   OrderCannotBeVerified,
-   OrderDoesNotExist
+  CancelExplanationHasNotBeenProvided,
+  InvalidOrderStatus,
+  OrderCannotBeCompleted,
+  OrderDoesNotExist,
 } from "../../packages/exceptions/order.exceptions";
 import { Events } from "../../packages/event/events";
 import { MiscService } from "../miscellaneous/misc.service";

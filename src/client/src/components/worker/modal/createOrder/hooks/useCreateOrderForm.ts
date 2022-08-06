@@ -2,7 +2,7 @@ import { useMemo, useState } from "react";
 import { FormField } from "../../../../../types/types";
 import { useVirtualCart } from "../../../hooks/useVirtualCart";
 import { UserCredentials } from "./useCreateMasterOrder";
-import { DeliveryDetails, Pay } from "../../../../../common/types";
+import { DeliveryDetails } from "../../../../../common/types";
 
 export interface WorkerCreateOrderFormState {
    verified_fullname_c: FormField;

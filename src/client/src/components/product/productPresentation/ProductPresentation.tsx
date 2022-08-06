@@ -14,10 +14,7 @@ const ProductPresentation = () => {
    const cart = useCart();
    const { presentedProduct, isPresentingNow, presentedProductCartQuantity, totalCartPrice } = useAppSelector(productSelector);
 
-   const { splitLongName, checkIsInCart, addToCart, startingQuantity, productImage, isLongName, longName, isProductInCart } = usePresentation(
-      isPresentingNow,
-      presentedProduct
-   );
+   const { splitLongName, checkIsInCart, addToCart, startingQuantity, isProductInCart } = usePresentation(isPresentingNow, presentedProduct);
    const dispatch = useAppDispatch();
    const [isNotified, setIsNotified] = useState<boolean>(false);
 
@@ -54,7 +51,7 @@ const ProductPresentation = () => {
                   </div>
 
                   <ProductBackground forPresentation={true} />
-                  <img className="image presentation" src={productImage} alt="Изображение" onTouchEnd={() => hide()} />
+                  <img className="image presentation" src={presentedProduct.image_url} alt="Изображение" onTouchEnd={() => hide()} />
 
                   <div className="miscellaneous">
                      <div>

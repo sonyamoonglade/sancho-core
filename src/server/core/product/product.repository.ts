@@ -20,6 +20,10 @@ export class ProductRepository implements ProductRepositoryInterface {
       return false;
    }
 
+   async exec(sql) {
+      await this.db.query(sql);
+   }
+
    async getById(id: number): Promise<Product> {
       const sql = `SELECT * FROM ${products} WHERE id=${id}`;
       const { rows } = await this.db.query(sql);
@@ -71,6 +75,7 @@ export class ProductRepository implements ProductRepositoryInterface {
       }
       return 0;
    }
+   //todo: return frontend product without mapping
    async getCatalog(): Promise<Product[]> {
       const sql = `SELECT * FROM ${products} WHERE has_image=true AND approved=true`;
       const { rows } = await this.db.query(sql);

@@ -8,7 +8,6 @@ import MarkList from "../../worker/markList/MarkList";
 import MarkModal from "../../worker/modal/mark/MarkModal";
 import DetailsModal from "../../worker/modal/details/DetailsModal";
 import { useAppSelector, workerSelector } from "../../../redux";
-import VirtualCart from "../../worker/virtualCart/VirtualCart";
 
 const Modals = () => {
    const { detailedOrder } = useAppSelector(workerSelector);

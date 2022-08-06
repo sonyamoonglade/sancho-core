@@ -16,6 +16,10 @@ exports.up = (pgm) => {
          type: "varchar(1000)",
          notNull: true
       },
+      image_url: {
+         type: "varchar(512)",
+         notNull: true
+      },
       name: {
          type: "varchar(255)",
          notNull: true,

@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import React, { useEffect } from "react";
 import { useAppDispatch, useAppSelector, windowActions, windowSelector } from "../../redux";
 import "./loading.styles.scss";
 import { SpinnerCircular } from "spinners-react";

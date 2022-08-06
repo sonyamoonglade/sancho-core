@@ -1,11 +1,10 @@
-import React, { FC, useMemo } from "react";
+import React, { FC } from "react";
 
 import "./extra-list.styles.scss";
 import { useCart } from "../../hooks/useCart";
 import { productActions, useAppDispatch } from "../../redux";
 import { DatabaseCartProduct, Product } from "../../common/types";
 import { currency } from "../../common/constants";
-import { baseUrl } from "../../App";
 
 interface extraItemProps {
    product: Product;
@@ -13,21 +12,18 @@ interface extraItemProps {
 }
 
 const ExtraItem: FC<extraItemProps> = ({ product, updateCart }) => {
-   const imageUrl = useMemo(() => {
-      return `${baseUrl}/${product.id}.png`;
-   }, [product]);
-
    const cart = useCart();
    const dispatch = useAppDispatch();
 
    function addItemToCart() {
-      const { price, id, translate } = product;
+      const { price, id, translate, image_url } = product;
       const p: DatabaseCartProduct = {
          category: product.category,
          quantity: 1,
          translate,
          price,
-         id
+         id,
+         image_url
       };
       cart.addProduct(p);
       dispatch(productActions.setTotalCartPrice(cart.calculateCartTotalPrice()));
@@ -37,7 +33,7 @@ const ExtraItem: FC<extraItemProps> = ({ product, updateCart }) => {
    return (
       <div onClick={() => addItemToCart()} className="extra_item">
          <div className="item_top">
-            <img className="item_image" src={imageUrl} alt="item" />
+            <img className="item_image" src={product.image_url} alt="item" />
             <p className="item_name">{product.translate}</p>
          </div>
          <div className="item_bottom">

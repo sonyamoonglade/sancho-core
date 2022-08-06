@@ -40,7 +40,8 @@ export function useVirtualCart(): VirtualCartInterface {
          price: p.price,
          translate: p.translate,
          category: p.category,
-         quantity: 1
+         quantity: 1,
+         image_url: p.image_url
       };
       newCart = actualCart.concat(dbP);
 

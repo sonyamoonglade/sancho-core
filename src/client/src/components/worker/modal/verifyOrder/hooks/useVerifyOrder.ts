@@ -1,4 +1,4 @@
-import { DatabaseCartProduct, OrderQueue, WaitingQueueOrder } from "../../../../../common/types";
+import { DatabaseCartProduct, OrderQueue } from "../../../../../common/types";
 import { AxiosInstance } from "axios";
 import { useCallback } from "react";
 import { WorkerVerifyOrderFormValues } from "./useVerifyOrderForm";

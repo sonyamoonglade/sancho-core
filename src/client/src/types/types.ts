@@ -1,5 +1,4 @@
 import { DatabaseCartProduct, DeliveryDetails } from "../common/types";
-import { CookieOptions } from "express";
 import { Categories, Features } from "../../../common/types";
 
 export enum CategoryColor {
@@ -96,6 +95,7 @@ export type AdminProduct = {
    price: number;
    description?: string;
    approved?: boolean;
+   image_url: string;
    currency?: string;
    has_image?: boolean;
 };

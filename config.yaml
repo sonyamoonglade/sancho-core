@@ -8,3 +8,11 @@ db:
   user: "wgkqvvpe"
   port: "5432"
   host: "abul.db.elephantsql.com"
+
+lambda:
+  putFile: "put_file"
+  pseudoDelete: "pseudo_delete"
+  url: "https://functions.yandexcloud.net/d4encrbv3fseka879o44"
+
+yandex:
+  storageUrl: "https://storage.yandexcloud.net/zharpizza-bucket/static/images/"

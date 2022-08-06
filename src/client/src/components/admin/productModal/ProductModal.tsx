@@ -1,11 +1,11 @@
-import React, { ChangeEvent, SyntheticEvent, useEffect, useMemo, useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./product-modal.styles.scss";
-import { adminSelector, useAppDispatch, useAppSelector, windowSelector } from "../../../redux";
+import { adminSelector, useAppSelector, windowSelector } from "../../../redux";
 import RectangleInput from "../../ui/admin/rectangleInput/RectangleInput";
 import ModalNutrient from "../modalNutrient/ModalNutrient";
 import EditDescription from "../editDescription/EditDescription";
 import { useAdminApi } from "../../../hooks/useAdminApi";
-import { EditFormState, useProductModalForm } from "./hooks/useProductModalForm";
+import { useProductModalForm } from "./hooks/useProductModalForm";
 import { useEvents } from "../../../hooks/useEvents";
 import { Events } from "../../../events/Events";
 
@@ -107,9 +107,7 @@ const ProductModal = () => {
                   <div className="label_control">
                      <label htmlFor="file">Загрузить фото</label>
                   </div>
-                  <button className="mp_control end save" onClick={handleSave}>
-                     Сохранить изменения
-                  </button>
+
                   <input onChange={handleFileSelect} type="file" id="file" className="file_upload" />
 
                   {isFileSelected && (
@@ -117,6 +115,9 @@ const ProductModal = () => {
                         Файл: <strong>{file.name}</strong>
                      </p>
                   )}
+                  <button className="mp_control end save" onClick={handleSave}>
+                     Сохранить изменения
+                  </button>
                </section>
             </div>
          </div>

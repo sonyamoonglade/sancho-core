@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { CustomerUser, DeliveryDetails } from "../../common/types";
+import { CustomerUser } from "../../common/types";
 
 interface UserState {
    isAuthenticated: boolean;

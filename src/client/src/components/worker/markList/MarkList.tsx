@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from "react";
+import React, { useMemo } from "react";
 import "./MarkItem";
 import { useAppDispatch, useAppSelector, windowSelector, workerActions, workerSelector } from "../../../redux";
 import Mark from "./MarkItem";

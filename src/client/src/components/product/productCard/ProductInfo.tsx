@@ -1,9 +1,8 @@
 import React, { FC } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { productSlice, useAppDispatch } from "../../../redux";
-import { Categories, Product } from "../../../common/types";
+import { Product } from "../../../common/types";
 import NutrientList from "../nutrient/NutrientList";
-import { baseUrl } from "../../../App";
 import ProductBackground from "../../ui/productBg/ProductBackground";
 import { useCategoriesColor } from "./hooks/useCategoriesColor";
 
@@ -29,7 +28,7 @@ const ProductInfo: FC<productInfoProps> = ({ product, children }) => {
          <div className="preview">
             <p className={`category ${categColorCls}`}>{category}</p>
             <ProductBackground forPresentation={false} />
-            <img onClick={() => startPresentationFn(product)} className="image" src={`${baseUrl}/${product.id}.png`} alt="" />
+            <img onClick={() => startPresentationFn(product)} className="image" src={product.image_url} alt="" />
             <button className="start-presentation_btn" onClick={() => startPresentationFn(product)}>
                <AiOutlinePlus className="add_btn_plus_icon" size={25} />
             </button>

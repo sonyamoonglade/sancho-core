@@ -1,6 +1,6 @@
-import React, { useContext, useEffect, useMemo, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 import "./categories.styles.scss";
-import { productActions, productSelector, useAppDispatch, useAppSelector, userSelector, windowSelector } from "../../redux";
+import { productSelector, useAppSelector, userSelector, windowSelector } from "../../redux";
 import { LayoutContext } from "../layout/context";
 
 const Categories = () => {

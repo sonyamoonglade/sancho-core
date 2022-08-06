@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { DeliveryServiceInterface } from "./delivery";
 import { CreateDeliveryDto, DownloadCheckDto, RegisterRunnerDto } from "./dto/delivery.dto";
-import axios, { AxiosError } from "axios";
+import axios from "axios";
 import { ValidationErrorException } from "../../packages/exceptions/validation.exceptions";
 import { PinoLogger } from "nestjs-pino";
 import {
-   CheckServiceUnavailable,
-   DeliveryAlreadyExists,
-   RunnerAlreadyExists,
-   TelegramInternalError
+  CheckServiceUnavailable,
+  DeliveryAlreadyExists,
+  RunnerAlreadyExists,
+  TelegramInternalError,
 } from "../../packages/exceptions/delivery.exceptions";
 import { UnexpectedServerError } from "../../packages/exceptions/unexpected-errors.exceptions";
 import { DeliveryStatus } from "../../types/types";

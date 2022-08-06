@@ -1,4 +1,18 @@
-import { Body, Controller, Delete, Get, ParseIntPipe, Post, Put, Query, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import {
+   Body,
+   Controller,
+   Delete,
+   Get,
+   ParseIntPipe,
+   Post,
+   Put,
+   Query,
+   Req,
+   Res,
+   UploadedFile,
+   UseGuards,
+   UseInterceptors,
+} from "@nestjs/common";
 import { ProductService } from "./product.service";
 import { Response } from "express";
 import { CreateProductDto } from "./dto/create-product.dto";
@@ -8,13 +22,18 @@ import { FileInterceptor } from "@nestjs/platform-express";
 import { extendedRequest } from "../../types/types";
 import { PutImageDto } from "./dto/put-image.dto";
 import { AuthorizationGuard } from "../authorization/authorization.guard";
-import { ImageStorageService } from "../../packages/image_storage/image_storage.service";
+import { ImageStorageService } from "../../packages/imageStorage/image_storage.service";
 import { PinoLogger } from "nestjs-pino";
+import { Product } from "../entities/Product";
+import { baseDestination } from "../../../common/constants";
+import { AppConfig, GetAppConfig } from "../../packages/config/config";
 
 @Controller("/product")
 @UseGuards(AuthorizationGuard)
 export class ProductController {
+   private config: AppConfig;
    constructor(private productService: ProductService, private imageStorage: ImageStorageService, private logger: PinoLogger) {
+      this.config = GetAppConfig();
       this.logger.setContext(ProductController.name);
    }
 
@@ -65,20 +84,31 @@ export class ProductController {
       try {
          this.logger.info(`upload image to product. ID:${productId}`);
          this.imageStorage.validateFileExtension(f.mimetype, f.originalname);
+
          const dto: PutImageDto = new PutImageDto();
 
-         const ok = await this.imageStorage.putImage(dto, f, productId);
-         if (!ok) {
-            this.logger.error("failed");
-            return res.status(400).end();
-         }
+         dto.productId = productId;
+         dto.file = f;
+         dto.destination = baseDestination;
+
+         const filename = await this.imageStorage.putImage(dto);
+         this.logger.info("put image success");
+
+         //delete old images of same product
+         const root = productId.toString();
+         await this.imageStorage.deleteImageByRoot(root);
+         this.logger.info("delete image by root success");
+
          //Set has_image(because updated an image) and approved to false (for safety)
-         const updateDto = { has_image: true, approved: false };
+         const newImageUrl = this.config.yandex.storageUrl + filename;
+         const updateDto: Partial<Product> = { has_image: true, approved: false, image_url: newImageUrl };
+
          await this.productService.updateProduct(updateDto, productId);
-         this.logger.debug("success");
+         this.logger.debug("update product success");
+
          res.header("Cache-Control", "no-cache");
          return res.status(201).send({
-            file: dto.productId + ".png"
+            file: filename
          });
       } catch (e) {
          throw e;

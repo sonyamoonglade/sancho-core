@@ -1,4 +1,5 @@
 import { Pool, PoolClient } from "pg";
+import { AppConfig, GetAppConfig } from "../config/config";
 
 require("dotenv").config();
 
@@ -7,14 +8,16 @@ export class DbInstanceProvider {
 
    private retries: number = 5;
    private retryDelay: number = 500;
+   private readonly config: AppConfig;
+   constructor() {
+      this.config = GetAppConfig();
 
-   constructor(private config) {
       this.pool = new Pool({
          user: this.config.db.user,
          host: this.config.db.host,
          database: this.config.db.name,
          port: Number(this.config.db.port),
-         password: process.env.DB_PASSWORD
+         password: this.config.env.databasePassword
       });
    }
 

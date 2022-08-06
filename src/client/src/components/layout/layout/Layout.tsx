@@ -5,7 +5,7 @@ import "../../worker/worker-globals.scss";
 
 import Header from "../../header/Header";
 import { useRoutes } from "../../../hooks/useRoutes";
-import { adminSelector, productActions, productSelector, useAppDispatch, useAppSelector, userSelector } from "../../../redux";
+import { adminSelector, useAppSelector, userSelector } from "../../../redux";
 
 import { CatalogContext, LayoutContext } from "../context";
 import { useCategories } from "../hooks/useCategories";
@@ -14,8 +14,6 @@ import Drags from "../../ui/worker/Drags";
 import AdminAppForm from "../../admin/adminAppForm/AdminAppForm";
 import { useRememberScroll } from "../../../hooks/useRememberScroll";
 import { useDebounce } from "../../../hooks/useDebounce";
-import { useEvents } from "../../../hooks/useEvents";
-import { Events } from "../../../events/Events";
 
 interface layoutProps {
    children: any;

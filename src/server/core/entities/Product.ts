@@ -10,6 +10,7 @@ export type Product = {
    description?: string;
    approved?: boolean;
    currency?: string;
+   image_url: string;
    has_image?: boolean;
 };
 
@@ -18,6 +19,7 @@ export type FrontendProduct = {
    category: Categories;
    features: Features | string;
    name: string;
+   image_url: string;
    translate: string;
    price: number;
    description?: string;

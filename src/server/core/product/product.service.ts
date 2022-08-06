@@ -6,11 +6,10 @@ import {
    InvalidCategoryException,
    ProductAlreadyExistsException,
    ProductCantBeApproved,
-   ProductDoesNotExistException
+   ProductDoesNotExistException,
 } from "../../packages/exceptions/product.exceptions";
 import { ValidationErrorException } from "../../packages/exceptions/validation.exceptions";
 import { ProductRepository } from "./product.repository";
-import { PutImageDto } from "./dto/put-image.dto";
 
 export interface ProductRepositoryInterface {
    searchQuery(words: string[]): Promise<Product[]>;
@@ -85,7 +84,8 @@ export class ProductService {
             features: this.parseJSONFeatures(p.features as string), // from db it's a string
             translate: p.translate,
             category: p.category,
-            name: p.name
+            name: p.name,
+            image_url: p.image_url
          };
       });
    }
