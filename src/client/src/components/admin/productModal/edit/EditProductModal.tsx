@@ -1,29 +1,29 @@
 import React, { useEffect, useState } from "react";
-import "./product-modal.styles.scss";
-import { adminSelector, useAppSelector, windowSelector } from "../../../redux";
-import RectangleInput from "../../ui/admin/rectangleInput/RectangleInput";
-import ModalNutrient from "../modalNutrient/ModalNutrient";
-import EditDescription from "../editDescription/EditDescription";
-import { useAdminApi } from "../../../hooks/useAdminApi";
-import { useProductModalForm } from "./hooks/useProductModalForm";
-import { useEvents } from "../../../hooks/useEvents";
-import { Events } from "../../../events/Events";
+import "../product-modal.styles.scss";
+import { adminSelector, useAppSelector, windowSelector } from "../../../../redux";
+import RectangleInput from "../../../ui/admin/rectangleInput/RectangleInput";
+import ModalNutrient from "../../modalNutrient/ModalNutrient";
+import EditDescription from "../../editDescription/EditDescription";
+import { useAdminApi } from "../../../../hooks/useAdminApi";
+import { useEditProductModalForm } from "./hooks/useEditProductModalForm";
+import { useEvents } from "../../../../hooks/useEvents";
+import { Events } from "../../../../events/Events";
 
-const ProductModal = () => {
+const EditProductModal = () => {
    const { admin } = useAppSelector(windowSelector);
    const { selectedProduct } = useAppSelector(adminSelector);
    const [isFileSelected, setIsFileSelected] = useState<boolean>(false);
    const [file, setFile] = useState<File>(null);
-   const { uploadImage } = useAdminApi();
-   const { state, setState, setFormDefaults, presetProductData, inputw } = useProductModalForm(selectedProduct);
+   const { uploadImage, updateProduct } = useAdminApi();
+   const { state, setState, setFormDefaults, presetProductData, inputw, getFormValues } = useEditProductModalForm(selectedProduct);
    const events = useEvents();
    useEffect(() => {
-      if (selectedProduct && admin.productModal) {
+      if (selectedProduct && admin.edit) {
          presetProductData();
          return;
       }
       setGlobDefaults();
-   }, [selectedProduct, admin.productModal]);
+   }, [selectedProduct, admin.edit]);
 
    function setGlobDefaults() {
       setFile(null);
@@ -58,16 +58,23 @@ const ProductModal = () => {
          }
       }
       //Save the rest
+      const body = getFormValues();
+      const ok = await updateProduct(body, selectedProduct.id);
+      if (!ok) {
+         //Indicate error
+         return;
+      }
+
       events.emit(Events.REFRESH_ADMIN_CATALOG);
    }
 
    return (
       selectedProduct && (
-         <div className={admin.productModal ? "product_modal --product-modal-active" : "product_modal"}>
-            <p className="edit_product_name">Редактирование позиции</p>
+         <div className={admin.edit ? "product_modal --product-modal-active" : "product_modal"}>
+            <p className="product_modal_name">Редактирование позиции</p>
             <div className="edit_content">
                <section>
-                  <div className="edit">
+                  <div className="form_grid">
                      <p>Название</p>
                      <RectangleInput width={inputw} value={state.name} setValue={setState} disabled={false} name={"name"} />
 
@@ -82,23 +89,13 @@ const ProductModal = () => {
 
                      <p>Описание</p>
                      <EditDescription value={state.description} valueLength={state.description.length} setValue={setState} />
-                     {selectedProduct.features.nutrients && (
+                     {selectedProduct.features && (
                         <>
-                           <p>Нутриенты</p>
+                           <p>Доп.</p>
                            <section className="edit_nutrients">
-                              <ModalNutrient value={state.carbs} setValue={setState} name={"carbs"} />
-                              <ModalNutrient value={state.proteins} setValue={setState} name={"proteins"} />
-                              <ModalNutrient value={state.fats} setValue={setState} name={"fats"} />
+                              {selectedProduct.features.volume !== 0 && <ModalNutrient value={state.volume} setValue={setState} name={"volume"} />}
+                              {selectedProduct.features.weight && <ModalNutrient value={state.weight} setValue={setState} name={"weight"} />}
                            </section>
-                        </>
-                     )}
-                     {selectedProduct.features.volume && (
-                        <>
-                           <p>Объем</p>
-                           <span>
-                              <RectangleInput width={60} value={state.volume} setValue={setState} disabled={false} name={"volume"} />{" "}
-                              <strong>мл</strong>
-                           </span>
                         </>
                      )}
                   </div>
@@ -125,4 +122,4 @@ const ProductModal = () => {
    );
 };
 
-export default ProductModal;
+export default EditProductModal;

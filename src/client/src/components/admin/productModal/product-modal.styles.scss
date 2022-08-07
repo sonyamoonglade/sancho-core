@@ -16,14 +16,14 @@
   border-radius: 5px;
   left: 25% ;
 }
-.edit_product_name{
+.product_modal_name{
   font-family: "Geometria Bold",sans-serif;
   font-size: $font-lg;
 }
 .--product-modal-active{
   top: 30%;
 }
-.edit{
+.form_grid{
   padding: 0 1rem 1rem 1rem;
   margin-top: 1rem;
   display: grid;
@@ -51,12 +51,15 @@
     font-family: "Geometria",sans-serif !important;
     font-size: $font-md;
   }
-  span{
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    width: 150px;
-  }
+}
+.modal_nutrient{
+  width: 190px;
+  margin-bottom: 0.5rem;
+  display: grid;
+  grid-template-columns: 90px 70px 30px;
+  align-items: center;
+  justify-content: center;
+
 }
 .edit_content{
   display: flex;
@@ -75,11 +78,9 @@ display: none;
 }
 .label_control{
   width: 150px;
-  height: 50px;
+  height: 60px;
   outline: none;
   margin-bottom: 1rem;
-  font-family: "Geometria",sans-serif;
-  font-size: $font-md;
   background-color: $light-grey;
   border-radius: 5px;
   border: 1px solid $black-50;
@@ -87,10 +88,13 @@ display: none;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 0.2rem;
+  padding: 0.3rem;
   transition: all 0.05s ease-in-out;
   label{
     padding: .8rem;
+    font-family: "Geometria",sans-serif;
+    font-size: $font-regular;
+    text-align: center;
   }
 }
 
@@ -98,4 +102,8 @@ display: none;
   font-family: "Geometria",sans-serif;
   margin-bottom: 1rem;
   text-align: right;
+}
+
+.create_content{
+  display: flex;
 }

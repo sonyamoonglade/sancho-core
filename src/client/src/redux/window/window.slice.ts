@@ -30,7 +30,8 @@ interface WindowState {
       details: boolean;
    };
    admin: {
-      productModal: boolean;
+      edit: boolean;
+      create: boolean;
    };
 
    drag: {
@@ -67,7 +68,8 @@ const initialState: WindowState = {
       mark: false
    },
    admin: {
-      productModal: false
+      edit: false,
+      create: false
    },
    drag: {
       dropzone: "",
@@ -83,8 +85,11 @@ export const windowSlice = createSlice({
    initialState,
    name: "window",
    reducers: {
-      toggleProductModal: function (s, a?: PayloadAction<boolean>) {
-         s.admin.productModal = a?.payload || !s.admin.productModal;
+      toggleEditModal: function (s, a?: PayloadAction<boolean>) {
+         s.admin.edit = a?.payload || !s.admin.edit;
+      },
+      toggleCreateModal: function (s, a?: PayloadAction<boolean>) {
+         s.admin.create = a?.payload || !s.admin.create;
       },
       togglePay: function (s, a?: PayloadAction<boolean>) {
          s.pay = a?.payload || !s.pay;
@@ -255,7 +260,8 @@ export const windowSlice = createSlice({
          s.worker.details = !s.worker.details;
       },
       closeAllAdmin: function (s) {
-         s.admin.productModal = false;
+         s.admin.edit = false;
+         s.admin.create = false;
       }
    }
 });

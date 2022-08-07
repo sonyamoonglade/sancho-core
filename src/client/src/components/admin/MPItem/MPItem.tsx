@@ -21,7 +21,7 @@ const MPItem: FC<MPItemProps> = ({ product, locallyApprove }) => {
       }
    }
    function toggleEditProductModal() {
-      dispatch(windowActions.toggleProductModal());
+      dispatch(windowActions.toggleEditModal());
       dispatch(adminActions.selectProduct(product));
    }
 

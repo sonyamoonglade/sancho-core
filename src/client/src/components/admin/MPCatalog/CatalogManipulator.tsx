@@ -6,7 +6,7 @@ import MPItem from "../MPItem/MPItem";
 import { AdminProduct } from "../../../types/types";
 import { useEvents } from "../../../hooks/useEvents";
 import { Events } from "../../../events/Events";
-import { adminActions, useAppDispatch } from "../../../redux";
+import { adminActions, useAppDispatch, windowActions } from "../../../redux";
 
 const CatalogManipulator = () => {
    const [products, setProducts] = useState<AdminProduct[]>([]);
@@ -47,12 +47,16 @@ const CatalogManipulator = () => {
       });
    }
 
+   function handleToggleCreate() {
+      dispatch(windowActions.toggleCreateModal());
+   }
+
    return (
       <ul className="manipulator">
          <li className="mp_card">
             <div className="mp_add">
                <p className="mp_title">Добавить новую позицию</p>
-               <IoIosAddCircleOutline size={35} />
+               <IoIosAddCircleOutline onClick={handleToggleCreate} size={35} />
             </div>
          </li>
          {products?.map((p) => (

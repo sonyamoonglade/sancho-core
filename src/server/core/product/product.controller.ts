@@ -1,18 +1,4 @@
-import {
-   Body,
-   Controller,
-   Delete,
-   Get,
-   ParseIntPipe,
-   Post,
-   Put,
-   Query,
-   Req,
-   Res,
-   UploadedFile,
-   UseGuards,
-   UseInterceptors,
-} from "@nestjs/common";
+import { Body, Controller, Delete, Get, ParseIntPipe, Post, Put, Query, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { ProductService } from "./product.service";
 import { Response } from "express";
 import { CreateProductDto } from "./dto/create-product.dto";
@@ -27,6 +13,7 @@ import { PinoLogger } from "nestjs-pino";
 import { Product } from "../entities/Product";
 import { baseDestination } from "../../../common/constants";
 import { AppConfig, GetAppConfig } from "../../packages/config/config";
+import { resolve } from "dns";
 
 @Controller("/product")
 @UseGuards(AuthorizationGuard)
@@ -37,7 +24,7 @@ export class ProductController {
       this.logger.setContext(ProductController.name);
    }
 
-   @Post("/admin/new")
+   @Post("/admin/create")
    @Role([AppRoles.master])
    async createProduct(@Body() createProductDto: CreateProductDto, @Res() res: Response) {
       try {
@@ -145,6 +132,7 @@ export class ProductController {
    }
 
    @Get("/admin/catalog")
+   @Role([AppRoles.master])
    async adminCatalog(@Res() res: Response) {
       try {
          const catalog = await this.productService.getAll();
@@ -155,6 +143,17 @@ export class ProductController {
          return res.status(200).send({
             catalog: sorted
          });
+      } catch (e) {
+         throw e;
+      }
+   }
+
+   @Get("/admin/categories")
+   @Role([AppRoles.master])
+   async adminCategories(@Res() res: Response) {
+      try {
+         const categories = this.productService.getCategories();
+         return res.status(200).json({ categories });
       } catch (e) {
          throw e;
       }

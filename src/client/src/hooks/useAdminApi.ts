@@ -2,10 +2,15 @@ import { useAxios } from "./useAxios";
 import { useCallback } from "react";
 import { AdminProduct } from "../types/types";
 import { Categories } from "../common/types";
+import { EditFormValues } from "../components/admin/productModal/edit/hooks/useEditProductModalForm";
+import { CreateFormValues } from "../components/admin/productModal/create/hooks/useCreateProductModalForm";
 
 interface AdminCatalogResponse {
-   categories: Categories;
    catalog: AdminProduct[];
+}
+
+interface AdminCategoriesResponse {
+   categories: string[];
 }
 
 export function useAdminApi() {
@@ -36,5 +41,23 @@ export function useAdminApi() {
       return res.status === 201;
    }, []);
 
-   return { fetchAdminCatalog, approveProduct, uploadImage };
+   const updateProduct = useCallback(async function (body: EditFormValues, productId: number): Promise<boolean> {
+      const url = `/product/admin/update?id=${productId}`;
+      const res = await client.put(url, body);
+      return res.status === 200;
+   }, []);
+
+   const getAvailableCategories = useCallback(async function (): Promise<string[]> {
+      const url = `/product/admin/categories`;
+      const { data } = await client.get<AdminCategoriesResponse>(url);
+      return data.categories;
+   }, []);
+
+   const createProduct = useCallback(async function (body: CreateFormValues): Promise<boolean> {
+      const url = "/product/admin/create";
+      const res = await client.post(url, body);
+      return res.status === 201;
+   }, []);
+
+   return { fetchAdminCatalog, approveProduct, uploadImage, updateProduct, getAvailableCategories, createProduct };
 }

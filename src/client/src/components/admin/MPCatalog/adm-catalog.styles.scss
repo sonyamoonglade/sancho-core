@@ -66,14 +66,14 @@
 
 .mp_control{
   width: 150px;
-  height: 50px;
+  height: 60px;
   outline: none;
   font-family: "Geometria",sans-serif;
-  font-size: $font-md;
+  font-size: $font-regular;
   background-color: $light-grey;
   border-radius: 5px;
   border: 1px solid $black-50;
-  padding: 0.2rem;
+  padding: 0.3rem;
   transition: all 0.05s ease-in-out;
 }
 .mp_control:not(:disabled):active{
