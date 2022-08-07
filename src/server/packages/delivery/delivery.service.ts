@@ -2,19 +2,14 @@ import { Injectable } from "@nestjs/common";
 import { DeliveryServiceInterface } from "./delivery";
 import { CreateDeliveryDto, DownloadCheckDto, RegisterRunnerDto } from "./dto/delivery.dto";
 import axios from "axios";
-import { ValidationErrorException } from "../../packages/exceptions/validation.exceptions";
+import { ValidationErrorException } from "../exceptions/validation.exceptions";
 import { PinoLogger } from "nestjs-pino";
-import {
-  CheckServiceUnavailable,
-  DeliveryAlreadyExists,
-  RunnerAlreadyExists,
-  TelegramInternalError,
-} from "../../packages/exceptions/delivery.exceptions";
-import { UnexpectedServerError } from "../../packages/exceptions/unexpected-errors.exceptions";
+import { CheckServiceUnavailable, DeliveryAlreadyExists, RunnerAlreadyExists, TelegramInternalError } from "../exceptions/delivery.exceptions";
+import { UnexpectedServerError } from "../exceptions/unexpected-errors.exceptions";
 import { DeliveryStatus } from "../../types/types";
-import { EventsService } from "../../packages/event/event.module";
+import { EventsService } from "../event/event.module";
 import { EventEmitter } from "node:events";
-import { Events } from "../../packages/event/events";
+import { Events } from "../event/events";
 
 @Injectable()
 export class DeliveryService implements DeliveryServiceInterface {

@@ -4,16 +4,7 @@ import { useAxios } from "./hooks/useAxios";
 import Layout from "./components/layout/layout/Layout";
 import AppForm from "./components/appForm/AppForm";
 import { CatalogContext } from "./components/layout/context";
-import {
-   fetchMiscData,
-   getCatalog,
-   productSelector,
-   useAppDispatch,
-   useAppSelector,
-   userSelector,
-   windowActions,
-   windowSelector,
-} from "./redux";
+import { fetchMiscData, getCatalog, productSelector, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector } from "./redux";
 import CartLink from "./components/cart/cartLink/CartLink";
 import OrderLink from "./components/createUserOrder/orderLink/OrderLink";
 import ProductPresentation from "./components/product/productPresentation/ProductPresentation";
@@ -24,6 +15,7 @@ import { AppResponsiveState } from "./types/types";
 import { useNavigate } from "react-router-dom";
 import Categories from "./components/categories/Categories";
 import PayLink from "./components/ui/payLink/PayLink";
+import { useCart } from "./hooks/useCart";
 
 export const baseBackendUrl = "https://pizza-fullstack.herokuapp.com";
 export const baseUrl = `https://storage.yandexcloud.net/zharpizza-bucket/static/images`;
@@ -37,7 +29,7 @@ function App() {
    const router = useNavigate();
    const isNotMobileOrTablet = useMediaQuery({ minWidth: 1440 });
    const catalogRef = useRef<HTMLDivElement>(null);
-
+   const localStorageCart = useCart();
    useEffect(() => {
       if (isNotMobileOrTablet && appResponsiveState !== AppResponsiveState.computer) {
          dispatch(windowActions.setResponsiveState(AppResponsiveState.computer));
@@ -51,6 +43,12 @@ function App() {
       dispatch(getCatalog(client));
       dispatch(fetchMiscData(client));
    }, []);
+
+   useEffect(() => {
+      if (productList.length !== 0) {
+         localStorageCart.renewDBCartProductImages(productList);
+      }
+   }, [productList]);
 
    useEffect(() => {
       if (isAuthenticated) {

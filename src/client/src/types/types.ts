@@ -1,4 +1,4 @@
-import { DatabaseCartProduct, DeliveryDetails } from "../common/types";
+import { DatabaseCartProduct, DeliveryDetails, Product } from "../common/types";
 import { Categories, Features } from "../../../common/types";
 
 export enum CategoryColor {
@@ -14,6 +14,7 @@ export interface CartInterface {
    getCart(): DatabaseCartProduct[];
    clearCart(): void;
    calculateCartTotalPrice(): number;
+   renewDBCartProductImages(products: Product[]): void;
 }
 
 export enum OrderStatusTranslate {

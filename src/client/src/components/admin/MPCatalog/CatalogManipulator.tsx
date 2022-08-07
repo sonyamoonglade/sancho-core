@@ -37,7 +37,7 @@ const CatalogManipulator = () => {
    //Indication of local approval without fetching catalog (run only if receive 200 OK)
    function locallyApproveProduct(productId: number) {
       setProducts((products) => {
-         return products.map((p) => {
+         return products?.map((p) => {
             if (p.id === productId) {
                p.approved = !p.approved;
                return p;

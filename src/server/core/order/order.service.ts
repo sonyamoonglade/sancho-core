@@ -9,29 +9,29 @@ import { CancelOrderDto } from "./dto/cancel-order.dto";
 import { Product } from "../entities/Product";
 import { ProductRepository } from "../product/product.repository";
 import {
-  DatabaseCartProduct,
-  DeliveryDetails,
-  ListResponse,
-  OrderQueue,
-  OrderStatus,
-  ResponseUserOrder,
-  VerifiedQueueOrder,
-  WaitingQueueOrder,
+   DatabaseCartProduct,
+   DeliveryDetails,
+   ListResponse,
+   OrderQueue,
+   OrderStatus,
+   ResponseUserOrder,
+   VerifiedQueueOrder,
+   WaitingQueueOrder
 } from "../../../common/types";
 import { CompleteOrderDto } from "./dto/complete-order.dto";
 import { UnexpectedServerError } from "../../packages/exceptions/unexpected-errors.exceptions";
 import {
-  CancelExplanationHasNotBeenProvided,
-  InvalidOrderStatus,
-  OrderCannotBeCompleted,
-  OrderDoesNotExist,
+   CancelExplanationHasNotBeenProvided,
+   InvalidOrderStatus,
+   OrderCannotBeCompleted,
+   OrderDoesNotExist
 } from "../../packages/exceptions/order.exceptions";
 import { Events } from "../../packages/event/events";
 import { MiscService } from "../miscellaneous/misc.service";
 import { QueueOrderDto } from "./dto/queue-order.dto";
 import { Miscellaneous } from "../entities/Miscellaneous";
 import { PinoLogger } from "nestjs-pino";
-import { DeliveryService } from "../delivery/delivery.service";
+import { DeliveryService } from "../../packages/delivery/delivery.service";
 import { EventsService } from "../../packages/event/event.module";
 import { EventEmitter } from "node:events";
 import { helpers } from "../../../client/src/helpers/helpers";

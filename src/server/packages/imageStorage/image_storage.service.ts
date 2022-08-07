@@ -1,14 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { PutImageDto } from "../../core/product/dto/put-image.dto";
 import axios from "axios";
-import {
-   baseDestination,
-   imagePNG,
-   x_content_type,
-   x_destination,
-   x_file_name,
-   x_root,
-} from "../../../common/constants";
+import { baseDestination, imagePNG, x_content_type, x_destination, x_file_name, x_root } from "../../../common/constants";
 import { BinaryToTextEncoding } from "crypto";
 import { ImageStorageInterface, PutFileResponse } from "./image_storage";
 import { PinoLogger } from "nestjs-pino";
@@ -43,7 +36,7 @@ export class ImageStorageService implements ImageStorageInterface {
          });
          return;
       } catch (e: any) {
-         this.logger.error(e?.response);
+         // this.logger.error(e?.response);
          //todo: handle errors
          return;
       }
@@ -77,7 +70,7 @@ export class ImageStorageService implements ImageStorageInterface {
          });
          return data.filename;
       } catch (e: any) {
-         this.logger.error(e?.response);
+         // this.logger.error(e?.response);
          //todo: function to handle errors
          return "";
       }

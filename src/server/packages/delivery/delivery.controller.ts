@@ -1,14 +1,14 @@
 import { Body, Controller, Get, ParseIntPipe, Post, Query, Res, UseGuards } from "@nestjs/common";
 import { DeliveryService } from "./delivery.service";
 import { Response } from "express";
-import { AuthorizationGuard } from "../authorization/authorization.guard";
-import { Role } from "../../packages/decorators/role/Role";
+import { AuthorizationGuard } from "../../core/authorization/authorization.guard";
+import { Role } from "../decorators/role/Role";
 import { AppRoles } from "../../../common/types";
 import { CreateDeliveryDto, CreateDeliveryDtoFrontend, DownloadCheckDto, RegisterRunnerDto } from "./dto/delivery.dto";
-import { OrderService } from "../order/order.service";
-import { UserService } from "../user/user.service";
+import { OrderService } from "../../core/order/order.service";
+import { UserService } from "../../core/user/user.service";
 import { PinoLogger } from "nestjs-pino";
-import { UnexpectedServerError } from "../../packages/exceptions/unexpected-errors.exceptions";
+import { UnexpectedServerError } from "../exceptions/unexpected-errors.exceptions";
 
 @Controller("/delivery")
 @UseGuards(AuthorizationGuard)

@@ -1,5 +1,5 @@
 import { CartInterface } from "../types/types";
-import { DatabaseCartProduct } from "../common/types";
+import { DatabaseCartProduct, Product } from "../common/types";
 
 const CART_KEY = "cart";
 
@@ -56,8 +56,8 @@ export function useCart() {
       return cart !== null ? cart.sort(sortFunc) : [];
    };
 
-   const updateCart = (prev: DatabaseCartProduct[]) => {
-      localStorage.setItem(CART_KEY, toJSON(prev));
+   const updateCart = (newCart: DatabaseCartProduct[]) => {
+      localStorage.setItem(CART_KEY, toJSON(newCart));
       return;
    };
 
@@ -80,13 +80,31 @@ export function useCart() {
       return actualCart.find((p) => p.id === id);
    };
 
+   //After update of product image (image url's stored in local storage are no longer valid. Need to renew it
+   const renewDBCartProductImages = (products: Product[]) => {
+      const cart = getCart();
+      const updated = [];
+      for (const product of products) {
+         for (const item of cart) {
+            if (item.id === product.id) {
+               //Change the image url
+               const newItem: DatabaseCartProduct = { ...item, image_url: product.image_url };
+               updated.push(newItem);
+            }
+         }
+      }
+      updateCart(updated);
+      return;
+   };
+
    const cart: CartInterface = {
       addProduct,
       removeProduct,
       getCart,
       clearCart,
       calculateCartTotalPrice,
-      getById
+      getById,
+      renewDBCartProductImages
    };
 
    return cart;

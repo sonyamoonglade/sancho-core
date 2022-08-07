@@ -1,6 +1,6 @@
 import { IsDefined, IsNumber, IsString } from "class-validator";
-import { CheckOrder, DeliveryOrder } from "../../entities/Order";
-import { CheckUser, DeliveryUser } from "../../entities/User";
+import { CheckOrder, DeliveryOrder } from "../../../core/entities/Order";
+import { CheckUser, DeliveryUser } from "../../../core/entities/User";
 
 export class CreateDeliveryDtoFrontend {
    @IsDefined()

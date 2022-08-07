@@ -7,3 +7,4 @@ export const x_root = "X-Root";
 export const REGULAR_CUSTOMER_CONTENT = "Постоянный клиент";
 export const imagePNG = "image/png";
 export const baseDestination = "static/images/";
+export const baseStorageUrl = "https://storage.yandexcloud.net/zharpizza-bucket/static/images";
