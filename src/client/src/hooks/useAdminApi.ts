@@ -59,5 +59,11 @@ export function useAdminApi() {
       return res.status === 201;
    }, []);
 
-   return { fetchAdminCatalog, approveProduct, uploadImage, updateProduct, getAvailableCategories, createProduct };
+   const deleteProduct = useCallback(async function (productId: number): Promise<boolean> {
+      const url = `product/admin/delete?id=${productId}`;
+      const res = await client.delete(url);
+      return res.status === 200;
+   }, []);
+
+   return { fetchAdminCatalog, approveProduct, uploadImage, updateProduct, getAvailableCategories, createProduct, deleteProduct };
 }

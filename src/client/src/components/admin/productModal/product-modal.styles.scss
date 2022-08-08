@@ -5,23 +5,23 @@
   position: fixed;
   top: -100%;
   background-color: $light-grey;
-  min-width: 750px;
-  width: 50%;
+  min-width: 850px;
   max-width: 850px;
+  width: 50%;
   z-index: 130;
-  margin: 0 auto;
   height: auto;
   max-height: 500px;
   padding: 1rem;
   border-radius: 5px;
-  left: 25% ;
+  box-shadow: 1px 3px 5px $dark-grey;
+  left: calc((100vw - 850px)/2);
 }
 .product_modal_name{
   font-family: "Geometria Bold",sans-serif;
   font-size: $font-lg;
 }
 .--product-modal-active{
-  top: 30%;
+  top: 25%;
 }
 .form_grid{
   padding: 0 1rem 1rem 1rem;

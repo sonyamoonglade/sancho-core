@@ -32,6 +32,7 @@ interface WindowState {
    admin: {
       edit: boolean;
       create: boolean;
+      delete: boolean;
    };
 
    drag: {
@@ -69,6 +70,7 @@ const initialState: WindowState = {
    },
    admin: {
       edit: false,
+      delete: false,
       create: false
    },
    drag: {
@@ -259,9 +261,13 @@ export const windowSlice = createSlice({
          s.worker.mark = false;
          s.worker.details = !s.worker.details;
       },
+      toggleDelete: function (s, a: PayloadAction<boolean>) {
+         s.admin.delete = a?.payload || !s.admin.delete;
+      },
       closeAllAdmin: function (s) {
          s.admin.edit = false;
          s.admin.create = false;
+         s.admin.delete = false;
       }
    }
 });

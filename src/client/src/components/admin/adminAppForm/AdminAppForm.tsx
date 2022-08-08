@@ -4,10 +4,10 @@ import { useAppDispatch, useAppSelector, windowActions, windowSelector } from ".
 const AdminAppForm = () => {
    const dispatch = useAppDispatch();
    const { admin } = useAppSelector(windowSelector);
-   const { create, edit } = admin;
+   const { create, edit, delete: del } = admin;
    const isActive = useMemo(() => {
-      return create || edit;
-   }, [create, edit]);
+      return create || edit || del;
+   }, [create, edit, del]);
 
    function handleCloseAll() {
       dispatch(windowActions.closeAllAdmin());

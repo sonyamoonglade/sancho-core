@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { currency } from "../../../common/constants";
 import { adminActions, useAppDispatch, windowActions } from "../../../redux";
 import { useAdminApi } from "../../../hooks/useAdminApi";
@@ -25,6 +25,11 @@ const MPItem: FC<MPItemProps> = ({ product, locallyApprove }) => {
       dispatch(adminActions.selectProduct(product));
    }
 
+   function toggleDeleteModal() {
+      dispatch(adminActions.selectProduct(product));
+      dispatch(windowActions.toggleDelete());
+   }
+
    return (
       <li className="mp_card" key={product.id}>
          <div className="mp_left">
@@ -43,7 +48,9 @@ const MPItem: FC<MPItemProps> = ({ product, locallyApprove }) => {
          </div>
          <div className="mp_right">
             <section>
-               <button className="mp_control">Подробнее</button>
+               <button onClick={toggleDeleteModal} className="mp_control">
+                  Удалить позицию
+               </button>
                <button className="mp_control bot" onClick={toggleEditProductModal}>
                   Редактирование
                </button>
