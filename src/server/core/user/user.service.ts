@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { UserRepository } from "./user.repository";
-import { SessionService } from "../authentication/session.service";
+import { SessionService } from "../session/session.service";
 import { CheckUser, DeliveryUser, User } from "../entities/User";
 import { CreateMasterUserDto } from "./dto/create-master-user.dto";
 
@@ -10,13 +10,13 @@ import * as bcrypt from "bcrypt";
 import { AppRoles, DeliveryDetails } from "../../../common/types";
 import { LoginMasterUserDto } from "./dto/login-master-user.dto";
 import {
-  InvalidPasswordException,
-  InvalidRoleException,
-  MasterLoginHasAlreadyBeenTaken,
-  PasswordIsTooShortException,
-  PhoneIsAlreadyTakenException,
-  UserCredentialsNotFound,
-  UserDoesNotExistException,
+   InvalidPasswordException,
+   InvalidRoleException,
+   MasterLoginHasAlreadyBeenTaken,
+   PasswordIsTooShortException,
+   PhoneIsAlreadyTakenException,
+   UserCredentialsNotFound,
+   UserDoesNotExistException
 } from "../../packages/exceptions/user.exceptions";
 import { UnexpectedServerError } from "../../packages/exceptions/unexpected-errors.exceptions";
 import { APP_ROLES } from "../../types/contants";

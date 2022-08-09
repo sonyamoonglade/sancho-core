@@ -9,6 +9,9 @@ import { CancelOrderDto } from "./dto/cancel-order.dto";
 import { Product } from "../entities/Product";
 import { ProductRepository } from "../product/product.repository";
 import {
+   AggregationPreset,
+   AggregationPresetAmounts,
+   Cart,
    DatabaseCartProduct,
    DeliveryDetails,
    ListResponse,
@@ -399,6 +402,23 @@ export class OrderService {
          acc += curr;
          return acc;
       }, 0);
+   }
+
+   async getOrderCartsInTerms(from: Date, to: Date, aggregation?: AggregationPreset): Promise<Cart[]> {
+      //Indicated if it did fall to switch statement
+      let isDefault = true;
+      switch (aggregation) {
+         case AggregationPreset.WEEK:
+            isDefault = false;
+            let to = helpers.selectNowUTC();
+            const weekAmount = AggregationPresetAmounts.get(AggregationPreset.WEEK);
+            let from = helpers.subtractFrom(to, weekAmount);
+            return this.orderRepository.getOrderCartsInTerms(from, to);
+         default:
+            break;
+      }
+
+      return this.orderRepository.getOrderCartsInTerms(from, to);
    }
 
    parseJsonCart(currentCart: DatabaseCartProduct[]): DatabaseCartProduct[] {

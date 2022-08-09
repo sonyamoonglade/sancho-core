@@ -10,12 +10,10 @@
   position: absolute;
   overflow: hidden;
   p{
-    //color: $gray-promo;
     color: $light-grey;
-    font-weight: 500;
     font-size: $font-lg;
     white-space: normal;
-
+    font-family: "Geometria Bold",sans-serif;
   }
 }
 
@@ -27,7 +25,6 @@
 
 .promotion_text_touched{
   font-size: $font-md !important;
-  letter-spacing: .7px;
   font-weight: 400 !important;
   margin-top: .7rem;
   white-space: normal;
@@ -35,7 +32,7 @@
 
 .promotion_description_touched{
   font-size: $font-mder !important;
-  letter-spacing: .7px;
+  font-family: "Geometria", sans-serif !important;
   font-weight: 400 !important;
   margin-top: .7rem;
 }
@@ -108,5 +105,11 @@
 .promotion_card:nth-of-type(1){
   margin-right: 2rem;
   margin-left: 1.4rem;
+}
+.promotion_card:nth-of-type(2){
+
+  p{
+    color: $sick-black;
+  }
 }
 

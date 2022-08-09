@@ -4,7 +4,7 @@ import { Pool } from "pg";
 import { filter, QueryBuilder } from "../../packages/query_builder/QueryBuilder";
 import { pg_conn } from "../../packages/database/db_provider-name";
 import { query_builder } from "../../packages/query_builder/provider-name";
-import { DeliveryDetails, OrderStatus, VerifiedQueueOrder } from "../../../common/types";
+import { Cart, DeliveryDetails, OrderStatus, VerifiedQueueOrder } from "../../../common/types";
 import { users } from "../entities/User";
 import { QueueOrderRO } from "./dto/queue-order.dto";
 import { CreateMasterOrderDto, CreateUserOrderDto } from "./dto/create-order.dto";
@@ -168,5 +168,13 @@ export class OrderRepository {
             id: res.id
          };
       });
+   }
+
+   async getOrderCartsInTerms(from: Date, to: Date): Promise<Cart[]> {
+      const sql = `SELECT cart  FROM ${orders} WHERE status='${OrderStatus.completed}' AND (created_at BETWEEN $1 AND $2)`;
+      const values = [from, to];
+      const { rows } = await this.db.query(sql, values);
+
+      return rows.map((item) => item.cart.map((entry) => JSON.parse(entry)));
    }
 }

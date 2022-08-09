@@ -125,3 +125,28 @@ export type CustomerUser = {
    delivery_details?: DeliveryDetails;
    phone_number: string;
 };
+
+export enum AggregationPreset {
+   MONTH = "month",
+   YEAR = "year",
+   WEEK = "week"
+}
+
+export const AggregationPresetAmounts = new Map();
+
+(function init() {
+   AggregationPresetAmounts.set(AggregationPreset.YEAR, 365);
+   AggregationPresetAmounts.set(AggregationPreset.MONTH, 30);
+   AggregationPresetAmounts.set(AggregationPreset.WEEK, 7);
+})();
+
+export type Cart = DatabaseCartProduct[];
+
+export type StatisticProduct = {
+   translate: string;
+   quantity: number;
+};
+
+export type StatisticCart = StatisticProduct[];
+
+export type ProductTop = Map<string, number>;
