@@ -1,6 +1,6 @@
 import { CanActivate, ExecutionContext, Injectable } from "@nestjs/common";
 import { Request } from "express";
-import { SessionService } from "../../authentication/session.service";
+import { SessionService } from "../../session/session.service";
 import { OrderService } from "../../order/order.service";
 import { LastOrderIsNotYetVerified } from "../../../packages/exceptions/order.exceptions";
 import { PinoLogger } from "nestjs-pino";

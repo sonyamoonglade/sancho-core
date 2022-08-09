@@ -5,7 +5,7 @@ import { MiscRepository } from "./misc.repository";
 import { MiscService } from "./misc.service";
 import { AuthorizationModule } from "../authorization/authorization.module";
 import { UserModule } from "../user/user.module";
-import { SessionModule } from "../authentication/session.module";
+import { SessionModule } from "../session/session.module";
 import { QueryBuilderModule } from "../../packages/query_builder/qb.module";
 
 @Module({

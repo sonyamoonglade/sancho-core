@@ -1,8 +1,8 @@
 import { MiddlewareConsumer, Module, NestModule, RequestMethod } from "@nestjs/common";
-import { SessionMiddleware } from "./core/authentication/middleware/session.middleware";
+import { SessionMiddleware } from "./core/session/middleware/session.middleware";
 import { UserController } from "./core/user/user.controller";
-import { SessionService } from "./core/authentication/session.service";
-import { SessionRepository } from "./core/authentication/session.repository";
+import { SessionService } from "./core/session/session.service";
+import { SessionRepository } from "./core/session/session.repository";
 import { ProductController } from "./core/product/product.controller";
 import { OrderController } from "./core/order/order.controller";
 import { OrderService } from "./core/order/order.service";
@@ -25,9 +25,12 @@ import { LoggerModule } from "nestjs-pino";
 import { EventsService } from "./packages/event/event.module";
 import { ImageStorageService } from "./packages/imageStorage/image_storage.service";
 import { LambdaRouter } from "./packages/lambdaRouter/lambdaRouter";
+import { StatisticsController } from "./core/statistics/statistics.controller";
+import { StatisticsModule } from "./core/statistics/statistics.module";
+import { StatisticsService } from "./core/statistics/statistics.service";
 
 @Module({
-   controllers: [AppController, UserController, OrderController, ProductController, MiscController, DeliveryController],
+   controllers: [AppController, UserController, OrderController, ProductController, MiscController, DeliveryController, StatisticsController],
    providers: [
       SessionMiddleware,
       SessionService,
@@ -45,7 +48,8 @@ import { LambdaRouter } from "./packages/lambdaRouter/lambdaRouter";
       MarkRepository,
       DeliveryService,
       EventsService,
-      LambdaRouter
+      LambdaRouter,
+      StatisticsService
    ],
    imports: [
       DbModule,
@@ -81,6 +85,6 @@ export class AppModule implements NestModule {
                method: RequestMethod.GET
             }
          )
-         .forRoutes(UserController, ProductController, OrderController, MiscController, DeliveryController);
+         .forRoutes(UserController, ProductController, OrderController, MiscController, DeliveryController, StatisticsController);
    }
 }
