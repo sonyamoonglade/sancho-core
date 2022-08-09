@@ -2,7 +2,10 @@ import { useMemo, useState } from "react";
 import { OrderStatus, ResponseUserOrder } from "../../../common/types";
 import { DATE_FORMAT_TEMPLATE, OrderStatusTranslate } from "../../../types/types";
 import dayjs from "dayjs";
-
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+dayjs.extend(utc);
+dayjs.extend(timezone);
 export function useCorrectOrderData(order: ResponseUserOrder) {
    const [cid, setCid] = useState(""); // id
    const [cstatus, setCStatus] = useState(""); // status
@@ -48,9 +51,9 @@ export function useCorrectOrderData(order: ResponseUserOrder) {
             break;
       }
    }
-   function parseCreationTime() {
-      const createdAt = dayjs(order?.created_at);
-      const deliveredAt = dayjs(order?.delivery_details?.delivered_at);
+   function parseCreationTime(offset: number = 0) {
+      const createdAt = dayjs.tz(order?.created_at, "UTC").add(offset, "hour");
+      const deliveredAt = dayjs.tz(order?.delivery_details?.delivered_at, "UTC").add(offset, "hour");
 
       const formattedc = createdAt.format(DATE_FORMAT_TEMPLATE).split(" ");
       const formattedd = deliveredAt.format(DATE_FORMAT_TEMPLATE).split(" ");
@@ -82,7 +85,9 @@ export function useCorrectOrderData(order: ResponseUserOrder) {
       setupMonthTranslations();
       sixifyOrderId();
       translateStatus();
-      parseCreationTime();
+      //TODO: DO NOT HARDCODE FIXME: !!!
+      const offset = 4; //gmt offset
+      parseCreationTime(offset);
    }
 
    return { correctData, cdate, cddate, cstatus, cid, orderItemCorrespondingClassName };

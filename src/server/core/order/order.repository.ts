@@ -6,9 +6,10 @@ import { pg_conn } from "../../packages/database/db_provider-name";
 import { query_builder } from "../../packages/query_builder/provider-name";
 import { DeliveryDetails, OrderStatus, VerifiedQueueOrder } from "../../../common/types";
 import { users } from "../entities/User";
-import { QueueOrderDto } from "./dto/queue-order.dto";
+import { QueueOrderRO } from "./dto/queue-order.dto";
 import { CreateMasterOrderDto, CreateUserOrderDto } from "./dto/create-order.dto";
 import { CancelOrderDto } from "./dto/cancel-order.dto";
+import { helpers } from "../../packages/helpers/helpers";
 
 @Injectable()
 export class OrderRepository {
@@ -62,13 +63,14 @@ export class OrderRepository {
       return rows[0] as unknown as LastVerifiedOrder;
    }
 
-   async getOrderQueue(): Promise<QueueOrderDto[]> {
+   async getOrderQueue(): Promise<QueueOrderRO[]> {
       const sql = `
         SELECT o.id, o.cart, o.total_cart_price, o.status, o.is_delivered, o.is_delivered_asap, o.delivery_details, o.created_at,
         u.name, u.phone_number FROM ${orders} o JOIN ${users} u ON o.user_id= 
         u.id WHERE o.status = '${OrderStatus.waiting_for_verification}' or o.status = '${OrderStatus.verified}' ORDER BY o.created_at DESC
       `;
       const { rows } = await this.db.query(sql);
+
       return rows;
    }
 
@@ -98,8 +100,8 @@ export class OrderRepository {
    async createMasterOrder(dto: CreateMasterOrderDto): Promise<void> {
       const strDelDetails = JSON.stringify(dto?.delivery_details || {});
       const sql = `
-         INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,pay,verified_at)
-          VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)
+         INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,pay,verified_at,created_at)
+          VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
       `;
       const values = [
          dto.is_delivered,
@@ -110,8 +112,8 @@ export class OrderRepository {
          dto.user_id,
          OrderStatus.verified,
          dto.pay,
-         dto.verified_at
-         // dto.created_at
+         dto.verified_at,
+         dto.created_at
       ];
       await this.db.query(sql, values);
       return;

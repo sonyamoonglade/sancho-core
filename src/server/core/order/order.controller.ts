@@ -1,10 +1,5 @@
 import { Body, Controller, Get, Post, Put, Query, Req, Res, UseFilters, UseGuards } from "@nestjs/common";
-import {
-  CreateMasterOrderDto,
-  CreateMasterOrderInput,
-  CreateUserOrderDto,
-  CreateUserOrderInput,
-} from "./dto/create-order.dto";
+import { CreateMasterOrderDto, CreateMasterOrderInput, CreateUserOrderDto, CreateUserOrderInput } from "./dto/create-order.dto";
 import { OrderService } from "./order.service";
 import { Response } from "express";
 import { VerifyOrderDto, VerifyOrderInput } from "./dto/verify-order.dto";
@@ -26,8 +21,11 @@ import { PinoLogger } from "nestjs-pino";
 import { ValidationErrorException } from "../../packages/exceptions/validation.exceptions";
 import { EventsService } from "../../packages/event/event.module";
 import { Events } from "../../packages/event/events";
-import { helpers } from "../../../client/src/helpers/helpers";
 import { OrderCannotBeVerified } from "../../packages/exceptions/order.exceptions";
+import * as dayjs from "dayjs";
+import * as utc from "dayjs/plugin/utc";
+import * as timezone from "dayjs/plugin/timezone";
+import { helpers } from "../../packages/helpers/helpers";
 
 @Controller("/order")
 @UseGuards(AuthorizationGuard)
@@ -43,6 +41,8 @@ export class OrderController {
    ) {
       this.logger.setContext(OrderController.name);
       this.subscribeToEvent();
+      dayjs.extend(utc);
+      dayjs.extend(timezone);
    }
 
    private subscribeToEvent() {
@@ -113,12 +113,11 @@ export class OrderController {
             });
             userId = registeredUser.id;
          }
-
          const dto: CreateMasterOrderDto = {
             cart: inp.cart,
             user_id: userId,
-            verified_at: helpers.utcNow(),
-            // created_at: helpers.utcNow(),
+            verified_at: helpers.selectNowUTC(),
+            created_at: helpers.selectNowUTC(),
             delivery_details: inp.delivery_details,
             delivered_at: inp.delivered_at,
             is_delivered: inp.is_delivered,
@@ -167,7 +166,7 @@ export class OrderController {
          const dto: VerifyOrderDto = {
             id, //orderId
             is_delivered_asap: inp.is_delivered_asap,
-            verified_at: helpers.utcNow(),
+            verified_at: helpers.selectNowUTC(),
             status: OrderStatus.verified
          };
 
@@ -215,7 +214,7 @@ export class OrderController {
             cancelled_by: userId,
             status: OrderStatus.cancelled,
             cancel_explanation: inp.cancel_explanation,
-            cancelled_at: helpers.utcNow()
+            cancelled_at: helpers.selectNowUTC()
          };
 
          await this.orderService.cancelOrder(dto);

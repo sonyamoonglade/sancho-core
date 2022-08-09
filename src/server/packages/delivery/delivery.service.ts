@@ -4,7 +4,13 @@ import { CreateDeliveryDto, DownloadCheckDto, RegisterRunnerDto } from "./dto/de
 import axios from "axios";
 import { ValidationErrorException } from "../exceptions/validation.exceptions";
 import { PinoLogger } from "nestjs-pino";
-import { CheckServiceUnavailable, DeliveryAlreadyExists, RunnerAlreadyExists, TelegramInternalError } from "../exceptions/delivery.exceptions";
+import {
+   CheckServiceUnavailable,
+   DeliveryAlreadyExists,
+   DeliveryServiceUnavailable,
+   RunnerAlreadyExists,
+   TelegramInternalError
+} from "../exceptions/delivery.exceptions";
 import { UnexpectedServerError } from "../exceptions/unexpected-errors.exceptions";
 import { DeliveryStatus } from "../../types/types";
 import { EventsService } from "../event/event.module";
@@ -38,7 +44,6 @@ export class DeliveryService implements DeliveryServiceInterface {
             order_id: dto.order.order_id
          };
          this.parseDeliveryError(e, payload);
-         return null;
       }
    }
 
@@ -46,7 +51,7 @@ export class DeliveryService implements DeliveryServiceInterface {
       return Promise.resolve(undefined);
    }
 
-   async createDelivery(dto: CreateDeliveryDto): Promise<boolean> {
+   async createDelivery(dto: CreateDeliveryDto): Promise<void> {
       this.logger.info("createDelivery");
       //todo: implement request id
       try {
@@ -55,14 +60,12 @@ export class DeliveryService implements DeliveryServiceInterface {
 
          this.logger.info("ok");
          this.events.emit(Events.REFRESH_ORDER_QUEUE);
-         return true;
       } catch (e: any) {
+         this.logger.error("failed with error");
          const payload = {
             order_id: dto.order.order_id
          };
          this.parseDeliveryError(e, payload);
-         this.logger.error("failed with error");
-         return false;
       }
    }
 
@@ -94,9 +97,8 @@ export class DeliveryService implements DeliveryServiceInterface {
          this.logger.info("ok");
          return data.result;
       } catch (e) {
-         this.parseDeliveryError(e);
          this.logger.error("failed with error");
-         return [];
+         this.parseDeliveryError(e);
       }
    }
 
@@ -106,7 +108,8 @@ export class DeliveryService implements DeliveryServiceInterface {
       if (Buffer.isBuffer(responseData)) {
          message = (responseData as Buffer).toString("utf-8").toLowerCase();
       }
-      if (!message) throw new UnexpectedServerError();
+      this.logger.debug("throw delivery service unavailable exception");
+      if (!message) throw new DeliveryServiceUnavailable();
       this.logger.debug(`response message: ${message}`);
       switch (true) {
          case message.includes("validation"):
@@ -126,7 +129,7 @@ export class DeliveryService implements DeliveryServiceInterface {
             this.logger.debug("throw check service unavailable error exception");
             throw new CheckServiceUnavailable();
          default:
-            throw new UnexpectedServerError();
+            throw new DeliveryServiceUnavailable();
       }
    }
 }

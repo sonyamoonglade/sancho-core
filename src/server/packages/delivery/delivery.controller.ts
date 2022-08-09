@@ -34,14 +34,12 @@ export class DeliveryController {
             user: usrData,
             order: ordData
          };
-         const ok = await this.deliveryService.createDelivery(dto);
-         if (!ok) {
-            this.logger.error("internal error occurred calling delivery microservice");
-            throw new UnexpectedServerError();
-         }
+         await this.deliveryService.createDelivery(dto);
+
          this.logger.info("success call for delivery service");
          return res.status(201).end();
       } catch (e) {
+         this.logger.error(e);
          throw e;
       }
    }

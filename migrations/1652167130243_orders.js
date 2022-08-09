@@ -1,10 +1,10 @@
 /* eslint-disable camelcase */
 
-const { orders } = require("../dist/server/core/entities/Order");
 exports.shorthands = undefined;
 
 exports.up = (pgm) => {
    pgm.sql(`CREATE TYPE "pay" AS ENUM('onPickup','online')`);
+   pgm.sql("SET TIMEZONE='utc'");
    pgm.createTable("orders", {
       id: {
          type: "id",
@@ -77,8 +77,6 @@ exports.up = (pgm) => {
    });
    pgm.createIndex("orders", "user_id");
    pgm.createIndex("orders", "status");
-   //Alter timestamp column (migration tool doesn't accept this default value so its as raw sql..)
-   pgm.sql(`ALTER TABLE ${orders} ALTER COLUMN created_at SET DEFAULT (NOW() AT TIME ZONE 'utc')`);
 };
 
 exports.down = (pgm) => {

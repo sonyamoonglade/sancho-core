@@ -72,4 +72,5 @@ export class CreateMasterOrderDto {
    total_cart_price: number;
    delivery_details?: DeliveryDetails | null = null;
    delivered_at: Date | null = null;
+   created_at: Date;
 }

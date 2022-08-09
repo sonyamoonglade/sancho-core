@@ -28,13 +28,14 @@ import {
 } from "../../packages/exceptions/order.exceptions";
 import { Events } from "../../packages/event/events";
 import { MiscService } from "../miscellaneous/misc.service";
-import { QueueOrderDto } from "./dto/queue-order.dto";
+import { QueueOrderRO } from "./dto/queue-order.dto";
 import { Miscellaneous } from "../entities/Miscellaneous";
 import { PinoLogger } from "nestjs-pino";
 import { DeliveryService } from "../../packages/delivery/delivery.service";
 import { EventsService } from "../../packages/event/event.module";
 import { EventEmitter } from "node:events";
-import { helpers } from "../../../client/src/helpers/helpers";
+import { DeliveryServiceUnavailable } from "../../packages/exceptions/delivery.exceptions";
+import { helpers } from "../../packages/helpers/helpers";
 
 @Injectable()
 export class OrderService {
@@ -135,7 +136,7 @@ export class OrderService {
          throw new OrderCannotBeCompleted(order_id);
       }
 
-      const now = helpers.utcNow();
+      const now = helpers.selectNowUTC();
       const updated: Partial<Order> = {
          completed_at: now,
          status: OrderStatus.completed
@@ -247,12 +248,14 @@ export class OrderService {
    }
 
    private async fetchOrderQueue(): Promise<OrderQueue> {
-      try {
-         const rawQueue = await this.orderRepository.getOrderQueue();
-         const mapped = this.mapRawQueue(rawQueue);
+      const rawQueue = await this.orderRepository.getOrderQueue();
+      const mapped = this.mapRawQueue(rawQueue);
 
-         const verifIds = mapped.verified.map((ord) => ord.id);
+      const verifIds = mapped.verified.map((ord) => ord.id);
+      try {
          const statuses = await this.deliveryService.status(verifIds);
+
+         //If calling service for statuses has succeeded
          mapped.verified = mapped.verified.map((order) => {
             order.isRunnerNotified = statuses.find((st) => st.orderId === order.id).status;
             return order;
@@ -261,14 +264,18 @@ export class OrderService {
          return mapped;
       } catch (e) {
          this.logger.error(e);
-         return {
-            verified: [],
-            waiting: []
-         };
+         //If failed with an error
+         //If service is down for example
+         if (e instanceof DeliveryServiceUnavailable) {
+            //Return Queue without any information about isRunnerNotified(set default to false)
+            return mapped;
+         }
+         //Otherwise, throw an exception
+         throw e;
       }
    }
 
-   public mapRawQueue(raw: QueueOrderDto[]): OrderQueue {
+   public mapRawQueue(raw: QueueOrderRO[]): OrderQueue {
       const queue: OrderQueue = {
          waiting: [],
          verified: []

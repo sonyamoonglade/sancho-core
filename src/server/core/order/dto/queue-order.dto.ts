@@ -1,6 +1,6 @@
 import { DatabaseCartProduct, DeliveryDetails, OrderStatus } from "../../../../common/types";
 
-export class QueueOrderDto {
+export class QueueOrderRO {
    id: number;
    cart: DatabaseCartProduct[];
    created_at: Date;

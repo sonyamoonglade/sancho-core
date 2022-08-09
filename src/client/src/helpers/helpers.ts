@@ -38,12 +38,5 @@ export const helpers = {
          a += c.price * c.quantity;
          return a;
       }, 0);
-   },
-
-   utcNow(): Date {
-      //utc ISO-String (*Need return type of Date for DTO's. Database accepts strings as date)
-      return new Date().toLocaleString("en", {
-         timeZone: "UTC"
-      }) as unknown as Date;
    }
 };
