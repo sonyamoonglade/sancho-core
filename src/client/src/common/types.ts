@@ -141,3 +141,12 @@ export const AggregationPresetAmounts = new Map();
 })();
 
 export type Cart = DatabaseCartProduct[];
+
+export type StatisticProduct = {
+   translate: string;
+   quantity: number;
+};
+
+export type StatisticCart = StatisticProduct[];
+
+export type ProductTop = Map<string, number>;
