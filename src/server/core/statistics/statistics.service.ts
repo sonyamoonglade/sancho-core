@@ -4,6 +4,7 @@ import { Worker } from "worker_threads";
 import * as path from "path";
 import { PinoLogger } from "nestjs-pino";
 import * as fs from "fs";
+
 @Injectable()
 export class StatisticsService {
    constructor(private logger: PinoLogger) {
@@ -48,11 +49,13 @@ export class StatisticsService {
 
          worker.on("error", (err) => {
             this.logger.error(`error occurred while running a worker. Exiting: ${err}`);
+            clearTimeout(t);
             return reject();
          });
 
          worker.on("exit", (code) => {
             this.logger.info(`exiting with code: ${code}`);
+            clearTimeout(t);
             reject();
          });
       });

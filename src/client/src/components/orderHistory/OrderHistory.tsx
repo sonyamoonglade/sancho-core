@@ -1,6 +1,14 @@
 import React, { useEffect } from "react";
 import "./order-history.styles.scss";
-import { getOrderHistory, orderSelector, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector } from "../../redux";
+import {
+  getOrderHistory,
+  orderSelector,
+  useAppDispatch,
+  useAppSelector,
+  userSelector,
+  windowActions,
+  windowSelector,
+} from "../../redux";
 import { useAxios } from "../../hooks/useAxios";
 import OrderHistoryItem from "./OrderHistoryItem";
 import { ResponseUserOrder } from "../../common/types";

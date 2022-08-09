@@ -1,4 +1,18 @@
-import { Body, Controller, Delete, Get, ParseIntPipe, Post, Put, Query, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  ParseIntPipe,
+  Post,
+  Put,
+  Query,
+  Req,
+  Res,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from "@nestjs/common";
 import { ProductService } from "./product.service";
 import { Response } from "express";
 import { CreateProductDto } from "./dto/create-product.dto";
@@ -13,7 +27,6 @@ import { PinoLogger } from "nestjs-pino";
 import { Product } from "../entities/Product";
 import { baseDestination } from "../../../common/constants";
 import { AppConfig, GetAppConfig } from "../../packages/config/config";
-import { resolve } from "dns";
 
 @Controller("/product")
 @UseGuards(AuthorizationGuard)

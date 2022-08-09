@@ -1,4 +1,4 @@
-import { Categories, Features } from "../../../../../common/types";
+import { Features } from "../../../../../common/types";
 import { useMemo, useState } from "react";
 
 export interface CreateFormState {

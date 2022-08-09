@@ -5,7 +5,15 @@ import { BiShoppingBag } from "react-icons/bi";
 import { useCorrectOrderData } from "./hooks/useCorrectOrderData";
 import { CgCloseO } from "react-icons/cg";
 import { useCancelOrder } from "../../hooks/useCancelOrder";
-import { orderSelector, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector, workerActions } from "../../redux";
+import {
+  orderSelector,
+  useAppDispatch,
+  useAppSelector,
+  userSelector,
+  windowActions,
+  windowSelector,
+  workerActions,
+} from "../../redux";
 import { AppResponsiveState } from "../../types/types";
 import { useDrag } from "react-dnd";
 import { useNotifyRunner } from "../../hooks/useNotifyRunner";

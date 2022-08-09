@@ -3,10 +3,10 @@ import { CreateProductDto } from "./dto/create-product.dto";
 import { FrontendProduct, Product } from "../entities/Product";
 import { Categories, Features } from "../../../common/types";
 import {
-   InvalidCategoryException,
-   ProductAlreadyExistsException,
-   ProductCantBeApproved,
-   ProductDoesNotExistException,
+  InvalidCategoryException,
+  ProductAlreadyExistsException,
+  ProductCantBeApproved,
+  ProductDoesNotExistException,
 } from "../../packages/exceptions/product.exceptions";
 import { ValidationErrorException } from "../../packages/exceptions/validation.exceptions";
 import { ProductRepository } from "./product.repository";

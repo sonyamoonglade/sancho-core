@@ -1,5 +1,12 @@
 import React from "react";
-import { orderSelector, productSelector, useAppDispatch, useAppSelector, windowActions, windowSelector } from "../../../redux";
+import {
+  orderSelector,
+  productSelector,
+  useAppDispatch,
+  useAppSelector,
+  windowActions,
+  windowSelector,
+} from "../../../redux";
 import { BsCart4, BsClipboardData } from "react-icons/bs";
 import { MdDeliveryDining, MdOutlineReceiptLong } from "react-icons/md";
 import { RiQuestionAnswerLine } from "react-icons/ri";

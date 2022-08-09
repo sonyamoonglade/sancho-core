@@ -1,7 +1,6 @@
 import { useAxios } from "./useAxios";
 import { useCallback } from "react";
 import { AdminProduct } from "../types/types";
-import { Categories } from "../common/types";
 import { EditFormValues } from "../components/admin/productModal/edit/hooks/useEditProductModalForm";
 import { CreateFormValues } from "../components/admin/productModal/create/hooks/useCreateProductModalForm";
 

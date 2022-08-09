@@ -19,7 +19,7 @@ import {
    OrderStatus,
    ResponseUserOrder,
    VerifiedQueueOrder,
-   WaitingQueueOrder
+   WaitingQueueOrder,
 } from "../../../common/types";
 import { CompleteOrderDto } from "./dto/complete-order.dto";
 import { UnexpectedServerError } from "../../packages/exceptions/unexpected-errors.exceptions";
@@ -27,7 +27,7 @@ import {
    CancelExplanationHasNotBeenProvided,
    InvalidOrderStatus,
    OrderCannotBeCompleted,
-   OrderDoesNotExist
+   OrderDoesNotExist,
 } from "../../packages/exceptions/order.exceptions";
 import { Events } from "../../packages/event/events";
 import { MiscService } from "../miscellaneous/misc.service";
