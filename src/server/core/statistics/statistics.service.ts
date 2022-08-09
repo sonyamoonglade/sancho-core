@@ -52,8 +52,11 @@ export class StatisticsService {
          });
 
          worker.on("exit", (code) => {
-            this.logger.info(`exiting with code: ${code}`);
-            reject();
+            //code 0 is base exit(no error)
+            if (code !== 0) {
+               this.logger.info(`exiting with code: ${code}`);
+               reject();
+            }
          });
       });
    }
