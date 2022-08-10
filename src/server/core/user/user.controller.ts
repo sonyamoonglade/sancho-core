@@ -13,10 +13,11 @@ import { RegisterSpamGuard } from "../session/guard/register-spam.guard";
 import { CreateMarkDto } from "../mark/dto/create-mark.dto";
 import { AuthorizationGuard } from "../authorization/authorization.guard";
 import { CustomerData } from "../entities/User";
+import { CookieService } from "../../packages/cookie/cookie.service";
 
 @Controller("/users")
 export class UserController {
-   constructor(private userService: UserService, private sessionService: SessionService) {}
+   constructor(private userService: UserService, private sessionService: SessionService, private cookieService: CookieService) {}
 
    @Post("/loginMaster")
    @UseGuards(RegisterSpamGuard)
@@ -24,7 +25,7 @@ export class UserController {
       try {
          const { id, role } = await this.userService.loginMaster(b);
          const SID = await this.sessionService.generateMasterSession(id);
-         res = this.sessionService.putMasterSession(res, SID);
+         res = this.cookieService.setMasterSessCookie(res, SID);
          return res.status(200).send({ role });
       } catch (e) {
          throw e;
@@ -75,14 +76,14 @@ export class UserController {
          if (oldUser === null) {
             const newUser = await this.userService.createUser(b);
             const SID = await this.sessionService.generateSession(newUser.id);
-            res = this.sessionService.putUserSession(res, SID);
+            res = this.cookieService.setUserSessCookie(res, SID);
             return res.status(201).end();
          }
          let SID = await this.sessionService.getSIDByUserId(oldUser.id);
          if (SID === undefined) {
             SID = await this.sessionService.generateSession(oldUser.id);
          }
-         res = this.sessionService.putUserSession(res, SID);
+         res = this.cookieService.setUserSessCookie(res, SID);
          return res.status(200).end();
       } catch (e) {
          throw e;

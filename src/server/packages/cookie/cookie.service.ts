@@ -13,9 +13,33 @@ export class CookieService {
       const afterTtl = now.add(ttl, "minutes").toDate();
       res.cookie(CookieNames.cancelBan, false, {
          httpOnly: true,
-         secure: true,
+         secure: false,
          expires: afterTtl,
-         sameSite: "none"
+         sameSite: "strict"
+      });
+      return res;
+   }
+
+   setUserSessCookie(res: Response, SID: string): Response {
+      res.cookie(CookieNames.SID, SID, {
+         httpOnly: true,
+         secure: false,
+         sameSite: "strict",
+         path: "/"
+      });
+      return res;
+   }
+
+   setMasterSessCookie(res: Response, SID: string): Response {
+      const now = dayjs();
+      const ttl = now.add(1, "day").toDate(); //24h
+
+      res.cookie(CookieNames.SID, SID, {
+         httpOnly: true,
+         secure: false,
+         sameSite: "strict",
+         path: "/",
+         expires: ttl
       });
       return res;
    }

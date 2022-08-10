@@ -50,28 +50,7 @@ export class SessionService {
          path: "/"
       });
    }
-   public putUserSession(res: Response, SID: string): Response {
-      res.cookie(CookieNames.SID, SID, {
-         httpOnly: true,
-         secure: true,
-         sameSite: "none",
-         path: "/"
-      });
-      return res;
-   }
-   public putMasterSession(res: Response, SID: string): Response {
-      const now = dayjs();
-      const ttl = now.add(1, "day").toDate(); //24h
 
-      res.cookie(CookieNames.SID, SID, {
-         httpOnly: true,
-         secure: true,
-         sameSite: "none",
-         path: "/",
-         expires: ttl
-      });
-      return res;
-   }
    async destroySession(SID: string): Promise<void> {
       return this.sessionRepository.destroy(SID);
    }
