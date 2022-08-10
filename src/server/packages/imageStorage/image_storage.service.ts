@@ -1,7 +1,14 @@
 import { Injectable } from "@nestjs/common";
 import { PutImageDto } from "../../core/product/dto/put-image.dto";
 import axios from "axios";
-import { baseDestination, imagePNG, x_content_type, x_destination, x_file_name, x_root } from "../../../common/constants";
+import {
+  baseDestination,
+  imagePNG,
+  x_content_type,
+  x_destination,
+  x_file_name,
+  x_root,
+} from "../../../common/constants";
 import { BinaryToTextEncoding } from "crypto";
 import { ImageStorageInterface, PutFileResponse } from "./image_storage";
 import { PinoLogger } from "nestjs-pino";

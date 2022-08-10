@@ -1,20 +1,11 @@
 import React, { useEffect, useMemo } from "react";
-import {
-  orderSelector,
-  productActions,
-  useAppDispatch,
-  useAppSelector,
-  userSelector,
-  windowActions,
-  windowSelector,
-} from "../../redux";
+import { orderSelector, productActions, useAppDispatch, useAppSelector, userSelector, windowActions, windowSelector } from "../../redux";
 import "./pay.styles.scss";
 import { TiArrowBack } from "react-icons/ti";
 import { baseUrl } from "../../App";
 import PaySelector from "../ui/paySelector/PaySelector";
 import { CreateUserOrderDto, DeliveryDetails } from "../../common/types";
 import FormInput from "../ui/formInput/FormInput";
-import { CLEAR_ORDER_FORM, CLEAR_ORDER_FORM_ONLY_PHONE } from "../../types/types";
 import { useFormValidations } from "../../hooks/useFormValidations";
 import SubmitOrderButton from "../createUserOrder/submitOrderButton/SubmitOrderButton";
 import { usePayForm } from "./hooks/usePayForm";
@@ -25,6 +16,7 @@ import { useCart } from "../../hooks/useCart";
 import { useEvents } from "../../hooks/useEvents";
 import { useUser } from "../../hooks/useUser";
 import { useAppCookies } from "../../hooks/useAppCookies";
+import { Events } from "../../events/Events";
 
 const Pay = () => {
    const { pay } = useAppSelector(windowSelector);
@@ -72,7 +64,7 @@ const Pay = () => {
             phCookie.set(phoneNumber);
          }
       } catch (e: any) {
-         events.emit(CLEAR_ORDER_FORM_ONLY_PHONE);
+         events.emit(Events.CLEAR_ORDER_FORM_ONLY_PHONE);
          const message = e?.response?.data?.message;
          dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."));
       }
@@ -123,13 +115,13 @@ const Pay = () => {
 
          //Order has created successfully. Clear up previous form and cart
          cart.clearCart();
-         events.emit(CLEAR_ORDER_FORM);
+         events.emit(Events.CLEAR_ORDER_FORM);
          dispatch(productActions.setCartEmpty(true));
          dispatch(productActions.setTotalCartPrice(0));
       } catch (e: any) {
          //Error creating an order. Clear only phone for UX
          const message = e?.response?.data?.message;
-         events.emit(CLEAR_ORDER_FORM_ONLY_PHONE);
+         events.emit(Events.CLEAR_ORDER_FORM_ONLY_PHONE);
          dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."));
       }
    }

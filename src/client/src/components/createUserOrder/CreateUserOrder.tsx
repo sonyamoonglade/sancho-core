@@ -8,10 +8,11 @@ import { orderActions, useAppDispatch, useAppSelector, windowActions, windowSele
 import OrderForm from "./orderForm/OrderForm";
 import Check from "../check/Check";
 import { useUserOrderForm } from "./hooks/useUserOrderForm";
-import { CLEAR_ORDER_FORM, CLEAR_ORDER_FORM_ONLY_PHONE, FormField, UserOrderFormData } from "../../types/types";
 import { DeliveryDetails } from "../../common/types";
 import { baseUrl } from "../../App";
 import { useEvents } from "../../hooks/useEvents";
+import { FormField, UserOrderFormData } from "../../types/types";
+import { Events } from "../../events/Events";
 
 export interface UserOrderFormValuesInterface {
    is_delivered: boolean;
@@ -56,11 +57,11 @@ const CreateUserOrder = () => {
 
    useEffect(() => {
       //Register events only once
-      if (events.listeners(CLEAR_ORDER_FORM).length === 0) {
-         events.on(CLEAR_ORDER_FORM, setFormDefaults);
+      if (events.listeners(Events.CLEAR_ORDER_FORM).length === 0) {
+         events.on(Events.CLEAR_ORDER_FORM, setFormDefaults);
       }
-      if (events.listeners(CLEAR_ORDER_FORM_ONLY_PHONE).length === 0) {
-         events.on(CLEAR_ORDER_FORM_ONLY_PHONE, clearPhone);
+      if (events.listeners(Events.CLEAR_ORDER_FORM_ONLY_PHONE).length === 0) {
+         events.on(Events.CLEAR_ORDER_FORM_ONLY_PHONE, clearPhone);
       }
    }, []);
 

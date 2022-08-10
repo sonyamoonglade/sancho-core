@@ -36,13 +36,9 @@ export function GetAppConfig(): AppConfig {
    if (instance !== undefined) {
       return instance;
    }
-   //todo: prod config
-   if (nodeenv === "production") {
-      return null;
-   }
 
    //Read .yaml file
-   const f = readConfigFile();
+   const f = readConfigFile(nodeenv);
    //Parse it with schema
    const config: AppConfig = yaml.parse(f);
    //todo: add validation
@@ -58,12 +54,12 @@ export function GetAppConfig(): AppConfig {
    return config;
 }
 
-function readConfigFile(): string {
-   const name = "config.yaml";
+function readConfigFile(NODE_ENV: string): string {
+   const name = NODE_ENV === "production" ? "prod.config.yaml" : "config.yaml";
    const p = path.join(__dirname, "..", "..", "..", "..", name);
 
    if (!fs.existsSync(p)) {
-      throw new Error("config is file missing");
+      throw new Error(`config file ${name} is missing`);
    }
    return fs.readFileSync(p, { encoding: "utf8" });
 }

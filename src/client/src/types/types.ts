@@ -66,8 +66,6 @@ export type FoundUser = {
    username: string;
 };
 //todo: move to events
-export const CLEAR_ORDER_FORM = "clear_order_form";
-export const CLEAR_ORDER_FORM_ONLY_PHONE = "clear_order_form_only_phone";
 
 export type UserOrderFormData = {
    cart: DatabaseCartProduct[];

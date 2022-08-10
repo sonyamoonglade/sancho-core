@@ -1,5 +1,5 @@
 
-build:
+login-h:
 	 heroku container:login
 push-h:
 	 heroku container:push web --app zharpizza-backend
@@ -22,3 +22,9 @@ migrate-down:
 
 migrate-up:
 	npm run migrate up
+
+build-backend-local:
+	docker build -f ./docker/local.Dockerfile -t sonyamoonglade/sancho-hub:backend-core .
+
+push-backend-local:
+	docker push sonyamoonglade/sancho-hub:backend-core

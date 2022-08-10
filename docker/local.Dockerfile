@@ -1,11 +1,15 @@
 FROM node
 
 WORKDIR /app
-COPY package.json .
+
+COPY package.json /app
+
 RUN npm install
+
 COPY . .
+
 ENV NODE_ENV="development"
 
 RUN npm run build:prod
-EXPOSE 5000
+
 CMD ["npm","run","start"]

@@ -1,4 +1,4 @@
-import { workerData, parentPort } from "worker_threads";
+import { parentPort, workerData } from "worker_threads";
 import { ProductTop, StatisticCart } from "../../../common/types";
 
 const carts: StatisticCart[] = workerData;

@@ -26,7 +26,6 @@ import { EventsService } from "./packages/event/event.module";
 import { ImageStorageService } from "./packages/imageStorage/image_storage.service";
 import { LambdaRouter } from "./packages/lambdaRouter/lambdaRouter";
 import { StatisticsController } from "./core/statistics/statistics.controller";
-import { StatisticsModule } from "./core/statistics/statistics.module";
 import { StatisticsService } from "./core/statistics/statistics.service";
 
 @Module({

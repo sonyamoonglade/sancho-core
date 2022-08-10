@@ -5,13 +5,12 @@ import axios from "axios";
 import { ValidationErrorException } from "../exceptions/validation.exceptions";
 import { PinoLogger } from "nestjs-pino";
 import {
-   CheckServiceUnavailable,
-   DeliveryAlreadyExists,
-   DeliveryServiceUnavailable,
-   RunnerAlreadyExists,
-   TelegramInternalError
+  CheckServiceUnavailable,
+  DeliveryAlreadyExists,
+  DeliveryServiceUnavailable,
+  RunnerAlreadyExists,
+  TelegramInternalError,
 } from "../exceptions/delivery.exceptions";
-import { UnexpectedServerError } from "../exceptions/unexpected-errors.exceptions";
 import { DeliveryStatus } from "../../types/types";
 import { EventsService } from "../event/event.module";
 import { EventEmitter } from "node:events";
