@@ -1,5 +1,5 @@
 import { DatabaseCartProduct, DeliveryDetails, Product } from "../common/types";
-import { Categories, Features } from "../../../common/types";
+import { Categories, Features } from "../common/types";
 
 export enum CategoryColor {
    "Напитки" = "#6fbecf",

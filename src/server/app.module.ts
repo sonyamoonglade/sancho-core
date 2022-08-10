@@ -68,19 +68,19 @@ export class AppModule implements NestModule {
          .apply(SessionMiddleware)
          .exclude(
             {
-               path: "/api/v1/users/loginMaster",
+               path: "/api/users/loginMaster",
                method: RequestMethod.POST
             },
             {
-               path: "/api/v1/users/login",
+               path: "/api/users/login",
                method: RequestMethod.POST
             },
             {
-               path: "/api/v1/product/catalog",
+               path: "/api/product/catalog",
                method: RequestMethod.GET
             },
             {
-               path: "/api/v1/misc",
+               path: "/api/misc",
                method: RequestMethod.GET
             }
          )

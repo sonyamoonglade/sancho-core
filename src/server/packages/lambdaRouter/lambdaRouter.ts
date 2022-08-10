@@ -1,8 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { AppConfig, GetAppConfig } from "../config/config";
 
-require("dotenv").config();
-
 @Injectable()
 export class LambdaRouter {
    private config: AppConfig;

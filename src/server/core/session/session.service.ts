@@ -6,14 +6,15 @@ import { Response } from "express";
 import { CookieNames } from "../../types/types";
 import { UnexpectedServerError } from "../../packages/exceptions/unexpected-errors.exceptions";
 import * as crypto from "crypto";
-
-require("dotenv").config();
+import { GetAppConfig } from "../../packages/config/config";
 
 @Injectable()
 export class SessionService {
-   private SECRET = process.env.HASH_SECRET;
+   private readonly SECRET: string;
 
-   constructor(private sessionRepository: SessionRepository) {}
+   constructor(private sessionRepository: SessionRepository) {
+      this.SECRET = GetAppConfig().env.hashSecret;
+   }
 
    async generateSession(userId: number): Promise<string> {
       const currentTime = dayjs();

@@ -2,6 +2,10 @@ import * as yaml from "yaml";
 import * as fs from "fs";
 import * as path from "path";
 
+const nodeenv = process.env.NODE_ENV;
+
+require("dotenv").config();
+
 export type AppConfig = {
    app: {
       port: string;
@@ -32,7 +36,6 @@ export type AppConfig = {
 let instance: AppConfig;
 
 export function GetAppConfig(): AppConfig {
-   const nodeenv = process.env.NODE_ENV;
    if (instance !== undefined) {
       return instance;
    }
@@ -51,6 +54,7 @@ export function GetAppConfig(): AppConfig {
    };
 
    instance = config;
+
    return config;
 }
 

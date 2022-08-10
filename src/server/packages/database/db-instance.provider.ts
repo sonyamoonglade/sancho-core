@@ -1,8 +1,6 @@
 import { Pool, PoolClient } from "pg";
 import { AppConfig, GetAppConfig } from "../config/config";
 
-require("dotenv").config();
-
 export class DbInstanceProvider {
    private pool: Pool | PoolClient;
 

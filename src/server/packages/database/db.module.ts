@@ -2,8 +2,6 @@ import { Module } from "@nestjs/common";
 import { pg_conn } from "./db_provider-name";
 import { DbInstanceProvider } from "./db-instance.provider";
 
-require("dotenv").config();
-
 const instanceProvider = new DbInstanceProvider();
 
 const dbProvider = {

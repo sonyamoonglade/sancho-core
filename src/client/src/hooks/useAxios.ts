@@ -1,15 +1,15 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
-import { useAppDispatch, userSlice, workerActions } from "../redux";
+import { useAppDispatch, useAppSelector, userSelector, userSlice, workerActions } from "../redux";
 
-let BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-// todo: use nginx
-if (!BACKEND_URL) {
-   BACKEND_URL = "https://zharpizza-backend.herokuapp.com/api/v1";
+let BACKEND_URL = "/api";
+if (process.env.NODE_ENV === "production") {
+   BACKEND_URL = "/api";
 }
+console.log(BACKEND_URL, "backend url");
 let instance: AxiosInstance;
 export function useAxios() {
    const userActions = userSlice.actions;
-
+   const { isWorkerAuthenticated } = useAppSelector(userSelector);
    const dispatch = useAppDispatch();
    if (instance !== undefined) {
       return instance;
@@ -36,8 +36,10 @@ export function useAxios() {
          //read json
          errMSg = JSON.parse(text).message;
       }
-      dispatch(workerActions.setError(errMSg));
-      dispatch(workerActions.toggleErrorModal(true));
+      if (isWorkerAuthenticated) {
+         dispatch(workerActions.setError(errMSg));
+         dispatch(workerActions.toggleErrorModal(true));
+      }
       return Promise.reject(error);
    }
    function responseSuccessHandler(s: any) {

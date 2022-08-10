@@ -28,3 +28,10 @@ build-backend-local:
 
 push-backend-local:
 	docker push sonyamoonglade/sancho-hub:backend-core
+
+
+build-backend-prod:
+	docker build -f ./docker/prod.Dockerfile -t sonyamoonglade/sancho-hub:backend-core-prod .
+
+cp-env:
+	cp .env.prod ../../sancho-console/backend/

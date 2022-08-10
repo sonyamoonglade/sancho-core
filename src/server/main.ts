@@ -1,19 +1,15 @@
 import { NestFactory } from "@nestjs/core";
 import { AppModule } from "./app.module";
 import * as cookieParser from "cookie-parser";
-import * as path from "path";
 import { ValidationPipe } from "@nestjs/common";
 import { GetAppConfig } from "./packages/config/config";
 import { UserService } from "./core/user/user.service";
 import { Logger } from "nestjs-pino";
 
-require("dotenv").config({
-   path: path.resolve(__dirname, ".env")
-});
-
 async function bootstrap() {
    //Init config
    const config = GetAppConfig();
+   console.log(config);
    //Init an app
    const app = await NestFactory.create(AppModule);
    //Get logger instance
@@ -22,8 +18,8 @@ async function bootstrap() {
 
    const userService: UserService = app.get<UserService>(UserService);
 
-   app.setGlobalPrefix("/api/v1");
-   const origins = ["https://zharpizza-front.herokuapp.com", "http://localhost:3001", "http://localhost:3000"];
+   app.setGlobalPrefix("/api");
+   const origins = ["http://localhost:80, http://localhost:3000", "http://localhost"];
    app.use(cookieParser());
    app.enableCors({
       origin: origins,
@@ -37,7 +33,7 @@ async function bootstrap() {
 
    //Register super admin(if db empty)
    await userService.registerSuperAdmin();
-
+   logger.log("admin is ok!");
    await app.listen(APP_PORT, () => {
       logger.log(`application is listening :${APP_PORT}`);
    });

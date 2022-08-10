@@ -18,7 +18,7 @@ exports.up = (pgm) => {
       },
       image_url: {
          type: "varchar(512)",
-         notNull: true
+         notNull: false
       },
       name: {
          type: "varchar(255)",

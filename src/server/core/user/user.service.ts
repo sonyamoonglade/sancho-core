@@ -10,13 +10,13 @@ import * as bcrypt from "bcrypt";
 import { AppRoles, DeliveryDetails } from "../../../common/types";
 import { LoginMasterUserDto } from "./dto/login-master-user.dto";
 import {
-  InvalidPasswordException,
-  InvalidRoleException,
-  MasterLoginHasAlreadyBeenTaken,
-  PasswordIsTooShortException,
-  PhoneIsAlreadyTakenException,
-  UserCredentialsNotFound,
-  UserDoesNotExistException,
+   InvalidPasswordException,
+   InvalidRoleException,
+   MasterLoginHasAlreadyBeenTaken,
+   PasswordIsTooShortException,
+   PhoneIsAlreadyTakenException,
+   UserCredentialsNotFound,
+   UserDoesNotExistException
 } from "../../packages/exceptions/user.exceptions";
 import { UnexpectedServerError } from "../../packages/exceptions/unexpected-errors.exceptions";
 import { APP_ROLES } from "../../types/contants";
@@ -32,8 +32,6 @@ import { ValidationErrorException } from "../../packages/exceptions/validation.e
 import { FoundUserDto } from "./dto/found-user.dto";
 import { CouldNotGetUserDeliveryData } from "../../packages/exceptions/order.exceptions";
 import { PinoLogger } from "nestjs-pino";
-
-require("dotenv").config();
 
 export interface MarkRepositoryInterface {
    create(dto: CreateMarkDto): Promise<Mark>;
