@@ -82,10 +82,20 @@ export class OrderRepository {
    async createUserOrder(dto: CreateUserOrderDto): Promise<void> {
       const strDetails = JSON.stringify(dto?.delivery_details || {});
       const sql = `
-         INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,pay)
-         VALUES($1,$2,$3,$4,$5,$6,$7,$8)
+         INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,pay,created_at)
+         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)
       `;
-      const values = [dto.is_delivered, dto.cart, strDetails, dto.total_cart_price, dto.is_delivered_asap, dto.user_id, dto.status, dto.pay];
+      const values = [
+         dto.is_delivered,
+         dto.cart,
+         strDetails,
+         dto.total_cart_price,
+         dto.is_delivered_asap,
+         dto.user_id,
+         dto.status,
+         dto.pay,
+         dto.created_at
+      ];
       await this.db.query(sql, values);
       return;
    }
