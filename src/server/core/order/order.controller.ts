@@ -1,10 +1,5 @@
 import { Body, Controller, Get, Post, Put, Query, Req, Res, UseFilters, UseGuards } from "@nestjs/common";
-import {
-  CreateMasterOrderDto,
-  CreateMasterOrderInput,
-  CreateUserOrderDto,
-  CreateUserOrderInput,
-} from "./dto/create-order.dto";
+import { CreateMasterOrderDto, CreateMasterOrderInput, CreateUserOrderDto, CreateUserOrderInput } from "./dto/create-order.dto";
 import { OrderService } from "./order.service";
 import { Response } from "express";
 import { VerifyOrderDto, VerifyOrderInput } from "./dto/verify-order.dto";
@@ -81,7 +76,8 @@ export class OrderController {
             is_delivered_asap: inp.is_delivered_asap,
             pay: inp.pay,
             status: OrderStatus.waiting_for_verification,
-            user_id: userId
+            user_id: userId,
+            created_at: helpers.selectNowUTC()
          };
 
          await this.orderService.createUserOrder(dto);
