@@ -7,8 +7,8 @@ export function useAppCookies(): AppCookies {
    const [phwrap, setPhoneNumber] = useCookies(["phoneNumber"]);
    const [ddwrap, setDeliveryDetails] = useCookies(["deliveryDetails"]);
    const baseOptions: CookieOptions = {
-      sameSite: "lax",
-      secure: true
+      sameSite: "strict",
+      secure: false
    };
    function wrapper(name: string, value: string, f: (name: any, value: string, options: CookieOptions) => void) {
       return f(name, value, baseOptions);
