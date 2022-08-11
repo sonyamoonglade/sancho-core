@@ -83,7 +83,7 @@ export class OrderRepository {
       const strDetails = JSON.stringify(dto?.delivery_details || {});
       const sql = `
          INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,pay,created_at)
-         VALUES($1,$2,$3,$4,$5,$6,$7,$8)
+         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)
       `;
       const values = [
          dto.is_delivered,
