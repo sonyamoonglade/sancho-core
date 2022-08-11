@@ -36,16 +36,17 @@ const ProductInfo: FC<productInfoProps> = ({ product, children }) => {
          {children && children}
          <div className="text_info">
             <p className="description">{description}</p>
-            {features.nutrients !== undefined && (
+            {features.nutrients && (
                <NutrientList isPresentingNow={false} nutrients={features.nutrients}>
-                  {features.energy_value !== undefined && (
+                  {features.energy_value && (
                      <li className="energy_value">
                         <p>{features.energy_value}ккал на 100г.</p>
                      </li>
                   )}
                </NutrientList>
             )}
-            {features.volume !== 0 && features.volume && <p className="description">Объем: {features.volume}мл</p>}
+            {features.volume !== 0 && features.volume && <p className="description bot">Объем: {features.volume}мл</p>}
+            {features.weight !== 0 && features.weight && <p className="description bot">Вес: {features.weight}гр</p>}
          </div>
       </div>
    );

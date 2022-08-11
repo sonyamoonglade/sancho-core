@@ -43,4 +43,13 @@ export class CookieService {
       });
       return res;
    }
+
+   public clearSessCookie(res: Response): void {
+      res.clearCookie(CookieNames.SID, {
+         httpOnly: true,
+         secure: false,
+         sameSite: "strict",
+         path: "/"
+      });
+   }
 }

@@ -42,14 +42,6 @@ export class SessionService {
 
       return h;
    }
-   public clearSession(res: Response): void {
-      res.clearCookie(CookieNames.SID, {
-         httpOnly: true,
-         secure: true,
-         sameSite: "none",
-         path: "/"
-      });
-   }
 
    async destroySession(SID: string): Promise<void> {
       return this.sessionRepository.destroy(SID);

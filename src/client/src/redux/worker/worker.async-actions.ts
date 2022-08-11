@@ -15,7 +15,8 @@ export const getInitialQueue = (client: AxiosInstance) => async (dispatch: AppDi
 export const startEventSourcingForQueue = () => async (dispatch: AppDispatch) => {
    let s: EventSource;
    try {
-      const url = process.env.NODE_ENV === "production" ? "/api" : process.env.REACT_APP_BACKEND_URL;
+      //process.env.REACT_APP_BACKEND_URL todo:
+      const url = "/api";
       s = new EventSource(`${url}/order/queue`, {
          withCredentials: true
       });
