@@ -1,6 +1,5 @@
 import { parentPort, workerData } from "worker_threads";
 import { ProductTop, ProductTopArray, StatisticCart } from "../../../common/types";
-import { log } from "util";
 
 const carts: StatisticCart[] = workerData;
 const top: ProductTop = new Map<string, number>();
@@ -23,11 +22,12 @@ for (const cart of carts) {
       top.set(product.translate, v + product.quantity);
    }
 }
-//Iterate over ["mozarella",25] ... in the map
-for (const [tr, q] of Array.from(top.entries())) {
+//Iterate over ["mozarella",25]... in the map
+for (const [tr, q] of Array.from(top.entries()).sort(([_, q1], [__, q2]) => q2 - q1)) {
    topArr.push({
       translate: tr,
-      percent: Math.ceil(q / (totalProductAmount === 0 ? totalProductAmount : 1)) // Make sure to not divide by zero
+      percent: Math.ceil(q / (totalProductAmount === 0 ? totalProductAmount : 1)), // Make sure to not divide by zero
+      exactq: q
    });
 }
 

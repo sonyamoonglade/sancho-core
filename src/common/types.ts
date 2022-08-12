@@ -154,6 +154,7 @@ export type ProductTop = Map<string, number>;
 export type TopProduct = {
    translate: string;
    percent: number;
+   exactq: number; // exact quantity
 };
 
 export type ProductTopArray = TopProduct[];
