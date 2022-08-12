@@ -1,9 +1,10 @@
-import React, { FC, useEffect, useRef, useState } from "react";
+import React, { FC, useEffect, useMemo, useRef, useState } from "react";
 import { AiOutlineMinus, AiOutlinePlus } from "react-icons/ai";
 import "./cart-button.styles.scss";
 import { productSelector, productSlice, useAppDispatch, useAppSelector } from "../../../redux";
 import { CartInterface } from "../../../types/types";
 import { DatabaseCartProduct } from "../../../common/types";
+import { useMediaQuery } from "react-responsive";
 
 interface cartButtonProps {
    quantity: number;
@@ -15,6 +16,21 @@ const productActions = productSlice.actions;
 const CartButton: FC<cartButtonProps> = ({ quantity, cart }) => {
    const animationRef = useRef<HTMLSpanElement>(null);
    const animationRef2 = useRef(null);
+
+   const h = useMemo(() => window.screen.height, [window.screen]);
+
+   const iconw = useMemo(() => {
+      switch (true) {
+         case h < 700:
+            return 25;
+         case h < 800:
+            return 30;
+         case h < 900:
+            return 35;
+         default:
+            return 40;
+      }
+   }, [h]);
 
    const [transitionEnd, setTransitionEnd] = useState<boolean>(false);
 
@@ -31,7 +47,7 @@ const CartButton: FC<cartButtonProps> = ({ quantity, cart }) => {
    }, [isPresentingNow]);
 
    function startSlideAnimation() {
-      animationRef.current.animate([{ width: "10%" }, { width: "30%" }], {
+      animationRef.current.animate([{ width: "10%" }, { width: "40%" }], {
          duration: 500,
          easing: "ease-in",
          fill: "forwards",
@@ -42,7 +58,7 @@ const CartButton: FC<cartButtonProps> = ({ quantity, cart }) => {
    }
 
    function startSlideBackAnimation() {
-      animationRef.current.animate([{ width: "30%" }, { width: "10%" }], {
+      animationRef.current.animate([{ width: "40%" }, { width: "10%" }], {
          duration: 10,
          easing: "ease-in"
       }).onfinish = function () {
@@ -79,13 +95,13 @@ const CartButton: FC<cartButtonProps> = ({ quantity, cart }) => {
    return (
       <span ref={animationRef} className="product_button">
          <div onClick={() => decrementProductQuantity()} className={transitionEnd ? "incart_btn" : "incart_btn hidden"}>
-            <AiOutlineMinus size={25} />
+            <AiOutlineMinus size={iconw} />
          </div>
          <p ref={animationRef2} className={transitionEnd ? "product_quantity" : "product_quantity hidden"}>
             {quantity}
          </p>
          <div onClick={() => incrementProductQuantity()} className="incart_btn">
-            <AiOutlinePlus size={25} />
+            <AiOutlinePlus size={iconw} />
          </div>
       </span>
    );

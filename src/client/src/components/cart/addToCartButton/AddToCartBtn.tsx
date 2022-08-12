@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useRef } from "react";
+import React, { FC, useEffect, useMemo, useRef } from "react";
 import { BiShoppingBag } from "react-icons/bi";
 import CartButton from "../cartButton/CartButton";
 import { productActions, productSelector, useAppDispatch, useAppSelector, windowActions } from "../../../redux";
@@ -18,6 +18,24 @@ const AddToCartBtn: FC<addToCartOnPresentationProps> = (props) => {
 
    const { totalCartPrice, presentedProductCartQuantity, presentedProduct } = useAppSelector(productSelector);
    const dispatch = useAppDispatch();
+   const w = useMemo(() => window.screen.width, []);
+   const h = useMemo(() => window.screen.height, []);
+
+   const bagw = useMemo(() => {
+      switch (true) {
+         case w >= 1440:
+            return 35;
+         case w >= 1000:
+            return 30;
+         case w >= 800:
+            return 27;
+         case h >= 800:
+            return 30;
+         default:
+            return 25;
+      }
+   }, [w]);
+   console.log(w);
 
    const jumpAnimationRef = useRef<HTMLDivElement>(null);
 
@@ -38,7 +56,7 @@ const AddToCartBtn: FC<addToCartOnPresentationProps> = (props) => {
          <div className="cart_icon_container" ref={jumpAnimationRef}>
             {isNotified && <div className="notification_dot">&nbsp;</div>}
             <span>
-               <BiShoppingBag onClick={() => openCart()} size={25} className="add_to_cart_icon" />
+               <BiShoppingBag onClick={() => openCart()} size={bagw} className="add_to_cart_icon" />
             </span>
          </div>
          {isProductInCart ? (
