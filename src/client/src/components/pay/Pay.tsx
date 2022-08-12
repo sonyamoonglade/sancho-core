@@ -67,6 +67,7 @@ const Pay = () => {
          events.emit(Events.CLEAR_ORDER_FORM_ONLY_PHONE);
          const message = e?.response?.data?.message;
          dispatch(windowActions.startErrorScreenAndShowMessage(message || "Ошибочка..."));
+         return;
       }
 
       try {

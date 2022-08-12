@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { Cart, ProductTop, StatisticCart } from "../../../common/types";
+import { Cart, ProductTop, ProductTopArray, StatisticCart } from "../../../common/types";
 import { Worker } from "worker_threads";
 import * as path from "path";
 import { PinoLogger } from "nestjs-pino";
@@ -22,7 +22,7 @@ export class StatisticsService {
       });
    }
 
-   async generateProductTop(carts: StatisticCart[]): Promise<ProductTop> {
+   async generateProductTop(carts: StatisticCart[]): Promise<ProductTopArray> {
       this.logger.info("generate product top");
       return new Promise((resolve, reject) => {
          const pathToWorkers = path.resolve("dist/server/packages/workers/topAggregator.js");
@@ -41,6 +41,7 @@ export class StatisticsService {
             return reject();
          }, 5000);
 
+         //Worker is done processing
          worker.on("message", (top) => {
             clearTimeout(t);
             this.logger.info("received positive response from worker");
@@ -54,7 +55,7 @@ export class StatisticsService {
          });
 
          worker.on("exit", (code) => {
-            this.logger.info(`exiting with code: ${code}`);
+            this.logger.info(`exiting with code: ${code}}`);
             clearTimeout(t);
             reject();
          });

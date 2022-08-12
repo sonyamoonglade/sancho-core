@@ -11,7 +11,7 @@ db:
 lambda:
   putFile: "put_file"
   pseudoDelete: "pseudo_delete"
-  url: "https://functions.yandexcloud.net/d4encrbv3fseka879o44"
+  url: "https://functions.yandexcloud.net/d4etqvdad6dqcqhmaie1"
 
 yandex:
-  storageUrl: "https://storage.yandexcloud.net/zharpizza-bucket/static/images/"
+  storageUrl: "https://storage.yandexcloud.net/sancho-stage/static/images/"

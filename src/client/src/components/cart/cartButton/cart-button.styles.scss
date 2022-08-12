@@ -2,10 +2,10 @@
 
 .product_button{
   display: flex;
-  padding: 0.1rem 0.2rem;
-
+  padding: 0.1rem 0.5rem;
   justify-content: space-evenly;
   background-color: $green;
+
   border-radius: 20px;
   overflow: hidden;
   transition: all 1s ease-in-out;
@@ -23,7 +23,10 @@
   justify-content: center;
   user-select: none;
   border-radius: 50px;
-  cursor: pointer;
+  @media (min-width: 1440px) {
+    cursor: pointer;
+
+  }
 }
 .incart_btn:active{
   transform:  translateY(-1px);
@@ -31,13 +34,21 @@
 }
 
 .product_quantity{
-  font-size: $font-lg;
+  font-size: $font-prelg;
   color: whitesmoke;
-  width: 25px;
   user-select: none;
+  padding: 0 0.5rem;
   text-align: center;
   transition: all .2s ease-in-out;
-
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  @media (min-width: 800px) {
+    font-size: $font-lg;
+  }
+  @media (min-width: 1440px) {
+    font-size: $font-lger;
+  }
 }
 
 .product_button.shown{

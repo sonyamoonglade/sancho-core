@@ -46,7 +46,7 @@ const ProductInfo: FC<productInfoProps> = ({ product, children }) => {
                </NutrientList>
             )}
             {features.volume !== 0 && features.volume && <p className="description bot">Объем: {features.volume}мл</p>}
-            {features.weight !== 0 && features.weight && <p className="description bot">Вес: {features.weight}гр</p>}
+            {features.weight !== 0 && features.weight && !features.volume && <p className="description bot">Вес: {features.weight}гр</p>}
          </div>
       </div>
    );

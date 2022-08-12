@@ -5,6 +5,7 @@ import { ValidationPipe } from "@nestjs/common";
 import { GetAppConfig } from "./packages/config/config";
 import { UserService } from "./core/user/user.service";
 import { Logger } from "nestjs-pino";
+import { HandleCors } from "./packages/cors/cors";
 
 async function bootstrap() {
    //Init config
@@ -19,10 +20,10 @@ async function bootstrap() {
    const userService: UserService = app.get<UserService>(UserService);
 
    app.setGlobalPrefix("/api");
-   const origins = ["http://localhost:80, http://localhost:3000", "http://localhost"];
    app.use(cookieParser());
    app.enableCors({
-      origin: origins,
+      origin: HandleCors,
+      methods: "GET,PUT,POST,DELETE,UPDATE,OPTIONS",
       credentials: true,
       allowedHeaders: ["Set-Cookie", "Content-type", "accept"]
    });

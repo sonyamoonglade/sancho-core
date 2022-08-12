@@ -1,0 +1,92 @@
+@import "src/./variables.scss";
+
+.top_item{
+  padding: 1rem;
+  border-radius: 5px;
+  position: relative;
+  background-color: $green-lighter;
+  margin-bottom: 0.6rem;
+  list-style: none;
+  transition: all 0.2s ease-in-out;
+  p{
+    white-space: nowrap;
+    font-family: "Geometria",sans-serif;
+    font-size: $font-mder;
+    cursor: default;
+  }
+}
+.top_item:hover{
+  opacity: .85;
+}
+
+.product_top{
+  padding: 3rem;
+  padding-top: 0;
+}
+.top_title{
+  font-family: "Geometria Bold",sans-serif;
+  font-size: $font-lg;
+  margin-bottom: 0.5rem;
+  margin-right: 2rem;
+  transform: translateY(-3px);
+}
+.aggregation_select{
+  outline: none;
+  padding: 0.2rem 0.5rem;
+  font-family: "Geometria",sans-serif;
+  font-size: $font-mder;
+  option{
+    font-family: "Geometria",sans-serif;
+
+  }
+}
+.product_heading{
+  background-color: $light-grey;
+  padding: 1rem;
+  margin-top: 1rem;
+  border-radius: 7px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.product_top_request_btn{
+  outline: none;
+  background-color: $sick-black;
+  font-family: "Geometria Medium",sans-serif;
+  font-size: $font-mder;
+  padding: 0.3rem 0.5rem;
+  border-radius: 7px;
+  color: $light-grey;
+  transition: all 0.05s ease;
+  cursor: pointer;
+  height:50px;
+}
+.product_top_request_btn:first-of-type{
+  margin-right: 1rem;
+}
+.product_top_request_btn:active{
+  transform: scale(.98);
+}
+
+.aggregation_select_container{
+  display: flex;
+  align-items: center;
+  p{
+    font-family: "Geometria Medium",san-serif;
+    font-size: $font-prelg;
+    margin-right: 1rem;
+  }
+}
+.top_exactq{
+  position: absolute;
+  color: white;
+  border-radius: 4px;
+  background-color: black;
+  padding: 0.3rem 0.4rem;
+  left: calc(-0.3rem - 65px);
+  top: 20%;
+}
+
+.product_top_list{
+  border-right: 1px solid $santa-grey;
+}

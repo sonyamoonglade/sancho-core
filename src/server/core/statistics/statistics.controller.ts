@@ -5,7 +5,7 @@ import { AuthorizationGuard } from "../authorization/authorization.guard";
 import { OrderService } from "../order/order.service";
 import { Response } from "express";
 import { Role } from "../../packages/decorators/role/Role";
-import { AggregationPreset, AppRoles, ProductTop } from "../../../common/types";
+import { AggregationPreset, AppRoles, ProductTop, ProductTopArray } from "../../../common/types";
 import { DateTransformPipe } from "../../packages/pipes/date-transform.pipe";
 import { AggregationValidationPipe } from "../../packages/pipes/aggregation-validation.pipe";
 import { QueryValidationInterceptor } from "./interceptor/query-validation.interceptor";
@@ -30,10 +30,9 @@ export class StatisticsController {
       try {
          const carts = await this.orderService.getOrderCartsInTerms(from, to, aggregation as AggregationPreset);
          const statisticsCarts = this.statisticsService.mapCartsForStatistics(carts);
-         const top: ProductTop = await this.statisticsService.generateProductTop(statisticsCarts);
-         const mapLikeObj = helpers.mapToObject(top);
+         const top: ProductTopArray = await this.statisticsService.generateProductTop(statisticsCarts);
          return res.json({
-            top: mapLikeObj
+            top
          });
       } catch (e) {
          this.logger.error(e);

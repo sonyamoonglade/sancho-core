@@ -1,7 +1,12 @@
 @import "src/./variables.scss";
+
+.admin_catalog{
+  display: grid;
+  grid-template-columns: 50% 50%;
+}
+
 .manipulator{
   padding-left: 1rem;
-  width: 50%;
 }
 .mp_card{
   list-style: none;
