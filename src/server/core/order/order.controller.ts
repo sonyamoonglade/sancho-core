@@ -254,7 +254,8 @@ export class OrderController {
          res.writeHead(200, {
             "Content-Type": "text/event-stream",
             Connection: "keep-alive",
-            "Cache-Control": "no-cache"
+            "Cache-Control": "no-cache",
+            "X-Accel-Buffering": "no"
          });
          //Log and end request properly
          res.on("close", () => {
