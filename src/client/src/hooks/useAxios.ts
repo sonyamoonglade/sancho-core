@@ -3,7 +3,7 @@ import { useAppDispatch, useAppSelector, userSelector, userSlice, workerActions 
 
 export let BACKEND_URL = "/api";
 if (process.env.NODE_ENV === "development") {
-   BACKEND_URL = "localhost:5000/api";
+   BACKEND_URL = "http://localhost:5000/api";
 }
 let instance: AxiosInstance;
 export function useAxios() {
