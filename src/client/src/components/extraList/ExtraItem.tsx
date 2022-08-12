@@ -37,7 +37,7 @@ const ExtraItem: FC<extraItemProps> = ({ product, updateCart }) => {
             <p className="item_name">{product.translate}</p>
          </div>
          <div className="item_bottom">
-            <p className="item_other">{product.features.volume !== undefined ? `${product.features.volume} мл.` : `${product.features.weight} г.`}</p>
+            <p className="item_other">{product.features.volume ? `${product.features.volume} мл.` : `${product.features.weight} г.`}</p>
             <p className="item_price">
                +{product.price} {currency}
             </p>

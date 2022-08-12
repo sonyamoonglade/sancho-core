@@ -94,7 +94,7 @@ const EditProductModal = () => {
                            <p>Доп.</p>
                            <section className="edit_nutrients">
                               {selectedProduct.features.volume !== 0 && <ModalNutrient value={state.volume} setValue={setState} name={"volume"} />}
-                              {selectedProduct.features.weight && <ModalNutrient value={state.weight} setValue={setState} name={"weight"} />}
+                              {selectedProduct.features.weight !== 0 && <ModalNutrient value={state.weight} setValue={setState} name={"weight"} />}
                            </section>
                         </>
                      )}

@@ -15,7 +15,7 @@ export class CookieService {
          httpOnly: true,
          secure: true,
          expires: afterTtl,
-         sameSite: "none"
+         sameSite: "strict"
       });
       return res;
    }
@@ -24,7 +24,7 @@ export class CookieService {
       res.cookie(CookieNames.SID, SID, {
          httpOnly: true,
          secure: true,
-         sameSite: "none",
+         sameSite: "strict",
          path: "/"
       });
       return res;
@@ -37,7 +37,7 @@ export class CookieService {
       res.cookie(CookieNames.SID, SID, {
          httpOnly: true,
          secure: true,
-         sameSite: "none",
+         sameSite: "strict",
          path: "/",
          expires: ttl
       });
@@ -48,7 +48,7 @@ export class CookieService {
       res.clearCookie(CookieNames.SID, {
          httpOnly: true,
          secure: true,
-         sameSite: "none",
+         sameSite: "strict",
          path: "/"
       });
    }
