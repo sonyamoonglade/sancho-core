@@ -19,10 +19,17 @@ async function bootstrap() {
    const userService: UserService = app.get<UserService>(UserService);
 
    app.setGlobalPrefix("/api");
-   const origins = ["http://localhost:80, http://localhost:3000", "http://localhost"];
+   const origins = ["localhost:3000", "localhost:80", "localhost:443", "http://localhost:3000", "http://localhost:80", "https://localhost:443"];
    app.use(cookieParser());
    app.enableCors({
-      origin: origins,
+      origin: (requestedOrigin, callback) => {
+         if (origins.indexOf(requestedOrigin) !== -1) {
+            callback(null, requestedOrigin);
+         } else {
+            callback(new Error("CORS"));
+         }
+      },
+      methods: "GET,PUT,POST,DELETE,UPDATE,OPTIONS",
       credentials: true,
       allowedHeaders: ["Set-Cookie", "Content-type", "accept"]
    });
