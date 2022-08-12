@@ -31,7 +31,7 @@ push-backend-local:
 
 
 build-backend-prod:
-	docker build -f ./docker/prod.Dockerfile -t sonyamoonglade/sancho-hub:backend-core-prod .
+	docker build -f ./docker/prod.Dockerfile -t sonyamoonglade/sancho-hub:backend-core-prod . && docker push sonyamoonglade/sancho-hub:backend-core-prod
 
 cp-env:
-	cp .env.prod ../../sancho-console/backend/
+	cp .env.prod ../../deployment/sancho/backend/

@@ -109,7 +109,7 @@ export class UserController {
       try {
          const SID = req.cookies[CookieNames.SID];
          await this.sessionService.destroySession(SID);
-         this.sessionService.clearSession(res);
+         this.cookieService.clearSessCookie(res);
          return res.status(200).end();
       } catch (e) {
          throw e;

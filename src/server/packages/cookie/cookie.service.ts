@@ -13,9 +13,9 @@ export class CookieService {
       const afterTtl = now.add(ttl, "minutes").toDate();
       res.cookie(CookieNames.cancelBan, false, {
          httpOnly: true,
-         secure: false,
+         secure: true,
          expires: afterTtl,
-         sameSite: "strict"
+         sameSite: "none"
       });
       return res;
    }
@@ -23,8 +23,8 @@ export class CookieService {
    setUserSessCookie(res: Response, SID: string): Response {
       res.cookie(CookieNames.SID, SID, {
          httpOnly: true,
-         secure: false,
-         sameSite: "strict",
+         secure: true,
+         sameSite: "none",
          path: "/"
       });
       return res;
@@ -36,11 +36,20 @@ export class CookieService {
 
       res.cookie(CookieNames.SID, SID, {
          httpOnly: true,
-         secure: false,
-         sameSite: "strict",
+         secure: true,
+         sameSite: "none",
          path: "/",
          expires: ttl
       });
       return res;
+   }
+
+   public clearSessCookie(res: Response): void {
+      res.clearCookie(CookieNames.SID, {
+         httpOnly: true,
+         secure: true,
+         sameSite: "none",
+         path: "/"
+      });
    }
 }
