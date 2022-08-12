@@ -1,10 +1,17 @@
 import { parentPort, workerData } from "worker_threads";
-import { ProductTop, StatisticCart } from "../../../common/types";
+import { ProductTop, ProductTopArray, StatisticCart } from "../../../common/types";
+import { log } from "util";
 
 const carts: StatisticCart[] = workerData;
 const top: ProductTop = new Map<string, number>();
+const topArr: ProductTopArray = [];
+//Calculate how many product total ( to later count %'s)
+let totalProductAmount: number = 0;
+
 for (const cart of carts) {
    for (const product of cart) {
+      totalProductAmount += product.quantity;
+      //Fill the Map first because it has O(1) get element time
       const ok = top.has(product.translate);
       if (!ok) {
          top.set(product.translate, product.quantity);
@@ -16,5 +23,12 @@ for (const cart of carts) {
       top.set(product.translate, v + product.quantity);
    }
 }
+//Iterate over ["mozarella",25] ... in the map
+for (const [tr, q] of Array.from(top.entries())) {
+   topArr.push({
+      translate: tr,
+      percent: Math.ceil(q / (totalProductAmount === 0 ? totalProductAmount : 1)) // Make sure to not divide by zero
+   });
+}
 
-parentPort.postMessage(top);
+parentPort.postMessage(topArr);

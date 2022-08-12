@@ -150,3 +150,10 @@ export type StatisticProduct = {
 export type StatisticCart = StatisticProduct[];
 
 export type ProductTop = Map<string, number>;
+
+export type TopProduct = {
+   translate: string;
+   percent: number;
+};
+
+export type ProductTopArray = TopProduct[];

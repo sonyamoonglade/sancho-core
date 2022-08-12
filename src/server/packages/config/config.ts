@@ -27,6 +27,7 @@ export type AppConfig = {
       databasePassword: string;
       deliveryServiceURL: string;
       hashSecret: string;
+      nodeEnv: string;
    };
    yandex: {
       storageUrl: string;
@@ -50,7 +51,8 @@ export function GetAppConfig(): AppConfig {
       deliveryServiceURL: process.env.DELIVERY_SERVICE_URL,
       superAdminLogin: process.env.SUPERADMIN_LOGIN,
       superAdminPassword: process.env.SUPERADMIN_PASSWORD,
-      hashSecret: process.env.HASH_SECRET
+      hashSecret: process.env.HASH_SECRET,
+      nodeEnv: process.env.NODE_ENV
    };
 
    instance = config;
