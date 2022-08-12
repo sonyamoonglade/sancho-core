@@ -1,11 +1,10 @@
 import axios, { AxiosError, AxiosInstance } from "axios";
 import { useAppDispatch, useAppSelector, userSelector, userSlice, workerActions } from "../redux";
 
-let BACKEND_URL = "/api";
-if (process.env.NODE_ENV === "production") {
-   BACKEND_URL = "/api";
+export let BACKEND_URL = "/api";
+if (process.env.NODE_ENV === "development") {
+   BACKEND_URL = "http://localhost:5000/api";
 }
-console.log(BACKEND_URL, "backend url");
 let instance: AxiosInstance;
 export function useAxios() {
    const userActions = userSlice.actions;

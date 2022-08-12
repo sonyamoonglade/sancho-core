@@ -2,6 +2,7 @@ import { AppDispatch } from "../store";
 import { AxiosInstance } from "axios";
 import { workerActions } from "./worker.slice";
 import { ListResponse, OrderStatus } from "../../common/types";
+import { BACKEND_URL } from "../../hooks/useAxios";
 
 export const getInitialQueue = (client: AxiosInstance) => async (dispatch: AppDispatch) => {
    try {
@@ -15,8 +16,7 @@ export const getInitialQueue = (client: AxiosInstance) => async (dispatch: AppDi
 export const startEventSourcingForQueue = () => async (dispatch: AppDispatch) => {
    let s: EventSource;
    try {
-      const url = process.env.NODE_ENV === "production" ? "/api" : process.env.REACT_APP_BACKEND_URL;
-      s = new EventSource(`${url}/order/queue`, {
+      s = new EventSource(`${BACKEND_URL}/order/queue`, {
          withCredentials: true
       });
       s.onmessage = function (event) {
