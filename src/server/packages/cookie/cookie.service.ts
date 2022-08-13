@@ -21,18 +21,21 @@ export class CookieService {
    }
 
    setUserSessCookie(res: Response, SID: string): Response {
+      const now = dayjs();
+      const afterTtl = now.add(12, "month").toDate();
       res.cookie(CookieNames.SID, SID, {
          httpOnly: true,
          secure: true,
          sameSite: "strict",
-         path: "/"
+         path: "/",
+         expires: afterTtl
       });
       return res;
    }
 
    setMasterSessCookie(res: Response, SID: string): Response {
       const now = dayjs();
-      const ttl = now.add(1, "day").toDate(); //24h
+      const ttl = now.add(1, "d").toDate(); //24h
 
       res.cookie(CookieNames.SID, SID, {
          httpOnly: true,
@@ -49,7 +52,8 @@ export class CookieService {
          httpOnly: true,
          secure: true,
          sameSite: "strict",
-         path: "/"
+         path: "/",
+         expires: new Date(0)
       });
    }
 }

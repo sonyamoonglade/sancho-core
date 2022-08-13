@@ -19,7 +19,7 @@ import {
    OrderStatus,
    ResponseUserOrder,
    VerifiedQueueOrder,
-   WaitingQueueOrder,
+   WaitingQueueOrder
 } from "../../../common/types";
 import { CompleteOrderDto } from "./dto/complete-order.dto";
 import { UnexpectedServerError } from "../../packages/exceptions/unexpected-errors.exceptions";
@@ -27,7 +27,7 @@ import {
    CancelExplanationHasNotBeenProvided,
    InvalidOrderStatus,
    OrderCannotBeCompleted,
-   OrderDoesNotExist,
+   OrderDoesNotExist
 } from "../../packages/exceptions/order.exceptions";
 import { Events } from "../../packages/event/events";
 import { MiscService } from "../miscellaneous/misc.service";
@@ -239,14 +239,21 @@ export class OrderService {
    }
 
    public async notifyQueueSubscribers(connections: Response[]): Promise<void> {
-      const queue = await this.fetchOrderQueue();
-      const chunk = `data: ${JSON.stringify({ queue })}\n\n`;
+      //First get list of writable connections
+      const fconns = connections.filter((conn) => conn.writable);
 
-      connections
-         .filter((conn) => conn.writable)
-         .forEach((conn) => {
+      //If none of workers is connected - do not do anything
+      if (fconns.length === 0) {
+         return;
+      } else {
+         //Only after fetch the queue
+         const queue = await this.fetchOrderQueue();
+         const chunk = `data: ${JSON.stringify({ queue })}\n\n`;
+         fconns.forEach((conn) => {
             conn.write(chunk);
          });
+      }
+
       return;
    }
 

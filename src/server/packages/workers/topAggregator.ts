@@ -22,7 +22,7 @@ for (const cart of carts) {
       top.set(product.translate, v + product.quantity);
    }
 }
-//Iterate over ["mozarella",25]... in the map
+//Iterate over ["mozarella",25]... in the map and Sort descending
 for (const [tr, q] of Array.from(top.entries()).sort(([_, q1], [__, q2]) => q2 - q1)) {
    topArr.push({
       translate: tr,

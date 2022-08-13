@@ -143,10 +143,11 @@
 .autocomplete{
   box-shadow: 0 0 5px $black-50;
   border-radius: 7px;
-  z-index: 4000;
+  z-index: 5000;
   cursor: pointer;
   padding: 0.5rem;
   position: absolute;
+
   background-color: $light-grey;
   p{
     font-family: "Geometria",sans-serif;
@@ -163,7 +164,7 @@
 
 .autocomplete.floor{
   right: 3rem;
-  bottom: 26%;
+  bottom: 35%;
   @media (min-width: 1440px) {
     bottom: 30%;
     right: 8.3rem;
@@ -171,7 +172,7 @@
 }
 .autocomplete.flat_call{
   right: 45%;
-  bottom: 26%;
+  bottom: 35%;
   @media (min-width: 1440px) {
     bottom: 30%;
     right: 48%;
@@ -179,7 +180,7 @@
 }
 .autocomplete.entrance_number{
   left: 4rem;
-  bottom: 26%;
+  bottom: 35%;
   @media (min-width: 1440px) {
     bottom: 30%;
     left: 8rem;
