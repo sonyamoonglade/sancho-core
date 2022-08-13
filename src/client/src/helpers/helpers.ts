@@ -1,5 +1,5 @@
 import { DatabaseCartProduct, OrderQueue, VerifiedQueueOrder, WaitingQueueOrder } from "../common/types";
-
+import dayjs from "dayjs";
 export const helpers = {
    sixifyOrderId: function (orderId: number): string {
       let currentId: string[] = orderId.toString().split("");
@@ -38,5 +38,10 @@ export const helpers = {
          a += c.price * c.quantity;
          return a;
       }, 0);
+   },
+
+   getYearTtl(): Date {
+      const now = dayjs.tz(dayjs(), "UTC");
+      return now.add(1, "year").toDate();
    }
 };
