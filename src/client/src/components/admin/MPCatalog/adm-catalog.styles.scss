@@ -10,7 +10,7 @@
 }
 .mp_card{
   list-style: none;
-  margin-bottom: 2rem;
+  margin-bottom: 1.5rem;
   padding: 1rem;
   min-width: 750px;
   display: flex;
@@ -19,7 +19,9 @@
   width: 100%;
   transition: all 0.1s ease-in-out;
   border: 1px solid $gray-promo
-
+}
+.mp_card:first-of-type{
+  margin-bottom: 1rem;
 }
 .mp_card:hover{
   background-color: $light-grey-50;
