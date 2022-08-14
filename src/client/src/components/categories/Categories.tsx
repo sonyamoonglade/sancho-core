@@ -47,7 +47,7 @@ const Categories = () => {
 
    return (
       <div className="categories" ref={categRef}>
-         {list?.map((c, i) => (
+         {list?.map((c) => (
             <div onClick={() => activate(c.value)} key={c.value} className={c.active ? "category_item --category-active" : "category_item"}>
                <p>{c.value}</p>
             </div>

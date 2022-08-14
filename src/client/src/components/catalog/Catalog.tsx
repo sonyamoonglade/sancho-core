@@ -10,22 +10,11 @@ interface catalogProps {
 }
 
 const Catalog: FC<catalogProps> = ({ productList }) => {
-   function attachCategoryId(p: Product, i: number): string {
+   //Attach #id DOM prop
+   function attachCategoryIdTag(p: Product, i: number): string {
       if (i === 0) {
          return p.category;
       }
-
-      const categCount = productList.reduce((a: number, c: Product, i: number) => {
-         const currCateg = c.category;
-         let nextCateg: string;
-         if (i !== productList.length - 1) {
-            nextCateg = productList[i + 1]?.category;
-         }
-         if (currCateg !== nextCateg) {
-            a += 1;
-         }
-         return a;
-      }, 0);
 
       if (productList[i].category !== productList[i - 1].category) {
          return productList[i].category;
@@ -39,7 +28,7 @@ const Catalog: FC<catalogProps> = ({ productList }) => {
    return (
       <div ref={catalogRef} className="catalog">
          {productList.map((p, i) => {
-            const category = attachCategoryId(p, i);
+            const category = attachCategoryIdTag(p, i);
 
             if (category) {
                return <ProductCard id={category} product={p} key={p.id} />;

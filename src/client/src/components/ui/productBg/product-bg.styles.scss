@@ -33,11 +33,13 @@
   display: block;
   top: calc(30px + 2rem);
   width: 100%;
-  @media (max-width: 1440px) {
-    height: calc(90vw/95 * 73 + .1rem);
+  height: calc(90vw/95 * 73);
+  @media (min-width: 1440px) {
+    height: calc((500px/95 * 73));
+  }
+  @media (max-height: 768px) {
+    height: calc((470px/95 * 73));
 
   }
-  @media (min-width: 1440px) {
-    height: calc((500px/95 * 73) + .1rem);
-  }
+
 }

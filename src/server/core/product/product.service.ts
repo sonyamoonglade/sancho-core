@@ -1,15 +1,17 @@
 import { Injectable } from "@nestjs/common";
 import { CreateProductDto } from "./dto/create-product.dto";
-import { FrontendProduct, Product } from "../entities/Product";
+import { FrontendProduct, Product, products } from "../entities/Product";
 import { Categories, Features } from "../../../common/types";
 import {
-  InvalidCategoryException,
-  ProductAlreadyExistsException,
-  ProductCantBeApproved,
-  ProductDoesNotExistException,
+   InvalidCategoryException,
+   ProductAlreadyExistsException,
+   ProductCantBeApproved,
+   ProductDoesNotExistException
 } from "../../packages/exceptions/product.exceptions";
 import { ValidationErrorException } from "../../packages/exceptions/validation.exceptions";
 import { ProductRepository } from "./product.repository";
+import { CategoryService } from "../category/category.service";
+import { categories } from "../entities/Category";
 
 export interface ProductRepositoryInterface {
    searchQuery(words: string[]): Promise<Product[]>;
@@ -18,14 +20,14 @@ export interface ProductRepositoryInterface {
    update(id: number, updated: Partial<Product>): Promise<number>;
    getById(id: number): Promise<Product>;
    getAll(): Promise<Product[]>;
-   getCatalog(): Promise<Product[]>;
+   getCatalog(): Promise<FrontendProduct[]>;
    getProductsByIds(productIds: number[]): Promise<Product[]>;
    approveProduct(productId: number): Promise<boolean>;
 }
 
 @Injectable()
 export class ProductService {
-   constructor(private productRepository: ProductRepository) {}
+   constructor(private productRepository: ProductRepository, private categoryService: CategoryService) {}
 
    async query(q: string): Promise<Product[]> {
       if (q.trim().length === 0) {
@@ -37,14 +39,16 @@ export class ProductService {
    async createProduct(createProductDto: CreateProductDto): Promise<number> {
       const { name, category } = createProductDto;
 
-      const cs = this.getCategories();
-      if (!cs.includes(category)) {
+      const categs = await this.categoryService.getAll();
+      //Check whether some category exists with such name
+      const ok = categs.some((categ) => categ.name === name);
+      if (!ok) {
          throw new InvalidCategoryException(category);
       }
 
       createProductDto.features = JSON.stringify(createProductDto.features) as unknown as Features;
       const productId = await this.productRepository.create(createProductDto);
-      // conflict occurred
+      // Insert conflict occurred
       if (productId === 0) {
          throw new ProductAlreadyExistsException(name);
       }
@@ -57,6 +61,9 @@ export class ProductService {
       }
       return;
    }
+   async productCountByCategory(name: string): Promise<number> {
+      return this.productRepository.productCountByCategory(name);
+   }
    async deleteProduct(id: number): Promise<number> {
       const productId = await this.productRepository.delete(id);
       if (productId === 0) {
@@ -65,52 +72,17 @@ export class ProductService {
       return productId;
    }
    async getAll(): Promise<Product[]> {
-      const all = await this.productRepository.getAll();
-      return all.map((p) => {
-         return { ...p, features: JSON.parse(p.features as string) };
-      });
+      return this.productRepository.getAll();
    }
-   async getCatalog(): Promise<Product[]> {
-      const products = await this.productRepository.getCatalog();
-      const mapped = this.mapToFrontendProduct(products);
-      return this.sortByCategory(mapped);
+   async getCatalog(): Promise<FrontendProduct[]> {
+      return this.productRepository.getCatalog();
    }
-   mapToFrontendProduct(toMap: Product[]): FrontendProduct[] {
-      return toMap.map((p) => {
-         return {
-            id: p.id,
-            price: p.price,
-            description: p.description,
-            features: this.parseJSONFeatures(p.features as string), // from db it's a string
-            translate: p.translate,
-            category: p.category,
-            name: p.name,
-            image_url: p.image_url
-         };
-      });
-   }
+
    async approveProduct(productId: number): Promise<void> {
       const ok = await this.productRepository.approveProduct(productId);
       if (!ok) {
          throw new ProductCantBeApproved(productId);
       }
       return;
-   }
-
-   getCategories(): string[] {
-      return Object.values(Categories);
-   }
-
-   parseJSONFeatures(features: string): Features {
-      return JSON.parse(features);
-   }
-
-   sortByCategory(unsorted: Product[]): Product[] {
-      //todo: filter by rank
-      const pizza = unsorted.filter((p) => p.category === Categories.PIZZA);
-      const drinks = unsorted.filter((p) => p.category === Categories.DRINKS);
-      const desserts = unsorted.filter((p) => p.category === Categories.DESSERT);
-      const sushi = unsorted.filter((p) => p.category === Categories.SUSHI);
-      return [...pizza, ...drinks, ...desserts, ...sushi];
    }
 }

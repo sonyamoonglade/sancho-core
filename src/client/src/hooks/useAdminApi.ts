@@ -1,6 +1,6 @@
 import { useAxios } from "./useAxios";
 import { useCallback } from "react";
-import { AdminProduct } from "../types/types";
+import { AdminProduct, Category } from "../types/types";
 import { EditFormValues } from "../components/admin/productModal/edit/hooks/useEditProductModalForm";
 import { CreateFormValues } from "../components/admin/productModal/create/hooks/useCreateProductModalForm";
 import { AggregationPreset, ProductTopArray } from "../common/types";
@@ -10,7 +10,7 @@ interface AdminCatalogResponse {
 }
 
 interface AdminCategoriesResponse {
-   categories: string[];
+   categories: Category[];
 }
 
 interface ProductTopResponse {
@@ -64,8 +64,8 @@ export function useAdminApi() {
    );
 
    const getAvailableCategories = useCallback(
-      async function (): Promise<string[]> {
-         const url = `/product/admin/categories`;
+      async function (): Promise<Category[]> {
+         const url = `/admin/category/`;
          const { data } = await client.get<AdminCategoriesResponse>(url);
          return data.categories;
       },
@@ -99,5 +99,53 @@ export function useAdminApi() {
       [client]
    );
 
-   return { fetchAdminCatalog, approveProduct, uploadImage, updateProduct, getAvailableCategories, createProduct, deleteProduct, getProductTop };
+   const rankUp = useCallback(
+      async function (name: string): Promise<Category[]> {
+         const url = `/admin/category/rankup?name=${name}`;
+         const res = await client.put<AdminCategoriesResponse>(url);
+         return res.data.categories;
+      },
+      [client]
+   );
+   const rankDown = useCallback(
+      async function (name: string): Promise<Category[]> {
+         const url = `/admin/category/rankdown?name=${name}`;
+         const res = await client.put<AdminCategoriesResponse>(url);
+         return res.data.categories;
+      },
+      [client]
+   );
+
+   const createCategory = useCallback(
+      async function (name: string): Promise<Category[]> {
+         const url = `/admin/category/`;
+         const res = await client.post<AdminCategoriesResponse>(url, { name });
+         return res.data.categories;
+      },
+      [client]
+   );
+
+   const deleteCategory = useCallback(
+      async function (name: string): Promise<Category[]> {
+         const url = `/admin/category/${name}`;
+         const res = await client.delete<AdminCategoriesResponse>(url);
+         return res.data.categories;
+      },
+      [client]
+   );
+
+   return {
+      fetchAdminCatalog,
+      approveProduct,
+      uploadImage,
+      updateProduct,
+      getAvailableCategories,
+      createProduct,
+      deleteProduct,
+      getProductTop,
+      rankUp,
+      rankDown,
+      deleteCategory,
+      createCategory
+   };
 }

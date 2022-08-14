@@ -12,12 +12,10 @@
   top: 68px;
   margin-left: 1.4rem;
   margin-top: 1.5rem;
-
   @media (min-width: 1440px) {
     margin-top: 3.2rem;
     top: 88px;
   }
-
   @media (min-width: 1540px) {
     flex-direction: column;
     position: fixed;
@@ -26,9 +24,9 @@
     right: calc((9% - 100px)/2);
     align-items: flex-start;
   }
-
-
-
+}
+.categories::-webkit-scrollbar{
+  display: none;
 }
 
 .category_item{
@@ -41,12 +39,9 @@
     font-family: "Geometria",sans-serif;
     font-size: $font-regular;
     user-select: none;
-
-
   }
   @media (min-width: 1540px) {
     margin-bottom: 0.7rem;
-
     width: 120px;
     margin-right: 0;
     p{

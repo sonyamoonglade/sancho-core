@@ -18,6 +18,7 @@
 .price{
   font-size: $font-lg;
   font-weight: 600;
+  user-select: none;
   padding-top: 0.2rem;
   @media (min-width: 768px) {
     padding-top: 0;
@@ -30,6 +31,7 @@
   color: $gray_promo;
   font-size: $font-md;
   font-weight: 400;
+  user-select: none;
 }
 
 .name{
@@ -151,7 +153,6 @@
 }
 
 .start-presentation_btn{
-  cursor: pointer;
   position: absolute;
   bottom: 6%;
   right: 4%;
@@ -162,6 +163,10 @@
   border-radius: 50%;
   height: 40px;
   width: 40px;
+  @media (min-width: 1440px) {
+    cursor: pointer;
+
+  }
 }
 
 .add_btn_plus_icon{

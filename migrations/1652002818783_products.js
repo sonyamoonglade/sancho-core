@@ -8,9 +8,10 @@ exports.up = (pgm) => {
          type: "id",
          autoIncrement: true
       },
-      category: {
-         type: "varchar(100)",
-         notNull: true
+      category_id: {
+         type: "integer",
+         notNull: true,
+         references: '"category"'
       },
       features: {
          type: "varchar(1000)",

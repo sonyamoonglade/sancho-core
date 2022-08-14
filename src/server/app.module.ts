@@ -27,9 +27,21 @@ import { ImageStorageService } from "./packages/imageStorage/image_storage.servi
 import { LambdaRouter } from "./packages/lambdaRouter/lambdaRouter";
 import { StatisticsController } from "./core/statistics/statistics.controller";
 import { StatisticsService } from "./core/statistics/statistics.service";
+import { CategoryService } from "./core/category/category.service";
+import { CategoryRepository } from "./core/category/category.repository";
+import { CategoryController } from "./core/category/category.controller";
 
 @Module({
-   controllers: [AppController, UserController, OrderController, ProductController, MiscController, DeliveryController, StatisticsController],
+   controllers: [
+      AppController,
+      UserController,
+      OrderController,
+      ProductController,
+      MiscController,
+      DeliveryController,
+      StatisticsController,
+      CategoryController
+   ],
    providers: [
       SessionMiddleware,
       SessionService,
@@ -48,7 +60,9 @@ import { StatisticsService } from "./core/statistics/statistics.service";
       DeliveryService,
       EventsService,
       LambdaRouter,
-      StatisticsService
+      StatisticsService,
+      CategoryService,
+      CategoryRepository
    ],
    imports: [
       DbModule,
@@ -84,6 +98,6 @@ export class AppModule implements NestModule {
                method: RequestMethod.GET
             }
          )
-         .forRoutes(UserController, ProductController, OrderController, MiscController, DeliveryController, StatisticsController);
+         .forRoutes(UserController, ProductController, OrderController, MiscController, DeliveryController, StatisticsController, CategoryController);
    }
 }

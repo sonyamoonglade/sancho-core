@@ -5,6 +5,8 @@ import EditProductModal from "../../components/admin/productModal/edit/EditProdu
 import CreateProductModal from "../../components/admin/productModal/create/CreateProductModal";
 import DeleteModal from "../../components/admin/deleteModal/DeleteModal";
 import ProductTop from "../../components/admin/productTop/ProductTop";
+import CategoryManagerProductModal from "../../components/admin/productModal/categoryManager/CategoryManagerProductModal";
+import Error from "../../components/worker/error/Error";
 
 const Catalog = () => {
    return (
@@ -14,6 +16,8 @@ const Catalog = () => {
          <EditProductModal />
          <CreateProductModal />
          <DeleteModal />
+         <CategoryManagerProductModal />
+         <Error />
       </div>
    );
 };

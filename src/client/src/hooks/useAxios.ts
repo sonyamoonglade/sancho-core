@@ -8,7 +8,7 @@ if (process.env.NODE_ENV === "development") {
 let instance: AxiosInstance;
 export function useAxios() {
    const userActions = userSlice.actions;
-   const { isWorkerAuthenticated } = useAppSelector(userSelector);
+   const { isWorkerAuthenticated, isMasterAuthenticated } = useAppSelector(userSelector);
    const dispatch = useAppDispatch();
    if (instance !== undefined) {
       return instance;
@@ -35,7 +35,7 @@ export function useAxios() {
          //read json
          errMSg = JSON.parse(text).message;
       }
-      if (isWorkerAuthenticated) {
+      if (isWorkerAuthenticated || isMasterAuthenticated) {
          dispatch(workerActions.setError(errMSg));
          dispatch(workerActions.toggleErrorModal(true));
       }
