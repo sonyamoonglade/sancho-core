@@ -78,7 +78,6 @@ export class ProductRepository implements ProductRepositoryInterface {
       }
       return 0;
    }
-   //todo: return frontend product without mapping
    async getCatalog(): Promise<FrontendProduct[]> {
       const sql = `
         SELECT p.id, c.name as category, p.features, p.name, p.image_url, p.translate, p.price, p.description 
@@ -89,6 +88,12 @@ export class ProductRepository implements ProductRepositoryInterface {
       return rows.map((product) => {
          return { ...product, features: JSON.parse(product.features) };
       });
+   }
+   async productCountByCategory(name: string): Promise<number> {
+      const sql = `SELECT p.id FROM ${products} p JOIN ${categories} c on p.category_id = c.category_id WHERE c.name = $1`;
+      const v = [name];
+      const { rows } = await this.db.query(sql, v);
+      return rows.length;
    }
    async getProductsByIds(productIds: number[]): Promise<Product[]> {
       const key = "id";

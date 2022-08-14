@@ -40,3 +40,9 @@ export class CategoryHasTopRank extends HttpException {
       super(`Категория ${name} на 1 месте, ошибка поднятия rank`, HttpStatus.BAD_REQUEST);
    }
 }
+
+export class CategoryIsNotEmpty extends HttpException {
+   constructor(name: string, count: number) {
+      super(`Категория ${name} не пустая. Для начала, удалите ${count} товаров(ов).`, HttpStatus.BAD_REQUEST);
+   }
+}

@@ -39,12 +39,12 @@ export class CategoryRepository {
       await this.db.query(sql, v);
    }
    public async getAll(): Promise<Category[]> {
-      const sql = `SELECT * FROM ${categories}`;
+      const sql = `SELECT * FROM ${categories} ORDER BY rank DESC`;
       const { rows } = await this.db.query(sql);
       return rows;
    }
    public async getCategNamesSorted(): Promise<string[]> {
-      const sql = `SELECT c.name as name FROM ${categories} c ORDER BY c.rank DESC`;
+      const sql = `SELECT c.name FROM ${categories} c ORDER BY c.rank DESC`;
       const { rows } = await this.db.query(sql);
       return rows.map((c) => c.name);
    }

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { CreateProductDto } from "./dto/create-product.dto";
-import { FrontendProduct, Product } from "../entities/Product";
+import { FrontendProduct, Product, products } from "../entities/Product";
 import { Categories, Features } from "../../../common/types";
 import {
    InvalidCategoryException,
@@ -11,6 +11,7 @@ import {
 import { ValidationErrorException } from "../../packages/exceptions/validation.exceptions";
 import { ProductRepository } from "./product.repository";
 import { CategoryService } from "../category/category.service";
+import { categories } from "../entities/Category";
 
 export interface ProductRepositoryInterface {
    searchQuery(words: string[]): Promise<Product[]>;
@@ -59,6 +60,9 @@ export class ProductService {
          throw new ProductDoesNotExistException(id);
       }
       return;
+   }
+   async productCountByCategory(name: string): Promise<number> {
+      return this.productRepository.productCountByCategory(name);
    }
    async deleteProduct(id: number): Promise<number> {
       const productId = await this.productRepository.delete(id);

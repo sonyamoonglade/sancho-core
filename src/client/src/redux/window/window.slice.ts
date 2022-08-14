@@ -33,6 +33,7 @@ interface WindowState {
       edit: boolean;
       create: boolean;
       delete: boolean;
+      categoryManager: boolean;
    };
 
    drag: {
@@ -71,7 +72,8 @@ const initialState: WindowState = {
    admin: {
       edit: false,
       delete: false,
-      create: false
+      create: false,
+      categoryManager: false
    },
    drag: {
       dropzone: "",
@@ -87,6 +89,9 @@ export const windowSlice = createSlice({
    initialState,
    name: "window",
    reducers: {
+      toggleCategoryManager: function (s, a?: PayloadAction<boolean>) {
+         s.admin.categoryManager = a?.payload || !s.admin.categoryManager;
+      },
       toggleEditModal: function (s, a?: PayloadAction<boolean>) {
          s.admin.edit = a?.payload || !s.admin.edit;
       },
@@ -265,9 +270,10 @@ export const windowSlice = createSlice({
          s.admin.delete = a?.payload || !s.admin.delete;
       },
       closeAllAdmin: function (s) {
-         s.admin.edit = false;
-         s.admin.create = false;
-         s.admin.delete = false;
+         Object.keys(s.admin).forEach((key) => {
+            //@ts-ignore
+            s.admin[key] = false;
+         });
       }
    }
 });

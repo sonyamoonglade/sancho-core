@@ -7,6 +7,7 @@ import { AdminProduct } from "../../../types/types";
 import { useEvents } from "../../../hooks/useEvents";
 import { Events } from "../../../events/Events";
 import { adminActions, useAppDispatch, windowActions } from "../../../redux";
+import { BiCategoryAlt } from "react-icons/bi";
 
 const CatalogManipulator = () => {
    const [products, setProducts] = useState<AdminProduct[]>([]);
@@ -50,6 +51,9 @@ const CatalogManipulator = () => {
    function handleToggleCreate() {
       dispatch(windowActions.toggleCreateModal());
    }
+   function handleToggleCategoryManage() {
+      dispatch(windowActions.toggleCategoryManager());
+   }
 
    return (
       <ul className="manipulator">
@@ -57,6 +61,12 @@ const CatalogManipulator = () => {
             <div className="mp_add">
                <p className="mp_title">Добавить новую позицию</p>
                <IoIosAddCircleOutline onClick={handleToggleCreate} size={35} />
+            </div>
+         </li>{" "}
+         <li className="mp_card">
+            <div className="mp_add">
+               <p className="mp_title">Управление категориями</p>
+               <BiCategoryAlt onClick={handleToggleCategoryManage} size={35} />
             </div>
          </li>
          {products?.map((p) => (

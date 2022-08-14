@@ -10,9 +10,10 @@ interface RectangleInputProps {
    extraClass?: string;
    width?: number;
    maxLength?: number;
+   placeholder?: string;
 }
 
-const RectangleInput: FC<RectangleInputProps> = ({ value, setValue, disabled, regexp, name, extraClass, width, maxLength }) => {
+const RectangleInput: FC<RectangleInputProps> = ({ value, setValue, disabled, regexp, name, extraClass, width, maxLength, placeholder }) => {
    return (
       <input
          style={width && { width }}
@@ -23,6 +24,7 @@ const RectangleInput: FC<RectangleInputProps> = ({ value, setValue, disabled, re
          disabled={disabled}
          className={`rectangle_input ${extraClass || ""}`}
          value={value}
+         placeholder={placeholder ? placeholder : ""}
          onChange={(e) => {
             const v = e.target.value;
             setValue((state: any) => {

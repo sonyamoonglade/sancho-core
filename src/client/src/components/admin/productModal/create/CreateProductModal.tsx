@@ -20,7 +20,7 @@ const CreateProductModal = () => {
 
    useEffect(() => {
       if (admin.create) {
-         getAvailableCategories().then((categs) => setCategs(categs));
+         getAvailableCategories().then((categs) => setCategs(categs.map((c) => c.name)));
       } else {
          setCategs([]);
          setFormDefaults();

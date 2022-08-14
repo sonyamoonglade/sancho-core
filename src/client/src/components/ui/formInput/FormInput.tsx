@@ -61,7 +61,7 @@ const FormInput: FC<formInputProps> = (props) => {
             onBlur={(e) => {
                setTimeout(() => {
                   events.emit(`blur_${name}`);
-               }, 150);
+               }, 230);
                if (v.trim().length < minLength || v.trim().length === 0) {
                   setV((state: any) => {
                      const obj: { value: string; isValid: boolean } = {

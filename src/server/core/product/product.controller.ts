@@ -152,17 +152,6 @@ export class ProductController {
       }
    }
 
-   @Get("/admin/category")
-   @Role([AppRoles.master])
-   async adminCategories(@Res() res: Response) {
-      try {
-         const categories = this.categoryService.getCategNamesSorted();
-         return res.status(200).json({ categories });
-      } catch (e) {
-         throw e;
-      }
-   }
-
    @Put("/admin/approve")
    @Role([AppRoles.master])
    async approveProduct(@Res() res: Response, @Query("v", ParseIntPipe) productId: number) {

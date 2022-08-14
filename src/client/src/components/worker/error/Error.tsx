@@ -26,7 +26,7 @@ const Error = () => {
          }, second * 5);
       }
       return () => clearTimeout(t);
-   }, [error.modal]);
+   }, [dispatch, error.modal]);
 
    return (
       <div onClick={() => closeErrorWindow()} className={error.modal ? "err --err-active" : "err"}>
