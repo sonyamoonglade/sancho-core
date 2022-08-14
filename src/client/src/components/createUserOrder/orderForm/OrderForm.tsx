@@ -169,7 +169,7 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
                   maxLength={2}
                   minLength={1}
                   extraClassName={`${isDeliveryFormDisabledExpr}entrance_number_input`}
-                  Regexp={new RegExp("[A-Za-z]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
+                  Regexp={new RegExp("[A-Za-z]|[А-Яа-я]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
                   fieldValidationFn={minLengthValidation}
                />
                {delivery_details && autoComplete["entrance_number"] && (
@@ -188,7 +188,7 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
                   maxLength={3}
                   minLength={1}
                   extraClassName={`${isDeliveryFormDisabledExpr}flat_call_input`}
-                  Regexp={new RegExp("[A-Za-z]")}
+                  Regexp={new RegExp("[A-Za-z]|[А-Яа-я]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
                   fieldValidationFn={minLengthValidation}
                />
                {delivery_details && autoComplete["flat_call"] && (
@@ -207,7 +207,7 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
                   maxLength={2}
                   minLength={1}
                   extraClassName={`${isDeliveryFormDisabledExpr}floor_input`}
-                  Regexp={new RegExp("[A-Za-z]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
+                  Regexp={new RegExp("[A-Za-z]|[А-Яа-я]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
                   fieldValidationFn={minLengthValidation}
                />
                {delivery_details && autoComplete["floor"] && (
@@ -252,7 +252,7 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
                onBlurValue={"+7"}
                maxLength={10}
                fieldValidationFn={validatePhoneNumber}
-               Regexp={new RegExp("!?[A-Za-z]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
+               Regexp={new RegExp("!?[A-Za-z]|[А-Яа-я]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
                extraClassName={"phone_number_input"}
                minLength={10}
             />

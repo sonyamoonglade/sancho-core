@@ -117,7 +117,7 @@
   @media (min-width: 1440px) {
     height: 4.5rem;
   }
-  //up to 1440px mw 800px
+  //up to 1440px mw 650px
   @media (max-width: 1440px) {
     max-width: 650px;
   }
@@ -125,6 +125,9 @@
 .add_to_cart_text {
   transform: translateX(3px);
   cursor: pointer;
+  @media (max-width: 360px) {
+    font-size: $font-smer;
+  }
   @media (min-width: 1440px) {
     font-size: $font-mder;
   }
@@ -133,13 +136,13 @@
 .image.presentation{
   width: 90vw !important;
   margin: 0 auto;
-  //@media (max-width: 720px) {
-  //  max-width: 450px;
-  //}
+  max-width: 500px;
   @media (max-height: 620px) {
     max-width: 380px;
   }
-  max-width: 500px;
+  @media (max-height: 768px) {
+    max-width: 470px;
+  }
 }
 
 
@@ -148,6 +151,9 @@
   font-weight: 500;
 
   text-align: right;
+  @media (max-width: 350px) {
+    font-size: $font-smer !important;
+  }
   @media (min-height: 650px) {
     font-size: $font-md;
   }
@@ -162,12 +168,14 @@
   }
   @media (min-width: 1440px) {
     font-size: $font-mder;
+    width: 85px;
   }
 }
 
 .add_to_cart_icon{
   @media (min-width: 1440px) {
     transform: none;
+
   }
 }
 
@@ -178,18 +186,23 @@
   justify-content: start;
   width: 55px;
 
-
+  @media (min-width: 1440px) {
+    width: 85px;
+  }
 }
 
 .notification_dot{
   width: 7px;
-  left: 30%;
+  left: 31%;
   z-index: 100;
-  top: -6%;
   height: 7px;
   background-color: $red;
   border-radius: 50%;
   position: absolute;
+  @media (min-width: 1440px) {
+    left: 35%;
+    top: 0;
+  }
 }
 
 

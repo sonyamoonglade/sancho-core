@@ -2,7 +2,7 @@
 
 .admin_catalog{
   display: grid;
-  grid-template-columns: 50% 50%;
+  grid-template-columns: 53% 47%;
 }
 
 .manipulator{
@@ -19,6 +19,7 @@
   width: 100%;
   transition: all 0.1s ease-in-out;
   border: 1px solid $gray-promo
+
 }
 .mp_card:hover{
   background-color: $light-grey-50;
@@ -51,7 +52,7 @@
   }
 }
 .mp_title{
-  font-size: $font-mder;
+  font-size: $font-prelg;
   font-family: "Geometria Bold",sans-serif;
   small{
     font-family: "Geometria",sans-serif;

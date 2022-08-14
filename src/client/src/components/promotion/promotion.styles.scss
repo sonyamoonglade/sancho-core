@@ -68,11 +68,7 @@
   -ms-user-select: none;
   min-width: 345px;
   height: 100%;
-  //background-color: #cfc8ef;
-  //background-color: #EB5757FF// ;
   background-color: $sick-black;
-  //background-color: #ff6392;
-  cursor: pointer;
   margin-right: 2rem;
   position: relative;
   flex: 0 0 auto;
@@ -97,6 +93,9 @@
   }
   @media (min-width: 1800px) {
     min-width: 31.4vw;
+  }
+  @media (min-width: 1440px) {
+    cursor: pointer;
   }
 }
 .promotion_card:nth-of-type(3){

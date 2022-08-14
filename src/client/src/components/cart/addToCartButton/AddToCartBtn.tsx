@@ -23,19 +23,16 @@ const AddToCartBtn: FC<addToCartOnPresentationProps> = (props) => {
 
    const bagw = useMemo(() => {
       switch (true) {
-         case w >= 1440:
+         case w > 1440:
             return 35;
-         case w >= 1000:
+         case w > 1000:
             return 30;
-         case w >= 800:
-            return 27;
-         case h >= 800:
-            return 30;
+         case w > 800:
+            return 26;
          default:
             return 25;
       }
    }, [w]);
-   console.log(w);
 
    const jumpAnimationRef = useRef<HTMLDivElement>(null);
 

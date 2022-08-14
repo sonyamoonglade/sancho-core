@@ -38,7 +38,7 @@ const ProductInfo: FC<productInfoProps> = ({ product, children }) => {
             <p className="description">{description}</p>
             {features.nutrients && (
                <NutrientList isPresentingNow={false} nutrients={features.nutrients}>
-                  {features.energy_value && (
+                  {features.energy_value && features.energy_value !== 0 && (
                      <li className="energy_value">
                         <p>{features.energy_value}ккал на 100г.</p>
                      </li>

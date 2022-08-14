@@ -23,7 +23,7 @@ const NutrientList: FC<nutrientListProps> = ({ children, nutrients, isPresenting
          <li className="nutrient">
             <p>Белки: {nutrients.proteins}г</p>
          </li>
-         {children && children}
+         {/*{children && children}*/}
       </ul>
    );
 
