@@ -1,4 +1,4 @@
-import { Body, Controller, Post, Put, Query, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Param, ParseIntPipe, Post, Put, Query, Res, UseGuards } from "@nestjs/common";
 import { CategoryService } from "./category.service";
 import { Role } from "../../packages/decorators/role/Role";
 import { AppRoles } from "../../../common/types";
@@ -12,7 +12,7 @@ import { PinoLogger } from "nestjs-pino";
 export class CategoryController {
    constructor(private categoryService: CategoryService, private logger: PinoLogger) {}
 
-   @Post("/create")
+   @Post("/")
    @Role([AppRoles.master])
    async createCategory(@Res() res: Response, @Body() inp: CreateCategoryDto) {
       try {
@@ -38,6 +38,16 @@ export class CategoryController {
    async rankDown(@Res() res: Response, @Query("name") categName: string) {
       try {
          await this.categoryService.rankDown(categName);
+         return res.status(200).end();
+      } catch (e) {
+         throw e;
+      }
+   }
+   @Delete("/:name")
+   @Role([AppRoles.master])
+   async deleteCategory(@Res() res: Response, @Param("name") categName: string) {
+      try {
+         await this.categoryService.delete(categName);
          return res.status(200).end();
       } catch (e) {
          throw e;

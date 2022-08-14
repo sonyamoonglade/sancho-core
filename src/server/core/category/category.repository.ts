@@ -33,7 +33,11 @@ export class CategoryRepository {
          throw e;
       }
    }
-   public async delete(): Promise<void> {}
+   public async delete(name: string): Promise<void> {
+      const sql = `DELETE FROM ${categories} WHERE name = $1`;
+      const v = [name];
+      await this.db.query(sql, v);
+   }
    public async getAll(): Promise<Category[]> {
       const sql = `SELECT * FROM ${categories}`;
       const { rows } = await this.db.query(sql);

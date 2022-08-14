@@ -20,7 +20,9 @@ export class CategoryService {
          throw e;
       }
    }
-   public async delete(): Promise<void> {}
+   public async delete(name: string): Promise<void> {
+      return this.categoryRepository.delete(name);
+   }
    public async getAll(): Promise<Category[]> {
       return this.categoryRepository.getAll();
    }
