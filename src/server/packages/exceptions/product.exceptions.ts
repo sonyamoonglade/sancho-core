@@ -28,3 +28,15 @@ export class CategoryAlreadyExists extends HttpException {
       super(`Категория ${name} уже существует.`, HttpStatus.CONFLICT);
    }
 }
+
+export class CategoryDoesNotExist extends HttpException {
+   constructor(name: string) {
+      super(`Категория ${name} не существует.`, HttpStatus.BAD_REQUEST);
+   }
+}
+
+export class CategoryHasTopRank extends HttpException {
+   constructor(name: string) {
+      super(`Категория ${name} на 1 месте, ошибка поднятия rank`, HttpStatus.BAD_REQUEST);
+   }
+}

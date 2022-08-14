@@ -3,6 +3,7 @@ import { categories, Category } from "../entities/Category";
 import { pg_conn } from "../../packages/database/db_provider-name";
 import { PoolClient } from "pg";
 import { CreateCategoryDto } from "./dto/category.dto";
+import { CategoryDoesNotExist, CategoryHasTopRank } from "../../packages/exceptions/product.exceptions";
 
 @Injectable()
 export class CategoryRepository {
@@ -42,5 +43,88 @@ export class CategoryRepository {
       const sql = `SELECT c.name as name FROM ${categories} c ORDER BY c.rank DESC`;
       const { rows } = await this.db.query(sql);
       return rows.map((c) => c.name);
+   }
+   public async rankUp(name: string): Promise<void> {
+      try {
+         //Begin tx
+         await this.db.query("BEGIN");
+
+         //Executed within tx
+         {
+            //Get current rank
+            const q1 = `SELECT rank FROM ${categories} WHERE name = $1`;
+            const v1 = [name];
+
+            const currRank = (await this.db.query(q1, v1))?.rows[0]?.rank || 0;
+            //Rank of category that's ahead of current
+            const aheadRank = currRank + 1;
+
+            if (currRank === 0) {
+               throw new CategoryDoesNotExist(name);
+            }
+
+            //Increment rank of requested category thus 'upping' it in the catalog
+            const q2 = `UPDATE ${categories} SET rank = rank + 1 WHERE name = $1`;
+            await this.db.query(q2, v1);
+
+            //Decrement rank of previous category which had rank of currRank + 1 (important to specify the name, because after q2 2(two) of categories have the same rank)
+            const q3 = `UPDATE ${categories} SET rank = rank - 1 WHERE rank = $1 AND name != $2 RETURNING category_id`;
+            const v3 = [aheadRank, name];
+            const { rows } = await this.db.query(q3, v3);
+            //Category with aheadRank has not found, meaning category is already at the top - Rollback and throw
+            if (rows.length === 0) {
+               await this.db.query("ROLLBACK");
+               throw new CategoryHasTopRank(name);
+            }
+            //Commit
+            await this.db.query("COMMIT");
+         }
+      } catch (e) {
+         //Rollback
+         await this.db.query("ROLLBACK");
+         throw e;
+      }
+   }
+
+   public async rankDown(name: string): Promise<void> {
+      try {
+         //Begin tx
+         await this.db.query("BEGIN");
+
+         //Executed within tx
+         {
+            //Get current rank
+            const q1 = `SELECT rank FROM ${categories} WHERE name = $1`;
+            const v1 = [name];
+
+            const currRank = (await this.db.query(q1, v1))?.rows[0]?.rank || 0;
+            //Rank of category that's behind of current
+            const aheadRank = currRank - 1;
+
+            if (currRank === 0) {
+               throw new CategoryDoesNotExist(name);
+            }
+
+            //Increment rank of requested category thus 'lowering' it in the catalog
+            const q2 = `UPDATE ${categories} SET rank = rank - 1 WHERE name = $1`;
+            await this.db.query(q2, v1);
+
+            //Decrement rank of previous category which had rank of currRank - 1 (important to specify the name, because after q2 2(two) of categories have the same rank)
+            const q3 = `UPDATE ${categories} SET rank = rank + 1 WHERE rank = $1 AND name != $2 RETURNING category_id`;
+            const v3 = [aheadRank, name];
+            const { rows } = await this.db.query(q3, v3);
+            //Category with aheadRank has not found, meaning category is already at the top - Rollback and throw
+            if (rows.length === 0) {
+               await this.db.query("ROLLBACK");
+               throw new CategoryHasTopRank(name);
+            }
+            //Commit
+            await this.db.query("COMMIT");
+         }
+      } catch (e) {
+         //Rollback
+         await this.db.query("ROLLBACK");
+         throw e;
+      }
    }
 }

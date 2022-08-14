@@ -173,16 +173,4 @@ export class ProductController {
          throw e;
       }
    }
-
-   @Post("/admin/category/create")
-   @Role([AppRoles.master])
-   async createCategory(@Res() res: Response, @Body() inp: CreateCategoryDto) {
-      try {
-         await this.categoryService.create(inp);
-         return res.status(201).end();
-      } catch (e) {
-         this.logger.error(e);
-         throw e;
-      }
-   }
 }

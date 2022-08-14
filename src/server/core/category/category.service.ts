@@ -27,20 +27,10 @@ export class CategoryService {
    public async getCategNamesSorted(): Promise<string[]> {
       return this.categoryRepository.getCategNamesSorted();
    }
-   // public async sortByCategRankAndMap(products: Product[]): FrontendProduct[] {
-   //    const categs = await this.getAll();
-   //    const sorted = products.sort((a, b) => {
-   //       let arank: number;
-   //       let brank: number;
-   //       //Find actual rank
-   //       for (const categ of categs) {
-   //          if (a.category_id === categ.category_id) {
-   //             arank = categ.rank;
-   //          }
-   //          if (b.category_id === categ.category_id) {
-   //             brank = categ.rank;
-   //          }
-   //       }
-   //    });
-   // }
+   public async rankUp(name: string): Promise<void> {
+      return this.categoryRepository.rankUp(name);
+   }
+   public async rankDown(name: string): Promise<void> {
+      return this.categoryRepository.rankDown(name);
+   }
 }
