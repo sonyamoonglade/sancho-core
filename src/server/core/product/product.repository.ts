@@ -1,11 +1,12 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { Product, products } from "../entities/Product";
+import { FrontendProduct, Product, products } from "../entities/Product";
 import { Pool } from "pg";
 import { QueryBuilder } from "../../packages/query_builder/QueryBuilder";
 import { pg_conn } from "../../packages/database/db_provider-name";
 import { query_builder } from "../../packages/query_builder/provider-name";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { ProductRepositoryInterface } from "./product.service";
+import { categories } from "../entities/Category";
 
 @Injectable()
 export class ProductRepository implements ProductRepositoryInterface {
@@ -18,10 +19,6 @@ export class ProductRepository implements ProductRepositoryInterface {
          return true;
       }
       return false;
-   }
-
-   async exec(sql) {
-      await this.db.query(sql);
    }
 
    async getById(id: number): Promise<Product> {
@@ -38,9 +35,15 @@ export class ProductRepository implements ProductRepositoryInterface {
       return rowCount;
    }
    async getAll(): Promise<Product[]> {
-      const selectSql = this.qb.ofTable(products).select<Product>();
-      const { rows } = await this.db.query(selectSql);
-      return rows as Product[];
+      const sql = `
+         SELECT p.id, p.category_id, p.features, p.name, p.translate, p.price,
+         p.description, p.approved, p.currency, p.image_url, p.has_image
+         FROM ${products} p JOIN ${categories} c ON p.category_id = c.category_id ORDER BY c.rank DESC
+      `;
+      const { rows } = await this.db.query(sql);
+      return rows.map((p) => {
+         return { ...p, features: JSON.parse(p.features) };
+      });
    }
    async searchQuery(words: string[]): Promise<Product[]> {
       let sql: string;
@@ -76,10 +79,16 @@ export class ProductRepository implements ProductRepositoryInterface {
       return 0;
    }
    //todo: return frontend product without mapping
-   async getCatalog(): Promise<Product[]> {
-      const sql = `SELECT * FROM ${products} WHERE has_image=true AND approved=true`;
+   async getCatalog(): Promise<FrontendProduct[]> {
+      const sql = `
+        SELECT p.id, c.name as category, p.features, p.name, p.image_url, p.translate, p.price, p.description 
+        FROM ${products} p JOIN ${categories} c ON p.category_id = c.category_id
+        WHERE p.has_image=true AND p.approved=true ORDER BY c.rank DESC
+      `;
       const { rows } = await this.db.query(sql);
-      return rows as unknown as Product[];
+      return rows.map((product) => {
+         return { ...product, features: JSON.parse(product.features) };
+      });
    }
    async getProductsByIds(productIds: number[]): Promise<Product[]> {
       const key = "id";

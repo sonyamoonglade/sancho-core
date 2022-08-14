@@ -27,6 +27,8 @@ import { ImageStorageService } from "./packages/imageStorage/image_storage.servi
 import { LambdaRouter } from "./packages/lambdaRouter/lambdaRouter";
 import { StatisticsController } from "./core/statistics/statistics.controller";
 import { StatisticsService } from "./core/statistics/statistics.service";
+import { CategoryService } from "./core/category/category.service";
+import { CategoryRepository } from "./core/category/category.repository";
 
 @Module({
    controllers: [AppController, UserController, OrderController, ProductController, MiscController, DeliveryController, StatisticsController],
@@ -48,7 +50,9 @@ import { StatisticsService } from "./core/statistics/statistics.service";
       DeliveryService,
       EventsService,
       LambdaRouter,
-      StatisticsService
+      StatisticsService,
+      CategoryService,
+      CategoryRepository
    ],
    imports: [
       DbModule,

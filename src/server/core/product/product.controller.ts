@@ -1,18 +1,4 @@
-import {
-  Body,
-  Controller,
-  Delete,
-  Get,
-  ParseIntPipe,
-  Post,
-  Put,
-  Query,
-  Req,
-  Res,
-  UploadedFile,
-  UseGuards,
-  UseInterceptors,
-} from "@nestjs/common";
+import { Body, Controller, Delete, Get, ParseIntPipe, Post, Put, Query, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { ProductService } from "./product.service";
 import { Response } from "express";
 import { CreateProductDto } from "./dto/create-product.dto";
@@ -27,12 +13,19 @@ import { PinoLogger } from "nestjs-pino";
 import { Product } from "../entities/Product";
 import { baseDestination } from "../../../common/constants";
 import { AppConfig, GetAppConfig } from "../../packages/config/config";
+import { CategoryService } from "../category/category.service";
+import { CreateCategoryDto } from "../category/dto/category.dto";
 
 @Controller("/product")
 @UseGuards(AuthorizationGuard)
 export class ProductController {
    private config: AppConfig;
-   constructor(private productService: ProductService, private imageStorage: ImageStorageService, private logger: PinoLogger) {
+   constructor(
+      private productService: ProductService,
+      private imageStorage: ImageStorageService,
+      private logger: PinoLogger,
+      private categoryService: CategoryService
+   ) {
       this.config = GetAppConfig();
       this.logger.setContext(ProductController.name);
    }
@@ -133,7 +126,7 @@ export class ProductController {
    async catalog(@Res() res: Response) {
       try {
          const catalog = await this.productService.getCatalog();
-         const categories = this.productService.getCategories();
+         const categories: string[] = await this.categoryService.getCategNamesSorted();
 
          return res.status(200).send({
             catalog,
@@ -149,23 +142,21 @@ export class ProductController {
    async adminCatalog(@Res() res: Response) {
       try {
          const catalog = await this.productService.getAll();
-         const sorted = this.productService.sortByCategory(catalog);
-
          //Free-up cache (to prevent image cache)
          res.header("Cache-Control", "no-cache");
          return res.status(200).send({
-            catalog: sorted
+            catalog
          });
       } catch (e) {
          throw e;
       }
    }
 
-   @Get("/admin/categories")
+   @Get("/admin/category")
    @Role([AppRoles.master])
    async adminCategories(@Res() res: Response) {
       try {
-         const categories = this.productService.getCategories();
+         const categories = this.categoryService.getCategNamesSorted();
          return res.status(200).json({ categories });
       } catch (e) {
          throw e;
@@ -179,6 +170,18 @@ export class ProductController {
          await this.productService.approveProduct(productId);
          return res.status(200).end();
       } catch (e) {
+         throw e;
+      }
+   }
+
+   @Post("/admin/category/create")
+   @Role([AppRoles.master])
+   async createCategory(@Res() res: Response, @Body() inp: CreateCategoryDto) {
+      try {
+         await this.categoryService.create(inp);
+         return res.status(201).end();
+      } catch (e) {
+         this.logger.error(e);
          throw e;
       }
    }

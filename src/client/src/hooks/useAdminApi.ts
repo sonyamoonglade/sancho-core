@@ -65,7 +65,7 @@ export function useAdminApi() {
 
    const getAvailableCategories = useCallback(
       async function (): Promise<string[]> {
-         const url = `/product/admin/categories`;
+         const url = `/product/admin/category`;
          const { data } = await client.get<AdminCategoriesResponse>(url);
          return data.categories;
       },
