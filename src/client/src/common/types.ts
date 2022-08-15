@@ -158,3 +158,9 @@ export type TopProduct = {
 };
 
 export type ProductTopArray = TopProduct[];
+
+export type Category = {
+   category_id: number;
+   name: string;
+   rank: number;
+};

@@ -61,9 +61,9 @@ export class ProductRepository implements ProductRepositoryInterface {
       return rows;
    }
    async create(dto: CreateProductDto): Promise<number> {
-      const sql = `INSERT INTO ${products} (category,features,name,translate,price,description)
+      const sql = `INSERT INTO ${products} (category_id,features,name,translate,price,description)
         VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT DO NOTHING RETURNING id`;
-      const values = [dto.category, dto.features, dto.name, dto.translate, dto.price, dto.description];
+      const values = [dto.category_id, dto.features, dto.name, dto.translate, dto.price, dto.description];
       const { rows } = await this.db.query(sql, values);
       if (rows.length > 0) {
          return rows[0].id;
