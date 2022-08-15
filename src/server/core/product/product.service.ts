@@ -36,18 +36,20 @@ export class ProductService {
       const words = q.split(" ").filter((w) => w.trim().length !== 0);
       return this.productRepository.searchQuery(words);
    }
-   async createProduct(createProductDto: CreateProductDto): Promise<number> {
-      const { name, category } = createProductDto;
+   async createProduct(dto: CreateProductDto): Promise<number> {
+      const { name, category, features } = dto;
 
       const categs = await this.categoryService.getAll();
       //Check whether some category exists with such name
-      const ok = categs.some((categ) => categ.name === name);
-      if (!ok) {
+      const categ = categs.find((categ) => categ.name === category);
+      if (!categ) {
          throw new InvalidCategoryException(category);
       }
 
-      createProductDto.features = JSON.stringify(createProductDto.features) as unknown as Features;
-      const productId = await this.productRepository.create(createProductDto);
+      dto.features = JSON.stringify(features) as unknown as Features;
+      dto.category_id = categ.category_id;
+
+      const productId = await this.productRepository.create(dto);
       // Insert conflict occurred
       if (productId === 0) {
          throw new ProductAlreadyExistsException(name);

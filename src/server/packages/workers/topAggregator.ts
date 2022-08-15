@@ -24,7 +24,7 @@ for (const cart of carts) {
 
 //Iterate over ["mozarella",25]... in the map and Sort descending
 for (const [tr, q] of Array.from(top.entries()).sort(([_, q1], [__, q2]) => q2 - q1)) {
-   const percent = Math.ceil((q / (totalProductAmount === 0 ? 1 : totalProductAmount)) * 100);
+   const percent = (q / (totalProductAmount === 0 ? 1 : totalProductAmount)) * 100;
    topArr.push({
       translate: tr,
       percent, // Make sure to not divide by zero

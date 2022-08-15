@@ -24,4 +24,6 @@ export class CreateProductDto implements Partial<Product> {
 
    @IsDefined()
    description: string;
+
+   category_id?: number;
 }
