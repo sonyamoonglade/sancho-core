@@ -169,7 +169,7 @@ const OrderForm: FC<orderFormProps> = ({ formValues, setFormValues }) => {
                   maxLength={2}
                   minLength={1}
                   extraClassName={`${isDeliveryFormDisabledExpr}entrance_number_input`}
-                  Regexp={new RegExp("[A-Za-z]|[А-Яа-я]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
+                  Regexp={new RegExp("[A-Za-z]+|[А-Яа-я]+|[-!,._\"`'#%&:;<>=@{}~\\$\\(\\)\\*\\+\\/\\\\\\?\\[\\]\\^\\|]+")}
                   fieldValidationFn={minLengthValidation}
                />
                {delivery_details && autoComplete["entrance_number"] && (
