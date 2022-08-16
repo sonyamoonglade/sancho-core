@@ -1,9 +1,11 @@
 import { useAxios } from "./useAxios";
 import { useCallback } from "react";
-import { AdminProduct, Category } from "../types/types";
+import { AdminProduct, Category, RenderMasterUser, RenderRunnerUser } from "../types/types";
 import { EditFormValues } from "../components/admin/productModal/edit/hooks/useEditProductModalForm";
 import { CreateFormValues } from "../components/admin/productModal/create/hooks/useCreateProductModalForm";
-import { AggregationPreset, ProductTopArray } from "../common/types";
+import { AggregationPreset, MasterUser, ProductTopArray, RunnerUser } from "../common/types";
+import { WorkerRegisterFormState } from "../components/admin/workerRegister/hooks/useWorkerRegisterForm";
+import { RunnerRegisterFormState } from "../components/admin/runnerRegister/hooks/useRunnerRegisterForm";
 
 interface AdminCatalogResponse {
    catalog: AdminProduct[];
@@ -15,6 +17,16 @@ interface AdminCategoriesResponse {
 
 interface ProductTopResponse {
    top: ProductTopArray;
+}
+interface RegisterMasterUserResponse {
+   user: RenderMasterUser;
+}
+interface RegisterRunnerUserResponse {
+   user: RenderRunnerUser;
+}
+interface MastersAndWorkersResponse {
+   workers: MasterUser[];
+   runners: RunnerUser[];
 }
 
 export function useAdminApi() {
@@ -134,6 +146,33 @@ export function useAdminApi() {
       [client]
    );
 
+   const registerWorker = useCallback(
+      async function (body: WorkerRegisterFormState): Promise<RenderMasterUser> {
+         const url = `/users/admin/registerWorker`;
+         const res = await client.post<RegisterMasterUserResponse>(url, body);
+         return res.data.user;
+      },
+      [client]
+   );
+
+   const registerRunner = useCallback(
+      async function (body: RunnerRegisterFormState): Promise<RenderRunnerUser> {
+         const url = `/delivery/admin/runner`;
+         const res = await client.post<RegisterRunnerUserResponse>(url, body);
+         return res.data.user;
+      },
+      [client]
+   );
+
+   const fetchMastersAndRunners = useCallback(
+      async function (): Promise<MastersAndWorkersResponse> {
+         const url = `/users/admin/`;
+         const res = await client.get<MastersAndWorkersResponse>(url);
+         return res.data;
+      },
+      [client]
+   );
+
    return {
       fetchAdminCatalog,
       approveProduct,
@@ -146,6 +185,9 @@ export function useAdminApi() {
       rankUp,
       rankDown,
       deleteCategory,
-      createCategory
+      createCategory,
+      registerWorker,
+      registerRunner,
+      fetchMastersAndRunners
    };
 }

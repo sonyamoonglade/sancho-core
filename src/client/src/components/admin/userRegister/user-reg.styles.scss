@@ -6,13 +6,14 @@
   justify-content: space-between;
   grid-gap: 2rem;
   padding: 1rem 2rem;
+
 }
 
 .user_register{
   padding: 1rem;
   border: 1px solid $black-18;
   border-radius: 5px;
-
+  padding-right: 0;
 }
 
 .register_title{
@@ -47,6 +48,7 @@
   border: 0;
   border-radius: 7px;
   outline: none;
+  margin: 0 auto;
   color: white;
   font-family: "Geometria Medium",sans-serif;
   font-size: $font-mder;

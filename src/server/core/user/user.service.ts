@@ -2,8 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { RegisterUserDto } from "./dto/register-user.dto";
 import { UserRepository } from "./user.repository";
 import { SessionService } from "../session/session.service";
-import { CheckUser, DeliveryUser, User } from "../entities/User";
-import { CreateMasterUserDto } from "./dto/create-master-user.dto";
+import { CheckUser, DeliveryUser, MasterUser, User } from "../entities/User";
 
 import * as bcrypt from "bcrypt";
 
@@ -32,6 +31,7 @@ import { ValidationErrorException } from "../../packages/exceptions/validation.e
 import { FoundUserDto } from "./dto/found-user.dto";
 import { CouldNotGetUserDeliveryData } from "../../packages/exceptions/order.exceptions";
 import { PinoLogger } from "nestjs-pino";
+import { CreateWorkerUserDto } from "./dto/create-master-user.dto";
 
 export interface MarkRepositoryInterface {
    create(dto: CreateMarkDto): Promise<Mark>;
@@ -217,6 +217,10 @@ export class UserService {
       };
    }
 
+   async getWorkers(): Promise<MasterUser[]> {
+      return this.userRepository.getWorkers();
+   }
+
    async login(body: { phone_number: string }): Promise<Partial<User> | null> {
       const { phone_number } = body;
 
@@ -262,26 +266,22 @@ export class UserService {
       const phoneNumberWithPlus = "+" + phoneNumber;
       return this.userRepository.getUsername(phoneNumberWithPlus);
    }
-   async createMasterUser(createMasterUserDto: CreateMasterUserDto): Promise<User> {
-      const hashedPass = await bcrypt.hash(createMasterUserDto.password, 10);
-      const { role: inputRole } = createMasterUserDto;
+   async registerWorker(dto: CreateWorkerUserDto): Promise<User> {
+      const { password } = dto;
+      const hashedPass = await bcrypt.hash(password, 10);
 
-      if (!APP_ROLES.includes(inputRole)) {
-         throw new InvalidRoleException(inputRole);
-      }
-
-      if (createMasterUserDto.password.length < 8) {
+      if (password.length < 8) {
          throw new PasswordIsTooShortException();
       }
 
       const user: User = {
-         ...createMasterUserDto,
-         password: hashedPass
+         ...dto,
+         password: hashedPass,
+         role: AppRoles.worker
       };
 
       try {
-         const masterUser = await this.userRepository.save(user);
-         return masterUser;
+         return this.userRepository.save(user);
       } catch (e) {
          throw new MasterLoginHasAlreadyBeenTaken();
       }

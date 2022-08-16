@@ -42,11 +42,13 @@ const RectangleInput: FC<RectangleInputProps> = ({
          placeholder={placeholder ? placeholder : ""}
          onChange={(e) => {
             const v = e.target.value;
-            const match = v.match(regexp);
-            //todo: change for
-            const res = match && match["0"] === match.input;
-            if (!res && v.length !== 0) {
-               return;
+            if (regexp) {
+               const match = v.match(regexp);
+               //todo: change for
+               const res = match && match["0"] === match?.input;
+               if (!res && v.length !== 0) {
+                  return;
+               }
             }
             setValue((state: any) => {
                const copy = Object.assign({}, state);

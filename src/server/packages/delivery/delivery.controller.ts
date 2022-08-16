@@ -44,7 +44,7 @@ export class DeliveryController {
       }
    }
 
-   @Post("/runner")
+   @Post("/admin/runner")
    @Role([AppRoles.master])
    async registerRunner(@Res() res: Response, @Body() b: RegisterRunnerDto) {
       try {

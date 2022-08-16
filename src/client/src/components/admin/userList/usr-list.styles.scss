@@ -1,0 +1,53 @@
+@import "src/./variables.scss";
+
+.admin_users_list{
+  ul{
+    padding-left: 1rem;
+  }
+}
+.list_for_title{
+  font-family: "Geometria Bold",sans-serif;
+  font-size: $font-prelg;
+}
+
+.user_card{
+  border: 1px solid $black-18;
+  list-style: none;
+  padding: 1rem;
+  margin-bottom: 0.5rem;
+  border-radius: 5px;
+  font-family: "Geometria",sans-serif;
+  font-size: $font-mder;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  p:first-of-type{
+    margin-bottom: 0.5rem;
+    font-family: "Geometria Bold",sans-serif;
+  }
+
+  div:nth-of-type(2){
+    display: flex;
+    justify-content: space-between;
+    height: 50px;
+  }
+}
+
+.user_button{
+  border: 1px solid $black-18;
+  outline: none;
+  font-family: "Geometria",sans-serif;
+  font-size: $font-md;
+  padding: 0.3rem 0.5rem;
+  transition: all 0.3s ease;
+  max-width: 120px;
+}
+
+.user_button:first-of-type{
+  margin-right: 1rem;
+}
+
+.user_button:hover{
+  background-color: white;
+  transform: translateY(-1px);
+}

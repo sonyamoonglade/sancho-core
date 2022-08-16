@@ -1,14 +1,33 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../userRegister/user-reg.styles.scss";
 import UserRegister from "../userRegister/UserRegister";
 import RectangleInput from "../../ui/admin/rectangleInput/RectangleInput";
 import { BiCategoryAlt, BiCategory } from "react-icons/bi";
 import { MdOutlineDeliveryDining } from "react-icons/md";
 import { useRunnerRegisterForm } from "./hooks/useRunnerRegisterForm";
+import { useAdminApi } from "../../../hooks/useAdminApi";
+import { adminActions, useAppDispatch } from "../../../redux";
 
 const WorkerRegister = () => {
    async function handleRegister() {}
+
    const { formValues, setFormValues, setFormDefaults } = useRunnerRegisterForm();
+   const { fetchMastersAndRunners } = useAdminApi();
+   const dispatch = useAppDispatch();
+
+   async function fetchMastersRunnersAsync() {
+      const { workers, runners } = await fetchMastersAndRunners();
+      dispatch(adminActions.setWorkers(workers));
+      dispatch(adminActions.setRunners(runners));
+   }
+
+   useEffect(() => {
+      fetchMastersRunnersAsync();
+      return () => {
+         setFormDefaults();
+      };
+   }, []);
+
    return (
       <div className="runner_register">
          <UserRegister registerFor={"Курьер"} handlerFunc={handleRegister}>

@@ -46,6 +46,17 @@ export type CustomerUser = {
    phone_number: string;
 };
 
+export type MasterUser = {
+   login: string;
+   name: string;
+   role: string;
+};
+
+export type RunnerUser = {
+   name: string;
+   phoneNumber: string;
+};
+
 export type DeliveryUser = {
    user_id: number;
    username: string;

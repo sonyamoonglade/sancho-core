@@ -7,7 +7,6 @@ export function useAppCookies(): AppCookies {
    //Cookie is omitted (e.g. phoneNumberCookie)
    const [phwrap, setPhoneNumber] = useCookies(["phoneNumber"]);
    const [ddwrap, setDeliveryDetails] = useCookies(["deliveryDetails"]);
-   console.log(helpers.getYearTtl());
    const baseOptions: CookieOptions = {
       sameSite: "lax",
       secure: true,

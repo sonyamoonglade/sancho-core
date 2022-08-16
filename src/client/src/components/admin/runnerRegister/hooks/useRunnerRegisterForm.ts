@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useWorkerRegisterForm } from "../../workerRegister/hooks/useWorkerRegisterForm";
 
-interface RunnerRegisterFormState {
+export interface RunnerRegisterFormState {
    name: string;
    phoneNumber: string;
 }

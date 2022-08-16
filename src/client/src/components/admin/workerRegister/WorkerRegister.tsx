@@ -1,15 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../userRegister/user-reg.styles.scss";
 import UserRegister from "../userRegister/UserRegister";
 import RectangleInput from "../../ui/admin/rectangleInput/RectangleInput";
 import { useWorkerRegisterForm } from "./hooks/useWorkerRegisterForm";
+import { useAdminApi } from "../../../hooks/useAdminApi";
 
 const WorkerRegister = () => {
    const { formValues, setFormValues, setFormDefaults } = useWorkerRegisterForm();
+   const { registerWorker } = useAdminApi();
 
-   async function handleRegister() {}
+   async function handleRegister() {
+      const body = formValues;
+      const user = await registerWorker(body);
+      console.log(user);
+   }
+   useEffect(() => {
+      return () => setFormDefaults();
+   }, []);
 
-   console.log(formValues);
    return (
       <div className="worker_register">
          <UserRegister registerFor={"Воркер"} handlerFunc={handleRegister}>
