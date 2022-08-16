@@ -1,15 +1,13 @@
-FROM node:latest AS builder
+FROM node
 
 WORKDIR /app/client
 
-COPY ../package.json .
+ENV NODE_ENV=development
+
+COPY ../../package.json .
 
 RUN npm install --silent
 
 COPY . .
 
-RUN npm run build
-
-FROM nginx AS prod
-COPY --from=builder /app/client/build /usr/share/nginx/html
-COPY ../nginx/nginx.conf /usr/local/nginx/conf
+RUN npm run start

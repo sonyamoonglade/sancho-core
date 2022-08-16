@@ -12,6 +12,7 @@
     "format": "prettier --write \"src/**/*.ts\" \"src/client/**/*.ts\"",
     "start": "npm run migrate up && node dist/server/main.js",
     "start:dev": "npm run build && set NODE_ENV=development && nest start --watch",
+    "start:docker": "npm run build && nest start --watch",
     "start:debug": "nest start --debug --watch",
     "start:prod": "node dist/server/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",

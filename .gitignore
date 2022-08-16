@@ -16,3 +16,5 @@ tsconfig.build.tsbuildinfo
 .env
 .env.prod
 prod.config.yaml
+
+docker-compose.dev.yaml

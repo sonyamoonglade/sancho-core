@@ -25,9 +25,8 @@ async function bootstrap() {
       origin: HandleCors,
       methods: "GET,PUT,POST,DELETE,UPDATE,OPTIONS",
       credentials: true,
-      allowedHeaders: ["Set-Cookie", "Content-type", "accept"]
+      allowedHeaders: ["Content-type", "Accept", "Content-Length", "Connection"]
    });
-
    app.useGlobalPipes(new ValidationPipe());
    //Configure app port (*first option is optional. For hosting providers that setup port by their own)
    const APP_PORT = Number(process.env.PORT) || Number(config.app.port);
