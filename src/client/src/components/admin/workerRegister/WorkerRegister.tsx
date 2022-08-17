@@ -4,15 +4,22 @@ import UserRegister from "../userRegister/UserRegister";
 import RectangleInput from "../../ui/admin/rectangleInput/RectangleInput";
 import { useWorkerRegisterForm } from "./hooks/useWorkerRegisterForm";
 import { useAdminApi } from "../../../hooks/useAdminApi";
+import { adminActions, useAppDispatch } from "../../../redux";
+import { MasterUser } from "../../../common/types";
 
 const WorkerRegister = () => {
    const { formValues, setFormValues, setFormDefaults } = useWorkerRegisterForm();
    const { registerWorker } = useAdminApi();
-
+   const dispatch = useAppDispatch();
    async function handleRegister() {
       const body = formValues;
-      const user = await registerWorker(body);
-      console.log(user);
+      await registerWorker(body);
+      const master: MasterUser = {
+         name: body.name,
+         login: body.login,
+         role: "worker"
+      };
+      dispatch(adminActions.appendWorker(master));
    }
    useEffect(() => {
       return () => setFormDefaults();

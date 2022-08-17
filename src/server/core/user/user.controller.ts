@@ -138,6 +138,7 @@ export class UserController {
          throw e;
       }
    }
+
    @Get("/logout")
    @UseGuards(AuthorizationGuard)
    @Role([AppRoles.worker, AppRoles.master])

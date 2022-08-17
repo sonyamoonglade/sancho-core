@@ -15,7 +15,6 @@ const MasterList = () => {
                         <p>Логин: {worker.login}</p>
                      </div>
                      <div>
-                        <button className="user_button">Посмотреть пароль</button>
                         <button className="user_button">Забанить</button>
                      </div>
                   </li>
