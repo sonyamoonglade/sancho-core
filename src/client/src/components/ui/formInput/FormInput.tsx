@@ -86,6 +86,8 @@ const FormInput: FC<formInputProps> = (props) => {
                }
             }}
             onChange={(e) => {
+               //todo: change for
+               // res && res["0"] === res.input;
                const inputValue = e.target.value;
                if (Regexp && inputValue.match(Regexp)) {
                   return;

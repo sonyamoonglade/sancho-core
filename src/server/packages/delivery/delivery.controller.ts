@@ -44,12 +44,17 @@ export class DeliveryController {
       }
    }
 
-   @Post("/runner")
+   @Post("/admin/runner")
    @Role([AppRoles.master])
-   async registerRunner(@Res() res: Response, @Body() b: RegisterRunnerDto) {
+   async registerRunner(@Res() res: Response, @Body() inp: RegisterRunnerDto) {
       try {
          this.logger.info("register runner");
-         const ok = await this.deliveryService.registerRunner(b);
+
+         //Make sure phoneNumber format is correct
+         if (inp.phone_number.startsWith("8")) {
+            inp.phone_number = "+7" + inp.phone_number.substring(1, inp.phone_number.length);
+         }
+         const ok = await this.deliveryService.registerRunner(inp);
          if (!ok) {
             this.logger.error("internal error occurred calling delivery microservice");
             throw new UnexpectedServerError();

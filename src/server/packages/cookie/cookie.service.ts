@@ -10,11 +10,11 @@ export class CookieService {
 
    setCanCancelCookie(res: Response, ttl: number): Response {
       const now = dayjs();
-      const afterTtl = now.add(ttl, "minutes").toDate();
+      const withTtl = now.add(ttl, "minutes").toDate();
       res.cookie(CookieNames.cancelBan, false, {
          httpOnly: true,
          secure: true,
-         expires: afterTtl,
+         expires: withTtl,
          sameSite: "strict"
       });
       return res;
@@ -35,7 +35,7 @@ export class CookieService {
 
    setMasterSessCookie(res: Response, SID: string): Response {
       const now = dayjs();
-      const ttl = now.add(1, "d").toDate(); //24h
+      const ttl = now.add(18, "h").toDate(); // 18h
 
       res.cookie(CookieNames.SID, SID, {
          httpOnly: true,

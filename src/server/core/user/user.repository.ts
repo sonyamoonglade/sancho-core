@@ -1,6 +1,6 @@
 import { Pool } from "pg";
 import { Inject } from "@nestjs/common";
-import { CheckUser, DeliveryUser, User, users } from "../entities/User";
+import { CheckUser, DeliveryUser, MasterUser, User, users } from "../entities/User";
 import { filter, QueryBuilder } from "../../packages/query_builder/QueryBuilder";
 import { pg_conn } from "../../packages/database/db_provider-name";
 import { query_builder } from "../../packages/query_builder/provider-name";
@@ -24,6 +24,12 @@ export class UserRepository {
          return null;
       }
       return rows[0];
+   }
+
+   async getWorkers(): Promise<MasterUser[]> {
+      const sql = `SELECT login, name, role FROM ${users} WHERE role = '${AppRoles.worker}'`;
+      const { rows } = await this.db.query(sql);
+      return rows;
    }
 
    async prepareDataForDelivery(orderId: number): Promise<DeliveryUser | null> {

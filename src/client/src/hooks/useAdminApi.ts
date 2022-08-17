@@ -1,9 +1,11 @@
 import { useAxios } from "./useAxios";
 import { useCallback } from "react";
-import { AdminProduct, Category } from "../types/types";
+import { AdminProduct, Category, RenderMasterUser } from "../types/types";
 import { EditFormValues } from "../components/admin/productModal/edit/hooks/useEditProductModalForm";
 import { CreateFormValues } from "../components/admin/productModal/create/hooks/useCreateProductModalForm";
-import { AggregationPreset, ProductTopArray } from "../common/types";
+import { AggregationPreset, MasterUser, ProductTopArray, RunnerUser } from "../common/types";
+import { WorkerRegisterFormState } from "../components/admin/workerRegister/hooks/useWorkerRegisterForm";
+import { RunnerRegisterFormState, RunnerRegisterFormValues } from "../components/admin/runnerRegister/hooks/useRunnerRegisterForm";
 
 interface AdminCatalogResponse {
    catalog: AdminProduct[];
@@ -15,6 +17,11 @@ interface AdminCategoriesResponse {
 
 interface ProductTopResponse {
    top: ProductTopArray;
+}
+
+interface MastersAndWorkersResponse {
+   workers: MasterUser[];
+   runners: RunnerUser[];
 }
 
 export function useAdminApi() {
@@ -134,6 +141,31 @@ export function useAdminApi() {
       [client]
    );
 
+   const registerWorker = useCallback(
+      async function (body: WorkerRegisterFormState): Promise<void> {
+         const url = `/users/admin/registerWorker`;
+         await client.post(url, body);
+      },
+      [client]
+   );
+
+   const registerRunner = useCallback(
+      async function (body: RunnerRegisterFormValues): Promise<void> {
+         const url = `/delivery/admin/runner`;
+         await client.post(url, body);
+      },
+      [client]
+   );
+
+   const fetchMastersAndRunners = useCallback(
+      async function (): Promise<MastersAndWorkersResponse> {
+         const url = `/users/admin/`;
+         const res = await client.get<MastersAndWorkersResponse>(url);
+         return res.data;
+      },
+      [client]
+   );
+
    return {
       fetchAdminCatalog,
       approveProduct,
@@ -146,6 +178,9 @@ export function useAdminApi() {
       rankUp,
       rankDown,
       deleteCategory,
-      createCategory
+      createCategory,
+      registerWorker,
+      registerRunner,
+      fetchMastersAndRunners
    };
 }

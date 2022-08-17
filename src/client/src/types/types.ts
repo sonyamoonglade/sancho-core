@@ -94,3 +94,8 @@ export type Category = {
    name: string;
    rank: number;
 };
+
+export type RenderMasterUser = {
+   login: string;
+   role: string;
+};

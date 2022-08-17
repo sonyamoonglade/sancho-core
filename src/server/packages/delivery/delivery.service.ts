@@ -1,20 +1,21 @@
 import { Injectable } from "@nestjs/common";
-import { DeliveryServiceInterface } from "./delivery";
+import { DeliveryServiceInterface, GetRunnersResponse } from "./delivery";
 import { CreateDeliveryDto, DownloadCheckDto, RegisterRunnerDto } from "./dto/delivery.dto";
 import axios from "axios";
 import { ValidationErrorException } from "../exceptions/validation.exceptions";
 import { PinoLogger } from "nestjs-pino";
 import {
-  CheckServiceUnavailable,
-  DeliveryAlreadyExists,
-  DeliveryServiceUnavailable,
-  RunnerAlreadyExists,
-  TelegramInternalError,
+   CheckServiceUnavailable,
+   DeliveryAlreadyExists,
+   DeliveryServiceUnavailable,
+   RunnerAlreadyExists,
+   TelegramInternalError
 } from "../exceptions/delivery.exceptions";
 import { DeliveryStatus } from "../../types/types";
 import { EventsService } from "../event/event.module";
 import { EventEmitter } from "node:events";
 import { Events } from "../event/events";
+import { RunnerUser } from "src/common/types";
 
 @Injectable()
 export class DeliveryService implements DeliveryServiceInterface {
@@ -24,11 +25,24 @@ export class DeliveryService implements DeliveryServiceInterface {
    constructor(private logger: PinoLogger, private eventsService: EventsService) {
       this.logger.setContext(DeliveryService.name);
       this.events = eventsService.GetEmitter();
+      //todo: move to config
       this.url = process.env.DELIVERY_SERVICE_URL + "/api";
    }
 
+   async getRunners(): Promise<RunnerUser[]> {
+      this.logger.debug("call delivery microservice getRunners");
+      try {
+         const endPoint = "/runner";
+         const res = await axios.get<GetRunnersResponse>(this.url + endPoint);
+         return res.data.runners;
+      } catch (e) {
+         this.logger.error("get runners failed with error");
+         this.parseDeliveryError(e, null);
+      }
+   }
+
    async downloadCheck(dto: DownloadCheckDto): Promise<Buffer> {
-      this.logger.info("call delivery microservice downloadCheck");
+      this.logger.debug("call delivery microservice downloadCheck");
       try {
          const endPoint = "/check";
          const response = await axios.post(this.url + endPoint, dto, {
@@ -39,6 +53,7 @@ export class DeliveryService implements DeliveryServiceInterface {
          this.logger.debug(`received buffer with length ${data.length}`);
          return data;
       } catch (e: any) {
+         this.logger.error("download check failed with error");
          const payload = {
             order_id: dto.order.order_id
          };
@@ -51,16 +66,16 @@ export class DeliveryService implements DeliveryServiceInterface {
    }
 
    async createDelivery(dto: CreateDeliveryDto): Promise<void> {
-      this.logger.info("createDelivery");
+      this.logger.debug("createDelivery");
       //todo: implement request id
       try {
          const endPoint = "/delivery";
          await axios.post(this.url + endPoint, dto);
 
-         this.logger.info("ok");
+         this.logger.debug("ok");
          this.events.emit(Events.REFRESH_ORDER_QUEUE);
       } catch (e: any) {
-         this.logger.error("failed with error");
+         this.logger.error("create delivery failed with error");
          const payload = {
             order_id: dto.order.order_id
          };
@@ -96,7 +111,7 @@ export class DeliveryService implements DeliveryServiceInterface {
          this.logger.info("ok");
          return data.result;
       } catch (e) {
-         this.logger.error("failed with error");
+         this.logger.error("get status ailed with error");
          this.parseDeliveryError(e);
       }
    }

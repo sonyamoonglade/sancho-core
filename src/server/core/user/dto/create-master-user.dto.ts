@@ -1,7 +1,7 @@
 import { AppRoles } from "../../../../common/types";
 import { IsDefined, IsString } from "class-validator";
 
-export class CreateMasterUserDto {
+export class CreateWorkerUserDto {
    @IsDefined()
    @IsString()
    login: string;
@@ -10,9 +10,7 @@ export class CreateMasterUserDto {
    @IsString()
    password: string;
 
-   @IsDefined()
-   @IsString()
-   role: AppRoles;
+   role: string = "worker";
 
    @IsDefined()
    @IsString()

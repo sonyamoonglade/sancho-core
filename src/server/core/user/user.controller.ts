@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, ParseIntPipe, Post, Query, Req, Res, UseGuards } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { Request, Response } from "express";
-import { CreateMasterUserDto } from "./dto/create-master-user.dto";
+import { CreateWorkerUserDto } from "./dto/create-master-user.dto";
 import { PreventAuthedGuard } from "./guard/prevent-authed.guard";
 import { LoginMasterUserDto } from "./dto/login-master-user.dto";
 import { SessionService } from "../session/session.service";
@@ -14,10 +14,42 @@ import { CreateMarkDto } from "../mark/dto/create-mark.dto";
 import { AuthorizationGuard } from "../authorization/authorization.guard";
 import { CustomerData } from "../entities/User";
 import { CookieService } from "../../packages/cookie/cookie.service";
+import { DeliveryService } from "../../packages/delivery/delivery.service";
+import { DeliveryServiceUnavailable } from "../../packages/exceptions/delivery.exceptions";
 
 @Controller("/users")
 export class UserController {
-   constructor(private userService: UserService, private sessionService: SessionService, private cookieService: CookieService) {}
+   constructor(
+      private userService: UserService,
+      private sessionService: SessionService,
+      private cookieService: CookieService,
+      private deliveryService: DeliveryService
+   ) {}
+
+   @Get("/admin/")
+   @UseGuards(AuthorizationGuard)
+   @Role([AppRoles.master])
+   async getAll(@Res() res: Response) {
+      try {
+         const workers = await this.userService.getWorkers();
+         let runners;
+         try {
+            runners = await this.deliveryService.getRunners();
+         } catch (e) {
+            if (e instanceof DeliveryServiceUnavailable) {
+               runners = [];
+            } else {
+               throw e;
+            }
+         }
+         return res.status(200).json({
+            workers,
+            runners
+         });
+      } catch (e) {
+         throw e;
+      }
+   }
 
    @Post("/loginMaster")
    @UseGuards(RegisterSpamGuard)
@@ -59,6 +91,8 @@ export class UserController {
    }
 
    @Get("/credentials")
+   @UseGuards(AuthorizationGuard)
+   @Role([AppRoles.worker])
    async getUserCredentials(@Res() res: Response, @Query("phoneNumber") phoneNumber: string) {
       try {
          const credentials = await this.userService.getUserCredentials(phoneNumber);
@@ -89,12 +123,13 @@ export class UserController {
          throw e;
       }
    }
-   @Post("/registerMasterUser")
+   @Post("/admin/registerWorker")
    @UseGuards(AuthorizationGuard)
    @Role([AppRoles.master])
-   async registerMasterUser(@Res() res: Response, @Req() req: Request, @Body() b: CreateMasterUserDto) {
+   async registerWorker(@Res() res: Response, @Req() req: Request, @Body() b: CreateWorkerUserDto) {
       try {
-         const masterUser = await this.userService.createMasterUser(b);
+         const masterUser = await this.userService.registerWorker(b);
+         //todo: add email verification to proceed
          return res.status(201).send({
             login: masterUser.login,
             role: masterUser.role
@@ -103,8 +138,10 @@ export class UserController {
          throw e;
       }
    }
+
    @Get("/logout")
-   @Role([AppRoles.worker])
+   @UseGuards(AuthorizationGuard)
+   @Role([AppRoles.worker, AppRoles.master])
    async logout(@Res() res: Response, @Req() req: extendedRequest) {
       try {
          const SID = req.cookies[CookieNames.SID];
@@ -129,6 +166,7 @@ export class UserController {
       }
    }
    @Delete("/mark")
+   @UseGuards(AuthorizationGuard)
    @Role([AppRoles.worker])
    async deleteMark(@Req() req: extendedRequest, @Res() res: Response, @Query("v", ParseIntPipe) markId: number) {
       try {
@@ -143,6 +181,8 @@ export class UserController {
    }
 
    @Get("/find")
+   @UseGuards(AuthorizationGuard)
+   @Role([AppRoles.worker])
    async findByNumber(@Res() res: Response, @Query("v") query: string) {
       try {
          const result = await this.userService.findByNumberQuery(query);

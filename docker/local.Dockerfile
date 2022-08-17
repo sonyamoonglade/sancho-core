@@ -1,4 +1,4 @@
-FROM node
+FROM node:alpine
 
 WORKDIR /app
 
@@ -10,6 +10,4 @@ COPY . .
 
 ENV NODE_ENV="development"
 
-RUN npm run build:prod
-
-CMD ["npm","run","start"]
+CMD ["npm","run","start:docker"]

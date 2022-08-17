@@ -164,3 +164,13 @@ export type Category = {
    name: string;
    rank: number;
 };
+
+export type MasterUser = {
+   login: string;
+   name: string;
+   role: string;
+};
+export type RunnerUser = {
+   username: string;
+   phone_number: string;
+};

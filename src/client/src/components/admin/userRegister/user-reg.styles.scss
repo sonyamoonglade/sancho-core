@@ -1,0 +1,77 @@
+@import "src/./variables.scss";
+
+.admin_users{
+  display: grid;
+  grid-template-columns: calc(50% - 1rem) calc(50% - 1rem);
+  justify-content: space-between;
+  grid-gap: 2rem;
+  padding: 1rem 2rem;
+
+}
+
+.user_register{
+  border: 1px solid $black-18;
+  border-radius: 5px;
+  padding: 1rem 0 1rem 1rem;
+}
+
+.register_title{
+  font-family: "Geometria Bold",sans-serif;
+  font-size: $font-prelg;
+  margin-bottom: 1rem;
+}
+.content{
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+  div{
+    width: 70%;
+  }
+}
+.register_field{
+
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  p{
+    font-family: "Geometria",sans-serif;
+    font-size: $font-prelg;
+  }
+}
+.register_field:last-of-type{
+  margin-bottom: 0;
+}
+
+.reg_handler{
+  border: 0;
+  border-radius: 7px;
+  outline: none;
+  margin: 0 auto;
+  color: white;
+  font-family: "Geometria Medium",sans-serif;
+  font-size: $font-mder;
+  max-width: 120px;
+  background-color: $sick-black;
+  padding: 0.5rem 0.5rem;
+  transition: all 0.3s ease-in-out;
+}
+
+.reg_handler:active{
+  transform: scale(.95) !important;
+}
+
+.reg_handler:hover{
+  background-color: $green;
+  transform: scale(1.01);
+}
+.fillers{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border: 1px solid $black-18;
+  margin-top: 0.5rem;
+  border-radius: 5px;
+  width: 100% !important;
+  padding: .235rem 1rem;
+}
