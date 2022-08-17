@@ -170,7 +170,6 @@ export type MasterUser = {
    name: string;
    role: string;
 };
-
 export type RunnerUser = {
    username: string;
    phone_number: string;

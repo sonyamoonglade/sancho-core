@@ -6,7 +6,7 @@ const RunnerList = () => {
    const { users } = useAppSelector(adminSelector);
    return (
       <div className="runner_list">
-         <UserList listFor={"Курьеры"}>
+         <UserList listFor={"курьеров"}>
             <ul>
                {users.runners?.map((runner) => (
                   <li className="user_card" key={runner.username}>

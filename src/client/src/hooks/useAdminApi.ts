@@ -1,11 +1,11 @@
 import { useAxios } from "./useAxios";
 import { useCallback } from "react";
-import { AdminProduct, Category, RenderMasterUser, RenderRunnerUser } from "../types/types";
+import { AdminProduct, Category, RenderMasterUser } from "../types/types";
 import { EditFormValues } from "../components/admin/productModal/edit/hooks/useEditProductModalForm";
 import { CreateFormValues } from "../components/admin/productModal/create/hooks/useCreateProductModalForm";
 import { AggregationPreset, MasterUser, ProductTopArray, RunnerUser } from "../common/types";
 import { WorkerRegisterFormState } from "../components/admin/workerRegister/hooks/useWorkerRegisterForm";
-import { RunnerRegisterFormState } from "../components/admin/runnerRegister/hooks/useRunnerRegisterForm";
+import { RunnerRegisterFormState, RunnerRegisterFormValues } from "../components/admin/runnerRegister/hooks/useRunnerRegisterForm";
 
 interface AdminCatalogResponse {
    catalog: AdminProduct[];
@@ -18,12 +18,7 @@ interface AdminCategoriesResponse {
 interface ProductTopResponse {
    top: ProductTopArray;
 }
-interface RegisterMasterUserResponse {
-   user: RenderMasterUser;
-}
-interface RegisterRunnerUserResponse {
-   user: RenderRunnerUser;
-}
+
 interface MastersAndWorkersResponse {
    workers: MasterUser[];
    runners: RunnerUser[];
@@ -147,19 +142,17 @@ export function useAdminApi() {
    );
 
    const registerWorker = useCallback(
-      async function (body: WorkerRegisterFormState): Promise<RenderMasterUser> {
+      async function (body: WorkerRegisterFormState): Promise<void> {
          const url = `/users/admin/registerWorker`;
-         const res = await client.post<RegisterMasterUserResponse>(url, body);
-         return res.data.user;
+         await client.post(url, body);
       },
       [client]
    );
 
    const registerRunner = useCallback(
-      async function (body: RunnerRegisterFormState): Promise<RenderRunnerUser> {
+      async function (body: RunnerRegisterFormValues): Promise<void> {
          const url = `/delivery/admin/runner`;
-         const res = await client.post<RegisterRunnerUserResponse>(url, body);
-         return res.data.user;
+         await client.post(url, body);
       },
       [client]
    );

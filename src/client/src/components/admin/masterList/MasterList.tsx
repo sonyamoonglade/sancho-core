@@ -6,10 +6,10 @@ const MasterList = () => {
    const { users } = useAppSelector(adminSelector);
    return (
       <div className="runner_list">
-         <UserList listFor={"Воркеры"}>
+         <UserList listFor={"воркеров"}>
             <ul>
                {users.workers?.map((worker) => (
-                  <li className="user_card" key={worker.name}>
+                  <li className="user_card" key={worker.login}>
                      <div>
                         <p>ФИ: {worker.name}</p>
                         <p>Логин: {worker.login}</p>

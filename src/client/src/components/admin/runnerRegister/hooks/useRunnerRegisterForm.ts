@@ -6,6 +6,11 @@ export interface RunnerRegisterFormState {
    phoneNumber: string;
 }
 
+export interface RunnerRegisterFormValues {
+   username: string;
+   phone_number: string;
+}
+
 export function useRunnerRegisterForm() {
    const [formValues, setFormValues] = useState<RunnerRegisterFormState>(Object.assign({}, null));
 
@@ -17,5 +22,13 @@ export function useRunnerRegisterForm() {
          return { ...copy };
       });
    }
-   return { formValues, setFormValues, setFormDefaults };
+
+   function getFormValues(): RunnerRegisterFormValues {
+      return {
+         username: formValues.name,
+         phone_number: formValues.phoneNumber
+      };
+   }
+
+   return { formValues, setFormValues, setFormDefaults, getFormValues };
 }

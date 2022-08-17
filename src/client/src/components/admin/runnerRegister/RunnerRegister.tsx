@@ -7,13 +7,18 @@ import { MdOutlineDeliveryDining } from "react-icons/md";
 import { useRunnerRegisterForm } from "./hooks/useRunnerRegisterForm";
 import { useAdminApi } from "../../../hooks/useAdminApi";
 import { adminActions, useAppDispatch } from "../../../redux";
+import { RunnerUser } from "../../../common/types";
 
 const WorkerRegister = () => {
-   async function handleRegister() {}
-
-   const { formValues, setFormValues, setFormDefaults } = useRunnerRegisterForm();
-   const { fetchMastersAndRunners } = useAdminApi();
+   const { formValues, setFormValues, setFormDefaults, getFormValues } = useRunnerRegisterForm();
+   const { fetchMastersAndRunners, registerRunner } = useAdminApi();
    const dispatch = useAppDispatch();
+
+   async function handleRegister() {
+      const body = getFormValues();
+      await registerRunner(body);
+      dispatch(adminActions.appendRunner(body));
+   }
 
    async function fetchMastersRunnersAsync() {
       const { workers, runners } = await fetchMastersAndRunners();
@@ -33,14 +38,7 @@ const WorkerRegister = () => {
          <UserRegister registerFor={"Курьер"} handlerFunc={handleRegister}>
             <section className="register_field">
                <p>Имя и фамилия</p>
-               <RectangleInput
-                  placeholder={"Иван Иванов"}
-                  regexp={new RegExp("[А-Яа-я]+")}
-                  value={formValues.name}
-                  setValue={setFormValues}
-                  disabled={false}
-                  name={"name"}
-               />
+               <RectangleInput placeholder={"Иван Иванов"} value={formValues.name} setValue={setFormValues} disabled={false} name={"name"} />
             </section>
             <section className="register_field">
                <p>Номер телефона</p>

@@ -99,8 +99,3 @@ export type RenderMasterUser = {
    login: string;
    role: string;
 };
-
-export type RenderRunnerUser = {
-   phoneNumber: string;
-   name: string;
-};
