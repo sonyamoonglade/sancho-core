@@ -20,7 +20,7 @@ import { applyPayPolicy } from "../../packages/pay/policy";
 import { PinoLogger } from "nestjs-pino";
 import { ValidationErrorException } from "../../packages/exceptions/validation.exceptions";
 import { EventsService } from "../../packages/event/event.module";
-import { Events } from "../../packages/event/events";
+import { Events, InternalEvents } from "../../packages/event/contract";
 import { OrderCannotBeVerified } from "../../packages/exceptions/order.exceptions";
 import * as dayjs from "dayjs";
 import * as utc from "dayjs/plugin/utc";
@@ -46,7 +46,7 @@ export class OrderController {
    }
 
    private subscribeToEvent() {
-      this.eventService.GetEmitter().on(Events.REFRESH_ORDER_QUEUE, async () => {
+      this.eventService.Subscribe(InternalEvents.REFRESH_ORDER_QUEUE, async () => {
          await this.orderService.notifyQueueSubscribers(this.queueConnections);
          this.logger.debug("notified queue subscribers");
       });
@@ -81,6 +81,8 @@ export class OrderController {
          };
 
          await this.orderService.createUserOrder(dto);
+         this.eventService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
+         this.eventService.Fire(Events.ORDER_CREATED);
 
          if (dto.is_delivered === true) {
             await this.userService.updateUserRememberedDeliveryAddress(userId, dto.delivery_details);
@@ -135,6 +137,7 @@ export class OrderController {
 
          //Create order
          await this.orderService.createMasterOrder(dto);
+         this.eventService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
 
          //Update user's preferred delivery details
          if (dto.is_delivered === true) {
@@ -186,6 +189,7 @@ export class OrderController {
 
          //Verify order
          await this.orderService.verifyOrder(dto);
+         this.eventService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
 
          //Update user's preferred delivery details
          if (inp.is_delivered === true) {
@@ -219,6 +223,7 @@ export class OrderController {
          };
 
          await this.orderService.cancelOrder(dto);
+         this.eventService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
 
          //If user cancels then set temp-ban cookie for it
          if (role === "user") {
@@ -228,6 +233,19 @@ export class OrderController {
          }
 
          return res.status(200).end();
+      } catch (e) {
+         throw e;
+      }
+   }
+
+   @Put("/complete")
+   @Role([AppRoles.worker])
+   async completeOrder(@Res() res: Response, @Req() req: extendedRequest, @Body() dto: CompleteOrderDto) {
+      try {
+         const orderStatus = await this.orderService.completeOrder(dto);
+         this.eventService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
+
+         return res.status(200).send({ status: orderStatus as OrderStatus.completed });
       } catch (e) {
          throw e;
       }
@@ -278,17 +296,6 @@ export class OrderController {
       try {
          const initialQueue = await this.orderService.initialQueue();
          return res.status(200).send({ queue: initialQueue });
-      } catch (e) {
-         throw e;
-      }
-   }
-
-   @Put("/complete")
-   @Role([AppRoles.worker])
-   async completeOrder(@Res() res: Response, @Req() req: extendedRequest, @Body() dto: CompleteOrderDto) {
-      try {
-         const orderStatus = await this.orderService.completeOrder(dto);
-         return res.status(200).send({ status: orderStatus as OrderStatus.completed });
       } catch (e) {
          throw e;
       }
