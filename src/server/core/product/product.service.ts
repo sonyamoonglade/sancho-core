@@ -14,7 +14,7 @@ import { CategoryService } from "../category/category.service";
 import { categories } from "../entities/Category";
 
 export interface ProductRepositoryInterface {
-   searchQuery(words: string[]): Promise<Product[]>;
+   searchQuery(words: string[]): Promise<FrontendProduct[]>;
    create(dto: CreateProductDto): Promise<number>;
    delete(id: number): Promise<number>;
    update(id: number, updated: Partial<Product>): Promise<number>;
@@ -29,7 +29,7 @@ export interface ProductRepositoryInterface {
 export class ProductService {
    constructor(private productRepository: ProductRepository, private categoryService: CategoryService) {}
 
-   async query(q: string): Promise<Product[]> {
+   async query(q: string): Promise<FrontendProduct[]> {
       if (q.trim().length === 0) {
          throw new ValidationErrorException();
       }

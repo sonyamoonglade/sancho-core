@@ -26,6 +26,7 @@ export type AppConfig = {
       superAdminPassword: string;
       databasePassword: string;
       deliveryServiceURL: string;
+      notificationServiceURL: string;
       hashSecret: string;
       nodeEnv: string;
    };
@@ -52,7 +53,8 @@ export function GetAppConfig(): AppConfig {
       superAdminLogin: process.env.SUPERADMIN_LOGIN,
       superAdminPassword: process.env.SUPERADMIN_PASSWORD,
       hashSecret: process.env.HASH_SECRET,
-      nodeEnv: process.env.NODE_ENV
+      nodeEnv: process.env.NODE_ENV,
+      notificationServiceURL: process.env.NOTIFICATION_SERVICE_URL
    };
 
    instance = config;

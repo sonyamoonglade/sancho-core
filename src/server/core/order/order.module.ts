@@ -12,7 +12,7 @@ import { MiscService } from "../miscellaneous/misc.service";
 import { MiscRepository } from "../miscellaneous/misc.repository";
 import { UserService } from "../user/user.service";
 import { DeliveryService } from "../../packages/delivery/delivery.service";
-import { EventsService } from "../../packages/event/event.module";
+import { EventsService } from "../../packages/event/event.service";
 
 @Module({
    providers: [

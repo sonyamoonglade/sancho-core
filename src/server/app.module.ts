@@ -22,7 +22,6 @@ import { MarkRepository } from "./core/mark/mark.repository";
 import { DeliveryController } from "./packages/delivery/delivery.controller";
 import { DeliveryService } from "./packages/delivery/delivery.service";
 import { LoggerModule } from "nestjs-pino";
-import { EventsService } from "./packages/event/event.module";
 import { ImageStorageService } from "./packages/imageStorage/image_storage.service";
 import { LambdaRouter } from "./packages/lambdaRouter/lambdaRouter";
 import { StatisticsController } from "./core/statistics/statistics.controller";
@@ -30,6 +29,7 @@ import { StatisticsService } from "./core/statistics/statistics.service";
 import { CategoryService } from "./core/category/category.service";
 import { CategoryRepository } from "./core/category/category.repository";
 import { CategoryController } from "./core/category/category.controller";
+import { EventsService } from "./packages/event/event.service";
 
 @Module({
    controllers: [

@@ -12,19 +12,17 @@ import {
    TelegramInternalError
 } from "../exceptions/delivery.exceptions";
 import { DeliveryStatus } from "../../types/types";
-import { EventsService } from "../event/event.module";
-import { EventEmitter } from "node:events";
-import { Events } from "../event/events";
+
 import { RunnerUser } from "src/common/types";
+import { EventsService } from "../event/event.service";
+import { InternalEvents } from "../event/contract";
 
 @Injectable()
 export class DeliveryService implements DeliveryServiceInterface {
    private readonly url: string;
-   private events: EventEmitter;
 
    constructor(private logger: PinoLogger, private eventsService: EventsService) {
       this.logger.setContext(DeliveryService.name);
-      this.events = eventsService.GetEmitter();
       //todo: move to config
       this.url = process.env.DELIVERY_SERVICE_URL + "/api";
    }
@@ -73,7 +71,7 @@ export class DeliveryService implements DeliveryServiceInterface {
          await axios.post(this.url + endPoint, dto);
 
          this.logger.debug("ok");
-         this.events.emit(Events.REFRESH_ORDER_QUEUE);
+         this.eventsService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
       } catch (e: any) {
          this.logger.error("create delivery failed with error");
          const payload = {

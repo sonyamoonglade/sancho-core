@@ -19,13 +19,14 @@ import { PolicyFilter } from "./filter/order.filter";
 import { applyPayPolicy } from "../../packages/pay/policy";
 import { PinoLogger } from "nestjs-pino";
 import { ValidationErrorException } from "../../packages/exceptions/validation.exceptions";
-import { EventsService } from "../../packages/event/event.module";
-import { Events, InternalEvents } from "../../packages/event/contract";
+
+import { Events, InternalEvents, OrderCreatedPayload } from "../../packages/event/contract";
 import { OrderCannotBeVerified } from "../../packages/exceptions/order.exceptions";
 import * as dayjs from "dayjs";
 import * as utc from "dayjs/plugin/utc";
 import * as timezone from "dayjs/plugin/timezone";
 import { helpers } from "../../packages/helpers/helpers";
+import { EventsService } from "src/server/packages/event/event.service";
 
 @Controller("/order")
 @UseGuards(AuthorizationGuard)
@@ -82,7 +83,6 @@ export class OrderController {
 
          await this.orderService.createUserOrder(dto);
          this.eventService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
-         this.eventService.Fire(Events.ORDER_CREATED);
 
          if (dto.is_delivered === true) {
             await this.userService.updateUserRememberedDeliveryAddress(userId, dto.delivery_details);
@@ -143,6 +143,15 @@ export class OrderController {
          if (dto.is_delivered === true) {
             await this.userService.updateUserRememberedDeliveryAddress(userId, dto.delivery_details);
          }
+
+         const payload: OrderCreatedPayload = {
+            order_id: 1,
+            total_cart_price: 100,
+            username: inp.username, //todo: move to constant,
+            phone_number: inp.phone_number
+         };
+
+         this.eventService.FireExternal(Events.ORDER_CREATED, payload);
 
          return res.status(201).end();
       } catch (e) {
