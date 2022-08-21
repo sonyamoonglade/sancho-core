@@ -50,34 +50,17 @@ export class OrderService {
    ) {
       this.logger.setContext(OrderService.name);
    }
-   public async createUserOrder(dto: CreateUserOrderDto): Promise<Order> {
-      let total_cart_price = await this.calculateTotalCartPrice(dto.cart);
-      if (dto.is_delivered) {
-         total_cart_price = await this.applyDeliveryPunishment(total_cart_price);
-      }
-      dto.total_cart_price = total_cart_price;
-
-      await this.orderRepository.createUserOrder(dto);
-
-      return;
+   public async createUserOrder(dto: CreateUserOrderDto): Promise<number> {
+      return this.orderRepository.createUserOrder(dto);
    }
 
-   public async createMasterOrder(dto: CreateMasterOrderDto): Promise<void> {
-      let total_cart_price = await this.calculateTotalCartPrice(dto.cart);
-      // Make sure total cart price is correct and punishment for delivery is applied.
-      if (dto.is_delivered) {
-         total_cart_price = await this.applyDeliveryPunishment(total_cart_price);
-      }
-      dto.total_cart_price = total_cart_price;
-
-      await this.orderRepository.createMasterOrder(dto);
-
-      return;
+   public async createMasterOrder(dto: CreateMasterOrderDto): Promise<number> {
+      return this.orderRepository.createMasterOrder(dto);
    }
 
    public async verifyOrder(dto: VerifyOrderDto): Promise<void> {
       try {
-         const { delivery_details, cart, id } = dto;
+         const { delivery_details, id } = dto;
 
          const prevDeliveryDetails: DeliveryDetails = await this.orderRepository.getDeliveryDetails(id);
 
@@ -89,12 +72,6 @@ export class OrderService {
             };
          }
 
-         //Re/Calculate cart price if cart is sent (means changed)
-         if (dto.cart !== undefined) {
-            const recalculatedTotalCartPrice = await this.calculateTotalCartPrice(cart);
-            dto.cart = cart;
-            dto.total_cart_price = recalculatedTotalCartPrice;
-         }
          await this.orderRepository.update(id, dto);
       } catch (e) {
          this.logger.error(e);

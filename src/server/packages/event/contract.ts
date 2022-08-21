@@ -13,17 +13,25 @@ export enum InternalEvents {
 }
 
 export enum Events {
-   ORDER_CREATED = "order_created",
+   MASTER_ORDER_CREATE = "master_order_create",
+   USER_ORDER_CREATE = "user_order_create",
    WORKER_LOGIN = "worker_login"
 }
 
-export interface OrderCreatedPayload {
+//Payload for Events.MASTER_ORDER_CREATE
+export interface MasterOrderCreatePayload {
    order_id: number;
    username: string;
    total_cart_price: number;
    phone_number: string;
 }
+//Payload for Events.USER_ORDER_CREATE
+export interface UserOrderCreatePayload {
+   order_id: number;
+   total_cart_price: number;
+}
 
+//Payload for Events.WORKER_LOGIN
 export interface WorkerLoginPayload {
    login_at: Date;
    username: string;

@@ -20,7 +20,7 @@ import { applyPayPolicy } from "../../packages/pay/policy";
 import { PinoLogger } from "nestjs-pino";
 import { ValidationErrorException } from "../../packages/exceptions/validation.exceptions";
 
-import { Events, InternalEvents, OrderCreatedPayload } from "../../packages/event/contract";
+import { Events, InternalEvents, MasterOrderCreatePayload, UserOrderCreatePayload } from "../../packages/event/contract";
 import { OrderCannotBeVerified } from "../../packages/exceptions/order.exceptions";
 import * as dayjs from "dayjs";
 import * as utc from "dayjs/plugin/utc";
@@ -41,12 +41,12 @@ export class OrderController {
       private eventService: EventsService
    ) {
       this.logger.setContext(OrderController.name);
-      this.subscribeToEvent();
+      this.initRefreshQueueSubscription();
       dayjs.extend(utc);
       dayjs.extend(timezone);
    }
 
-   private subscribeToEvent() {
+   private initRefreshQueueSubscription() {
       this.eventService.Subscribe(InternalEvents.REFRESH_ORDER_QUEUE, async () => {
          await this.orderService.notifyQueueSubscribers(this.queueConnections);
          this.logger.debug("notified queue subscribers");
@@ -70,6 +70,13 @@ export class OrderController {
          const userId = req.user_id;
          this.logger.debug(`create order for user ${userId}`);
 
+         let total_cart_price = await this.orderService.calculateTotalCartPrice(inp.cart);
+
+         //Recalculate total_cart_price if order is delivered in order to apply punishment
+         if (inp.is_delivered) {
+            total_cart_price = await this.orderService.applyDeliveryPunishment(total_cart_price);
+         }
+
          const dto: CreateUserOrderDto = {
             cart: inp.cart,
             delivery_details: inp.delivery_details,
@@ -78,15 +85,25 @@ export class OrderController {
             pay: inp.pay,
             status: OrderStatus.waiting_for_verification,
             user_id: userId,
-            created_at: helpers.selectNowUTC()
+            created_at: helpers.selectNowUTC(),
+            total_cart_price
          };
 
-         await this.orderService.createUserOrder(dto);
-         this.eventService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
+         const orderId = await this.orderService.createUserOrder(dto);
 
          if (dto.is_delivered === true) {
             await this.userService.updateUserRememberedDeliveryAddress(userId, dto.delivery_details);
          }
+
+         this.eventService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
+
+         const payload: UserOrderCreatePayload = {
+            total_cart_price,
+            order_id: orderId
+         };
+
+         //Trigger external event
+         this.eventService.FireExternal(Events.USER_ORDER_CREATE, payload);
 
          //todo: implement online pay with redirect
          //const redirectUrl = payservice.Pay()
@@ -116,6 +133,16 @@ export class OrderController {
             });
             userId = registeredUser.id;
          }
+
+         let total_cart_price = await this.orderService.calculateTotalCartPrice(inp.cart);
+         //Recalculate total_cart_price if order is delivered in order to apply punishment
+         if (inp.is_delivered) {
+            total_cart_price = await this.orderService.applyDeliveryPunishment(total_cart_price);
+         }
+
+         //Update user's name. (Do it first because orderQueue won't catch up)
+         await this.userService.updateUsername(inp.username, userId);
+
          const dto: CreateMasterOrderDto = {
             cart: inp.cart,
             user_id: userId,
@@ -124,7 +151,7 @@ export class OrderController {
             delivery_details: inp.delivery_details,
             delivered_at: inp.delivered_at,
             is_delivered: inp.is_delivered,
-            total_cart_price: 0, //to be updated in service
+            total_cart_price, //to be updated in service
             phone_number: inp.phone_number,
             is_delivered_asap: inp.is_delivered_asap,
             pay: "onPickup" // Only one method is allowed
@@ -132,26 +159,23 @@ export class OrderController {
 
          this.logger.debug(`create master order for user: ${userId}`);
 
-         //Update user's name. (Do it first because orderQueue won't catch up)
-         await this.userService.updateUsername(inp.username, userId);
-
          //Create order
-         await this.orderService.createMasterOrder(dto);
-         this.eventService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
+         const orderId = await this.orderService.createMasterOrder(dto);
 
          //Update user's preferred delivery details
          if (dto.is_delivered === true) {
             await this.userService.updateUserRememberedDeliveryAddress(userId, dto.delivery_details);
          }
 
-         const payload: OrderCreatedPayload = {
-            order_id: 1,
-            total_cart_price: 100,
-            username: inp.username, //todo: move to constant,
-            phone_number: inp.phone_number
-         };
+         this.eventService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
 
-         this.eventService.FireExternal(Events.ORDER_CREATED, payload);
+         const payload: MasterOrderCreatePayload = {
+            total_cart_price,
+            username: inp.username,
+            phone_number: inp.phone_number,
+            order_id: orderId
+         };
+         this.eventService.FireExternal(Events.MASTER_ORDER_CREATE, payload);
 
          return res.status(201).end();
       } catch (e) {
@@ -192,18 +216,23 @@ export class OrderController {
          if (inp.delivery_details !== undefined) {
             dto.delivery_details = inp.delivery_details;
          }
+         //Re/Calculate cart price if cart is sent (means changed)
+         if (dto.cart !== undefined) {
+            dto.total_cart_price = await this.orderService.calculateTotalCartPrice(dto.cart);
+         }
 
          //Update user's name. (Do it first because orderQueue won't catch up)
          await this.userService.updateUsername(inp.username, userId);
 
          //Verify order
          await this.orderService.verifyOrder(dto);
-         this.eventService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
 
          //Update user's preferred delivery details
          if (inp.is_delivered === true) {
             await this.userService.updateUserRememberedDeliveryAddress(userId, dto.delivery_details);
          }
+
+         this.eventService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
 
          return res.status(200).send(OrderStatus.verified);
       } catch (e) {

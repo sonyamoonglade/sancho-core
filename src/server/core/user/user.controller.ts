@@ -16,6 +16,9 @@ import { CustomerData } from "../entities/User";
 import { CookieService } from "../../packages/cookie/cookie.service";
 import { DeliveryService } from "../../packages/delivery/delivery.service";
 import { DeliveryServiceUnavailable } from "../../packages/exceptions/delivery.exceptions";
+import { Events, WorkerLoginPayload } from "../../packages/event/contract";
+import { helpers } from "../../packages/helpers/helpers";
+import { EventsService } from "../../packages/event/event.service";
 
 @Controller("/users")
 export class UserController {
@@ -23,7 +26,8 @@ export class UserController {
       private userService: UserService,
       private sessionService: SessionService,
       private cookieService: CookieService,
-      private deliveryService: DeliveryService
+      private deliveryService: DeliveryService,
+      private eventsService: EventsService
    ) {}
 
    @Get("/admin/")
@@ -55,9 +59,19 @@ export class UserController {
    @UseGuards(RegisterSpamGuard)
    async loginMaster(@Res() res: Response, @Body() b: LoginMasterUserDto) {
       try {
-         const { id, role } = await this.userService.loginMaster(b);
+         const { id, role, username } = await this.userService.loginMaster(b);
          const SID = await this.sessionService.generateMasterSession(id);
          res = this.cookieService.setMasterSessCookie(res, SID);
+
+         if (role === AppRoles.worker) {
+            const payload: WorkerLoginPayload = {
+               login_at: helpers.selectNowUTC(),
+               username,
+               time_offset: 4 //hardcode for now
+            };
+            this.eventsService.FireExternal(Events.WORKER_LOGIN, payload);
+         }
+
          return res.status(200).send({ role });
       } catch (e) {
          throw e;

@@ -12,8 +12,6 @@ export class AuthorizationGuard implements CanActivate {
       this.logger.setContext(AuthorizationGuard.name);
    }
    async canActivate(context: ExecutionContext): Promise<boolean> {
-      this.logger.debug("authorization guard");
-
       const req: extendedRequest = context.switchToHttp().getRequest();
       //Fine for catalog requests but none of admin requests
       if (req.url.endsWith("/catalog") && !req.url.split("/").includes("admin")) {
@@ -24,13 +22,11 @@ export class AuthorizationGuard implements CanActivate {
       const { user_id } = req;
       try {
          const userRole = await this.userService.getUserRole(user_id);
-         this.logger.debug(`user role: ${userRole}`);
-
          const handlerRoles: string[] = this.reflector.get(ROLES_META_KEY, context.getHandler());
-         this.logger.debug(`handler roles: ${handlerRoles}`);
 
          return handlerRoles.includes(userRole) || userRole == AppRoles.master;
       } catch (e) {
+         this.logger.error(e);
          return false;
       }
    }
