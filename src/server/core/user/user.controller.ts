@@ -19,6 +19,7 @@ import { DeliveryServiceUnavailable } from "../../packages/exceptions/delivery.e
 import { Events, WorkerLoginPayload } from "../../packages/event/contract";
 import { helpers } from "../../packages/helpers/helpers";
 import { EventsService } from "../../packages/event/event.service";
+import { BanWorkerInput } from "./dto/user.dto";
 
 @Controller("/users")
 export class UserController {
@@ -148,6 +149,18 @@ export class UserController {
             login: masterUser.login,
             role: masterUser.role
          });
+      } catch (e) {
+         throw e;
+      }
+   }
+
+   @Post("/admin/banWorker")
+   @UseGuards(AuthorizationGuard)
+   @Role([AppRoles.master])
+   async banWorker(@Res() res: Response, @Body() inp: BanWorkerInput) {
+      try {
+         await this.userService.banWorker(inp.login);
+         return res.status(200).end();
       } catch (e) {
          throw e;
       }

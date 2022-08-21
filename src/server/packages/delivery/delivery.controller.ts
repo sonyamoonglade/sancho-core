@@ -1,4 +1,4 @@
-import { Body, Controller, Get, ParseIntPipe, Post, Query, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Post, Query, Res, UseGuards } from "@nestjs/common";
 import { DeliveryService } from "./delivery.service";
 import { Response } from "express";
 import { AuthorizationGuard } from "../../core/authorization/authorization.guard";
@@ -60,6 +60,18 @@ export class DeliveryController {
             throw new UnexpectedServerError();
          }
          return res.status(201).end();
+      } catch (e) {
+         throw e;
+      }
+   }
+
+   @Delete("/admin/runner/:phoneNumber")
+   @Role([AppRoles.master])
+   async banRunner(@Res() res: Response, @Param("phoneNumber") phoneNumber: string) {
+      try {
+         this.logger.debug("ban runner");
+         await this.deliveryService.banRunner(phoneNumber);
+         return res.status(200).end();
       } catch (e) {
          throw e;
       }

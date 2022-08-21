@@ -218,6 +218,10 @@ export class UserService {
       };
    }
 
+   async banWorker(login: string): Promise<void> {
+      return this.userRepository.banWorker(login);
+   }
+
    async getWorkers(): Promise<MasterUser[]> {
       return this.userRepository.getWorkers();
    }

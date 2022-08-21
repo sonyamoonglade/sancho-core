@@ -47,9 +47,7 @@ export class DeliveryService implements DeliveryServiceInterface {
             responseType: "arraybuffer",
             responseEncoding: "utf-8"
          });
-         const data = response.data;
-         this.logger.debug(`received buffer with length ${data.length}`);
-         return data;
+         return response.data;
       } catch (e: any) {
          this.logger.error("download check failed with error");
          const payload = {
@@ -59,8 +57,15 @@ export class DeliveryService implements DeliveryServiceInterface {
       }
    }
 
-   async banRunner(runnerId: number): Promise<boolean> {
-      return Promise.resolve(undefined);
+   async banRunner(phoneNumber: string): Promise<void> {
+      try {
+         const endPoint = `/runner/${phoneNumber}`;
+         await axios.delete(this.url + endPoint);
+         return;
+      } catch (e) {
+         this.logger.error("ban runner failed with error");
+         this.parseDeliveryError(e);
+      }
    }
 
    async createDelivery(dto: CreateDeliveryDto): Promise<void> {
