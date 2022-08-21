@@ -1,10 +1,12 @@
-import { Injectable } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
 import { EventEmitter } from "node:events";
-import { TooMuchSubscriptions } from "../exceptions/event.exceptions";
+import { EventsServiceUnavailable, InvalidRequestPayload, TooMuchSubscriptions } from "../exceptions/event.exceptions";
 import { Events, ExternalCaller, InternalEvents } from "./contract";
 import { GetAppConfig } from "../config/config";
 import axios from "axios";
 import { PinoLogger } from "nestjs-pino";
+import { CreateSubscriptionDto } from "./dto/event.dto";
+import { NotFoundError } from "rxjs";
 
 @Injectable()
 export class EventsService {
@@ -47,5 +49,42 @@ export class EventsService {
             return;
          }
       };
+   }
+
+   async CreateSubscriptionAPI(dto: CreateSubscriptionDto): Promise<void> {
+      try {
+         const endPoint = this.baseURL + `/api/subscriptions`;
+         await axios.post(endPoint, dto);
+         return;
+      } catch (e) {
+         this.logger.error(`create subscription failed with error. ${e}`);
+         this.parseEventServiceError(e);
+         throw e;
+      }
+   }
+
+   async CancelSubscriptionAPI(subscriptionId: number): Promise<void> {
+      try {
+         const endPoint = this.baseURL + `/api/subscriptions/${subscriptionId}`;
+         await axios.delete(endPoint);
+         return;
+      } catch (e) {
+         this.logger.error(`cancel subscription failed with error ${e}`);
+         this.parseEventServiceError(e);
+         throw e;
+      }
+   }
+
+   parseEventServiceError(e: any) {
+      const message = e?.response?.data || "";
+      this.logger.error(`error message: ${message}`);
+      switch (true) {
+         case message?.includes("invalid request payload"):
+            throw new InvalidRequestPayload();
+         case message?.includes("does not exist"):
+            throw new NotFoundException();
+         default:
+            throw new EventsServiceUnavailable();
+      }
    }
 }

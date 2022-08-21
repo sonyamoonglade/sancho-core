@@ -30,6 +30,7 @@ import { CategoryService } from "./core/category/category.service";
 import { CategoryRepository } from "./core/category/category.repository";
 import { CategoryController } from "./core/category/category.controller";
 import { EventsService } from "./packages/event/event.service";
+import { EventsController } from "./packages/event/event.controller";
 
 @Module({
    controllers: [
@@ -40,7 +41,8 @@ import { EventsService } from "./packages/event/event.service";
       MiscController,
       DeliveryController,
       StatisticsController,
-      CategoryController
+      CategoryController,
+      EventsController
    ],
    providers: [
       SessionMiddleware,
@@ -98,6 +100,15 @@ export class AppModule implements NestModule {
                method: RequestMethod.GET
             }
          )
-         .forRoutes(UserController, ProductController, OrderController, MiscController, DeliveryController, StatisticsController, CategoryController);
+         .forRoutes(
+            UserController,
+            ProductController,
+            OrderController,
+            MiscController,
+            DeliveryController,
+            StatisticsController,
+            CategoryController,
+            EventsController
+         );
    }
 }
