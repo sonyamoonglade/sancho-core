@@ -24,21 +24,11 @@ migrate-down:
 migrate-up:
 	npm run migrate up
 
-build-backend-local:
-	docker build -f ./docker/local.Dockerfile -t sonyamoonglade/sancho-hub:backend-local .
-
-push-backend-local:
-	docker push sonyamoonglade/sancho-hub:backend-local
-
-build-backend-prod:
+build-prod:
 	docker build -f ./docker/prod.Dockerfile -t sonyamoonglade/sancho-hub:backend-core-prod . && docker push sonyamoonglade/sancho-hub:backend-core-prod
 
 cp-env:
 	cp .env.prod ../../deployment/sancho/backend/
-
-
-docker-up:
-	docker build -f ./docker/local.Dockerfile -t sonyamoonglade/sancho-hub:backend-local . && docker push sonyamoonglade/sancho-hub:backend-local && cd ./src/client && docker build -f ./docker/local.Dockerfile -t sonyamoonglade/sancho-hub:frontend-local . && docker push sonyamoonglade/sancho-hub:frontend-local && cd ../.. docker-compose pull -f ./docker-compose.dev.yaml && docker-compose -f ./docker-compose.dev.yaml up -d
 
 
 
