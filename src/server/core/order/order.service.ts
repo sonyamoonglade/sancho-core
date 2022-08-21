@@ -29,63 +29,38 @@ import {
    OrderCannotBeCompleted,
    OrderDoesNotExist
 } from "../../packages/exceptions/order.exceptions";
-import { Events } from "../../packages/event/events";
+
 import { MiscService } from "../miscellaneous/misc.service";
 import { QueueOrderRO } from "./dto/queue-order.dto";
 import { Miscellaneous } from "../entities/Miscellaneous";
 import { PinoLogger } from "nestjs-pino";
 import { DeliveryService } from "../../packages/delivery/delivery.service";
-import { EventsService } from "../../packages/event/event.module";
-import { EventEmitter } from "node:events";
+
 import { DeliveryServiceUnavailable } from "../../packages/exceptions/delivery.exceptions";
 import { helpers } from "../../packages/helpers/helpers";
 
 @Injectable()
 export class OrderService {
-   private events: EventEmitter;
-
    constructor(
       private orderRepository: OrderRepository,
       private productRepository: ProductRepository,
       private miscService: MiscService,
       private logger: PinoLogger,
-      private deliveryService: DeliveryService,
-      private eventService: EventsService
+      private deliveryService: DeliveryService
    ) {
-      this.events = eventService.GetEmitter();
       this.logger.setContext(OrderService.name);
    }
-   public async createUserOrder(dto: CreateUserOrderDto): Promise<Order> {
-      let total_cart_price = await this.calculateTotalCartPrice(dto.cart);
-      if (dto.is_delivered) {
-         total_cart_price = await this.applyDeliveryPunishment(total_cart_price);
-      }
-      dto.total_cart_price = total_cart_price;
-
-      //todo: switch to utc time now() pg
-      await this.orderRepository.createUserOrder(dto);
-      this.logger.debug("saved order to db");
-      this.events.emit(Events.REFRESH_ORDER_QUEUE);
-      return;
+   public async createUserOrder(dto: CreateUserOrderDto): Promise<number> {
+      return this.orderRepository.createUserOrder(dto);
    }
 
-   public async createMasterOrder(dto: CreateMasterOrderDto): Promise<void> {
-      let total_cart_price = await this.calculateTotalCartPrice(dto.cart);
-      // Make sure total cart price is correct and punishment for delivery is applied.
-      if (dto.is_delivered) {
-         total_cart_price = await this.applyDeliveryPunishment(total_cart_price);
-      }
-      dto.total_cart_price = total_cart_price;
-
-      await this.orderRepository.createMasterOrder(dto);
-      this.logger.debug("saved order to db");
-      this.events.emit(Events.REFRESH_ORDER_QUEUE);
-      return;
+   public async createMasterOrder(dto: CreateMasterOrderDto): Promise<number> {
+      return this.orderRepository.createMasterOrder(dto);
    }
 
    public async verifyOrder(dto: VerifyOrderDto): Promise<void> {
       try {
-         const { delivery_details, cart, id } = dto;
+         const { delivery_details, id } = dto;
 
          const prevDeliveryDetails: DeliveryDetails = await this.orderRepository.getDeliveryDetails(id);
 
@@ -97,15 +72,7 @@ export class OrderService {
             };
          }
 
-         //Re/Calculate cart price if cart is sent (means changed)
-         if (dto.cart !== undefined) {
-            const recalculatedTotalCartPrice = await this.calculateTotalCartPrice(cart);
-            dto.cart = cart;
-            dto.total_cart_price = recalculatedTotalCartPrice;
-         }
          await this.orderRepository.update(id, dto);
-
-         this.events.emit(Events.REFRESH_ORDER_QUEUE);
       } catch (e) {
          this.logger.error(e);
          throw new UnexpectedServerError();
@@ -125,7 +92,8 @@ export class OrderService {
       }
 
       await this.orderRepository.update(ord.id, dto);
-      this.events.emit(Events.REFRESH_ORDER_QUEUE);
+
+      return;
    }
 
    public async completeOrder(dto: CompleteOrderDto): Promise<OrderStatus> {
@@ -146,7 +114,6 @@ export class OrderService {
       };
 
       await this.orderRepository.update(order_id, updated);
-      this.events.emit(Events.REFRESH_ORDER_QUEUE);
 
       return OrderStatus.completed;
    }
@@ -246,7 +213,7 @@ export class OrderService {
       if (fconns.length === 0) {
          return;
       } else {
-         //Only after fetch the queue
+         //Fetch the queue
          const queue = await this.fetchOrderQueue();
          const chunk = `data: ${JSON.stringify({ queue })}\n\n`;
          fconns.forEach((conn) => {

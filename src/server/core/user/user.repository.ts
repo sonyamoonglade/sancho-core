@@ -32,6 +32,12 @@ export class UserRepository {
       return rows;
    }
 
+   async banWorker(login: string): Promise<void> {
+      const sql = `DELETE FROM ${users} WHERE login = $1`;
+      await this.db.query(sql, [login]);
+      return;
+   }
+
    async prepareDataForDelivery(orderId: number): Promise<DeliveryUser | null> {
       const sql = `
         SELECT u.id as user_id,u.name as username,phone_number FROM ${users} u

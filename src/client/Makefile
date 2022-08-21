@@ -27,11 +27,11 @@ undeploy-h:
 deploy:
 	heroku container:login && $(MAKE) build && $(MAKE) push-h && $(MAKE) release-h
 
-build-client-local:
+build-local:
 	docker build -f ./docker/local.Dockerfile -t sonyamoonglade/sancho-hub:frontend-local . && docker push sonyamoonglade/sancho-hub:frontend-local
 
-run-client-local:
+run-local:
 	docker run -d -p 80:80 sonyamoonglade/sancho-hub:frontend
 
-build-client-prod:
+build-prod:
 	docker build -f ./docker/prod.Dockerfile -t sonyamoonglade/sancho-hub:frontend-prod . && docker push sonyamoonglade/sancho-hub:frontend-prod

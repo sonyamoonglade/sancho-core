@@ -45,16 +45,20 @@ export class ProductRepository implements ProductRepositoryInterface {
          return { ...p, features: JSON.parse(p.features) };
       });
    }
-   async searchQuery(words: string[]): Promise<Product[]> {
+   async searchQuery(words: string[]): Promise<FrontendProduct[]> {
       let sql: string;
       if (words.length > 1) {
          const joinedWords = words.join(" & ");
          sql = `
-        select * from products where to_tsvector('russian',translate) @@ to_tsquery('russian','${joinedWords}:*') order by price desc
+         SELECT p.id, c.name as category, p.features, p.name, p.image_url, p.translate, p.price, p.description FROM ${products} p
+         JOIN ${categories} c ON p.category_id = c.category_id WHERE
+         to_tsvector('russian', p.translate) @@ to_tsquery('russian','${joinedWords}:*') ORDER BY p.price DESC
        `;
       } else {
          sql = `
-        select * from products where to_tsvector('russian',translate) @@ to_tsquery('russian','${words[0]}:*') order by price desc
+         SELECT p.id, c.name as category, p.features, p.name, p.image_url, p.translate, p.price, p.description FROM ${products} p
+         JOIN ${categories} c ON p.category_id = c.category_id WHERE
+         to_tsvector('russian',p.translate) @@ to_tsquery('russian','${words[0]}:*') ORDER BY p.price DESC
       `;
       }
       const { rows } = await this.db.query(sql);

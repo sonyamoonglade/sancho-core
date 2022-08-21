@@ -31,7 +31,7 @@ export class CreateUserOrderDto {
    status: OrderStatus.waiting_for_verification;
    user_id: number;
    created_at: Date;
-   total_cart_price?: number;
+   total_cart_price: number;
 }
 export class CreateMasterOrderInput {
    @IsDefined()

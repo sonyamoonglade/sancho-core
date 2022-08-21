@@ -1,20 +1,10 @@
 import { Injectable, Module } from "@nestjs/common";
-import { EventEmitter } from "node:events";
 
-@Injectable()
-export class EventsService {
-   private emitter: EventEmitter;
-
-   GetEmitter(): EventEmitter {
-      if (this.emitter === undefined) {
-         this.emitter = new EventEmitter();
-         return this.emitter;
-      }
-      return this.emitter;
-   }
-}
+import { EventsService } from "./event.service";
+import { EventsController } from "./event.controller";
 
 @Module({
+   controllers: [EventsController],
    providers: [EventsService],
    exports: [EventsService]
 })

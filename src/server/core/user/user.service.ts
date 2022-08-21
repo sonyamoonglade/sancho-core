@@ -197,7 +197,7 @@ export class UserService {
       }
    }
 
-   async loginMaster(b: LoginMasterUserDto): Promise<{ id: number; role: AppRoles }> {
+   async loginMaster(b: LoginMasterUserDto): Promise<{ id: number; role: AppRoles; username: string }> {
       const { login, password } = b;
 
       const u = (await this.userRepository.get({ where: { login } }))[0];
@@ -213,8 +213,13 @@ export class UserService {
 
       return {
          id: u.id,
-         role: u.role
+         role: u.role,
+         username: u.name
       };
+   }
+
+   async banWorker(login: string): Promise<void> {
+      return this.userRepository.banWorker(login);
    }
 
    async getWorkers(): Promise<MasterUser[]> {

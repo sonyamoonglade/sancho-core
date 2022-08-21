@@ -79,11 +79,11 @@ export class OrderRepository {
       return rows[0] ? (rows[0] as Order) : undefined;
    }
 
-   async createUserOrder(dto: CreateUserOrderDto): Promise<void> {
+   async createUserOrder(dto: CreateUserOrderDto): Promise<number> {
       const strDetails = JSON.stringify(dto?.delivery_details || {});
       const sql = `
          INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,pay,created_at)
-         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9)
+         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id
       `;
       const values = [
          dto.is_delivered,
@@ -96,8 +96,8 @@ export class OrderRepository {
          dto.pay,
          dto.created_at
       ];
-      await this.db.query(sql, values);
-      return;
+      const { rows } = await this.db.query(sql, values);
+      return rows[0]?.id;
    }
 
    async getDeliveryDetails(orderId: number): Promise<DeliveryDetails> {
@@ -106,11 +106,11 @@ export class OrderRepository {
       return rows[0].delivery_details as unknown as DeliveryDetails;
    }
 
-   async createMasterOrder(dto: CreateMasterOrderDto): Promise<void> {
+   async createMasterOrder(dto: CreateMasterOrderDto): Promise<number> {
       const strDelDetails = JSON.stringify(dto?.delivery_details || {});
       const sql = `
          INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,pay,verified_at,created_at)
-          VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10)
+          VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id
       `;
       const values = [
          dto.is_delivered,
@@ -124,8 +124,8 @@ export class OrderRepository {
          dto.verified_at,
          dto.created_at
       ];
-      await this.db.query(sql, values);
-      return;
+      const { rows } = await this.db.query(sql, values);
+      return rows[0]?.id;
    }
 
    async update(orderId: number, updated: Partial<Order>): Promise<void> {

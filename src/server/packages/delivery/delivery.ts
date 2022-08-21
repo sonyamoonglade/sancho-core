@@ -7,7 +7,7 @@ export interface DeliveryServiceInterface {
    createDelivery(dto: CreateDeliveryDto): Promise<void>;
    registerRunner(dto: RegisterRunnerDto): Promise<boolean>;
    getRunners(): Promise<RunnerUser[]>;
-   banRunner(runnerId: number): Promise<boolean>;
+   banRunner(phoneNumber: string): Promise<void>;
    status(orderIds: number[]): Promise<DeliveryStatus[]>;
    downloadCheck(dto: DownloadCheckDto): Promise<Buffer>;
 }
