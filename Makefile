@@ -27,8 +27,8 @@ migrate-up:
 build-prod:
 	docker build -f ./docker/prod.Dockerfile -t sonyamoonglade/sancho-hub:backend-core-prod . && docker push sonyamoonglade/sancho-hub:backend-core-prod
 
-cp-env:
-	cp .env.prod ../../deployment/sancho/backend/
+cp-prod:
+	cp .env.prod ../deployment/backend/.env.prod && cp migrations/* -r ../deployment/backend/migrations/
 
 
 

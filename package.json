@@ -10,7 +10,7 @@
     "build:prod": "rm tsconfig.*.tsbuildinfo && nest build",
     "build": " cp -R ./src/common/* ./src/client/src/common && rm tsconfig.*.tsbuildinfo && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"src/client/**/*.ts\"",
-    "start": "npm run migrate up && node dist/server/main.js",
+    "start": "node dist/server/main.js",
     "start:dev": "npm run build && set NODE_ENV=development && nest start --watch",
     "start:docker": "npm run build && nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -20,8 +20,7 @@
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json",
-    "migrate": "node-pg-migrate"
+    "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
     "@nestjs/common": "^8.0.0",
@@ -38,7 +37,6 @@
     "dotenv": "^16.0.0",
     "form-data": "^4.0.0",
     "nestjs-pino": "^3.1.1",
-    "node-pg-migrate": "^6.2.1",
     "pg": "^8.7.3",
     "pino": "^8.3.0",
     "pino-http": "^8.1.1",
