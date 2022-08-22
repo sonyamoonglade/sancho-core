@@ -58,7 +58,8 @@ CREATE TABLE IF NOT EXISTS "products"(
     "currency" VARCHAR(10) DEFAULT '₽',
     "price" DOUBLE PRECISION NOT NULL,
     "has_image" BOOLEAN NOT NULL DEFAULT FALSE,
-    "approved" BOOLEAN NOT NULL DEFAULT FALSE
+    "approved" BOOLEAN NOT NULL DEFAULT FALSE,
+    "description" VARCHAR(1000) DEFAULT NULL
 );
 
 ALTER TABLE "products" ADD CONSTRAINT "category_id_fk"
