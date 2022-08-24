@@ -4,19 +4,25 @@ import { pg_conn } from "../../packages/database/db_provider-name";
 import { PoolClient } from "pg";
 import { CreateCategoryDto } from "./dto/category.dto";
 import { CategoryDoesNotExist, CategoryHasTopRank } from "../../packages/exceptions/product.exceptions";
+import { products } from "../entities/Product";
 
 @Injectable()
 export class CategoryRepository {
    constructor(@Inject(pg_conn) private db: PoolClient) {}
 
    public async create(dto: CreateCategoryDto): Promise<void> {
-      const baseRank = 1;
+      let baseRank: number;
       try {
          //Begin tx
          await this.db.query("BEGIN");
 
          //Executed within tx
          {
+            // Get the lowest rank in categories
+            const q0 = `SELECT MIN(rank) as base_rank FROM ${categories}`;
+            const { rows } = await this.db.query(q0);
+            baseRank = rows[0].base_rank;
+
             //Increment each category's rank by 1
             const q = `UPDATE ${categories} SET rank = rank + 1`;
             await this.db.query(q);
@@ -44,8 +50,13 @@ export class CategoryRepository {
       return rows;
    }
    public async getCategNamesSorted(): Promise<string[]> {
-      const sql = `SELECT c.name FROM ${categories} c ORDER BY c.rank DESC`;
+      //Count products with certain category
+      const sql = `
+            SELECT DISTINCT c.name, c.rank FROM ${categories} c JOIN ${products} p
+            ON c.category_id = p.category_id ORDER BY c.rank DESC`;
+
       const { rows } = await this.db.query(sql);
+      console.log(rows);
       return rows.map((c) => c.name);
    }
    public async rankUp(name: string): Promise<void> {
