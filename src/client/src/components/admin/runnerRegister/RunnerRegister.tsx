@@ -16,6 +16,9 @@ const WorkerRegister = () => {
 
    async function handleRegister() {
       const body = getFormValues();
+      if (body?.phone_number?.trim()?.length === 0 || body?.username?.trim()?.length === 0) {
+         return;
+      }
       await registerRunner(body);
       dispatch(adminActions.appendRunner(body));
    }

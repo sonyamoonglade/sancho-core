@@ -1,10 +1,10 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import OrderQueueComponent from "../components/worker/queue/OrderQueueComponent";
 import React, { useMemo } from "react";
-import Orders from "../components/admin/orders/Orders";
 import AdminQueue from "../components/admin/queue/AdminQueue";
 import Catalog from "../pages/admin/Catalog";
 import Users from "../pages/admin/Users";
+import Subscriptions from "../pages/admin/Subscriptions";
 
 export function useRoutes(isWorkerAuthenticated: boolean, isMasterAuthenticated: boolean) {
    const worker = useMemo(
@@ -21,7 +21,7 @@ export function useRoutes(isWorkerAuthenticated: boolean, isMasterAuthenticated:
       return (
          <Routes>
             <Route path={"/admin/users"} element={<Users />} />
-            <Route path={"/admin/orders"} element={<Orders />} />
+            <Route path={"/admin/subscriptions"} element={<Subscriptions />} />
             <Route path={"/admin/queue"} element={<AdminQueue />} />
             <Route path={"/admin/catalog"} element={<Catalog />} />
             <Route path={"*"} element={<Navigate to="/admin/catalog" />} />

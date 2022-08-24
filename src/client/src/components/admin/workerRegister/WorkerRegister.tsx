@@ -13,6 +13,9 @@ const WorkerRegister = () => {
    const dispatch = useAppDispatch();
    async function handleRegister() {
       const body = formValues;
+      if (body?.name?.trim()?.length === 0 || body?.login?.trim()?.length === 0) {
+         return;
+      }
       await registerWorker(body);
       const master: MasterUser = {
          name: body.name,

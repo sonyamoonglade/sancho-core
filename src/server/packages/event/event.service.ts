@@ -5,8 +5,11 @@ import { Events, ExternalCaller, InternalEvents } from "./contract";
 import { GetAppConfig } from "../config/config";
 import axios from "axios";
 import { PinoLogger } from "nestjs-pino";
-import { CreateSubscriptionDto } from "./dto/event.dto";
+import { CreateSubscriptionDto, RegisterSubscriberDto } from "./dto/event.dto";
 import { NotFoundError } from "rxjs";
+import { SubscriberRO } from "./responseObject/event.response-object";
+import { AvailableEventsResponse, SubscribersJoinedDataResponse, SubscribersWithoutSubscriptionsResponse } from "./external";
+import { ExternalEvent } from "../../../common/types";
 
 @Injectable()
 export class EventsService {
@@ -46,12 +49,13 @@ export class EventsService {
             return;
          } catch (e: any) {
             this.logger.error(`error firing event ${event}. ${e?.response?.data}`);
+            //ignore error
             return;
          }
       };
    }
 
-   async CreateSubscriptionAPI(dto: CreateSubscriptionDto): Promise<void> {
+   async createSubscriptionAPI(dto: CreateSubscriptionDto): Promise<void> {
       try {
          const endPoint = this.baseURL + `/api/subscriptions`;
          await axios.post(endPoint, dto);
@@ -59,11 +63,10 @@ export class EventsService {
       } catch (e) {
          this.logger.error(`create subscription failed with error. ${e}`);
          this.parseEventServiceError(e);
-         throw e;
       }
    }
 
-   async CancelSubscriptionAPI(subscriptionId: number): Promise<void> {
+   async cancelSubscriptionAPI(subscriptionId: number): Promise<void> {
       try {
          const endPoint = this.baseURL + `/api/subscriptions/${subscriptionId}`;
          await axios.delete(endPoint);
@@ -71,7 +74,50 @@ export class EventsService {
       } catch (e) {
          this.logger.error(`cancel subscription failed with error ${e}`);
          this.parseEventServiceError(e);
-         throw e;
+      }
+   }
+
+   async getSubscribersJoinedData(): Promise<SubscribersJoinedDataResponse> {
+      try {
+         const endPoint = this.baseURL + "/api/subscriptions/subscribers/joined";
+         const { data } = await axios.get<SubscribersJoinedDataResponse>(endPoint);
+         return data;
+      } catch (e) {
+         this.logger.error(`get joined data failed with error ${e}`);
+         this.parseEventServiceError(e);
+      }
+   }
+
+   async getAllSubscribersWithoutSubscriptions(): Promise<SubscribersWithoutSubscriptionsResponse> {
+      try {
+         const endPoint = this.baseURL + "/api/subscriptions/subscribers";
+         const { data } = await axios.get<SubscribersWithoutSubscriptionsResponse>(endPoint);
+         return data;
+      } catch (e) {
+         this.logger.error(`get joined data failed with error ${e}`);
+         this.parseEventServiceError(e);
+      }
+   }
+
+   async getAvailableEventsAPI(): Promise<AvailableEventsResponse> {
+      try {
+         const endPoint = this.baseURL + "/api/events";
+         const { data } = await axios.get<AvailableEventsResponse>(endPoint);
+         return data;
+      } catch (e) {
+         this.logger.error(`get all evens failed with error ${e}`);
+         this.parseEventServiceError(e);
+      }
+   }
+
+   async registerSubscriberAPI(dto: RegisterSubscriberDto): Promise<void> {
+      try {
+         const endPoint = this.baseURL + "/api/subscriptions/subscribers";
+         await axios.post(endPoint, dto);
+         return;
+      } catch (e) {
+         this.logger.error(`register subscriber failed with error ${e}`);
+         this.parseEventServiceError(e);
       }
    }
 

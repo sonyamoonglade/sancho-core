@@ -34,6 +34,7 @@ interface WindowState {
       create: boolean;
       delete: boolean;
       categoryManager: boolean;
+      createSubscriber: boolean;
    };
 
    drag: {
@@ -73,7 +74,8 @@ const initialState: WindowState = {
       edit: false,
       delete: false,
       create: false,
-      categoryManager: false
+      categoryManager: false,
+      createSubscriber: false
    },
    drag: {
       dropzone: "",
@@ -89,6 +91,9 @@ export const windowSlice = createSlice({
    initialState,
    name: "window",
    reducers: {
+      toggleCreateSubscriber: function (s, a?: PayloadAction<boolean>) {
+         s.admin.createSubscriber = a?.payload || !s.admin.createSubscriber;
+      },
       toggleCategoryManager: function (s, a?: PayloadAction<boolean>) {
          s.admin.categoryManager = a?.payload || !s.admin.categoryManager;
       },

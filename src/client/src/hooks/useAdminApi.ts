@@ -1,11 +1,15 @@
 import { useAxios } from "./useAxios";
 import { useCallback } from "react";
-import { AdminProduct, Category, RenderMasterUser } from "../types/types";
+import { AdminProduct, Category, RenderMasterUser, SubscriberRO, SubscriberWithoutSubscriptionsRO } from "../types/types";
 import { EditFormValues } from "../components/admin/productModal/edit/hooks/useEditProductModalForm";
 import { CreateFormValues } from "../components/admin/productModal/create/hooks/useCreateProductModalForm";
-import { AggregationPreset, MasterUser, ProductTopArray, RunnerUser } from "../common/types";
+import { AggregationPreset, ExternalEvent, MasterUser, ProductTopArray, RunnerUser } from "../common/types";
 import { WorkerRegisterFormState } from "../components/admin/workerRegister/hooks/useWorkerRegisterForm";
-import { RunnerRegisterFormState, RunnerRegisterFormValues } from "../components/admin/runnerRegister/hooks/useRunnerRegisterForm";
+import {
+   RunnerRegisterFormState,
+   RunnerRegisterFormValues
+} from "../components/admin/runnerRegister/hooks/useRunnerRegisterForm";
+import { SubscribeDto } from "../components/admin/subcriptionsTable/SubscriptionsTable";
 
 interface AdminCatalogResponse {
    catalog: AdminProduct[];
@@ -166,6 +170,62 @@ export function useAdminApi() {
       [client]
    );
 
+   const fetchSubscriberJoinedData = useCallback(
+      async function (): Promise<SubscriberRO[]> {
+         const url = "/admin/event/subscriptions/joined";
+         const { data } = await client.get(url);
+         return data.subscribers;
+      },
+      [client]
+   );
+
+   const fetchAllSubscribers = useCallback(
+      async function (): Promise<SubscriberWithoutSubscriptionsRO[]> {
+         const url = "/admin/event/subscriptions/subscribers";
+         const { data } = await client.get(url);
+         return data.subscribers;
+      },
+      [client]
+   );
+
+   const fetchAvailableEvents = useCallback(
+      async function (): Promise<ExternalEvent[]> {
+         const url = "/admin/event";
+         const { data } = await client.get(url);
+         return data.events;
+      },
+      [client]
+   );
+
+   const subscribe = useCallback(
+      async function (body: SubscribeDto): Promise<void> {
+         const url = "/admin/event/subscriptions";
+         await client.post(url, body);
+         return;
+      },
+      [client]
+   );
+
+   const unsubscribe = useCallback(
+      async function (subscriptionId: number): Promise<void> {
+         const url = `/admin/event/subscriptions/${subscriptionId}`;
+         await client.delete(url);
+         return;
+      },
+      [client]
+   );
+
+   const registerSubscriber = useCallback(
+      async function (phone_number: string): Promise<boolean> {
+         const url = "/admin/event/subscriptions/subscribers";
+         const res = await client.post(url, {
+            phone_number
+         });
+         return res.status === 201;
+      },
+      [client]
+   );
+
    return {
       fetchAdminCatalog,
       approveProduct,
@@ -181,6 +241,12 @@ export function useAdminApi() {
       createCategory,
       registerWorker,
       registerRunner,
-      fetchMastersAndRunners
+      fetchMastersAndRunners,
+      fetchSubscriberJoinedData,
+      fetchAvailableEvents,
+      subscribe,
+      fetchAllSubscribers,
+      unsubscribe,
+      registerSubscriber
    };
 }

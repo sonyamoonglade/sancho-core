@@ -1,0 +1,68 @@
+@import "src/./variables.scss";
+
+.admin_subscriptions{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.subscriptions_table{
+  padding: 1rem 2rem;
+  width: 70%;
+}
+
+.new_subscription{
+  cursor: pointer;
+  display: flex;
+  border: 1px solid $black-18;
+  border-radius: 5px;
+  padding: 1rem;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+  p{
+    font-family: "Geometria Bold",sans-serif;
+    font-size: $font-prelg;
+    cursor: default;
+  }
+}
+
+.table_content{
+  display: grid;
+  grid-template-columns: calc(50% - .5rem) calc(50% - .5rem);
+  grid-gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.--table-processing{
+  user-select: none;
+  pointer-events: none;
+  opacity: 0.6;
+
+}
+
+.left_col{
+  p{
+    font-family: "Geometria",sans-serif;
+    font-size: $font-mder;
+    margin-bottom: .5rem;
+  }
+}
+
+.table_col{
+  border: 1px solid $black-18;
+  border-radius: 5px;
+  padding: 1rem ;
+}
+.event_toggle{
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.8rem;
+  p{
+    font-family: "Geometria",sans-serif;
+    font-size: $font-mder;
+  }
+}
+.event_toggle:last-of-type{
+  margin-bottom: 0;
+}
