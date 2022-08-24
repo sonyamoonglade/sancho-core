@@ -174,3 +174,9 @@ export type RunnerUser = {
    username: string;
    phone_number: string;
 };
+
+export type ExternalEvent = {
+   event_id: number;
+   name: string;
+   translate: string;
+};

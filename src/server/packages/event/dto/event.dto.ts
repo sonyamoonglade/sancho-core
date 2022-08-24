@@ -9,3 +9,9 @@ export class CreateSubscriptionDto {
    @IsString()
    event_name: string;
 }
+
+export class RegisterSubscriberDto {
+   @IsDefined()
+   @IsString()
+   phone_number: string;
+}

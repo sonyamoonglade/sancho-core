@@ -19,7 +19,7 @@ const AdminNavigation = () => {
             router(baseUrl + "/users", { replace: true });
             break;
          case 2:
-            router(baseUrl + "/orders", { replace: true });
+            router(baseUrl + "/subscriptions", { replace: true });
             break;
          case 3:
             router(baseUrl + "/queue", { replace: true });
@@ -36,7 +36,7 @@ const AdminNavigation = () => {
             Пользователи
          </li>
          <li className="d_nav_item" onClick={() => route(2)}>
-            Все заказы
+            Подписки
          </li>
          <li className="d_nav_item" onClick={() => route(3)}>
             Лента в реальном времени

@@ -26,9 +26,10 @@ async function bootstrap() {
    app.use(cookieParser());
    app.enableCors({
       origin: HandleCors,
-      methods: "GET,PUT,POST,DELETE,UPDATE,OPTIONS",
+      methods: "GET,PUT,POST,DELETE,UPDATE",
       credentials: true,
-      allowedHeaders: ["Content-type", "Accept", "Content-Length", "Connection"]
+      allowedHeaders: ["Content-type", "Accept", "Content-Length", "Connection"],
+      preflightContinue: false
    });
    app.useGlobalPipes(new ValidationPipe());
    //Configure app port (*first option is optional. For hosting providers that setup port by their own)
