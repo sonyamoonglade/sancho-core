@@ -19,7 +19,7 @@ export class CategoryRepository {
          //Executed within tx
          {
             // Get the lowest rank in categories
-            const q0 = `SELECT MIN(rank) as base_rank FROM ${categories}`;
+            const q0 = `SELECT COALESCE(MIN(rank),1) as base_rank FROM ${categories}`;
             const { rows } = await this.db.query(q0);
             baseRank = rows[0].base_rank;
 
@@ -53,10 +53,9 @@ export class CategoryRepository {
       //Count products with certain category
       const sql = `
             SELECT DISTINCT c.name, c.rank FROM ${categories} c JOIN ${products} p
-            ON c.category_id = p.category_id ORDER BY c.rank DESC`;
+            ON c.category_id = p.category_id WHERE p.approved = true AND p.has_image = true ORDER BY c.rank DESC`;
 
       const { rows } = await this.db.query(sql);
-      console.log(rows);
       return rows.map((c) => c.name);
    }
    public async rankUp(name: string): Promise<void> {
