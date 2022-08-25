@@ -52,7 +52,7 @@ CREATE TABLE IF NOT EXISTS "products"(
     "id" SERIAL PRIMARY KEY,
     "category_id" INTEGER NOT NULL,
     "features" VARCHAR(1000) NOT NULL,
-    "image_url" VARCHAR(512) NOT NULL,
+    "image_url" VARCHAR(512),
     "name" VARCHAR(255) NOT NULL UNIQUE,
     "translate" VARCHAR(255) NOT NULL UNIQUE,
     "currency" VARCHAR(10) DEFAULT '₽',
