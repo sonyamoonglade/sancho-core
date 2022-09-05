@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import {
-  miscSelector,
-  useAppDispatch,
-  useAppSelector,
-  windowActions,
-  windowSelector,
-  workerActions,
-  workerSelector,
+   miscSelector,
+   useAppDispatch,
+   useAppSelector,
+   windowActions,
+   windowSelector,
+   workerActions,
+   workerSelector
 } from "../../../../redux";
 import "./verify-order.styles.scss";
 import "../../../createUserOrder/orderForm/order-form.styles.scss";
@@ -87,7 +87,7 @@ const VerifyOrderModal = () => {
       const body: any = getFormValues();
       const order = helpers.findOrderInWaitingQByPhoneNumber(orderQueue, phoneNumber);
       // Make sure price has changed, cart is not empty ( first condition fails if worker toggles delivery ). Virtual cart stays empty so check it.
-      if (order.total_cart_price !== totalOrderPrice && totalOrderPrice !== 0 && virtualCartState.items.length) {
+      if (order.amount !== totalOrderPrice && totalOrderPrice !== 0 && virtualCartState.items.length) {
          body.cart = virtualCartState.items;
       }
       await verifyOrder(body);
@@ -166,7 +166,11 @@ const VerifyOrderModal = () => {
          <p className="modal_title">Подтвердить заказ</p>
          <RiSettings4Line onClick={toggleVirtualCart} className="submit_settings" size={25} />
          <VirtualCart />
-         <VerifyOrderForm fetchCredentialsManually={fetchCredentialsManually} formValues={formValues} setFormValues={setFormValues} />
+         <VerifyOrderForm
+            fetchCredentialsManually={fetchCredentialsManually}
+            formValues={formValues}
+            setFormValues={setFormValues}
+         />
 
          <div className="verify_sum">
             <p>Сумма заказа</p>

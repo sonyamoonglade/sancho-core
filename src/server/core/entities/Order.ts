@@ -4,7 +4,9 @@ export type Order = {
    id?: number;
    user_id: number;
    cart: DatabaseCartProduct[];
-   total_cart_price: number;
+   amount: number;
+   discount: number;
+   discounted_amount: number;
    status: OrderStatus;
    is_delivered: boolean;
    is_delivered_asap: boolean;
@@ -21,14 +23,14 @@ export type Order = {
 export type DeliveryOrder = {
    order_id: number;
    delivery_details: DeliveryDetails;
-   total_cart_price: number;
+   amount: number;
    pay: Pay;
    is_delivered_asap: boolean;
 };
 
 export type CheckOrder = {
    order_id: number;
-   total_cart_price: number;
+   amount: number;
    pay: Pay;
    cart: DatabaseCartProduct[];
    delivery_details?: DeliveryDetails;

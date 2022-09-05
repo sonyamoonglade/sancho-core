@@ -96,18 +96,17 @@ export class ProductService {
       return;
    }
 
-   public async calculateTotalCartPrice(cart: DatabaseCartProduct[]): Promise<number> {
+   public async calculateCartAmount(cart: DatabaseCartProduct[]): Promise<number> {
       const productIds: number[] = cart.map((p) => p.id);
       const products: Product[] = await this.productRepository.getProductsByIds(productIds);
-      const total_cart_price = products.reduce((a, c) => {
+      const amount = products.reduce((a, c) => {
          const same_product_idx = cart.findIndex((p) => p.id == c.id);
          const product_quantity = cart[same_product_idx].quantity;
          a += c.price * product_quantity;
          return a;
       }, 0);
 
-      this.logger.info(total_cart_price);
-      return total_cart_price;
+      return amount;
    }
 
    //filterCart matches cart's products with original product's price, ids, name etc...  and returns appropriate cart

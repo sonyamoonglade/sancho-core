@@ -72,7 +72,7 @@ export type ResponseUserOrder = {
    status: OrderStatus;
    is_delivered: boolean;
    delivery_details: null | DeliveryDetails;
-   total_cart_price: number;
+   amount: number;
    is_delivered_asap: boolean;
 };
 

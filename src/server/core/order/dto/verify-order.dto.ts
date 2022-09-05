@@ -1,5 +1,5 @@
 import { DatabaseCartProduct, DeliveryDetails, OrderStatus } from "../../../../common/types";
-import { IsBoolean, IsDefined, IsString, MaxLength } from "class-validator";
+import { IsBoolean, IsDefined, IsNumber, IsOptional, IsString, MaxLength } from "class-validator";
 
 export class VerifyOrderInput {
    @IsDefined()
@@ -15,6 +15,10 @@ export class VerifyOrderInput {
    @IsBoolean()
    is_delivered_asap: boolean;
 
+   @IsOptional()
+   @IsNumber()
+   discount: number = 0;
+
    delivery_details?: DeliveryDetails;
    is_delivered?: boolean;
    cart?: DatabaseCartProduct[];
@@ -25,8 +29,10 @@ export class VerifyOrderDto {
    is_delivered_asap: boolean;
    delivery_details?: DeliveryDetails;
    is_delivered?: boolean;
-   cart?: DatabaseCartProduct[];
    verified_at: Date;
    status: OrderStatus;
-   total_cart_price?: number;
+   cart?: DatabaseCartProduct[];
+   amount?: number;
+   discount?: number;
+   discounted_amount?: number;
 }

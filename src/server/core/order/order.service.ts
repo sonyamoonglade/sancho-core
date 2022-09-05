@@ -50,11 +50,11 @@ export class OrderService {
    ) {
       this.logger.setContext(OrderService.name);
    }
-   public async createUserOrder(dto: CreateUserOrderDto): Promise<number> {
+   public createUserOrder(dto: CreateUserOrderDto): Promise<number> {
       return this.orderRepository.createUserOrder(dto);
    }
 
-   public async createMasterOrder(dto: CreateMasterOrderDto): Promise<number> {
+   public createMasterOrder(dto: CreateMasterOrderDto): Promise<number> {
       return this.orderRepository.createMasterOrder(dto);
    }
 
@@ -81,19 +81,18 @@ export class OrderService {
 
    public async cancelOrder(dto: CancelOrderDto): Promise<void> {
       const { id } = dto; //orderId
-      // User cancels
-      if (!dto.cancel_explanation) {
-         throw new CancelExplanationHasNotBeenProvided();
-      }
 
       const ord = await this.orderRepository.getById(id);
       if (ord.status === OrderStatus.cancelled || ord.status === OrderStatus.completed) {
          throw new ForbiddenException("Некорректный статус заказа");
       }
 
-      await this.orderRepository.update(ord.id, dto);
-
+      await this.orderRepository.cancel(dto);
       return;
+   }
+
+   public async getById(orderId: number): Promise<Order> {
+      return this.orderRepository.getById(orderId);
    }
 
    public async completeOrder(dto: CompleteOrderDto): Promise<OrderStatus> {
@@ -120,9 +119,9 @@ export class OrderService {
 
    public mapRawHistory(raw: Order[]): ResponseUserOrder[] {
       return raw.map((o: Order) => {
-         const { total_cart_price, id, created_at, status, is_delivered, delivery_details, cart, is_delivered_asap } = o;
+         const { amount, id, created_at, status, is_delivered, delivery_details, cart, is_delivered_asap } = o;
          const rso: ResponseUserOrder = {
-            total_cart_price,
+            amount,
             id,
             created_at,
             status,
@@ -169,8 +168,7 @@ export class OrderService {
 
       const sql = `
         select o.id from ${orders} o join ${users} u on o.user_id=u.id
-        where u.phone_number='${phone_number}' and o.status = '${OrderStatus.waiting_for_verification}'
-      `;
+        where u.phone_number='${phone_number}' and o.status = '${OrderStatus.waiting_for_verification}'`;
       const ord = (await this.orderRepository.customQuery(sql))[0];
       if (ord === undefined) {
          return {
@@ -237,18 +235,8 @@ export class OrderService {
          verified: []
       };
       for (const rawOrder of raw) {
-         const {
-            status,
-            is_delivered_asap,
-            cart,
-            delivery_details,
-            created_at,
-            total_cart_price,
-            name,
-            phone_number,
-            is_delivered,
-            id
-         } = rawOrder;
+         const { status, is_delivered_asap, cart, delivery_details, created_at, amount, name, phone_number, is_delivered, id } =
+            rawOrder;
          if (rawOrder.status === OrderStatus.waiting_for_verification) {
             const mapped: WaitingQueueOrder = {
                status,
@@ -260,7 +248,7 @@ export class OrderService {
                },
                cart: this.parseJsonCart(cart),
                created_at,
-               total_cart_price,
+               amount,
                id
             };
             queue.waiting.push(mapped);
@@ -271,7 +259,7 @@ export class OrderService {
             cart: this.parseJsonCart(cart),
             created_at,
             status,
-            total_cart_price,
+            amount,
             delivery_details: is_delivered ? delivery_details : null,
             is_delivered,
             user: {
