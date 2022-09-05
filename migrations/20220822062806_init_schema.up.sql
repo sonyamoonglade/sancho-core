@@ -1,6 +1,18 @@
-CREATE TYPE "role" AS ENUM('worker', 'master', 'user');
-CREATE TYPE "pay" AS ENUM('onPickup','online');
-CREATE TYPE "order_status" as ENUM('waiting_for_verification','verified','completed','cancelled');
+CREATE OR REPLACE FUNCTION init_types() RETURNS integer AS $$
+DECLARE e1 INTEGER;
+BEGIN
+    SELECT INTO e1 (SELECT 1 FROM pg_type WHERE typname = 'role');
+    IF e1 IS NULL THEN
+        CREATE TYPE "role" AS ENUM('worker', 'master', 'user');
+        CREATE TYPE "pay" AS ENUM('onPickup','online');
+        CREATE TYPE "order_status" as ENUM('waiting_for_verification','verified','completed','cancelled');
+    END IF;
+    RETURN e1;
+END
+$$ LANGUAGE plpgsql;
+
+SELECT init_types();
+
 SET TIMEZONE='utc';
 
 
@@ -106,3 +118,18 @@ CREATE TABLE IF NOT EXISTS "misc"(
     "reg_cust_duration" INTEGER NOT NULL,
     "cancel_ban_duration" INTEGER NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS "promotions"(
+    "promotion_id" SERIAL PRIMARY KEY,
+    "main_title" VARCHAR(255) NOT NULL,
+    "sub_title" VARCHAR(255) NOT NULL,
+    "sub_text" VARCHAR(255) NOT NULL
+);
+-- Default values...
+INSERT INTO "misc" (delivery_punishment_threshold,
+                    delivery_punishment_value,
+                    order_creation_delay,
+                    reg_cust_duration,
+                    reg_cust_threshold,
+                    cancel_ban_duration)
+    VALUES (400,100,5,30,5000,5)

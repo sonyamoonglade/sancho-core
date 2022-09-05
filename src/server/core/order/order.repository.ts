@@ -109,9 +109,17 @@ export class OrderRepository {
    async createMasterOrder(dto: CreateMasterOrderDto): Promise<number> {
       const strDelDetails = JSON.stringify(dto?.delivery_details || {});
       const sql = `
-         INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,pay,verified_at,created_at)
-          VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id
-      `;
+         INSERT INTO ${orders} (is_delivered,
+                                 cart, 
+                                 delivery_details, 
+                                 total_cart_price, 
+                                 is_delivered_asap, 
+                                 user_id,status, 
+                                 pay, 
+                                 verified_at, 
+                                 created_at)
+          VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id`;
+
       const values = [
          dto.is_delivered,
          dto.cart,

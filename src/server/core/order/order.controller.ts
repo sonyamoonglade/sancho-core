@@ -27,6 +27,7 @@ import * as utc from "dayjs/plugin/utc";
 import * as timezone from "dayjs/plugin/timezone";
 import { helpers } from "../../packages/helpers/helpers";
 import { EventsService } from "src/server/packages/event/event.service";
+import { ProductService } from "../product/product.service";
 
 @Controller("/order")
 @UseGuards(AuthorizationGuard)
@@ -38,7 +39,8 @@ export class OrderController {
       private cookieService: CookieService,
       private userService: UserService,
       private logger: PinoLogger,
-      private eventService: EventsService
+      private eventService: EventsService,
+      private productService: ProductService
    ) {
       this.logger.setContext(OrderController.name);
       this.initRefreshQueueSubscription();
@@ -70,15 +72,17 @@ export class OrderController {
          const userId = req.user_id;
          this.logger.debug(`create order for user ${userId}`);
 
-         let total_cart_price = await this.orderService.calculateTotalCartPrice(inp.cart);
+         let total_cart_price = await this.productService.calculateTotalCartPrice(inp.cart);
 
          //Recalculate total_cart_price if order is delivered in order to apply punishment
          if (inp.is_delivered) {
             total_cart_price = await this.orderService.applyDeliveryPunishment(total_cart_price);
          }
 
+         const filteredCart = await this.productService.filterCart(inp.cart);
+
          const dto: CreateUserOrderDto = {
-            cart: inp.cart,
+            cart: filteredCart,
             delivery_details: inp.delivery_details,
             is_delivered: inp.is_delivered,
             is_delivered_asap: inp.is_delivered_asap,
@@ -134,7 +138,7 @@ export class OrderController {
             userId = registeredUser.id;
          }
 
-         let total_cart_price = await this.orderService.calculateTotalCartPrice(inp.cart);
+         let total_cart_price = await this.productService.calculateTotalCartPrice(inp.cart);
          //Recalculate total_cart_price if order is delivered in order to apply punishment
          if (inp.is_delivered) {
             total_cart_price = await this.orderService.applyDeliveryPunishment(total_cart_price);
@@ -143,8 +147,10 @@ export class OrderController {
          //Update user's name. (Do it first because orderQueue won't catch up)
          await this.userService.updateUsername(inp.username, userId);
 
+         const filteredCart = await this.productService.filterCart(inp.cart);
+
          const dto: CreateMasterOrderDto = {
-            cart: inp.cart,
+            cart: filteredCart,
             user_id: userId,
             verified_at: helpers.selectNowUTC(),
             created_at: helpers.selectNowUTC(),
@@ -208,7 +214,7 @@ export class OrderController {
          };
 
          if (inp.cart !== undefined) {
-            dto.cart = inp.cart;
+            dto.cart = await this.productService.filterCart(inp.cart);
          }
          if (inp.is_delivered !== undefined) {
             dto.is_delivered = inp.is_delivered;
@@ -216,9 +222,10 @@ export class OrderController {
          if (inp.delivery_details !== undefined) {
             dto.delivery_details = inp.delivery_details;
          }
+
          //Re/Calculate cart price if cart is sent (means changed)
          if (dto.cart !== undefined) {
-            dto.total_cart_price = await this.orderService.calculateTotalCartPrice(dto.cart);
+            dto.total_cart_price = await this.productService.calculateTotalCartPrice(dto.cart);
          }
 
          //Update user's name. (Do it first because orderQueue won't catch up)

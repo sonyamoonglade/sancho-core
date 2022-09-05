@@ -92,7 +92,9 @@ export class UserService {
 
    async getUserCredentials(phoneNumber: string): Promise<UserCredentialsDto> {
       const phoneNumberWithPlus = "+" + phoneNumber;
-      const credentialsWithoutMarks: Partial<UserCredentialsDto> = await this.userRepository.getUserCredentials(phoneNumberWithPlus);
+      const credentialsWithoutMarks: Partial<UserCredentialsDto> = await this.userRepository.getUserCredentials(
+         phoneNumberWithPlus
+      );
       if (!credentialsWithoutMarks) {
          throw new UserCredentialsNotFound(phoneNumberWithPlus);
       }

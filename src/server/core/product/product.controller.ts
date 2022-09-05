@@ -1,4 +1,18 @@
-import { Body, Controller, Delete, Get, ParseIntPipe, Post, Put, Query, Req, Res, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import {
+   Body,
+   Controller,
+   Delete,
+   Get,
+   ParseIntPipe,
+   Post,
+   Put,
+   Query,
+   Req,
+   Res,
+   UploadedFile,
+   UseGuards,
+   UseInterceptors
+} from "@nestjs/common";
 import { ProductService } from "./product.service";
 import { Response } from "express";
 import { CreateProductDto } from "./dto/create-product.dto";

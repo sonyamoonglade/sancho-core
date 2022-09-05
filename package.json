@@ -8,7 +8,7 @@
   "scripts": {
     "prebuild": "rimraf dist",
     "build:prod": "rm tsconfig.*.tsbuildinfo && nest build",
-    "build": " cp -R ./src/common/* ./src/client/src/common && rm tsconfig.*.tsbuildinfo && nest build",
+    "build": " cp -R ./src/common/* ./src/client/src/common && rm -f tsconfig.*.tsbuildinfo && nest build",
     "format": "prettier --write \"src/**/*.ts\" \"src/client/**/*.ts\"",
     "start": "node dist/server/main.js",
     "start:dev": "npm run build && set NODE_ENV=development && nest start --watch",

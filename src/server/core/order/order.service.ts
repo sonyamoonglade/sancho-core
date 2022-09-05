@@ -184,27 +184,6 @@ export class OrderService {
       };
    }
 
-   public async calculateTotalCartPrice(cart: DatabaseCartProduct[]): Promise<number> {
-      const productIds: number[] = [];
-
-      for (const product of cart) {
-         productIds.push(product.id);
-      }
-
-      try {
-         const products: Product[] = await this.productRepository.getProductsByIds(productIds);
-         const total_cart_price = products.reduce((a, c) => {
-            const same_product_idx = cart.findIndex((p) => p.id == c.id);
-            const product_quantity = cart[same_product_idx].quantity;
-            a += c.price * product_quantity;
-            return a;
-         }, 0);
-         return total_cart_price;
-      } catch (e) {
-         throw e;
-      }
-   }
-
    public async notifyQueueSubscribers(connections: Response[]): Promise<void> {
       //First get list of writable connections
       const fconns = connections.filter((conn) => conn.writable);
@@ -258,7 +237,18 @@ export class OrderService {
          verified: []
       };
       for (const rawOrder of raw) {
-         const { status, is_delivered_asap, cart, delivery_details, created_at, total_cart_price, name, phone_number, is_delivered, id } = rawOrder;
+         const {
+            status,
+            is_delivered_asap,
+            cart,
+            delivery_details,
+            created_at,
+            total_cart_price,
+            name,
+            phone_number,
+            is_delivered,
+            id
+         } = rawOrder;
          if (rawOrder.status === OrderStatus.waiting_for_verification) {
             const mapped: WaitingQueueOrder = {
                status,

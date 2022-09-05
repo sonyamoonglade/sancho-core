@@ -114,7 +114,7 @@ export class DeliveryService implements DeliveryServiceInterface {
          this.logger.info("ok");
          return data.result;
       } catch (e) {
-         this.logger.error("get status ailed with error");
+         this.logger.error("get status failed with error");
          this.parseDeliveryError(e);
       }
    }
