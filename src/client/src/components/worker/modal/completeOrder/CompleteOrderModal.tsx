@@ -7,7 +7,8 @@ import { useCompleteOrder } from "./hooks/useCompleteOrder";
 
 const CompleteOrderModal = () => {
    const { worker, drag } = useAppSelector(windowSelector);
-   const { formValues, setCorrectOrderId, setFormDefaults, setFormValues, getFormValues, setCompletable, completable } = useCompleteOrderForm();
+   const { formValues, setCorrectOrderId, setFormDefaults, setFormValues, getFormValues, setCompletable, completable } =
+      useCompleteOrderForm();
    const { completeOrder } = useCompleteOrder();
    const dispatch = useAppDispatch();
    useEffect(() => {
@@ -26,6 +27,7 @@ const CompleteOrderModal = () => {
          const body: CompleteOrderFormValues = getFormValues();
          await completeOrder(body);
          dispatch(windowActions.toggleCompleteOrder(false));
+         console.log("here");
       } catch (e) {}
    }
    return (
@@ -36,8 +38,8 @@ const CompleteOrderModal = () => {
             <CompleteOrderForm setFormDefaults={setFormDefaults} setFormValues={setFormValues} formValues={formValues} />
             <div className="complete info">
                <p>
-                  Подтверждая заказ, вы утверждаете, что содержимое заказа полностью готово и пригодно к употреблению, и подготовлено к самовывозу или
-                  доставке курьером
+                  Подтверждая заказ, вы утверждаете, что содержимое заказа полностью готово и пригодно к употреблению, и
+                  подготовлено к самовывозу или доставке курьером
                </p>
                <hr className="separator" />
 

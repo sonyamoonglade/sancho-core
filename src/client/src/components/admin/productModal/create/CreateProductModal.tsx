@@ -45,22 +45,54 @@ const CreateProductModal = () => {
             <section>
                <div className="form_grid">
                   <p>Название</p>
-                  <RectangleInput width={inputw} value={formValues.name} setValue={setFormValues} disabled={false} name={"name"} />
+                  <RectangleInput
+                     placeholder={"Mozzarella"}
+                     width={inputw}
+                     value={formValues.name}
+                     setValue={setFormValues}
+                     disabled={false}
+                     name={"name"}
+                  />
 
                   <p>Перевод</p>
-                  <RectangleInput width={inputw} value={formValues.translate} setValue={setFormValues} disabled={false} name={"translate"} />
+                  <RectangleInput
+                     placeholder={"Моцарелла"}
+                     width={inputw}
+                     value={formValues.translate}
+                     setValue={setFormValues}
+                     disabled={false}
+                     name={"translate"}
+                  />
 
                   <p>Категория</p>
-                  <RectangleInput width={inputw} value={formValues.category} setValue={setFormValues} disabled={false} name={"category"} />
+                  <RectangleInput
+                     placeholder={"Пицца"}
+                     width={inputw}
+                     value={formValues.category}
+                     setValue={setFormValues}
+                     disabled={false}
+                     name={"category"}
+                  />
 
                   <p>Цена</p>
                   <span>
-                     <RectangleInput width={60} value={formValues.price} setValue={setFormValues} disabled={false} name={"price"} />
+                     <RectangleInput
+                        placeholder={"300"}
+                        width={60}
+                        value={formValues.price}
+                        setValue={setFormValues}
+                        disabled={false}
+                        name={"price"}
+                     />
                      <strong>&nbsp;₽</strong>
                   </span>
 
                   <p>Описание</p>
-                  <EditDescription value={formValues.description} valueLength={formValues.description.length} setValue={setFormValues} />
+                  <EditDescription
+                     value={formValues.description}
+                     valueLength={formValues.description.length}
+                     setValue={setFormValues}
+                  />
 
                   <p>Доп.</p>
                   <section className="edit_nutrients">
@@ -84,7 +116,9 @@ const CreateProductModal = () => {
                   Добавить позицию
                </button>
                <div>
-                  <p style={{ fontFamily: "Geometria Medium,sans-serif", textAlign: "right", marginBottom: "1rem" }}>Доступные категории</p>
+                  <p style={{ fontFamily: "Geometria Medium,sans-serif", textAlign: "right", marginBottom: "1rem" }}>
+                     Доступные категории
+                  </p>
                   <ul className="available_categories">
                      {categs?.map((categ) => (
                         <li key={categ} className="admin_category_item">

@@ -49,9 +49,7 @@ export class CreateMasterOrderInput {
    @IsBoolean()
    is_delivered_asap: boolean;
 
-   @IsDefined()
-   @IsString()
-   pay: Pay;
+   pay: Pay = "onPickup";
 
    @IsDefined()
    @IsString()

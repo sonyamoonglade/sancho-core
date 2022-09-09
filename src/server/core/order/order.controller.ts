@@ -28,6 +28,7 @@ import * as timezone from "dayjs/plugin/timezone";
 import { helpers } from "../../packages/helpers/helpers";
 import { EventsService } from "src/server/packages/event/event.service";
 import { ProductService } from "../product/product.service";
+import { MiscService } from "../miscellaneous/misc.service";
 
 @Controller("/order")
 @UseGuards(AuthorizationGuard)
@@ -40,7 +41,8 @@ export class OrderController {
       private userService: UserService,
       private logger: PinoLogger,
       private eventService: EventsService,
-      private productService: ProductService
+      private productService: ProductService,
+      private miscService: MiscService
    ) {
       this.logger.setContext(OrderController.name);
       this.initRefreshQueueSubscription();
@@ -125,13 +127,10 @@ export class OrderController {
    @Role([AppRoles.worker])
    @UseFilters(PolicyFilter)
    async createMasterOrder(@Res() res: Response, @Body() inp: CreateMasterOrderInput) {
-      applyPayPolicy(inp.pay, inp.is_delivered, "worker");
-
       try {
          //Try get userId to check if user is in system already
          let userId = await this.userService.getUserId(inp.phone_number);
          if (userId === undefined) {
-            //Register user
             const registeredUser: User = await this.userService.createUser({
                phone_number: inp.phone_number
             });
@@ -139,7 +138,6 @@ export class OrderController {
          }
 
          let amount = await this.productService.calculateCartAmount(inp.cart);
-         //Recalculate amount if order is delivered in order to apply punishment
          if (inp.is_delivered) {
             amount = await this.orderService.applyDeliveryPunishment(amount);
          }
@@ -148,7 +146,6 @@ export class OrderController {
          await this.userService.updateUsername(inp.username, userId);
 
          const filteredCart = await this.productService.filterCart(inp.cart);
-
          const dto: CreateMasterOrderDto = {
             cart: filteredCart,
             user_id: userId,
@@ -167,10 +164,8 @@ export class OrderController {
 
          this.logger.debug(`create master order for user: ${userId}`);
 
-         //Create order
          const orderId = await this.orderService.createMasterOrder(dto);
 
-         //Update user's preferred delivery details
          if (dto.is_delivered === true) {
             await this.userService.updateUserRememberedDeliveryAddress(userId, dto.delivery_details);
          }
@@ -296,7 +291,17 @@ export class OrderController {
       try {
          const orderStatus = await this.orderService.completeOrder(dto);
          this.eventService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
-         //Calculate regular customer here...
+
+         const [user, _] = await this.userService.getUserAndMarksByOrderId(dto.order_id);
+
+         const { reg_cust_duration, reg_cust_threshold } = await this.miscService.getAllValues();
+         const termsum = await this.orderService.calculateOrderSumInTerms(reg_cust_duration, user.id);
+
+         if (termsum >= reg_cust_threshold) {
+            const m = this.userService.generateRegularCustomerMark(user.id);
+            this.userService.tryCreate(m);
+         }
+
          return res.status(200).send({ status: orderStatus as OrderStatus.completed });
       } catch (e) {
          throw e;

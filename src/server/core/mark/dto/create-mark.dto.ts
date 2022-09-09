@@ -1,6 +1,6 @@
 import { IsBoolean, IsDefined, IsString } from "class-validator";
 
-export class CreateMarkDto {
+export class CreateMarkInput {
    @IsDefined()
    @IsString()
    content: string;
@@ -12,6 +12,10 @@ export class CreateMarkDto {
    @IsDefined()
    @IsString()
    phoneNumber: string;
+}
 
+export class CreateMarkDto {
+   content: string;
+   isImportant: boolean;
    userId: number;
 }
