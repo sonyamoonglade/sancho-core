@@ -22,26 +22,6 @@ import DesktopNavigation from "../navigation/other/DesktopNavigation";
 import PromotionList from "../promotion/PromotionList";
 import MobileNavigation from "../navigation/mobile/MobileNavigation";
 
-const mockPromotions: Promotion[] = [
-   {
-      id: 1,
-      title: "Скидка 10% на доставку с понедельника по четверг",
-      touched_text: "На все заказы, оформленные с понедельника по четверг с 11:00 до 16:00.",
-      touched_title: "Скидка 10% на доставку"
-   },
-   {
-      id: 2,
-      title: "Акция!  2 пиццы по цене 3!",
-      touched_text: "Акция действует с 25 мая по 31 июля. Успей получить халяву!",
-      touched_title: "Две по цене трех"
-   },
-   {
-      id: 3,
-      title: "Акция!  2 пиццы по цене 3!",
-      touched_text: "Акция действует с 25 мая по 31 июля. Успей получить халяву!",
-      touched_title: "Две по цене трех"
-   }
-];
 const windowActions = windowSlice.actions;
 
 const Header: FC = () => {
@@ -100,7 +80,7 @@ const Header: FC = () => {
 
          {isWorkerAuthenticated || isMasterAuthenticated ? null : (
             <>
-               <PromotionList promotions={mockPromotions} />
+               <PromotionList />
                <Order />
                <Pay />
                <Cart />

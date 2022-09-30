@@ -2,22 +2,33 @@ import React, { FC, useEffect, useRef, useState } from "react";
 import PromotionCard from "./promotionCard/PromotionCard";
 import "./promotion.styles.scss";
 import { Promotion } from "../../common/types";
-
-interface promotionListProps {
-   promotions: Promotion[];
-}
+import { useUserApi } from "../../hooks/useUserApi";
+import { boolOptions } from "yaml/types";
 
 type promMap = Map<number, boolean>;
+export const birthdayPromotion: Promotion = {
+   promotion_id: 3,
+   main_title: "Скидка 10% на день рождение!",
+   sub_text: "Предоставим вам персональную скидку",
+   sub_title: "только при предъявлении паспорта или свидетельства о рождении"
+};
 
-const PromotionList: FC<promotionListProps> = ({ promotions }) => {
+const PromotionList = () => {
+   const { getPromotions } = useUserApi();
+   const [promotions, setPromotions] = useState<Promotion[]>([]);
    const [touchedPromotions, setTouchedPromotions] = useState<promMap>(makeState());
    const animationRef = useRef<HTMLDivElement>(null);
-   const [times, setTimes] = useState<number>(3);
+
+   useEffect(() => {
+      getPromotions().then((proms) => setPromotions(proms));
+   }, []);
+
    function makeState() {
       const m = new Map<number, boolean>();
       for (const promotion of promotions) {
-         m.set(promotion.id, false);
+         m.set(promotion.promotion_id, false);
       }
+      m.set(birthdayPromotion.promotion_id, false);
       return m;
    }
 
@@ -30,10 +41,10 @@ const PromotionList: FC<promotionListProps> = ({ promotions }) => {
 
    useEffect(() => {
       const i = setTimeout(startAnimation, 1000);
-
       return () => clearTimeout(i);
    }, []);
    const sleep = (dur: number) => new Promise((resolve) => setTimeout(resolve, dur));
+
    async function startAnimation() {
       for (let i = 0; i <= 30; i++) {
          await sleep(2);
@@ -46,14 +57,32 @@ const PromotionList: FC<promotionListProps> = ({ promotions }) => {
       }
    }
 
+   function renderPromotions() {
+      if (promotions.length === 0) {
+         return;
+      }
+
+      const p1 = promotions[0];
+      const p2 = promotions[1];
+
+      return (
+         <>
+            <PromotionCard isTouched={touchedPromotions.get(p1.promotion_id)} promotion={p1} touchFn={touch} />
+            <PromotionCard
+               promotion={birthdayPromotion}
+               touchFn={touch}
+               isTouched={touchedPromotions.get(birthdayPromotion.promotion_id)}
+            />
+            <PromotionCard promotion={p2} touchFn={touch} isTouched={touchedPromotions.get(p2.promotion_id)} />
+         </>
+      );
+   }
+
    return (
       <div className="promotion_list" ref={animationRef}>
-         {promotions.map((p) => {
-            const isTouched = touchedPromotions.get(p.id);
-            return <PromotionCard promotion={p} key={p.id} touchFn={touch} isTouched={isTouched} />;
-         })}
+         {renderPromotions()}
       </div>
    );
 };
 
-export default PromotionList;
+export default React.memo(PromotionList);

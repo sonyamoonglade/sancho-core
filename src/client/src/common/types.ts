@@ -59,10 +59,10 @@ export type DatabaseCartProduct = {
 };
 
 export type Promotion = {
-   id: number;
-   title: string;
-   touched_title: string;
-   touched_text: string;
+   promotion_id?: number;
+   main_title: string;
+   sub_title: string;
+   sub_text: string;
 };
 
 export type ResponseUserOrder = {
