@@ -27,6 +27,8 @@ import * as utc from "dayjs/plugin/utc";
 import * as timezone from "dayjs/plugin/timezone";
 import { helpers } from "../../packages/helpers/helpers";
 import { EventsService } from "src/server/packages/event/event.service";
+import { ProductService } from "../product/product.service";
+import { MiscService } from "../miscellaneous/misc.service";
 
 @Controller("/order")
 @UseGuards(AuthorizationGuard)
@@ -38,7 +40,9 @@ export class OrderController {
       private cookieService: CookieService,
       private userService: UserService,
       private logger: PinoLogger,
-      private eventService: EventsService
+      private eventService: EventsService,
+      private productService: ProductService,
+      private miscService: MiscService
    ) {
       this.logger.setContext(OrderController.name);
       this.initRefreshQueueSubscription();
@@ -70,15 +74,17 @@ export class OrderController {
          const userId = req.user_id;
          this.logger.debug(`create order for user ${userId}`);
 
-         let total_cart_price = await this.orderService.calculateTotalCartPrice(inp.cart);
+         let amount = await this.productService.calculateCartAmount(inp.cart);
 
-         //Recalculate total_cart_price if order is delivered in order to apply punishment
+         //Recalculate amount if order is delivered in order to apply punishment
          if (inp.is_delivered) {
-            total_cart_price = await this.orderService.applyDeliveryPunishment(total_cart_price);
+            amount = await this.orderService.applyDeliveryPunishment(amount);
          }
 
+         const filteredCart = await this.productService.filterCart(inp.cart);
+
          const dto: CreateUserOrderDto = {
-            cart: inp.cart,
+            cart: filteredCart,
             delivery_details: inp.delivery_details,
             is_delivered: inp.is_delivered,
             is_delivered_asap: inp.is_delivered_asap,
@@ -86,7 +92,7 @@ export class OrderController {
             status: OrderStatus.waiting_for_verification,
             user_id: userId,
             created_at: helpers.selectNowUTC(),
-            total_cart_price
+            amount
          };
 
          const orderId = await this.orderService.createUserOrder(dto);
@@ -98,7 +104,7 @@ export class OrderController {
          this.eventService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
 
          const payload: UserOrderCreatePayload = {
-            total_cart_price,
+            amount,
             order_id: orderId
          };
 
@@ -121,48 +127,45 @@ export class OrderController {
    @Role([AppRoles.worker])
    @UseFilters(PolicyFilter)
    async createMasterOrder(@Res() res: Response, @Body() inp: CreateMasterOrderInput) {
-      applyPayPolicy(inp.pay, inp.is_delivered, "worker");
-
       try {
          //Try get userId to check if user is in system already
          let userId = await this.userService.getUserId(inp.phone_number);
          if (userId === undefined) {
-            //Register user
             const registeredUser: User = await this.userService.createUser({
                phone_number: inp.phone_number
             });
             userId = registeredUser.id;
          }
 
-         let total_cart_price = await this.orderService.calculateTotalCartPrice(inp.cart);
-         //Recalculate total_cart_price if order is delivered in order to apply punishment
+         let amount = await this.productService.calculateCartAmount(inp.cart);
          if (inp.is_delivered) {
-            total_cart_price = await this.orderService.applyDeliveryPunishment(total_cart_price);
+            amount = await this.orderService.applyDeliveryPunishment(amount);
          }
 
          //Update user's name. (Do it first because orderQueue won't catch up)
          await this.userService.updateUsername(inp.username, userId);
 
+         const filteredCart = await this.productService.filterCart(inp.cart);
          const dto: CreateMasterOrderDto = {
-            cart: inp.cart,
+            cart: filteredCart,
             user_id: userId,
             verified_at: helpers.selectNowUTC(),
             created_at: helpers.selectNowUTC(),
             delivery_details: inp.delivery_details,
             delivered_at: inp.delivered_at,
             is_delivered: inp.is_delivered,
-            total_cart_price, //to be updated in service
+            amount,
             phone_number: inp.phone_number,
             is_delivered_asap: inp.is_delivered_asap,
+            discount: inp.discount,
+            discounted_amount: helpers.applyDiscount(inp.discount, amount),
             pay: "onPickup" // Only one method is allowed
          };
 
          this.logger.debug(`create master order for user: ${userId}`);
 
-         //Create order
          const orderId = await this.orderService.createMasterOrder(dto);
 
-         //Update user's preferred delivery details
          if (dto.is_delivered === true) {
             await this.userService.updateUserRememberedDeliveryAddress(userId, dto.delivery_details);
          }
@@ -170,7 +173,7 @@ export class OrderController {
          this.eventService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
 
          const payload: MasterOrderCreatePayload = {
-            total_cart_price,
+            amount,
             username: inp.username,
             phone_number: inp.phone_number,
             order_id: orderId
@@ -188,12 +191,11 @@ export class OrderController {
    async verifyOrder(@Res() res: Response, @Body() inp: VerifyOrderInput) {
       try {
          const userId = await this.userService.getUserId(inp.phone_number);
-
          const { phone_number } = inp;
 
          //Check if user actually has waiting order.
          const waitingOrd = await this.orderService.hasWaitingOrder(null, phone_number);
-         const { id, ok } = waitingOrd;
+         const { id: orderId, ok } = waitingOrd;
 
          //Does not have waiting order
          if (!ok) {
@@ -201,14 +203,14 @@ export class OrderController {
          }
 
          const dto: VerifyOrderDto = {
-            id, //orderId
+            id: orderId, //orderId
             is_delivered_asap: inp.is_delivered_asap,
             verified_at: helpers.selectNowUTC(),
             status: OrderStatus.verified
          };
 
          if (inp.cart !== undefined) {
-            dto.cart = inp.cart;
+            dto.cart = await this.productService.filterCart(inp.cart);
          }
          if (inp.is_delivered !== undefined) {
             dto.is_delivered = inp.is_delivered;
@@ -216,9 +218,17 @@ export class OrderController {
          if (inp.delivery_details !== undefined) {
             dto.delivery_details = inp.delivery_details;
          }
-         //Re/Calculate cart price if cart is sent (means changed)
          if (dto.cart !== undefined) {
-            dto.total_cart_price = await this.orderService.calculateTotalCartPrice(dto.cart);
+            dto.amount = await this.productService.calculateCartAmount(dto.cart);
+         }
+         if (inp?.discount !== 0) {
+            dto.discount = inp.discount;
+            let amount = dto.amount;
+            if (amount === undefined) {
+               const order = await this.orderService.getById(orderId);
+               amount = order.amount;
+            }
+            dto.discounted_amount = helpers.applyDiscount(dto.discount, amount);
          }
 
          //Update user's name. (Do it first because orderQueue won't catch up)
@@ -233,7 +243,6 @@ export class OrderController {
          }
 
          this.eventService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
-
          return res.status(200).send(OrderStatus.verified);
       } catch (e) {
          if (e.message.includes("verification")) {
@@ -282,6 +291,16 @@ export class OrderController {
       try {
          const orderStatus = await this.orderService.completeOrder(dto);
          this.eventService.Fire(InternalEvents.REFRESH_ORDER_QUEUE);
+
+         const [user, _] = await this.userService.getUserAndMarksByOrderId(dto.order_id);
+
+         const { reg_cust_duration, reg_cust_threshold } = await this.miscService.getAllValues();
+         const termsum = await this.orderService.calculateOrderSumInTerms(reg_cust_duration, user.id);
+
+         if (termsum >= reg_cust_threshold) {
+            const m = this.userService.generateRegularCustomerMark(user.id);
+            this.userService.tryCreate(m);
+         }
 
          return res.status(200).send({ status: orderStatus as OrderStatus.completed });
       } catch (e) {

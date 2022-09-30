@@ -31,6 +31,10 @@ import { CategoryRepository } from "./core/category/category.repository";
 import { CategoryController } from "./core/category/category.controller";
 import { EventsService } from "./packages/event/event.service";
 import { EventsController } from "./packages/event/event.controller";
+import { PromotionController } from "./core/promotion/promotion.controller";
+import { PromotionModule } from "./core/promotion/promotion.module";
+import { PromotionService } from "./core/promotion/promotion.service";
+import { PromotionRepository } from "./core/promotion/promotion.repository";
 
 @Module({
    controllers: [
@@ -42,7 +46,8 @@ import { EventsController } from "./packages/event/event.controller";
       DeliveryController,
       StatisticsController,
       CategoryController,
-      EventsController
+      EventsController,
+      PromotionController
    ],
    providers: [
       SessionMiddleware,
@@ -64,7 +69,9 @@ import { EventsController } from "./packages/event/event.controller";
       LambdaRouter,
       StatisticsService,
       CategoryService,
-      CategoryRepository
+      CategoryRepository,
+      PromotionService,
+      PromotionRepository
    ],
    imports: [
       DbModule,
@@ -96,6 +103,10 @@ export class AppModule implements NestModule {
                method: RequestMethod.GET
             },
             {
+               path: "/api/promotion",
+               method: RequestMethod.GET
+            },
+            {
                path: "/api/misc",
                method: RequestMethod.GET
             }
@@ -108,7 +119,8 @@ export class AppModule implements NestModule {
             DeliveryController,
             StatisticsController,
             CategoryController,
-            EventsController
+            EventsController,
+            PromotionController
          );
    }
 }

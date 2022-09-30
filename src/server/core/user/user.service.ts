@@ -34,20 +34,20 @@ import { PinoLogger } from "nestjs-pino";
 import { CreateWorkerUserDto } from "./dto/create-master-user.dto";
 
 export interface MarkRepositoryInterface {
-   create(dto: CreateMarkDto): Promise<Mark>;
+   tryCreate(dto: CreateMarkDto): Promise<Mark>;
    delete(userId: number, markId: number): Promise<boolean>;
    getUserMarks(userId: number): Promise<Mark[]>;
    isRegularMark(markId: number): Promise<boolean>;
+   getUserAndMarksByOrderId(orderId: number): Promise<[User, Mark[]]>;
 }
 
 @Injectable()
 export class UserService {
    constructor(
       private sessionService: SessionService,
-      private userRepository: UserRepository,
       private miscService: MiscService,
       private markRepository: MarkRepository,
-      private orderService: OrderService,
+      private userRepository: UserRepository,
       private logger: PinoLogger
    ) {
       this.logger.setContext(UserService.name);
@@ -61,6 +61,10 @@ export class UserService {
       }
       this.logger.debug("prepare data success");
       return data;
+   }
+
+   async getUserAndMarksByOrderId(orderId: number): Promise<[User, Mark[]]> {
+      return this.markRepository.getUserAndMarksByOrderId(orderId);
    }
 
    async prepareDataForDelivery(orderId: number): Promise<DeliveryUser> {
@@ -81,73 +85,28 @@ export class UserService {
       return false;
    }
 
-   public generateRegularCustomerMark(userId: number, phoneNumber: string): CreateMarkDto {
+   public generateRegularCustomerMark(userId: number): CreateMarkDto {
       const dto: CreateMarkDto = new CreateMarkDto();
       dto.userId = userId;
       dto.content = REGULAR_CUSTOMER_CONTENT;
-      dto.phoneNumber = phoneNumber;
       dto.isImportant = true;
       return dto;
    }
 
    async getUserCredentials(phoneNumber: string): Promise<UserCredentialsDto> {
-      const phoneNumberWithPlus = "+" + phoneNumber;
-      const credentialsWithoutMarks: Partial<UserCredentialsDto> = await this.userRepository.getUserCredentials(phoneNumberWithPlus);
+      const credentialsWithoutMarks: Partial<UserCredentialsDto> = await this.userRepository.getUserCredentials(phoneNumber);
       if (!credentialsWithoutMarks) {
-         throw new UserCredentialsNotFound(phoneNumberWithPlus);
+         throw new UserCredentialsNotFound(phoneNumber);
       }
 
-      const userId = await this.getUserId(phoneNumberWithPlus);
+      const userId = await this.getUserId(phoneNumber);
       const userMarks: Mark[] = await this.markRepository.getUserMarks(userId);
 
-      //todo: find new algo!!
-      // Get Regular Customer Mark duration in days.
-      // todo: replace with cache value
-      // const { reg_cust_duration, reg_cust_threshold } = await this.miscService.getAllValues();
-      // Check if user has Regular Customer Mark
-      // const regCustMark = this.hasRegularCustomerMark(userMarks);
-      // if (!regCustMark) {
-      //    Get paid and completed order sum in terms of [now-duration,now] period.
-      // const sum = await this.orderService.calculateOrderSumInTerms(reg_cust_duration, userId);
-      // if (sum >= reg_cust_threshold) {
-      //    const regCustMarkDto = this.generateRegularCustomerMark(userId, phoneNumberWithPlus);
-      //    const mark: Mark = await this.createMark(regCustMarkDto);
-      //    Updating initial marks with newly created Regular Customer mark.
-      // userMarks.push(mark);
-      // return {
-      //    marks: userMarks,
-      //    username: credentialsWithoutMarks.username,
-      //    userDeliveryAddress: credentialsWithoutMarks.userDeliveryAddress
-      // };
-      // }
-      // Return without Regular Customer mark.
       return {
          marks: userMarks,
          username: credentialsWithoutMarks.username,
          userDeliveryAddress: credentialsWithoutMarks.userDeliveryAddress
       };
-      // }
-
-      // const isStillRegCust = await this.userRepository.isStillRegularCustomer(reg_cust_duration, regCustMark.id);
-      // if (isStillRegCust) {
-      //    // Keep marks the same
-      //    const credentials: UserCredentialsDto = {
-      //       userDeliveryAddress: credentialsWithoutMarks?.userDeliveryAddress,
-      //       username: credentialsWithoutMarks?.username,
-      //       marks: userMarks
-      //    };
-      //    return credentials;
-      // }
-      // Delete Regular Customer mark and filter initial mark array.
-      // else {
-      //    await this.deleteMark(regCustMark.id);
-      //    const credentials: UserCredentialsDto = {
-      //       userDeliveryAddress: credentialsWithoutMarks?.userDeliveryAddress,
-      //       username: credentialsWithoutMarks?.username,
-      //       marks: userMarks.filter((mark) => mark.id !== regCustMark.id)
-      //    };
-      //    return credentials;
-      // }
    }
 
    async updateUserRememberedDeliveryAddress(userId: number, deliveryDetails: DeliveryDetails): Promise<void> {
@@ -322,8 +281,8 @@ export class UserService {
       return;
    }
 
-   async createMark(dto: CreateMarkDto): Promise<Mark> {
-      const ok = await this.markRepository.create(dto);
+   async tryCreate(dto: CreateMarkDto): Promise<Mark> {
+      const ok = await this.markRepository.tryCreate(dto);
       if (!ok) {
          throw new DuplicateMark(dto.content);
       }

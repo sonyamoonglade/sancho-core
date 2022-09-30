@@ -10,7 +10,7 @@ import { RegisterUserDto } from "./dto/register-user.dto";
 import { CookieNames, extendedRequest } from "../../types/types";
 import { Role } from "../../packages/decorators/role/Role";
 import { RegisterSpamGuard } from "../session/guard/register-spam.guard";
-import { CreateMarkDto } from "../mark/dto/create-mark.dto";
+import { CreateMarkDto, CreateMarkInput } from "../mark/dto/create-mark.dto";
 import { AuthorizationGuard } from "../authorization/authorization.guard";
 import { CustomerData } from "../entities/User";
 import { CookieService } from "../../packages/cookie/cookie.service";
@@ -20,6 +20,8 @@ import { Events, WorkerLoginPayload } from "../../packages/event/contract";
 import { helpers } from "../../packages/helpers/helpers";
 import { EventsService } from "../../packages/event/event.service";
 import { BanWorkerInput } from "./dto/user.dto";
+import { OrderService } from "../order/order.service";
+import { MiscService } from "../miscellaneous/misc.service";
 
 @Controller("/users")
 export class UserController {
@@ -28,7 +30,9 @@ export class UserController {
       private sessionService: SessionService,
       private cookieService: CookieService,
       private deliveryService: DeliveryService,
-      private eventsService: EventsService
+      private eventsService: EventsService,
+      private orderService: OrderService,
+      private miscService: MiscService
    ) {}
 
    @Get("/admin/")
@@ -93,6 +97,7 @@ export class UserController {
          throw e;
       }
    }
+
    @Get("/username")
    async getFullName(@Res() res: Response, @Query("phoneNumber") phoneNumber: string) {
       try {
@@ -110,7 +115,26 @@ export class UserController {
    @Role([AppRoles.worker])
    async getUserCredentials(@Res() res: Response, @Query("phoneNumber") phoneNumber: string) {
       try {
-         const credentials = await this.userService.getUserCredentials(phoneNumber);
+         const phoneNumberWithPlus = "+" + phoneNumber;
+
+         let credentials = await this.userService.getUserCredentials(phoneNumberWithPlus);
+         const regm = this.userService.hasRegularCustomerMark(credentials.marks);
+
+         const { reg_cust_duration, reg_cust_threshold } = await this.miscService.getAllValues();
+
+         const userId = await this.userService.getUserId(phoneNumberWithPlus);
+
+         const termsum = await this.orderService.calculateOrderSumInTerms(reg_cust_duration, userId);
+
+         //Remove mark
+         if (regm && termsum < reg_cust_threshold) {
+            await this.userService.deleteMark(regm.user_id);
+            credentials = {
+               ...credentials,
+               marks: credentials.marks.filter((m) => m.id !== regm.id)
+            };
+         }
+
          return res.status(200).send({ credentials });
       } catch (e) {
          throw e;
@@ -182,11 +206,17 @@ export class UserController {
 
    @Post("/mark")
    @Role([AppRoles.worker])
-   async createMark(@Req() req: extendedRequest, @Res() res: Response, @Body() dto: CreateMarkDto) {
+   async createMark(@Req() req: extendedRequest, @Res() res: Response, @Body() inp: CreateMarkInput) {
       try {
-         const userId = await this.userService.getUserId(dto.phoneNumber);
-         dto.userId = userId;
-         await this.userService.createMark(dto);
+         const userId = await this.userService.getUserId(inp.phoneNumber);
+         //todo:
+         const dto: CreateMarkDto = {
+            isImportant: inp.isImportant,
+            userId,
+            content: inp.content
+         };
+
+         await this.userService.tryCreate(dto);
          return res.status(201).end();
       } catch (e) {
          throw e;

@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
 import { CreateProductDto } from "./dto/create-product.dto";
 import { FrontendProduct, Product, products } from "../entities/Product";
-import { Categories, Features } from "../../../common/types";
+import { Cart, Categories, DatabaseCartProduct, Features } from "../../../common/types";
 import {
    InvalidCategoryException,
    ProductAlreadyExistsException,
@@ -12,6 +12,8 @@ import { ValidationErrorException } from "../../packages/exceptions/validation.e
 import { ProductRepository } from "./product.repository";
 import { CategoryService } from "../category/category.service";
 import { categories } from "../entities/Category";
+import { PinoLogger } from "nestjs-pino";
+import { compileFunction } from "vm";
 
 export interface ProductRepositoryInterface {
    searchQuery(words: string[]): Promise<FrontendProduct[]>;
@@ -27,7 +29,13 @@ export interface ProductRepositoryInterface {
 
 @Injectable()
 export class ProductService {
-   constructor(private productRepository: ProductRepository, private categoryService: CategoryService) {}
+   constructor(
+      private productRepository: ProductRepository,
+      private categoryService: CategoryService,
+      private logger: PinoLogger
+   ) {
+      this.logger.setContext(ProductService.name);
+   }
 
    async query(q: string): Promise<FrontendProduct[]> {
       if (q.trim().length === 0) {
@@ -86,5 +94,42 @@ export class ProductService {
          throw new ProductCantBeApproved(productId);
       }
       return;
+   }
+
+   public async calculateCartAmount(cart: DatabaseCartProduct[]): Promise<number> {
+      const productIds: number[] = cart.map((p) => p.id);
+      const products: Product[] = await this.productRepository.getProductsByIds(productIds);
+      const amount = products.reduce((a, c) => {
+         const same_product_idx = cart.findIndex((p) => p.id == c.id);
+         const product_quantity = cart[same_product_idx].quantity;
+         a += c.price * product_quantity;
+         return a;
+      }, 0);
+
+      return amount;
+   }
+
+   //filterCart matches cart's products with original product's price, ids, name etc...  and returns appropriate cart
+   public async filterCart(cart: Cart): Promise<Cart> {
+      const products: Product[] = await this.productRepository.getAll();
+      const outputCart: Cart = [];
+      for (let i = 0; i < products.length; i++) {
+         const p = products[i];
+         for (let j = 0; j < cart.length; j++) {
+            const cp = cart[j];
+            if (cp?.id === p?.id) {
+               const origProduct: DatabaseCartProduct = {
+                  price: p.price,
+                  quantity: cp.quantity,
+                  id: cp.id,
+                  translate: p.translate,
+                  image_url: p.image_url,
+                  category: cp.category
+               };
+               outputCart.push(origProduct);
+            }
+         }
+      }
+      return outputCart;
    }
 }

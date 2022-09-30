@@ -6,13 +6,13 @@ import { useCorrectOrderData } from "./hooks/useCorrectOrderData";
 import { CgCloseO } from "react-icons/cg";
 import { useCancelOrder } from "../../hooks/useCancelOrder";
 import {
-  orderSelector,
-  useAppDispatch,
-  useAppSelector,
-  userSelector,
-  windowActions,
-  windowSelector,
-  workerActions,
+   orderSelector,
+   useAppDispatch,
+   useAppSelector,
+   userSelector,
+   windowActions,
+   windowSelector,
+   workerActions
 } from "../../redux";
 import { AppResponsiveState } from "../../types/types";
 import { useDrag } from "react-dnd";
@@ -144,7 +144,7 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
                   )}
                </div>
                <p className="total_order_price">
-                  {order.total_cart_price} {currency}
+                  {order.amount} {currency}
                </p>
             </div>
             <div className="bottom">
@@ -178,7 +178,9 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
                               </button>
                            )}
                            {order.status === OrderStatus.verified && order.is_delivered && (
-                              <button onClick={handleNotifyRunner} className={isNotifiedCondition ? "pay_btn details --green" : "pay_btn details"}>
+                              <button
+                                 onClick={handleNotifyRunner}
+                                 className={isNotifiedCondition ? "pay_btn details --green" : "pay_btn details"}>
                                  <p>{isNotifiedCondition ? "Курьер уведомлен!" : "Уведомить курьера"}</p>
                               </button>
                            )}
@@ -186,7 +188,9 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
                      </div>
                   )}
 
-                  {order.status !== OrderStatus.cancelled && order.status !== OrderStatus.completed && <div className="green_dot">&nbsp;</div>}
+                  {order.status !== OrderStatus.cancelled && order.status !== OrderStatus.completed && (
+                     <div className="green_dot">&nbsp;</div>
+                  )}
                   <BiShoppingBag size={25} />
                </div>
             </div>

@@ -37,9 +37,9 @@
   @media (min-width: 1440px) {
     height: calc((500px/95 * 73));
   }
-  @media (max-height: 768px) {
-    height: calc((470px/95 * 73));
-
-  }
+  //@media (max-height: 768px) {
+  //  height: calc((470px/95 * 73));
+  //
+  //}
 
 }

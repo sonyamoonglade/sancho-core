@@ -31,5 +31,10 @@ export const helpers = {
 
    mapToObject: function (m: Map<any, any>): Object {
       return Object.fromEntries(Array.from(m.entries()));
+   },
+
+   //Discount is a number e.g 0.15 (means 15% off)
+   applyDiscount: function (discount: number, amount: number): number {
+      return Math.round(amount * (1 - discount));
    }
 };

@@ -20,7 +20,7 @@ export class OrderRepository {
    }
 
    async prepareDataForCheck(orderId: number): Promise<CheckOrder | null> {
-      const sql = `SELECT id as order_id,delivery_details, total_cart_price, pay, is_delivered, cart FROM ${orders} WHERE id = ${orderId}`;
+      const sql = `SELECT id as order_id,delivery_details, amount, pay, is_delivered, cart FROM ${orders} WHERE id = ${orderId}`;
       const { rows } = await this.db.query(sql);
       if (rows.length === 0) {
          return null;
@@ -29,7 +29,7 @@ export class OrderRepository {
    }
 
    async prepareDataForDelivery(orderId: number): Promise<DeliveryOrder | null> {
-      const sql = `SELECT id as order_id,delivery_details,total_cart_price, pay, is_delivered_asap FROM ${orders} WHERE id = ${orderId}`;
+      const sql = `SELECT id as order_id,delivery_details,amount, pay, is_delivered_asap FROM ${orders} WHERE id = ${orderId}`;
       const { rows } = await this.db.query(sql);
       if (rows.length === 0) {
          return null;
@@ -39,11 +39,11 @@ export class OrderRepository {
 
    async getOrderSumInTerms(termsInDays: number, userId: number): Promise<number[]> {
       const sql = `
-        SELECT total_cart_price FROM ${orders} WHERE status = '${OrderStatus.completed}' AND user_id = ${userId}
+        SELECT amount FROM ${orders} WHERE status = '${OrderStatus.completed}' AND user_id = ${userId}
         AND created_at > (NOW() - INTERVAL '30DAYS') AND created_at < NOW()
       `;
       const { rows } = await this.db.query(sql);
-      return rows.map((e) => e.total_cart_price);
+      return rows.map((e) => e.amount);
    }
 
    async getUserOrderHistory(userId: number): Promise<Order[]> {
@@ -64,7 +64,7 @@ export class OrderRepository {
 
    async getOrderQueue(): Promise<QueueOrderRO[]> {
       const sql = `
-        SELECT o.id, o.cart, o.total_cart_price, o.status, o.is_delivered, o.is_delivered_asap, o.delivery_details, o.created_at,
+        SELECT o.id, o.cart, o.amount, o.status, o.is_delivered, o.is_delivered_asap, o.delivery_details, o.created_at,
         u.name, u.phone_number FROM ${orders} o JOIN ${users} u ON o.user_id= 
         u.id WHERE o.status = '${OrderStatus.waiting_for_verification}' or o.status = '${OrderStatus.verified}' ORDER BY o.created_at DESC
       `;
@@ -73,23 +73,33 @@ export class OrderRepository {
       return rows;
    }
 
-   async getById(id: number | string): Promise<Order | undefined> {
-      const selectSql = this.qb.ofTable(orders).select<Order>({ where: { id: id as number } });
+   async getById(id: number): Promise<Order | undefined> {
+      const selectSql = this.qb.ofTable(orders).select<Order>({ where: { id } });
       const { rows } = await this.db.query(selectSql);
-      return rows[0] ? (rows[0] as Order) : undefined;
+      return rows[0];
    }
 
    async createUserOrder(dto: CreateUserOrderDto): Promise<number> {
       const strDetails = JSON.stringify(dto?.delivery_details || {});
       const sql = `
-         INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,pay,created_at)
-         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9) RETURNING id
+         INSERT INTO ${orders} (is_delivered, 
+                                 cart, 
+                                 delivery_details, 
+                                 amount, 
+                                 discounted_amount, 
+                                 is_delivered_asap, 
+                                 user_id, 
+                                 status, 
+                                 pay, 
+                                 created_at)
+         VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9, $10) RETURNING id
       `;
       const values = [
          dto.is_delivered,
          dto.cart,
          strDetails,
-         dto.total_cart_price,
+         dto.amount,
+         dto.amount, // By default, if user creates an order he gets amount = discounted_amount with discount = 0
          dto.is_delivered_asap,
          dto.user_id,
          dto.status,
@@ -109,14 +119,27 @@ export class OrderRepository {
    async createMasterOrder(dto: CreateMasterOrderDto): Promise<number> {
       const strDelDetails = JSON.stringify(dto?.delivery_details || {});
       const sql = `
-         INSERT INTO ${orders} (is_delivered,cart,delivery_details,total_cart_price,is_delivered_asap,user_id,status,pay,verified_at,created_at)
-          VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id
-      `;
+         INSERT INTO ${orders} (is_delivered,
+                                 cart, 
+                                 delivery_details, 
+                                 amount, 
+                                 discount,
+                                 discounted_amount,
+                                 is_delivered_asap, 
+                                 user_id,
+                                 status, 
+                                 pay, 
+                                 verified_at, 
+                                 created_at)
+          VALUES($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12) RETURNING id`;
+
       const values = [
          dto.is_delivered,
          dto.cart,
          strDelDetails,
-         dto.total_cart_price,
+         dto.amount,
+         dto.discount,
+         dto.discounted_amount,
          dto.is_delivered_asap,
          dto.user_id,
          OrderStatus.verified,
@@ -134,8 +157,14 @@ export class OrderRepository {
    }
 
    async cancel(dto: CancelOrderDto): Promise<void> {
-      const sql = `UPDATE ${orders} SET cancel_explanation = $1, status = '${OrderStatus.cancelled}', cancelled_at = $2, cancelled_by = $3 WHERE id = $4`;
-      const values = [dto.cancel_explanation, dto.status, dto.cancelled_at, dto.cancelled_by];
+      const sql = `UPDATE ${orders} SET
+                    cancel_explanation = $1,
+                    status = '${OrderStatus.cancelled}',
+                    cancelled_at = $2,
+                    cancelled_by = $3
+                    WHERE id = $4 AND order_status = '${OrderStatus.cancelled}'`;
+      const values = [dto.cancel_explanation, dto.status, dto.cancelled_at, dto.cancelled_by, dto.id];
+      await this.db.query(sql, values);
    }
 
    async getAll(): Promise<Order[]> {
@@ -157,7 +186,7 @@ export class OrderRepository {
 
    async getOrderList(status: OrderStatus): Promise<VerifiedQueueOrder[]> {
       const sql = `
-        SELECT o.id,o.cart,o.total_cart_price,o.status,o.is_delivered,o.delivery_details,o.created_at,
+        SELECT o.id,o.cart,o.amount,o.status,o.is_delivered,o.delivery_details,o.created_at,
         u.name,u.phone_number,o.is_delivered_asap,o.cancelled_at FROM ${orders} o JOIN ${users} u ON o.user_id= 
         u.id WHERE o.status = '${status}' ORDER BY o.created_at DESC LIMIT 15`;
       const { rows } = await this.db.query(sql);
@@ -167,7 +196,7 @@ export class OrderRepository {
             delivery_details: res.delivery_details,
             cart: res.cart,
             status: res.status,
-            total_cart_price: res.total_cart_price,
+            amount: res.amount,
             created_at: res.created_at,
             user: {
                name: res.name,
@@ -180,7 +209,7 @@ export class OrderRepository {
    }
 
    async getOrderCartsInTerms(from: Date, to: Date): Promise<Cart[]> {
-      const sql = `SELECT cart  FROM ${orders} WHERE status='${OrderStatus.completed}' AND (created_at BETWEEN $1 AND $2)`;
+      const sql = `SELECT cart FROM ${orders} WHERE status='${OrderStatus.completed}' AND (created_at BETWEEN $1 AND $2)`;
       const values = [from, to];
       const { rows } = await this.db.query(sql, values);
 

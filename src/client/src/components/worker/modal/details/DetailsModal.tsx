@@ -1,12 +1,5 @@
 import React, { useEffect } from "react";
-import {
-  useAppDispatch,
-  useAppSelector,
-  windowActions,
-  windowSelector,
-  workerActions,
-  workerSelector,
-} from "../../../../redux";
+import { useAppDispatch, useAppSelector, windowActions, windowSelector, workerActions, workerSelector } from "../../../../redux";
 import { useCorrectOrderData } from "../../../orderHistory/hooks/useCorrectOrderData";
 import "./details.styles.scss";
 import { useWorkerApi } from "../../../../hooks/useWorkerApi";
@@ -88,7 +81,8 @@ const DetailsModal = () => {
                <>
                   <p className="detail_item">Адрес: ул. {detailedOrder.delivery_details.address}</p>
                   <p className="detail_item">
-                     Подъезд {detailedOrder.delivery_details.entrance_number} | Этаж {detailedOrder.delivery_details.floor} | Квартира&nbsp;
+                     Подъезд {detailedOrder.delivery_details.entrance_number} | Этаж {detailedOrder.delivery_details.floor} |
+                     Квартира&nbsp;
                      {detailedOrder.delivery_details.flat_call}
                   </p>
                   <br />
@@ -103,7 +97,7 @@ const DetailsModal = () => {
          </div>
          <div className="detail_sum">
             <p className="detail_item">Сумма заказа: </p>
-            <strong className="detail_item">{detailedOrder.total_cart_price}.00 ₽</strong>
+            <strong className="detail_item">{detailedOrder.amount}.00 ₽</strong>
          </div>
          <button className="modal_button" onClick={handleCheckDownload}>
             Скачать как чек
