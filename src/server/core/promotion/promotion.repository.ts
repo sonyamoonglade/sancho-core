@@ -1,12 +1,19 @@
 import { Inject, Injectable } from "@nestjs/common";
 import { pg_conn } from "../../packages/database/db_provider-name";
 import { PoolClient } from "pg";
-import { InitPromotion, promotions } from "../entities/Promotion";
+import { InitPromotion, Promotion, promotions } from "../entities/Promotion";
 import { PinoLogger } from "nestjs-pino";
+import { query_builder } from "../../packages/query_builder/provider-name";
+import { QueryBuilder } from "../../packages/query_builder/QueryBuilder";
+import { UpdatePromotionDto } from "./dto/promotion.dto";
 
 @Injectable()
 export class PromotionRepository {
-   constructor(@Inject(pg_conn) private db: PoolClient, private logger: PinoLogger) {
+   constructor(
+      @Inject(pg_conn) private db: PoolClient,
+      private logger: PinoLogger,
+      @Inject(query_builder) private qb: QueryBuilder
+   ) {
       this.logger.setContext(PromotionRepository.name);
    }
 
@@ -41,5 +48,17 @@ export class PromotionRepository {
          this.logger.error(`failed inserting base promotions ${e}`);
          throw e;
       }
+   }
+
+   async getAll(): Promise<Promotion[]> {
+      const sql = `SELECT * FROM ${promotions}`;
+      const { rows } = await this.db.query(sql);
+      return rows;
+   }
+
+   async update(p: UpdatePromotionDto, id: number): Promise<void> {
+      const [sql, values] = this.qb.ofTable(promotions).update<Promotion>({ where: { promotion_id: id }, set: p });
+      await this.db.query(sql, values);
+      return;
    }
 }
