@@ -107,7 +107,7 @@ export class ProductController {
          this.logger.info("delete image by root success");
 
          //Set has_image(because updated an image) and approved to false (for safety)
-         const newImageUrl = this.config.yandex.storageUrl + filename;
+         const newImageUrl = this.config.yandex.storageURL+ filename;
          const updateDto: Partial<Product> = { has_image: true, approved: false, image_url: newImageUrl };
 
          await this.productService.updateProduct(updateDto, productId);

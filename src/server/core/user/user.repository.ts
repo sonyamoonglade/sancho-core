@@ -12,7 +12,8 @@ import { FoundUserDto } from "./dto/found-user.dto";
 import { orders } from "../entities/Order";
 
 export class UserRepository {
-   constructor(@Inject(query_builder) private qb: QueryBuilder, @Inject(pg_conn) private db: Pool) {}
+   constructor(@Inject(query_builder) private qb: QueryBuilder, @Inject(pg_conn) private db: Pool) {
+   }
 
    async prepareDataForCheck(orderId: number): Promise<CheckUser | null> {
       const sql = `

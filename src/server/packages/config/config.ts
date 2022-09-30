@@ -1,8 +1,8 @@
-import * as yaml from "yaml";
 import * as fs from "fs";
 import * as path from "path";
+import * as yaml from 'yaml';
 
-const nodeenv = process.env.NODE_ENV;
+const nodeenv = process.env.NODE_ENV || "development";
 
 require("dotenv").config();
 
@@ -19,7 +19,6 @@ export type AppConfig = {
    lambda: {
       putFile: string;
       pseudoDelete: string;
-      url: string;
    };
    env: {
       superAdminLogin: string;
@@ -27,11 +26,12 @@ export type AppConfig = {
       databasePassword: string;
       deliveryServiceURL: string;
       notificationServiceURL: string;
+      lambdaURL: string
       hashSecret: string;
       nodeEnv: string;
    };
    yandex: {
-      storageUrl: string;
+      storageURL: string;
    };
 };
 
@@ -54,7 +54,8 @@ export function GetAppConfig(): AppConfig {
       superAdminPassword: process.env.SUPERADMIN_PASSWORD,
       hashSecret: process.env.HASH_SECRET,
       nodeEnv: process.env.NODE_ENV,
-      notificationServiceURL: process.env.NOTIFICATION_SERVICE_URL
+      notificationServiceURL: process.env.NOTIFICATION_SERVICE_URL,
+      lambdaURL: process.env.LAMBDA_FILE_UPLOAD_URL
    };
 
    instance = config;
