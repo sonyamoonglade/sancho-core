@@ -7,7 +7,7 @@ export class LambdaRouter {
    private readonly baseUrl: string;
    constructor() {
       this.config = GetAppConfig();
-      this.baseUrl = this.config.lambda.url;
+      this.baseUrl = this.config.env.lambdaURL;
    }
 
    public PutImage(): string {

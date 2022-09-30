@@ -32,8 +32,9 @@ async function bootstrap() {
       preflightContinue: false
    });
    app.useGlobalPipes(new ValidationPipe());
+
    //Configure app port (*first option is optional. For hosting providers that setup port by their own)
-   const APP_PORT = Number(process.env.PORT) || Number(config.app.port);
+   const APP_PORT = +process.env.PORT || +config.app.port;
 
    //Register super admin(if db empty)
    await userService.registerSuperAdmin();
