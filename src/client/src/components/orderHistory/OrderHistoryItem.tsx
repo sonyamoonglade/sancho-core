@@ -1,4 +1,4 @@
-import React, { FC, useEffect } from "react";
+import React, { FC, useEffect, useMemo, useRef, useState } from "react";
 import { OrderStatus, ResponseUserOrder, VerifiedQueueOrder } from "../../common/types";
 import { currency } from "../../common/constants";
 import { BiShoppingBag } from "react-icons/bi";
@@ -115,15 +115,51 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
       await notify(order.id);
    }
 
+   const [isHovering, setIsHovering] = useState<boolean>(false);
+   const hoverRef = useRef<HTMLDivElement>(null);
+   function hoverHandler(e: any) {
+      if (isWorkerAuthenticated) {
+         return;
+      }
+      if (isHovering) {
+         if (hoverRef.current === null) {
+            return;
+         }
+         hoverRef.current.style.opacity = "0";
+         setIsHovering(false);
+         return;
+      }
+
+      hoverRef.current.style.opacity = "1";
+      setIsHovering(true);
+   }
+
+   const correctRef = useMemo(() => {
+      if (!isWorkerAuthenticated && appResponsiveState !== AppResponsiveState.computer) {
+         return animationRef;
+      }
+
+      return drag;
+   }, [appResponsiveState, animationRef, isWorkerAuthenticated, drag]);
+
    return (
       <div ref={dragPreview}>
          <li
+            onMouseEnter={hoverHandler}
+            onMouseLeave={hoverHandler}
             role="Handle"
             style={{ transform: `translateX(${x}px)`, opacity: isDragging ? 0.4 : 1 }}
             onTouchMove={(e) => onMove(e)}
             onTouchEnd={(e) => onEnd()}
-            ref={appResponsiveState === AppResponsiveState.computer && isWorkerAuthenticated && canDrag ? drag : animationRef}
+            //if computer and worker then draggable ref
+            //if computer and user then hover ref
+            ref={correctRef}
             className={orderItemCorrespondingClassName}>
+            {!isWorkerAuthenticated && order.status === OrderStatus.waiting_for_verification && (
+               <div className="cancel_pc_button" ref={hoverRef}>
+                  <p>Отменить заказ</p>
+               </div>
+            )}
             <div className="top">
                <div className="top_left">
                   <strong style={{ fontFamily: "Geometria" }}>#</strong>

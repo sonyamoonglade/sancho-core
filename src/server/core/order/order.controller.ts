@@ -299,7 +299,7 @@ export class OrderController {
 
          if (termsum >= reg_cust_threshold) {
             const m = this.userService.generateRegularCustomerMark(user.id);
-            this.userService.tryCreate(m);
+            await this.userService.tryCreate(m);
          }
 
          return res.status(200).send({ status: orderStatus as OrderStatus.completed });
@@ -338,7 +338,7 @@ export class OrderController {
             return;
          });
          //Append new connection and filter from closed or errored ones
-         this.queueConnections = this.queueConnections.filter((conn) => conn.writable && !conn.finished).concat(res);
+         this.queueConnections = this.queueConnections.filter((conn) => conn.writable).concat(res);
          this.logger.debug(`active connections: ${this.queueConnections.length}`);
 
          return;

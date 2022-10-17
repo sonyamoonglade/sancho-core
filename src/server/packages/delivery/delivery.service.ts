@@ -16,6 +16,7 @@ import { DeliveryStatus } from "../../types/types";
 import { RunnerUser } from "src/common/types";
 import { EventsService } from "../event/event.service";
 import { InternalEvents } from "../event/contract";
+import { GetAppConfig } from "../config/config";
 
 @Injectable()
 export class DeliveryService implements DeliveryServiceInterface {
@@ -23,8 +24,8 @@ export class DeliveryService implements DeliveryServiceInterface {
 
    constructor(private logger: PinoLogger, private eventsService: EventsService) {
       this.logger.setContext(DeliveryService.name);
-      //todo: move to config
-      this.url = process.env.DELIVERY_SERVICE_URL + "/api";
+      const config = GetAppConfig();
+      this.url = config.env.deliveryServiceURL;
    }
 
    async getRunners(): Promise<RunnerUser[]> {
@@ -47,6 +48,7 @@ export class DeliveryService implements DeliveryServiceInterface {
             responseType: "arraybuffer",
             responseEncoding: "utf-8"
          });
+
          return response.data;
       } catch (e: any) {
          this.logger.error("download check failed with error");
@@ -90,15 +92,14 @@ export class DeliveryService implements DeliveryServiceInterface {
       this.logger.info("registerRunner");
       try {
          const endpoint = "/runner";
-         await axios.post(this.url + endpoint, dto);
-         this.logger.info("ok");
-         return true;
+         const res = await axios.post(this.url + endpoint, dto);
+         return res.status === 201;
       } catch (e: any) {
          const payload = {
             phoneNumber: dto.phone_number
          };
+         this.logger.error("failed with error:", e);
          this.parseDeliveryError(e, payload);
-         this.logger.error("failed with error");
          return false;
       }
    }

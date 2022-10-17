@@ -4,6 +4,9 @@ import UserList from "../userList/UserList";
 import { adminSelector, useAppSelector } from "../../../redux";
 const RunnerList = () => {
    const { users } = useAppSelector(adminSelector);
+
+     const a = "asd"
+
    return (
       <div className="runner_list">
          <UserList listFor={"курьеров"}>

@@ -1,16 +1,15 @@
 import React, { FC, useEffect, useRef, useState } from "react";
 import PromotionCard from "./promotionCard/PromotionCard";
 import "./promotion.styles.scss";
-import { Promotion } from "../../common/types";
 import { useUserApi } from "../../hooks/useUserApi";
-import { boolOptions } from "yaml/types";
+import { Promotion } from "../../common/types";
 
 type promMap = Map<number, boolean>;
 export const birthdayPromotion: Promotion = {
    promotion_id: 3,
    main_title: "Скидка 10% на день рождение!",
-   sub_text: "Предоставим вам персональную скидку",
-   sub_title: "только при предъявлении паспорта или свидетельства о рождении"
+   sub_title: "Предоставим вам персональную скидку ",
+   sub_text: "Только при предъявлении паспорта или свидетельства о рождении"
 };
 
 const PromotionList = () => {

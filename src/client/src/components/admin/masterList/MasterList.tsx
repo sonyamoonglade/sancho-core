@@ -2,8 +2,11 @@ import React from "react";
 import "./../userList/usr-list.styles.scss";
 import UserList from "../userList/UserList";
 import { adminSelector, useAppSelector } from "../../../redux";
+import { useAdminApi } from '../../../hooks/useAdminApi';
 const MasterList = () => {
    const { users } = useAppSelector(adminSelector);
+   const { } = useAdminApi()
+   
    return (
       <div className="runner_list">
          <UserList listFor={"воркеров"}>

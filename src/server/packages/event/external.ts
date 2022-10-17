@@ -5,7 +5,7 @@ import { ExternalEvent } from "../../../common/types";
 
 export function InitExternalSubscriptions(logger: any, eventsService: EventsService) {
    Object.values(Events).forEach((event) => {
-      eventsService.Subscribe(event, eventsService.ExternalFireCallback(event));
+      eventsService.Subscribe(event, eventsService.GetFireExternalCallback(event));
       logger.log(`subscribed to ${event}`);
    });
 }

@@ -5,10 +5,7 @@ import { EditFormValues } from "../components/admin/productModal/edit/hooks/useE
 import { CreateFormValues } from "../components/admin/productModal/create/hooks/useCreateProductModalForm";
 import { AggregationPreset, ExternalEvent, MasterUser, ProductTopArray, RunnerUser } from "../common/types";
 import { WorkerRegisterFormState } from "../components/admin/workerRegister/hooks/useWorkerRegisterForm";
-import {
-   RunnerRegisterFormState,
-   RunnerRegisterFormValues
-} from "../components/admin/runnerRegister/hooks/useRunnerRegisterForm";
+import { RunnerRegisterFormValues } from "../components/admin/runnerRegister/hooks/useRunnerRegisterForm";
 import { SubscribeDto } from "../components/admin/subcriptionsTable/SubscriptionsTable";
 
 interface AdminCatalogResponse {
@@ -31,22 +28,6 @@ interface MastersAndWorkersResponse {
 export function useAdminApi() {
    const client = useAxios();
 
-   const fetchAdminCatalog = useCallback(
-      async function (): Promise<AdminProduct[]> {
-         const { data } = await client.get<AdminCatalogResponse>("/product/admin/catalog");
-         return data.catalog;
-      },
-      [client]
-   );
-
-   const approveProduct = useCallback(
-      async function (productId: number): Promise<boolean> {
-         const res = await client.put(`/product/admin/approve?v=${productId}`);
-         return res.status === 200;
-      },
-      [client]
-   );
-
    const uploadImage = useCallback(
       async function (file: File, productId: number): Promise<boolean> {
          const formData = new FormData();
@@ -54,8 +35,7 @@ export function useAdminApi() {
          const name = "payload";
          formData.append(name, file);
          //Set productId that we upload image for
-         const url = `/product/admin/upload?v=${productId}`;
-         const res = await client.post(url, formData, {
+         const res = await client.post(`/product/admin/upload?v=${productId}`, formData, {
             headers: {
                "Content-Type": "multipart/form-data"
             }
@@ -65,10 +45,19 @@ export function useAdminApi() {
       [client]
    );
 
+   const fetchAdminCatalog = useCallback(async function (): Promise<AdminProduct[]> {
+      const { data } = await client.get<AdminCatalogResponse>("/product/admin/catalog");
+      return data.catalog;
+   }, []);
+
+   const approveProduct = useCallback(async function (productId: number): Promise<boolean> {
+      const res = await client.put(`/product/admin/approve?v=${productId}`);
+      return res.status === 200;
+   }, []);
+
    const updateProduct = useCallback(
       async function (body: EditFormValues, productId: number): Promise<boolean> {
-         const url = `/product/admin/update?id=${productId}`;
-         const res = await client.put(url, body);
+         const res = await client.put(`/product/admin/update?id=${productId}`, body);
          return res.status === 200;
       },
       [client]
@@ -76,8 +65,7 @@ export function useAdminApi() {
 
    const getAvailableCategories = useCallback(
       async function (): Promise<Category[]> {
-         const url = `/admin/category/`;
-         const { data } = await client.get<AdminCategoriesResponse>(url);
+         const { data } = await client.get<AdminCategoriesResponse>("/admin/category/");
          return data.categories;
       },
       [client]
@@ -85,8 +73,7 @@ export function useAdminApi() {
 
    const createProduct = useCallback(
       async function (body: CreateFormValues): Promise<boolean> {
-         const url = "/product/admin/create";
-         const res = await client.post(url, body);
+         const res = await client.post("/product/admin/create", body);
          return res.status === 201;
       },
       [client]
@@ -94,8 +81,7 @@ export function useAdminApi() {
 
    const deleteProduct = useCallback(
       async function (productId: number): Promise<boolean> {
-         const url = `/product/admin/delete?id=${productId}`;
-         const res = await client.delete(url);
+         const res = await client.delete(`/product/admin/delete?id=${productId}`);
          return res.status === 200;
       },
       [client]
@@ -103,8 +89,7 @@ export function useAdminApi() {
 
    const getProductTop = useCallback(
       async function (aggregation: AggregationPreset): Promise<ProductTopArray> {
-         const url = `/admin/statistics/product/top?aggregation=${aggregation}`;
-         const res = await client.get<ProductTopResponse>(url);
+         const res = await client.get<ProductTopResponse>(`/admin/statistics/product/top?aggregation=${aggregation}`);
          return res.data.top;
       },
       [client]
@@ -112,16 +97,14 @@ export function useAdminApi() {
 
    const rankUp = useCallback(
       async function (name: string): Promise<Category[]> {
-         const url = `/admin/category/rankup?name=${name}`;
-         const res = await client.put<AdminCategoriesResponse>(url);
+         const res = await client.put<AdminCategoriesResponse>(`/admin/category/rankup?name=${name}`);
          return res.data.categories;
       },
       [client]
    );
    const rankDown = useCallback(
       async function (name: string): Promise<Category[]> {
-         const url = `/admin/category/rankdown?name=${name}`;
-         const res = await client.put<AdminCategoriesResponse>(url);
+         const res = await client.put<AdminCategoriesResponse>(`/admin/category/rankdown?name=${name}`);
          return res.data.categories;
       },
       [client]
@@ -129,8 +112,7 @@ export function useAdminApi() {
 
    const createCategory = useCallback(
       async function (name: string): Promise<Category[]> {
-         const url = `/admin/category/`;
-         const res = await client.post<AdminCategoriesResponse>(url, { name });
+         const res = await client.post<AdminCategoriesResponse>("/admin/category/", { name });
          return res.data.categories;
       },
       [client]
@@ -138,8 +120,7 @@ export function useAdminApi() {
 
    const deleteCategory = useCallback(
       async function (name: string): Promise<Category[]> {
-         const url = `/admin/category/${name}`;
-         const res = await client.delete<AdminCategoriesResponse>(url);
+         const res = await client.delete<AdminCategoriesResponse>(`/admin/category/${name}`);
          return res.data.categories;
       },
       [client]
@@ -147,24 +128,21 @@ export function useAdminApi() {
 
    const registerWorker = useCallback(
       async function (body: WorkerRegisterFormState): Promise<void> {
-         const url = `/users/admin/registerWorker`;
-         await client.post(url, body);
+         await client.post("/users/admin/registerWorker", body);
       },
       [client]
    );
 
    const registerRunner = useCallback(
       async function (body: RunnerRegisterFormValues): Promise<void> {
-         const url = `/delivery/admin/runner`;
-         await client.post(url, body);
+         await client.post("/delivery/admin/runner", body);
       },
       [client]
    );
 
    const fetchMastersAndRunners = useCallback(
       async function (): Promise<MastersAndWorkersResponse> {
-         const url = `/users/admin/`;
-         const res = await client.get<MastersAndWorkersResponse>(url);
+         const res = await client.get<MastersAndWorkersResponse>("/users/admin/");
          return res.data;
       },
       [client]
@@ -172,8 +150,7 @@ export function useAdminApi() {
 
    const fetchSubscriberJoinedData = useCallback(
       async function (): Promise<SubscriberRO[]> {
-         const url = "/admin/event/subscriptions/joined";
-         const { data } = await client.get(url);
+         const { data } = await client.get("/admin/event/subscriptions/joined");
          return data.subscribers;
       },
       [client]
@@ -181,8 +158,7 @@ export function useAdminApi() {
 
    const fetchAllSubscribers = useCallback(
       async function (): Promise<SubscriberWithoutSubscriptionsRO[]> {
-         const url = "/admin/event/subscriptions/subscribers";
-         const { data } = await client.get(url);
+         const { data } = await client.get("/admin/event/subscriptions/subscribers");
          return data.subscribers;
       },
       [client]
@@ -190,8 +166,7 @@ export function useAdminApi() {
 
    const fetchAvailableEvents = useCallback(
       async function (): Promise<ExternalEvent[]> {
-         const url = "/admin/event";
-         const { data } = await client.get(url);
+         const { data } = await client.get("/admin/event");
          return data.events;
       },
       [client]
@@ -199,8 +174,7 @@ export function useAdminApi() {
 
    const subscribe = useCallback(
       async function (body: SubscribeDto): Promise<void> {
-         const url = "/admin/event/subscriptions";
-         await client.post(url, body);
+         await client.post("/admin/event/subscriptions", body);
          return;
       },
       [client]
@@ -208,8 +182,7 @@ export function useAdminApi() {
 
    const unsubscribe = useCallback(
       async function (subscriptionId: number): Promise<void> {
-         const url = `/admin/event/subscriptions/${subscriptionId}`;
-         await client.delete(url);
+         await client.delete(`/admin/event/subscriptions/${subscriptionId}`);
          return;
       },
       [client]
@@ -217,8 +190,7 @@ export function useAdminApi() {
 
    const registerSubscriber = useCallback(
       async function (phone_number: string): Promise<boolean> {
-         const url = "/admin/event/subscriptions/subscribers";
-         const res = await client.post(url, {
+         const res = await client.post("/admin/event/subscriptions/subscribers", {
             phone_number
          });
          return res.status === 201;

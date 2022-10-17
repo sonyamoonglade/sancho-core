@@ -6,10 +6,7 @@ import { GetAppConfig } from "../config/config";
 import axios from "axios";
 import { PinoLogger } from "nestjs-pino";
 import { CreateSubscriptionDto, RegisterSubscriberDto } from "./dto/event.dto";
-import { NotFoundError } from "rxjs";
-import { SubscriberRO } from "./responseObject/event.response-object";
 import { AvailableEventsResponse, SubscribersJoinedDataResponse, SubscribersWithoutSubscriptionsResponse } from "./external";
-import { ExternalEvent } from "../../../common/types";
 
 @Injectable()
 export class EventsService {
@@ -40,10 +37,10 @@ export class EventsService {
       return;
    }
 
-   ExternalFireCallback(event: Events): ExternalCaller {
+   GetFireExternalCallback(event: Events): ExternalCaller {
       return async (body: any) => {
          try {
-            const endPoint = this.baseURL + `/api/events/fire/${event}`;
+            const endPoint = this.baseURL + `/events/fire/${event}`;
             await axios.post(endPoint, body);
             this.logger.debug(`event ${event} has fired`);
             return;
@@ -57,7 +54,7 @@ export class EventsService {
 
    async createSubscriptionAPI(dto: CreateSubscriptionDto): Promise<void> {
       try {
-         const endPoint = this.baseURL + `/api/subscriptions`;
+         const endPoint = this.baseURL + `/subscriptions`;
          await axios.post(endPoint, dto);
          return;
       } catch (e) {
@@ -68,7 +65,7 @@ export class EventsService {
 
    async cancelSubscriptionAPI(subscriptionId: number): Promise<void> {
       try {
-         const endPoint = this.baseURL + `/api/subscriptions/${subscriptionId}`;
+         const endPoint = this.baseURL + `/subscriptions/${subscriptionId}`;
          await axios.delete(endPoint);
          return;
       } catch (e) {
@@ -79,7 +76,7 @@ export class EventsService {
 
    async getSubscribersJoinedData(): Promise<SubscribersJoinedDataResponse> {
       try {
-         const endPoint = this.baseURL + "/api/subscriptions/subscribers/joined";
+         const endPoint = this.baseURL + "/subscriptions/subscribers/joined";
          const { data } = await axios.get<SubscribersJoinedDataResponse>(endPoint);
          return data;
       } catch (e) {
@@ -90,7 +87,7 @@ export class EventsService {
 
    async getAllSubscribersWithoutSubscriptions(): Promise<SubscribersWithoutSubscriptionsResponse> {
       try {
-         const endPoint = this.baseURL + "/api/subscriptions/subscribers";
+         const endPoint = this.baseURL + "/subscriptions/subscribers";
          const { data } = await axios.get<SubscribersWithoutSubscriptionsResponse>(endPoint);
          return data;
       } catch (e) {
@@ -101,7 +98,7 @@ export class EventsService {
 
    async getAvailableEventsAPI(): Promise<AvailableEventsResponse> {
       try {
-         const endPoint = this.baseURL + "/api/events";
+         const endPoint = this.baseURL + "/events";
          const { data } = await axios.get<AvailableEventsResponse>(endPoint);
          return data;
       } catch (e) {
@@ -112,7 +109,7 @@ export class EventsService {
 
    async registerSubscriberAPI(dto: RegisterSubscriberDto): Promise<void> {
       try {
-         const endPoint = this.baseURL + "/api/subscriptions/subscribers";
+         const endPoint = this.baseURL + "/subscriptions/subscribers";
          await axios.post(endPoint, dto);
          return;
       } catch (e) {

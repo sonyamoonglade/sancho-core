@@ -204,17 +204,14 @@ export class OrderService {
    private async fetchOrderQueue(): Promise<OrderQueue> {
       const rawQueue = await this.orderRepository.getOrderQueue();
       const mapped = this.mapRawQueue(rawQueue);
-
       const verifIds = mapped.verified.map((ord) => ord.id);
       try {
          const statuses = await this.deliveryService.status(verifIds);
-
          //If calling service for statuses has succeeded
          mapped.verified = mapped.verified.map((order) => {
             order.isRunnerNotified = statuses.find((st) => st.orderId === order.id).status;
             return order;
          });
-
          return mapped;
       } catch (e) {
          this.logger.error(e);

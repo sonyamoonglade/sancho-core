@@ -15,7 +15,6 @@ import { MiscService } from "./core/miscellaneous/misc.service";
 async function bootstrap() {
    //Init config
    const config = GetAppConfig();
-
    //Init an app
    const app = await NestFactory.create(AppModule);
    //Get logger instance

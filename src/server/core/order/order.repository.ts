@@ -162,8 +162,9 @@ export class OrderRepository {
                     status = '${OrderStatus.cancelled}',
                     cancelled_at = $2,
                     cancelled_by = $3
-                    WHERE id = $4 AND order_status = '${OrderStatus.cancelled}'`;
-      const values = [dto.cancel_explanation, dto.status, dto.cancelled_at, dto.cancelled_by, dto.id];
+                    WHERE id = $4`;
+      const values = [dto.cancel_explanation, dto.cancelled_at, dto.cancelled_by, dto.id];
+
       await this.db.query(sql, values);
    }
 
