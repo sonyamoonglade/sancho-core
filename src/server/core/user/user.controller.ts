@@ -128,7 +128,7 @@ export class UserController {
 
          //Remove mark
          if (regm && termsum < reg_cust_threshold) {
-            await this.userService.deleteMark(regm.user_id);
+            await this.userService.deleteMark(regm.id);
             credentials = {
                ...credentials,
                marks: credentials.marks.filter((m) => m.id !== regm.id)

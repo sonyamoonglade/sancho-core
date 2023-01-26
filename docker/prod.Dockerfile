@@ -1,15 +1,20 @@
-FROM node:alpine
-
-WORKDIR /app/core
-
-COPY package.json /app/core
-
-RUN npm install
-
+FROM node:18.1-alpine3.14 as build
+WORKDIR /app
+COPY package.json .
+RUN npm install && mkdir dist
 COPY . .
-
 ENV NODE_ENV="production"
+RUN npm run build:prod && \
+    npm prune --production
 
-RUN npm run build:prod
+FROM node:18.1-alpine3.14
+WORKDIR /app
+RUN rm -rf /usr/local/lib/node_modules/npm && \
+       rm -rf /opt/* && \
+       mkdir -p /app/dist/server && \
+       touch /app/dist/server/prod.config.yml
 
-CMD ["npm","run","start"]
+COPY --from=build /app/node_modules /app/node_modules
+COPY --from=build /app/dist /app/dist
+EXPOSE 5000
+ENTRYPOINT ["node", "/app/dist/server/main.js"]

@@ -3,11 +3,7 @@ import { useAppDispatch, windowActions } from "../../../redux";
 import { useNavigate } from "react-router-dom";
 
 const AdminNavigation = () => {
-   const dispatch = useAppDispatch();
    const router = useNavigate();
-   function toggleOrderCreation() {
-      dispatch(windowActions.toggleCreateOrder());
-   }
 
    function route(n: number) {
       const baseUrl = "/admin";

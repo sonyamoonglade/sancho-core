@@ -3,6 +3,7 @@ import { AxiosInstance } from "axios";
 import { orderActions } from "./order.slice";
 import { ResponseUserOrder } from "../../common/types";
 import { USER_CANCEL_EXPLANATION } from "../../common/constants";
+import { CancelExplanationPresets } from "../../types/types";
 
 type userOrderHistoryResponse = {
    orders: ResponseUserOrder[];
@@ -30,3 +31,13 @@ export const cancelOrder = (client: AxiosInstance, orderId: number, phoneNumber:
    await client.put("order/cancel", body);
    dispatch(orderActions.cancelById(orderId));
 };
+
+export const cancelOrderWithoutPhone = (client: AxiosInstance, orderId: number) => async(dispatch: AppDispatch) => {
+   const body = {
+      order_id: orderId,
+      cancel_explanation: `${CancelExplanationPresets.CUSTOMER_WILL}. Отменен пользователем`
+   };
+
+   await client.put("order/cancel", body);
+   dispatch(orderActions.cancelById(orderId));
+}

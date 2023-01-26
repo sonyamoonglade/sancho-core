@@ -7,7 +7,7 @@ import { Promotion } from "../../common/types";
 type promMap = Map<number, boolean>;
 export const birthdayPromotion: Promotion = {
    promotion_id: 3,
-   main_title: "Скидка 10% на день рождение!",
+   main_title: "Скидка 10% каждому на день рождение!",
    sub_title: "Предоставим вам персональную скидку ",
    sub_text: "Только при предъявлении паспорта или свидетельства о рождении"
 };

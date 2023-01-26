@@ -6,6 +6,7 @@ import { useCorrectOrderData } from "./hooks/useCorrectOrderData";
 import { CgCloseO } from "react-icons/cg";
 import { useCancelOrder } from "../../hooks/useCancelOrder";
 import {
+   cancelOrder, cancelOrderWithoutPhone,
    orderSelector,
    useAppDispatch,
    useAppSelector,
@@ -17,6 +18,7 @@ import {
 import { AppResponsiveState } from "../../types/types";
 import { useDrag } from "react-dnd";
 import { useNotifyRunner } from "../../hooks/useNotifyRunner";
+import { useAxios } from "../../hooks/useAxios";
 
 export interface ExtraData {
    phoneNumber?: string;
@@ -45,7 +47,7 @@ export enum DropZones {
    CANCEL = "cancel"
 }
 
-const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extraData, canDrag = true }) => {
+const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extraData}) => {
    const { orderHistory } = useAppSelector(orderSelector);
    const { cid, cstatus, cdate, cddate, correctData, orderItemCorrespondingClassName } = useCorrectOrderData(order);
    const { isWorkerAuthenticated } = useAppSelector(userSelector);
@@ -53,6 +55,7 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
    const { appResponsiveState } = useAppSelector(windowSelector);
    const { notify } = useNotifyRunner();
    const dispatch = useAppDispatch();
+   const client = useAxios()
 
    const isNotifiedCondition = order.status === OrderStatus.verified && (order as unknown as VerifiedQueueOrder).isRunnerNotified;
 
@@ -118,13 +121,13 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
    const [isHovering, setIsHovering] = useState<boolean>(false);
    const hoverRef = useRef<HTMLDivElement>(null);
    function hoverHandler(e: any) {
-      if (isWorkerAuthenticated) {
+      if (hoverRef.current === null) {
+         return;
+      }
+      if (isWorkerAuthenticated || appResponsiveState !== AppResponsiveState.computer) {
          return;
       }
       if (isHovering) {
-         if (hoverRef.current === null) {
-            return;
-         }
          hoverRef.current.style.opacity = "0";
          setIsHovering(false);
          return;
@@ -142,6 +145,10 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
       return drag;
    }, [appResponsiveState, animationRef, isWorkerAuthenticated, drag]);
 
+   function cancelOrderHandler(){
+      dispatch(cancelOrderWithoutPhone(client, order.id))
+   }
+
    return (
       <div ref={dragPreview}>
          <li
@@ -150,13 +157,11 @@ const OrderHistoryItem: FC<orderHistoryItemProps> = ({ order, isFirstOrder, extr
             role="Handle"
             style={{ transform: `translateX(${x}px)`, opacity: isDragging ? 0.4 : 1 }}
             onTouchMove={(e) => onMove(e)}
-            onTouchEnd={(e) => onEnd()}
-            //if computer and worker then draggable ref
-            //if computer and user then hover ref
+            onTouchEnd={onEnd}
             ref={correctRef}
             className={orderItemCorrespondingClassName}>
-            {!isWorkerAuthenticated && order.status === OrderStatus.waiting_for_verification && (
-               <div className="cancel_pc_button" ref={hoverRef}>
+            {!isWorkerAuthenticated && order.status === OrderStatus.waiting_for_verification && appResponsiveState === AppResponsiveState.computer && (
+               <div onClick={cancelOrderHandler} className="cancel_pc_button" ref={hoverRef}>
                   <p>Отменить заказ</p>
                </div>
             )}
