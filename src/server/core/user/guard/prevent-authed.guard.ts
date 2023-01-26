@@ -22,6 +22,10 @@ export class PreventAuthedGuard implements CanActivate {
       }
       try {
          const userId = await this.sessionService.getUserIdBySID(SID);
+         if (!userId) {
+            this.logger.debug("user id undefined sessionID:", SID)
+            return false
+         }
          const { ok } = await this.orderService.hasWaitingOrder(userId, null);
          if (!ok) {
             this.logger.debug("ok");

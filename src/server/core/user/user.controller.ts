@@ -94,6 +94,7 @@ export class UserController {
          }
          return res.status(200).send({ role: user.role });
       } catch (e) {
+         this.cookieService.clearSessCookie(res)
          throw e;
       }
    }
@@ -159,6 +160,7 @@ export class UserController {
          res = this.cookieService.setUserSessCookie(res, SID);
          return res.status(200).end();
       } catch (e) {
+         this.cookieService.clearSessCookie(res)
          throw e;
       }
    }

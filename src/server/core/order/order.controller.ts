@@ -1,4 +1,16 @@
-import { Body, Controller, Get, Post, Put, Query, Req, Res, UseFilters, UseGuards } from "@nestjs/common";
+import {
+   Body,
+   Controller,
+   Get,
+   HttpException, HttpStatus,
+   Post,
+   Put,
+   Query,
+   Req,
+   Res,
+   UseFilters,
+   UseGuards
+} from "@nestjs/common";
 import { CreateMasterOrderDto, CreateMasterOrderInput, CreateUserOrderDto, CreateUserOrderInput } from "./dto/create-order.dto";
 import { OrderService } from "./order.service";
 import { Response } from "express";
@@ -72,6 +84,9 @@ export class OrderController {
          }
 
          const userId = req.user_id;
+         if (!userId){
+            throw new HttpException("Неправильный номер телефона", HttpStatus.BAD_REQUEST)
+         }
          this.logger.debug(`create order for user ${userId}`);
 
          let amount = await this.productService.calculateCartAmount(inp.cart);

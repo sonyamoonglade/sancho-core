@@ -1,10 +1,10 @@
 FROM node:18.1-alpine3.14 as build
 WORKDIR /app
 COPY package.json .
-RUN npm install && mkdir dist
+RUN npm install
 COPY . .
-ENV NODE_ENV="production"
-RUN npm run build:prod && \
+RUN mkdir dist && \
+    npm run build:prod && \
     npm prune --production
 
 FROM node:18.1-alpine3.14

@@ -176,6 +176,7 @@ export class OrderRepository {
 
    async get(expression: filter<Order>): Promise<Partial<Order>[]> {
       const selectSql = this.qb.ofTable(orders).select<Order>(expression);
+      console.log(selectSql)
       const { rows } = await this.db.query(selectSql);
       return rows;
    }

@@ -78,8 +78,8 @@ import { PromotionRepository } from "./core/promotion/promotion.repository";
       QueryBuilderModule,
       LoggerModule.forRoot({
          pinoHttp: {
-            autoLogging: false,
-            quietReqLogger: true,
+            autoLogging: true,
+            quietReqLogger: false,
             level: "debug"
          }
       })
