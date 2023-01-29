@@ -50,8 +50,10 @@ const ProductPresentation = () => {
                      </p>
                   </div>
 
-                  <ProductBackground forPresentation={true} />
-                  <img className="image presentation" src={presentedProduct.image_url} alt="Изображение" onTouchEnd={() => hide()} />
+                  <div className="image_container">
+                     <ProductBackground forPresentation={true} />
+                     <img className="image presentation" src={presentedProduct.image_url} alt="Изображение" onTouchEnd={() => hide()} />
+                  </div>
 
                   <div className="miscellaneous">
                      <div>

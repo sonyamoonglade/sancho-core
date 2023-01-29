@@ -22,7 +22,6 @@
   width: 90%;
   max-width: 650px;
   @media (max-width: 1440px) {
-    //max-width: 5px;
     max-height: 380px;
   }
   @media (max-height: 620px) {
@@ -37,9 +36,7 @@
   @media (min-width: 1440px) {
     height: calc((500px/95 * 73));
   }
-  //@media (max-height: 768px) {
-  //  height: calc((470px/95 * 73));
-  //
-  //}
+  @media (min-height: 768px) {
+  }
 
 }
